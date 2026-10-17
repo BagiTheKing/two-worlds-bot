@@ -6,3 +6,4 @@ Pillow>=10.0.0
 # Rendering: Blender as a Python module (CPU, ~400 MB). Only the render jobs
 # need it, so the workflow installs it there instead of from this file.
 # bpy>=5.0
+requests>=2.31

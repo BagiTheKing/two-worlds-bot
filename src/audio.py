@@ -267,6 +267,75 @@ def _chatterbox_say(text, voice, speed, emotion, pace, ref_dir, takes=3, max_tak
     return s, sr
 
 
+# --------------------------------------------------------------- ElevenLabs
+# Eleven v3 acts: inline audio tags such as [excited], [whispers], [sighs]
+# shape the delivery. Each cast member names a voice id ("eleven_voice");
+# the key comes from the ELEVENLABS_API_KEY secret and is never printed.
+
+ELEVEN = "https://api.elevenlabs.io/v1"
+
+
+def _eleven_post(path, payload, timeout=120):
+    import requests
+    key = os.environ["ELEVENLABS_API_KEY"]
+    for attempt in range(4):
+        r = requests.post(ELEVEN + path, json=payload, timeout=timeout,
+                          headers={"xi-api-key": key, "Content-Type": "application/json"})
+        if r.status_code == 429 or r.status_code >= 500:
+            import time
+            time.sleep(2 ** attempt * 3)
+            continue
+        if r.status_code != 200:
+            raise RuntimeError(f"ElevenLabs {path.split('?')[0]}: HTTP {r.status_code} {r.text[:300]}")
+        return r.content
+    raise RuntimeError(f"ElevenLabs {path.split('?')[0]}: still failing after retries")
+
+
+def _eleven_take(text, voice_id, stability, seed):
+    pcm = _eleven_post(f"/text-to-speech/{voice_id}?output_format=pcm_24000", {
+        "text": text, "model_id": os.getenv("ELEVEN_MODEL", "eleven_v3"), "seed": seed,
+        "voice_settings": {"stability": stability, "similarity_boost": 0.8}})
+    return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
+
+
+def eleven_sfx(prompt, seconds):
+    """A sound effect from a description (screams, gasps, crowd noise...)."""
+    mp3 = _eleven_post("/sound-generation", {"text": prompt, "duration_seconds": seconds,
+                                             "prompt_influence": 0.6})
+    import io
+    import subprocess
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", "-", "-f", "s16le", "-ac", "1",
+                          "-ar", "24000", "-"], input=mp3, capture_output=True, check=True).stdout
+    return np.frombuffer(raw, dtype="<i2").astype(np.float64) / 32768.0, 24000
+
+
+def _eleven_say(text, voice_id, stability, takes=2, max_takes=4):
+    """Best of a few takes, checked by Whisper like Chatterbox's. The audio
+    tags in brackets are direction, not words, so they are not scored."""
+    import re
+    spoken = re.sub(r"\[[^\]]*\]", " ", text)
+    best = None
+    k = 0
+    while k < max_takes and (k < takes or best[0] < 0.85):
+        s, sr = _eleven_take(text, voice_id, stability, 1000 + k)
+        try:
+            words = transcribe(s, sr)
+            sc = score_take(spoken, words)
+        except ImportError:
+            return s, sr
+        print(f"  take {k}: {sc:.2f} {' '.join(w for w, _, _ in words)!r}")
+        if best is None or sc > best[0]:
+            best = (sc, s, sr, words)
+        k += 1
+    sc, s, sr, words = best
+    if words and sc >= 0.5:
+        a = max(0, int((words[0][1] - 0.08) * sr))
+        b = min(len(s), int((words[-1][2] + 0.2) * sr))
+        s = s[a:b]
+    print(f"line {spoken.strip()!r}: best {sc:.2f}")
+    return s, sr
+
+
 def _cache_path(cache_dir, *key):
     import hashlib
     h = hashlib.sha1(json.dumps(key).encode()).hexdigest()[:16]
@@ -274,12 +343,20 @@ def _cache_path(cache_dir, *key):
 
 
 def say(text, voice, speed, pitch, emotion=0.5, pace=0.5, ref_dir="build/voice_refs",
-        cache_dir=None):
-    cache = _cache_path(cache_dir, ENGINE, text, voice, speed, emotion, pace, "v2") if cache_dir else None
+        cache_dir=None, eleven_voice=None, stability=0.5, sfx=None):
+    """sfx: {"prompt": ..., "seconds": ...} makes the line a generated sound
+    effect instead of speech (screams and other non-words)."""
+    engine = ENGINE if not (ENGINE == "elevenlabs" and not eleven_voice and not sfx) else "kokoro"
+    key = (engine, text, voice, speed, emotion, pace, eleven_voice, stability, sfx, "v3")
+    cache = _cache_path(cache_dir, *key) if cache_dir else None
     if cache and os.path.exists(cache):
         s, sr = sf.read(cache)
     else:
-        if ENGINE == "chatterbox":
+        if engine == "elevenlabs" and sfx:
+            s, sr = eleven_sfx(sfx["prompt"], sfx.get("seconds", 2.0))
+        elif engine == "elevenlabs":
+            s, sr = _eleven_say(text, eleven_voice, stability)
+        elif engine == "chatterbox":
             s, sr = _chatterbox_say(text, voice, speed, emotion, pace, ref_dir)
         else:
             s, sr = _kokoro_say(tts_text(text), voice, speed)
@@ -458,10 +535,14 @@ def build(episode_path, out_dir, keep=None):
         else:
             who = ev["line"]
             c = ep["cast"][who]
-            audio = say(ev["text"], c["voice"], c["speed"], c["pitch"],
+            audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
+                        c["voice"], c["speed"], c["pitch"],
                         emotion=ev.get("emotion", c.get("emotion", 0.5)),
                         pace=ev.get("pace", c.get("pace", 0.5)),
-                        ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir)
+                        ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir,
+                        eleven_voice=c.get("eleven_voice"),
+                        stability=ev.get("stability", c.get("stability", 0.5)),
+                        sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
             if c.get("fx") == "null":
                 audio = null_voice(audio)
             counts[who] = counts.get(who, 0) + 1

@@ -9,7 +9,8 @@
       "pitch": 1.0,
       "caption": "#FFD23F",
       "emotion": 0.6,
-      "pace": 0.45
+      "pace": 0.45,
+      "stability": 0.0
     },
     "steve": {
       "voice": "am_michael",
@@ -17,7 +18,8 @@
       "pitch": 1.0,
       "caption": "#3FE0D0",
       "emotion": 0.4,
-      "pace": 0.5
+      "pace": 0.5,
+      "stability": 0.5
     },
     "null": {
       "voice": "am_puck",
@@ -26,7 +28,8 @@
       "caption": "#FF3BD4",
       "fx": "null",
       "emotion": 0.25,
-      "pace": 0.3
+      "pace": 0.3,
+      "stability": 0.5
     }
   },
   "events": [
@@ -39,35 +42,40 @@
       "name": "vo_1",
       "vo": true,
       "text": "There used to be two worlds.",
-      "pad": 0.25
+      "pad": 0.25,
+      "eleven_text": "[softly, like a storyteller] There used to be two worlds."
     },
     {
       "line": "steve",
       "name": "vo_2",
       "vo": true,
       "text": "Mine...",
-      "pad": 0.2
+      "pad": 0.2,
+      "eleven_text": "[softly] Mine..."
     },
     {
       "line": "steve",
       "name": "vo_3",
       "vo": true,
       "text": "...and his.",
-      "pad": 0.3
+      "pad": 0.3,
+      "eleven_text": "[softly, a little amused] ...and his."
     },
     {
       "line": "steve",
       "name": "vo_4",
       "vo": true,
       "text": "Then they crashed into each other.",
-      "pad": 0.3
+      "pad": 0.3,
+      "eleven_text": "[softly] Then they crashed into each other."
     },
     {
       "line": "steve",
       "name": "vo_5",
       "vo": true,
       "text": "And one day... reality just stopped.",
-      "pad": 0.1
+      "pad": 0.1,
+      "eleven_text": "[quietly, ominous] And one day... [pause] reality just stopped."
     },
     {
       "beat": "freeze",
@@ -87,7 +95,8 @@
       "text": "Noob! Run!",
       "emotion": 0.85,
       "pace": 0.4,
-      "pad": 0.05
+      "pad": 0.05,
+      "eleven_text": "[shouting] Noob! Run!"
     },
     {
       "line": "noob",
@@ -95,7 +104,8 @@
       "text": "I am running!",
       "emotion": 0.95,
       "pace": 0.35,
-      "pad": 0.05
+      "pad": 0.05,
+      "eleven_text": "[panicked, shouting] I am running!"
     },
     {
       "beat": "erasure_b",
@@ -110,7 +120,8 @@
       "text": "Oh! The bridge is under maintenance!",
       "emotion": 0.8,
       "pace": 0.3,
-      "pad": 0.15
+      "pad": 0.15,
+      "eleven_text": "[cheerfully, oblivious] Oh! The bridge is under maintenance!"
     },
     {
       "beat": "bridge_delete",
@@ -133,21 +144,24 @@
       "text": "Can you respawn if there's no world?",
       "emotion": 0.6,
       "pace": 0.45,
-      "pad": 0.35
+      "pad": 0.35,
+      "eleven_text": "[curious, innocent] Can you respawn if there's no world?"
     },
     {
       "line": "steve",
       "name": "steve_no",
       "text": "No.",
       "emotion": 0.3,
-      "pad": 1.1
+      "pad": 1.1,
+      "eleven_text": "[flatly] No."
     },
     {
       "line": "noob",
       "name": "noob_oh",
       "text": "...Oh.",
       "emotion": 0.4,
-      "pad": 0.3
+      "pad": 0.3,
+      "eleven_text": "[quietly, realizing] ...Oh."
     },
     {
       "beat": "look_down",
@@ -164,7 +178,8 @@
       "text": "What... is that?",
       "emotion": 0.45,
       "pace": 0.35,
-      "pad": 0.2
+      "pad": 0.2,
+      "eleven_text": "[whispering, scared] What... is that?"
     },
     {
       "beat": "null_rise",
@@ -175,7 +190,8 @@
       "line": "null",
       "name": "null_1",
       "text": "Reality has been corrected.",
-      "pad": 0.3
+      "pad": 0.3,
+      "eleven_text": "[slow, cold, emotionless] Reality has been corrected."
     },
     {
       "beat": "null_hand",
@@ -192,7 +208,11 @@
       "text": "Aaaaaaaah!",
       "emotion": 1.0,
       "pace": 0.3,
-      "pad": 0.0
+      "pad": 0.0,
+      "sfx_voice": {
+        "prompt": "cartoon young man screaming in panic while falling away into a deep void, the scream fading with distance",
+        "seconds": 1.8
+      }
     },
     {
       "beat": "fall_void",

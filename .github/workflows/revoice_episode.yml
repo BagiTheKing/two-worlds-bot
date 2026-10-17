@@ -13,6 +13,9 @@ on:
       run_id:
         description: "Run id of the 'Render episode' run whose frames to reuse"
         required: true
+      voice:
+        description: "Voice engine: elevenlabs or chatterbox"
+        default: "elevenlabs"
 
 permissions:
   contents: write
@@ -27,8 +30,10 @@ jobs:
         with:
           python-version: '3.11'
       - run: |
-          pip install kokoro-onnx soundfile numpy Pillow faster-whisper
-          pip install --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts
+          pip install kokoro-onnx soundfile numpy Pillow faster-whisper requests
+          if [ "${{ inputs.voice }}" = "chatterbox" ]; then
+            pip install --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts
+          fi
       - name: Kokoro model
         uses: actions/cache@v4
         with:
@@ -51,8 +56,9 @@ jobs:
           run-id: ${{ inputs.run_id }}
           github-token: ${{ github.token }}
       - env:
-          VOICE_ENGINE: chatterbox
+          VOICE_ENGINE: ${{ inputs.voice }}
           VOICE_CACHE: voice_cache
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: python src/audio.py ${{ inputs.episode }} build --keep-timeline old/timeline.json
       - uses: actions/upload-artifact@v4
         with:

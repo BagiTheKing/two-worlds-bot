@@ -17,8 +17,8 @@ on:
         description: "Render samples per pixel"
         default: "16"
       voice:
-        description: "Voice engine: chatterbox or kokoro"
-        default: "chatterbox"
+        description: "Voice engine: elevenlabs, chatterbox or kokoro"
+        default: "elevenlabs"
 
 permissions:
   contents: write
@@ -39,8 +39,8 @@ jobs:
           python-version: '3.11'
       - run: |
           pip install kokoro-onnx soundfile numpy Pillow
+          pip install faster-whisper requests
           if [ "${{ inputs.voice }}" = "chatterbox" ]; then
-            pip install faster-whisper
             pip install --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts
           fi
       - name: Kokoro model
@@ -61,6 +61,7 @@ jobs:
       - env:
           VOICE_ENGINE: ${{ inputs.voice }}
           VOICE_CACHE: voice_cache
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         run: |
           python src/textures.py build/tex
           python src/audio.py ${{ inputs.episode }} build
