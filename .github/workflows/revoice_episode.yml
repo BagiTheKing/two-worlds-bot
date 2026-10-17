@@ -1,9 +1,10 @@
 name: Re-voice episode
 
 # Manual. New voices and a new mix for an episode that is already rendered:
-# the frames of an earlier "Render episode" run are reused, the new takes
-# are placed at the same times (--keep-timeline), and the Short is
-# re-assembled. About 15 minutes instead of a full render.
+# the voices set a fresh timeline, and the frames of an earlier "Render
+# episode" run are retimed to it (each beat's frames move with the beat;
+# longer lines stretch their frames slightly). About 10 minutes instead of
+# a full render.
 on:
   workflow_dispatch:
     inputs:
@@ -66,7 +67,8 @@ jobs:
         run: |
           mkdir -p build
           set -o pipefail
-          python -u src/audio.py ${{ inputs.episode }} build --keep-timeline old/timeline.json 2>&1 | tee build/voice_log.txt
+          python -u src/audio.py ${{ inputs.episode }} build 2>&1 | tee build/voice_log.txt
+          cp old/timeline.json build/source_timeline.json
       - name: Save the voice cache (also when a later line failed)
         if: always()
         uses: actions/cache/save@v4
@@ -88,6 +90,7 @@ jobs:
           path: |
             build/audio.wav
             build/timeline.json
+            build/source_timeline.json
           retention-days: 2
 
   assemble:
@@ -110,7 +113,7 @@ jobs:
           merge-multiple: true
           run-id: ${{ inputs.run_id }}
           github-token: ${{ github.token }}
-      - run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
+      - run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4 build/source_timeline.json
       - id: id
         run: echo "id=$(python -c "import json;print(json.load(open('build/timeline.json'))['id'])")" >> $GITHUB_OUTPUT
       - uses: actions/upload-artifact@v4

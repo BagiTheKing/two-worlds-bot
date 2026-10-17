@@ -184,8 +184,39 @@ def read_clip(path):
     return [Image.frombytes("RGB", (W, H), raw[i * W * H * 3:(i + 1) * W * H * 3]) for i in range(n)]
 
 
-def main(timeline, frames_dir, audio, out):
+def retime_map(new_tl, old_tl):
+    """Map a time in the new timeline to the same story moment in the old
+    one (whose frames were rendered), so new voices can reuse old frames:
+    every beat or line in both is an anchor; times between anchors are
+    interpolated (moved beats shift, longer lines stretch slightly)."""
+    anchors = [(0.0, 0.0)]
+    for name, (a, b) in new_tl["beats"].items():
+        if name in old_tl["beats"]:
+            oa, ob = old_tl["beats"][name]
+            anchors += [(a, oa), (b, ob)]
+    anchors.sort()
+    mono = [anchors[0]]
+    for n, o in anchors[1:]:                     # keep it monotonic
+        if n > mono[-1][0] and o >= mono[-1][1]:
+            mono.append((n, o))
+    nx = [a for a, _ in mono]
+    ox = [b for _, b in mono]
+
+    def to_old(t):
+        if t <= nx[-1]:
+            import bisect
+            i = max(1, bisect.bisect_left(nx, t))
+            a0, a1, b0, b1 = nx[i - 1], nx[i], ox[i - 1], ox[i]
+            return b0 + (b1 - b0) * (t - a0) / max(1e-9, a1 - a0)
+        return ox[-1] + (t - nx[-1])
+    return to_old
+
+
+def main(timeline, frames_dir, audio, out, source_timeline=None):
+    """source_timeline: the timeline the frames were rendered for, when the
+    audio has since been re-voiced (frames are retimed to match)."""
     tl = json.load(open(timeline))
+    to_old = retime_map(tl, json.load(open(source_timeline))) if source_timeline else (lambda t: t)
     fps = tl["fps"]
     n_frames = int(round((tl["length"] + 0.4) * fps)) + 1
     caps = []
@@ -216,7 +247,8 @@ def main(timeline, frames_dir, audio, out):
         stdin=subprocess.PIPE)
     for f in range(1, n_frames + 1):
         t = (f - 1) / fps
-        path = os.path.join(frames_dir, f"{f:04d}.png")
+        src = int(round(to_old(t) * fps)) + 1
+        path = os.path.join(frames_dir, f"{src:04d}.png")
         img = Image.open(path).convert("RGB") if os.path.exists(path) else black.copy()
         for c0, c1, frames in clips:
             if c0 <= t < c1 and frames:
@@ -244,4 +276,4 @@ def main(timeline, frames_dir, audio, out):
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:5])
+    main(*sys.argv[1:6])
