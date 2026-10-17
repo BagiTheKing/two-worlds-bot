@@ -495,7 +495,7 @@ def sky_crack(tl):
         box(f"crack_glow_{i}", (L + 0.3, 0.05, 0.75), (L / 2, 0.1, 0), {"default": glow}, seg)
         start = c0 + 0.15 + rank * 0.06
         for t, s in ((0, 0.0), (start, 0.0), (start + 0.12, 1.0)):
-            seg.scale = (max(s, 0.001), 1, 1)
+            seg.scale = (max(s, 0.001),) + ((1, 1) if s else (0.001, 0.001))
             seg.keyframe_insert("scale", frame=F(t))
     # flicker
     b = glow.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
