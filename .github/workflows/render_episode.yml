@@ -78,6 +78,8 @@ jobs:
         if: always()
         run: |
           mkdir -p /tmp/log && cp build/voice_log.txt /tmp/log/ 2>/dev/null || echo "no log" > /tmp/log/voice_log.txt
+          cp build/timeline.json /tmp/log/ 2>/dev/null || true
+          ffmpeg -loglevel error -i build/audio.wav -c:a aac -b:a 128k /tmp/log/audio.m4a 2>/dev/null || true
           cd /tmp/log && git init -q -b preview-logs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

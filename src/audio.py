@@ -464,9 +464,26 @@ def split_scene(samples, sr, lines):
     return spans
 
 
+def cut_lines(samples, sr, spans, order):
+    """Cut each line at the middle of the silence around it, so drawn-out
+    words are never clipped and pauses are not swallowed."""
+    placed = [n for n in order if n in spans]
+    total = len(samples) / sr
+    cuts = {}
+    for i, n in enumerate(placed):
+        a, b = spans[n]
+        prev_end = spans[placed[i - 1]][1] if i else 0.0
+        next_start = spans[placed[i + 1]][0] if i + 1 < len(placed) else total
+        start = max((prev_end + a) / 2, a - 0.3)
+        end = min((b + next_start) / 2, b + 0.6)
+        cuts[n] = samples[int(start * sr):int(end * sr)]
+    return cuts
+
+
 def gemini_lines(ep, cache_dir):
     """Voice every line of an episode with Gemini, a scene at a time.
-    Returns {line name: (samples, sr)}."""
+    Returns {line name: (samples, sr)}. Each scene's full recording is cached,
+    so changing how lines are cut never costs another request."""
     cast = ep["cast"]
     todo, counts = [], {}
     for ev in ep["events"]:
@@ -498,33 +515,34 @@ def gemini_lines(ep, cache_dir):
         voices = {label[w]: cast[w]["gemini_voice"] for w in whos}
         notes = " ".join(f"{label[w]}: {cast[w].get('acting', '')}" for w in whos if cast[w].get("acting"))
         turns = [(label[w], t) for _, w, t in scene]
-        script = notes + "\n" + "\n".join(f"{sp}: {t}" for sp, t in turns)
-        key = _cache_path(cache_dir, "gemini-scene", script, voices) if cache_dir else None
-        names = [n for n, _, _ in scene]
-        cached = key and all(os.path.exists(key.replace(".wav", f"_{n}.wav")) for n in names)
-        if cached:
-            for n in names:
-                out[n] = sf.read(key.replace(".wav", f"_{n}.wav"))
-            continue
-        s, sr = gemini_speak(turns, voices, notes)
-        spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
-        print("scene", names, "placed", sorted(spans))
-        for i, (n, w, t) in enumerate(scene):
-            if n in spans:
-                a, b = spans[n]
-                nxt = min([spans[m][0] for m, _, _ in scene[i + 1:] if m in spans] or [len(s) / sr])
-                clip = s[max(0, int((a - 0.08) * sr)):int(min(b + 0.2, nxt - 0.02) * sr)]
-            else:                                        # redo this line on its own
-                print("  re-taking", n, "alone")
-                clip, _ = gemini_speak([(label[w], t)], {label[w]: cast[w]["gemini_voice"]},
-                                       f"{label[w]}: {cast[w].get('acting', '')}")
-                wds = transcribe(clip, sr)
-                if wds:
-                    clip = clip[max(0, int((wds[0][1] - 0.08) * sr)):int((wds[-1][2] + 0.2) * sr)]
-            out[n] = (clip, sr)
-            if key:
+        raw = _cache_path(cache_dir, "gemini-scene-raw", turns, voices) if cache_dir else None
+        if raw and os.path.exists(raw):
+            s, sr = sf.read(raw)
+        else:
+            s, sr = gemini_speak(turns, voices, notes)
+            if raw:
                 os.makedirs(cache_dir, exist_ok=True)
-                sf.write(key.replace(".wav", f"_{n}.wav"), clip, sr)
+                sf.write(raw, s, sr)
+        names = [n for n, _, _ in scene]
+        spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
+        print("scene", names, "placed", [n for n in names if n in spans])
+        cuts = cut_lines(s, sr, spans, names)
+        for n, w, t in scene:
+            if n in cuts:
+                out[n] = (cuts[n], sr)
+                continue
+            print("  re-taking", n, "alone")                # Whisper could not place it
+            one = _cache_path(cache_dir, "gemini-line-raw", label[w], t, voices[label[w]]) if cache_dir else None
+            if one and os.path.exists(one):
+                clip, _ = sf.read(one)
+            else:
+                clip, _ = gemini_speak([(label[w], t)], {label[w]: voices[label[w]]})
+                if one:
+                    sf.write(one, clip, sr)
+            wds = transcribe(clip, sr)
+            if wds:
+                clip = clip[max(0, int((wds[0][1] - 0.15) * sr)):int((wds[-1][2] + 0.4) * sr)]
+            out[n] = (clip, sr)
     return out
 
 
@@ -560,9 +578,10 @@ def say(text, voice, speed, pitch, emotion=0.5, pace=0.5, ref_dir="build/voice_r
 
 def finish(s, sr, pitch):
     """Trim silence, resample to the mix rate with the character's pitch."""
-    loud = np.where(np.abs(s) > 0.02)[0]
-    if len(loud):
-        s = s[max(0, loud[0] - 240): loud[-1] + 2400]
+    peak = np.max(np.abs(s)) or 1.0
+    loud = np.where(np.abs(s) > 0.03 * peak)[0]
+    if len(loud):                        # generous tail: soft word endings stay
+        s = s[max(0, loud[0] - int(0.03 * sr)): loud[-1] + int(0.25 * sr)]
     # a small pitch lift/drop by resampling gives each character a register
     n_out = int(len(s) * (SR / sr) / pitch)
     s = np.interp(np.linspace(0, len(s) - 1, n_out), np.arange(len(s)), s)
