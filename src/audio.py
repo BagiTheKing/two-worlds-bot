@@ -348,7 +348,14 @@ SCENE_NOTES = ("Perform this scene from an animated comedy-adventure series like
                "professional voice actors: natural, expressive, with real comic timing. "
                "Words in [brackets] are acting directions: follow them, never say them.")
 _gemini_models = None
-_spent = set()                       # models whose daily free quota is used up
+_spent = set()                       # (key, model) pairs whose daily free quota is used up
+
+
+def gemini_keys():
+    """GEMINI_API_KEY, GEMINI_API_KEY_2, ... Quota is per Google Cloud
+    project, so keys from different projects each add a daily allowance."""
+    keys = [os.environ.get("GEMINI_API_KEY")] + [os.environ.get(f"GEMINI_API_KEY_{i}") for i in range(2, 10)]
+    return [k for k in keys if k]
 
 
 def gemini_models():
@@ -373,7 +380,7 @@ def gemini_models():
             raise RuntimeError("no Gemini speech (TTS) model is available to this key")
         _gemini_models = names
         print("Gemini speech models, in order:", ", ".join(names))
-    return [m for m in _gemini_models if m not in _spent]
+    return list(_gemini_models)
 
 
 def gemini_speak(turns, voices, notes=""):
@@ -401,12 +408,14 @@ def gemini_speak(turns, voices, notes=""):
     # acting notes are never put in the text, where they would be read aloud;
     # the [bracket] directions on each line carry the acting
     errors = []
-    for model in gemini_models():
+    for model, (ki, key) in ((m, k) for m in gemini_models() for k in enumerate(gemini_keys(), 1)):
+        if (ki, model) in _spent:
+            continue
         for label, body in variants:
             body["generationConfig"] = {"responseModalities": ["AUDIO"], "speechConfig": speech}
             for attempt in range(4):
                 r = requests.post(f"{GEMINI}/models/{model}:generateContent", json=body, timeout=300,
-                                  headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]})
+                                  headers={"x-goog-api-key": key})
                 if r.status_code == 429 and "PerDay" in r.text:
                     break                                   # this model is done for today
                 if r.status_code in (429, 500, 503):
@@ -416,9 +425,9 @@ def gemini_speak(turns, voices, notes=""):
                     continue
                 break
             if r.status_code == 429 and "PerDay" in r.text:
-                print(f"{model}: daily free quota used up, trying the next speech model")
-                _spent.add(model)
-                errors.append(f"{model}: daily quota used up")
+                print(f"{model} with key {ki}: daily free quota used up, trying the next key or model")
+                _spent.add((ki, model))
+                errors.append(f"{model} key {ki}: daily quota used up")
                 break
             if r.status_code == 200:
                 try:
@@ -426,7 +435,7 @@ def gemini_speak(turns, voices, notes=""):
                 except (KeyError, IndexError):
                     errors.append(f"{model} {label}: no audio in reply {r.text[:200]}")
                     continue
-                print(f"Gemini speech ok ({model}, {label})")
+                print(f"Gemini speech ok ({model}, key {ki}, {label})")
                 pcm = base64.b64decode(part["data"])
                 return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
             errors.append(f"{model} {label}: HTTP {r.status_code} {r.text[:240]}")
@@ -539,9 +548,10 @@ def gemini_lines(ep, cache_dir):
                 clip, _ = gemini_speak([(label[w], t)], {label[w]: voices[label[w]]})
                 if one:
                     sf.write(one, clip, sr)
-            wds = transcribe(clip, sr)
-            if wds:
-                clip = clip[max(0, int((wds[0][1] - 0.15) * sr)):int((wds[-1][2] + 0.4) * sr)]
+            # keep only the scripted words: a direction read aloud is cut off
+            one_span = split_scene(clip, sr, [(n, t)])
+            if n in one_span:
+                clip = cut_lines(clip, sr, one_span, [n])[n]
             out[n] = (clip, sr)
     return out
 
