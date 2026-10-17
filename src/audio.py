@@ -347,32 +347,33 @@ GEMINI = "https://generativelanguage.googleapis.com/v1beta"
 SCENE_NOTES = ("Perform this scene from an animated comedy-adventure series like "
                "professional voice actors: natural, expressive, with real comic timing. "
                "Words in [brackets] are acting directions: follow them, never say them.")
-_gemini_model = None
+_gemini_models = None
+_spent = set()                       # models whose daily free quota is used up
 
 
-def gemini_model():
-    """The speech model to use: GEMINI_TTS_MODEL, or the best one the key can
-    see (asked from the API, so a renamed model does not break the run)."""
-    global _gemini_model
-    if _gemini_model:
-        return _gemini_model
-    if os.getenv("GEMINI_TTS_MODEL"):
-        _gemini_model = os.environ["GEMINI_TTS_MODEL"]
-        return _gemini_model
-    import requests
-    r = requests.get(f"{GEMINI}/models", params={"pageSize": 200},
-                     headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]}, timeout=60)
-    r.raise_for_status()
-    names = [m["name"].split("/")[-1] for m in r.json().get("models", []) if "tts" in m["name"]]
+def gemini_models():
+    """Speech models to use, best first: GEMINI_TTS_MODEL, then every speech
+    model the key can see (asked from the API, so renames do not break runs).
+    Free quotas are per model, so later ones are fallbacks for the day."""
+    global _gemini_models
+    if _gemini_models is None:
+        import requests
+        r = requests.get(f"{GEMINI}/models", params={"pageSize": 200},
+                         headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]}, timeout=60)
+        r.raise_for_status()
+        names = [m["name"].split("/")[-1] for m in r.json().get("models", []) if "tts" in m["name"]]
 
-    def rank(n):
-        return ("lite" in n, "pro" in n, [-int(x) for x in "".join(c if c.isdigit() else " " for c in n).split()])
-    names.sort(key=rank)
-    if not names:
-        raise RuntimeError("no Gemini speech (TTS) model is available to this key")
-    _gemini_model = names[0]
-    print("Gemini speech model:", _gemini_model)
-    return _gemini_model
+        def rank(n):
+            return ("lite" in n, "pro" in n,
+                    [-int(x) for x in "".join(c if c.isdigit() else " " for c in n).split()])
+        names.sort(key=rank)
+        if os.getenv("GEMINI_TTS_MODEL"):
+            names.insert(0, os.environ["GEMINI_TTS_MODEL"])
+        if not names:
+            raise RuntimeError("no Gemini speech (TTS) model is available to this key")
+        _gemini_models = names
+        print("Gemini speech models, in order:", ", ".join(names))
+    return [m for m in _gemini_models if m not in _spent]
 
 
 def gemini_speak(turns, voices, notes=""):
@@ -390,43 +391,47 @@ def gemini_speak(turns, voices, notes=""):
             for sp, v in voices.items()]}}
     else:
         speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": next(iter(voices.values()))}}}
-    notes = (SCENE_NOTES + " " + notes).strip()
     script = "\n".join(f"{sp}: {t}" for sp, t in turns) if multi else " ".join(t for _, t in turns)
-    variants = []
-    if multi:
+    if multi:   # one part per line, tagged with its speaker (newer models)
         parts = [{"text": t, "speech_metadata": {"speaker": sp}} for sp, t in turns]
-        variants += [("per-line parts + notes", {"contents": [{"role": "user", "parts": parts}],
-                                                 "systemInstruction": {"parts": [{"text": notes}]}}),
-                     ("per-line parts", {"contents": [{"role": "user", "parts": parts}]})]
-    # acting notes only ever go in a system instruction: never in the text,
-    # where they would be read aloud
-    variants += [("script + notes", {"contents": [{"parts": [{"text": script}]}],
-                                     "systemInstruction": {"parts": [{"text": notes}]}}),
-                 ("script", {"contents": [{"parts": [{"text": script}]}]})]
+        variants = [("per-line parts", {"contents": [{"role": "user", "parts": parts}]}),
+                    ("script", {"contents": [{"parts": [{"text": script}]}]})]
+    else:
+        variants = [("script", {"contents": [{"parts": [{"text": script}]}]})]
+    # acting notes are never put in the text, where they would be read aloud;
+    # the [bracket] directions on each line carry the acting
     errors = []
-    for label, body in variants:
-        body["generationConfig"] = {"responseModalities": ["AUDIO"], "speechConfig": speech}
-        for attempt in range(5):
-            r = requests.post(f"{GEMINI}/models/{gemini_model()}:generateContent", json=body, timeout=300,
-                              headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]})
-            if r.status_code in (429, 500, 503):
-                wait = 20 * (attempt + 1)
-                print(f"Gemini busy or out of quota (HTTP {r.status_code}); retrying in {wait}s")
-                time.sleep(wait)
-                continue
-            break
-        if r.status_code == 200:
-            try:
-                part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
-            except (KeyError, IndexError):
-                errors.append(f"{label}: no audio in reply {r.text[:200]}")
-                continue
-            print(f"Gemini speech ok ({label})")
-            pcm = base64.b64decode(part["data"])
-            return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
-        errors.append(f"{label}: HTTP {r.status_code} {r.text[:240]}")
-        if r.status_code != 400:
-            break
+    for model in gemini_models():
+        for label, body in variants:
+            body["generationConfig"] = {"responseModalities": ["AUDIO"], "speechConfig": speech}
+            for attempt in range(4):
+                r = requests.post(f"{GEMINI}/models/{model}:generateContent", json=body, timeout=300,
+                                  headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]})
+                if r.status_code == 429 and "PerDay" in r.text:
+                    break                                   # this model is done for today
+                if r.status_code in (429, 500, 503):
+                    wait = 30 * (attempt + 1)
+                    print(f"{model}: busy or per-minute limit (HTTP {r.status_code}); retrying in {wait}s")
+                    time.sleep(wait)
+                    continue
+                break
+            if r.status_code == 429 and "PerDay" in r.text:
+                print(f"{model}: daily free quota used up, trying the next speech model")
+                _spent.add(model)
+                errors.append(f"{model}: daily quota used up")
+                break
+            if r.status_code == 200:
+                try:
+                    part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
+                except (KeyError, IndexError):
+                    errors.append(f"{model} {label}: no audio in reply {r.text[:200]}")
+                    continue
+                print(f"Gemini speech ok ({model}, {label})")
+                pcm = base64.b64decode(part["data"])
+                return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
+            errors.append(f"{model} {label}: HTTP {r.status_code} {r.text[:240]}")
+            if r.status_code != 400:
+                break
     raise RuntimeError("Gemini speech failed:\n" + "\n".join(errors))
 
 
