@@ -9,7 +9,7 @@ Two deliberately different looks:
   noob   smooth bevelled plastic with a clear-coat shine (the Roblox side)
 """
 
-from blocks import box, empty, material
+from kit.blocks import box, empty, material
 
 PARTS = ("torso", "head", "arm_r", "arm_l", "leg_r", "leg_l")
 
@@ -29,7 +29,8 @@ class Rig:
     def key_pose(self, frame, pose):
         r = self.root
         r.location = pose.get("loc", (0, 0, 0))
-        r.rotation_euler = (0, 0, pose.get("yaw", 0.0))
+        tx, ty = pose.get("tilt", (0.0, 0.0))
+        r.rotation_euler = (tx, ty, pose.get("yaw", 0.0))
         r.scale = pose.get("scale", (1, 1, 1))
         for path in ("location", "rotation_euler", "scale"):
             r.keyframe_insert(path, frame=frame)
@@ -82,29 +83,55 @@ def make_steve(tex, name="steve"):
     return Rig(name, root, parts, {})
 
 
-def make_noob(tex, name="noob"):
-    from textures import NOOB_YELLOW
-    yellow = srgb(NOOB_YELLOW)
-    plastic = dict(rough=0.32, spec=0.5, coat=0.35)
-    face = material(f"{name}_face", tex=tex["noob_face"], smooth_tex=True, **plastic)
-    skin = material(f"{name}_yellow", yellow, **plastic)
-    shirt = material(f"{name}_blue", srgb((30, 100, 220)), **plastic)
-    pants = material(f"{name}_green", srgb((96, 182, 50)), **plastic)
-
+def make_r6(name, mats, s=1.0, bevel=0.035, head_bevel=0.07):
+    """Roblox-style blocky body (2-stud legs and torso, 1-stud arms), `s`
+    times the Noob's size. mats: torso, head, face, arm_r, arm_l, leg_r,
+    leg_l, and optionally torso_l (a left half with its own material)."""
     root = empty(name)
     parts = {}
-    parts["torso"] = empty(f"{name}_torso", (0, 0, 0.8), root)
-    box(f"{name}_body", (0.8, 0.4, 0.8), (0, 0, 0.4), {"default": shirt},
-        parts["torso"], bevel=0.035)
-    parts["head"] = empty(f"{name}_head", (0, 0, 1.6), root)
-    box(f"{name}_skull", (0.5, 0.46, 0.44), (0, 0, 0.24), {"front": face, "default": skin},
-        parts["head"], bevel=0.07)
+    parts["torso"] = empty(f"{name}_torso", (0, 0, 0.8 * s), root)
+    if "torso_l" in mats:
+        box(f"{name}_body_r", (0.4 * s, 0.4 * s, 0.8 * s), (-0.2 * s, 0, 0.4 * s),
+            {"default": mats["torso"]}, parts["torso"], bevel=bevel * s)
+        box(f"{name}_body_l", (0.4 * s, 0.4 * s, 0.8 * s), (0.2 * s, 0, 0.4 * s),
+            {"default": mats["torso_l"]}, parts["torso"], bevel=bevel * s)
+    else:
+        box(f"{name}_body", (0.8 * s, 0.4 * s, 0.8 * s), (0, 0, 0.4 * s),
+            {"default": mats["torso"]}, parts["torso"], bevel=bevel * s)
+    parts["head"] = empty(f"{name}_head", (0, 0, 1.6 * s), root)
+    box(f"{name}_skull", (0.5 * s, 0.46 * s, 0.44 * s), (0, 0, 0.24 * s),
+        {"front": mats["face"], "default": mats["head"]}, parts["head"], bevel=head_bevel * s)
     for tag, x in (("arm_r", -0.6), ("arm_l", 0.6)):
-        parts[tag] = empty(f"{name}_{tag}", (x, 0, 1.6), root)
-        box(f"{name}_{tag}_box", (0.4, 0.4, 0.8), (0, 0, -0.4), {"default": skin},
-            parts[tag], bevel=0.035)
+        parts[tag] = empty(f"{name}_{tag}", (x * s, 0, 1.6 * s), root)
+        box(f"{name}_{tag}_box", (0.4 * s, 0.4 * s, 0.8 * s), (0, 0, -0.4 * s),
+            {"default": mats[tag]}, parts[tag], bevel=bevel * s)
     for tag, x in (("leg_r", -0.2), ("leg_l", 0.2)):
-        parts[tag] = empty(f"{name}_{tag}", (x, 0, 0.8), root)
-        box(f"{name}_{tag}_box", (0.4, 0.4, 0.8), (0, 0, -0.4), {"default": pants},
-            parts[tag], bevel=0.035)
+        parts[tag] = empty(f"{name}_{tag}", (x * s, 0, 0.8 * s), root)
+        box(f"{name}_{tag}_box", (0.4 * s, 0.4 * s, 0.8 * s), (0, 0, -0.4 * s),
+            {"default": mats[tag]}, parts[tag], bevel=bevel * s)
     return Rig(name, root, parts, {})
+
+
+def make_noob(tex, name="noob", shirt=(30, 100, 220), pants=(96, 182, 50),
+              skin=None, s=1.0):
+    from textures import NOOB_YELLOW
+    plastic = dict(rough=0.32, spec=0.5, coat=0.35)
+    skin = material(f"{name}_skin", srgb(skin or NOOB_YELLOW), **plastic)
+    face = material(f"{name}_face", tex=tex["noob_face"], smooth_tex=True, **plastic)
+    top = material(f"{name}_shirt", srgb(shirt), **plastic)
+    bottom = material(f"{name}_pants", srgb(pants), **plastic)
+    return make_r6(name, {"torso": top, "head": skin, "face": face, "arm_r": skin,
+                          "arm_l": skin, "leg_r": bottom, "leg_l": bottom}, s)
+
+
+def make_null(tex, name="null", s=9.0):
+    """Half pixel-block, half plastic, with a missing-texture face. Built
+    from the Noob's own proportions (it is made of him)."""
+    pixel = material(f"{name}_pixel", tex=tex["null"], rough=0.8,
+                     emit_tex=True, strength=0.25)
+    plastic = material(f"{name}_plastic", srgb((12, 10, 18)), rough=0.3, spec=0.6, coat=0.5)
+    face = material(f"{name}_face", tex=tex["missing"], emit_tex=True, strength=0.9)
+    return make_r6(name, {"torso": plastic, "torso_l": pixel, "head": plastic,
+                          "face": face, "arm_r": plastic, "arm_l": pixel,
+                          "leg_r": plastic, "leg_l": pixel}, s,
+                   bevel=0.03, head_bevel=0.05)

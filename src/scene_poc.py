@@ -20,8 +20,8 @@ import sys
 import bpy
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from blocks import aim, box, empty, material, voxels   # noqa: E402
-from cast import make_noob, make_steve, srgb           # noqa: E402
+from kit.blocks import aim, box, empty, material, voxels   # noqa: E402
+from kit.rigs import make_noob, make_steve, srgb        # noqa: E402
 
 FPS = 24
 NOOB_LAND = (0.2, -0.4)

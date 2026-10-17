@@ -42,6 +42,24 @@ it in frame centre. Viewers should find these on rewatch.
   the season they spell a message (to be decided, never shown in order).
 - **Achievements.** Cheerful game pop-ups at the worst possible moments.
 
+## The observers (viewer choices)
+
+Inside the story, the viewers are the answer to "who is measuring reality?":
+reality holds where someone is watching, and Null erases what nobody
+observes. Patch is the only character who notices them.
+
+- **Three choices per season**: episodes 5, 7 and 9. Each is one A/B
+  question asked in-world (Patch looks into the camera: "Someone is
+  watching... you. Left door or right?"). Viewers answer by commenting A or B.
+- **Both branches are written in advance and rejoin the main arc**; the
+  choice changes how the heroes get there and what they carry.
+- **The next episode shows the real result** ("OBSERVERS CHOSE B: 2,431"),
+  counted from the comments. Never invent or round up a count.
+- **The finale uses the choices**: what the observers chose to save is what
+  lets the heroes win.
+- Never tie the story to likes or subscriptions, and keep episodes 1-4
+  free of it so a new viewer gets a clean hook.
+
 ## Tone
 
 Comedy from the characters, mystery from the world, stakes from what they

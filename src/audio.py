@@ -155,15 +155,48 @@ def ambience(length):
 # ------------------------------------------------------------------- voices
 
 _kokoro = None
+_chatterbox = None
+ENGINE = os.getenv("VOICE_ENGINE", "kokoro")        # "chatterbox" for final renders
+REF_LINES = {
+    "am_puck": "Oh wow, this place is amazing! I have no idea where I am, but "
+               "honestly, that has never stopped me before. Let's go!",
+    "am_michael": "Every problem has a solution. You just need the right blocks, "
+                  "the right tools, and enough time to build it properly.",
+}
 
 
-def say(text, voice, speed, pitch):
+def _kokoro_say(text, voice, speed):
     global _kokoro
     if _kokoro is None:
         from kokoro_onnx import Kokoro
         _kokoro = Kokoro(MODEL, VOICES)
     s, sr = _kokoro.create(text, voice=voice, speed=speed, lang="en-us")
-    s = np.asarray(s, dtype=np.float64)
+    return np.asarray(s, dtype=np.float64), sr
+
+
+def _chatterbox_say(text, voice, speed, emotion, pace, ref_dir):
+    """Chatterbox performs the line in the timbre of a Kokoro reference clip,
+    so every character keeps one voice but gets real delivery."""
+    global _chatterbox
+    import torch
+    if _chatterbox is None:
+        from chatterbox.tts import ChatterboxTTS
+        _chatterbox = ChatterboxTTS.from_pretrained(device="cpu")
+    ref = os.path.join(ref_dir, f"ref_{voice}.wav")
+    if not os.path.exists(ref):
+        s, sr = _kokoro_say(REF_LINES.get(voice, REF_LINES["am_puck"]), voice, speed)
+        os.makedirs(ref_dir, exist_ok=True)
+        sf.write(ref, s, sr)
+    torch.manual_seed(sum(map(ord, text)))
+    wav = _chatterbox.generate(text, audio_prompt_path=ref, exaggeration=emotion, cfg_weight=pace)
+    return wav.squeeze(0).numpy().astype(np.float64), _chatterbox.sr
+
+
+def say(text, voice, speed, pitch, emotion=0.5, pace=0.5, ref_dir="build/voice_refs"):
+    if ENGINE == "chatterbox":
+        s, sr = _chatterbox_say(text, voice, speed, emotion, pace, ref_dir)
+    else:
+        s, sr = _kokoro_say(text, voice, speed)
     loud = np.where(np.abs(s) > 0.02)[0]
     if len(loud):
         s = s[max(0, loud[0] - 240): loud[-1] + 2400]
@@ -173,33 +206,148 @@ def say(text, voice, speed, pitch):
     return norm(s, 0.95)
 
 
+# ------------------------------------------------------- episode-1 sounds
+
+def sfx_pop():
+    """A digital blip: what erasing a chunk of reality sounds like."""
+    n = int(0.09 * SR)
+    x = np.arange(n) / SR
+    f = 1500 * np.exp(-x * 30) + 180
+    blip = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(n, 0.001, 0.03)
+    click = band(rng.standard_normal(n), 2000, 9000) * env(n, 0.0002, 0.004)
+    return norm(blip + 0.4 * norm(click), 0.8)
+
+
+def sfx_crackle(dur):
+    n = int(dur * SR)
+    out = np.zeros(n)
+    k = (rng.random(n) < 0.0012) * rng.uniform(-1, 1, n)
+    out += band(k, 1500, 9000)
+    return norm(out, 0.35)
+
+
+def sfx_whistle(dur):
+    x = t(dur)
+    f = 900 - 500 * x / dur
+    return norm(np.sin(2 * np.pi * np.cumsum(f) / SR) * np.linspace(0.6, 0.0, len(x)), 0.3)
+
+
+def sfx_sub_drop(dur):
+    x = t(dur)
+    f = 70 * np.exp(-x * 1.2) + 28
+    return norm(np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(x), 0.02, dur * 0.6), 0.9)
+
+
+def sfx_rumble_rise(dur):
+    x = t(dur)
+    rum = band(rng.standard_normal(len(x)), 25, 160) * np.linspace(0.2, 1, len(x))
+    rev = sfx_glitch(dur)[:len(x)][::-1] * 0.35
+    return norm(norm(rum) + rev[:len(rum)], 0.9)
+
+
+def sfx_jingle():
+    """Cheerful achievement jingle, completely wrong for the moment."""
+    out = np.zeros(int(1.3 * SR))
+    for i, f in enumerate((523.25, 659.25, 783.99, 1046.5)):
+        x = t(0.5)
+        tone = sum(np.sin(2 * np.pi * f * h * x) / h ** 1.5 for h in (1, 2, 3, 4))
+        place(out, tone * env(len(x), 0.003, 0.18), i * 0.09, 0.5)
+    x = t(1.0)
+    ding = sum(np.sin(2 * np.pi * 1568 * r * x) / (k + 1) for k, r in enumerate((1, 2.76, 5.4)))
+    place(out, ding * env(len(x), 0.002, 0.35), 0.38, 0.6)
+    return norm(out, 0.85)
+
+
+def sfx_whoosh(dur=0.7):
+    x = t(dur)
+    return norm(band(rng.standard_normal(len(x)), 300, 3000) * np.sin(np.pi * x / dur) ** 2, 0.5)
+
+
+def sfx_run(dur, step=0.16):
+    out = np.zeros(int(dur * SR) + SR)
+    k = 0.0
+    while k < dur:
+        place(out, sfx_step(), k, 0.7)
+        k += step
+    return out
+
+
+def void_wind(length):
+    n = int(length * SR)
+    w = band(rng.standard_normal(n), 50, 320)
+    return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
+
+
+def null_voice(s):
+    """Null speaks with the Noob's voice: pitched down, doubled an octave
+    lower, bit-crushed, with a reversed reverb swelling into each word."""
+    def pitch(x, p):
+        return np.interp(np.linspace(0, len(x) - 1, int(len(x) / p)), np.arange(len(x)), x)
+    a = pitch(s, 0.62)
+    b = pitch(s, 0.31)[:len(a)]
+    b = np.pad(b, (0, len(a) - len(b)))
+    v = a + 0.55 * b
+    v = np.round(v * 14) / 14                          # bit crush
+    tail = rng.standard_normal(int(0.9 * SR)) * np.exp(-np.arange(int(0.9 * SR)) / (0.25 * SR))
+    rev = np.convolve(v[::-1], tail * 0.02)[:len(v)][::-1]
+    v = np.concatenate([np.zeros(int(0.35 * SR)), v])
+    rev = np.concatenate([rev, np.zeros(int(0.35 * SR))])
+    return norm(v + 0.6 * rev, 0.95)
+
+
 # ----------------------------------------------------------------- timeline
+
+def resolve_ref(beats, ref, length):
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from kit.timeref import resolve
+    return resolve(beats, ref, length)
+
 
 def build(episode_path, out_dir):
     ep = json.load(open(episode_path))
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0
     beats, lines, clips, impacts = {}, [], [], []
+    fx_times = {}
     counts = {}
     for ev in ep["events"]:
+        if "pause" in ev:
+            cursor += ev["pause"]
+            continue
         if "beat" in ev:
-            beats[ev["beat"]] = [cursor, cursor + ev["dur"]]
-            if ev["beat"] == "punch":
+            name, dur = ev["beat"], ev["dur"]
+            beats[name] = [cursor, cursor + dur]
+            if name == "punch":
                 impacts.append(cursor + PUNCH_AT)
-            if ev["beat"] == "flurry":
+            if name == "flurry":
                 h = cursor + 0.12
-                while h < cursor + ev["dur"] - 0.05:
+                while h < cursor + dur - 0.05:
                     impacts.append(h)
                     h += FLURRY_GAP
-            if ev.get("sfx"):
-                clips.append((ev["sfx"], cursor, ev["dur"]))
-            cursor += ev["dur"]
+            kind = ev.get("sfx")
+            if kind == "erasure":
+                r = np.random.default_rng(ev.get("seed", 1))
+                ts = np.sort(r.uniform(cursor + 0.2, cursor + dur - 0.2, ev.get("count", 40)))
+                # the pops accelerate as the corruption closes in
+                ts = cursor + 0.2 + (ts - cursor - 0.2) ** 0.8 * (dur - 0.4) ** 0.2
+                fx_times[name] = [round(float(x), 3) for x in ts]
+            elif kind == "bridge":
+                n = ev.get("count", 14)
+                fx_times[name] = [round(cursor + dur * 0.7 * i / (n - 1), 3) for i in range(n)]
+            if kind:
+                clips.append((kind, cursor, dur))
+            cursor += dur
         else:
             who = ev["line"]
             c = ep["cast"][who]
-            audio = say(ev["text"], c["voice"], c["speed"], c["pitch"])
+            audio = say(ev["text"], c["voice"], c["speed"], c["pitch"],
+                        emotion=ev.get("emotion", c.get("emotion", 0.5)),
+                        pace=ev.get("pace", c.get("pace", 0.5)),
+                        ref_dir=os.path.join(out_dir, "voice_refs"))
+            if c.get("fx") == "null":
+                audio = null_voice(audio)
             counts[who] = counts.get(who, 0) + 1
-            name = f"{who}_{counts[who]}"
+            name = ev.get("name", f"{who}_{counts[who]}")
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"],
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
@@ -207,13 +355,27 @@ def build(episode_path, out_dir):
             clips.append(("voice", cursor, audio))
             cursor += dur + ev.get("pad", 0.2)
     length = cursor
+    R = lambda ref: resolve_ref(beats, ref, length)  # noqa: E731
 
     mix = np.zeros(int((length + 0.5) * SR))
     voice = np.zeros_like(mix)
-    crack_at = beats.get("crack", [length])[0]
-    amb = ambience(crack_at)
-    amb[-int(0.05 * SR):] *= np.linspace(1, 0, int(0.05 * SR))   # a hard cut: the Null's silence
-    place(mix, amb, 0, 0.10)
+    amb_spec = ep.get("ambience")
+    if amb_spec is None:                     # episode 2's original behaviour
+        crack_at = beats.get("crack", [length])[0]
+        amb_spec = [{"kind": "meadow", "from": 0, "to": crack_at}]
+    for a in amb_spec:
+        a0, a1 = R(a["from"]), R(a["to"])
+        seg = (ambience if a["kind"] == "meadow" else void_wind)(a1 - a0)
+        if a.get("glitch_at") is not None:   # one bird call stutters
+            g = int((R(a["glitch_at"]) - a0) * SR)
+            if 0 < g < len(seg) - SR // 4:
+                piece = seg[g:g + int(0.06 * SR)].copy()
+                for k in range(4):
+                    seg[g + k * len(piece):g + (k + 1) * len(piece)] = np.round(piece * 6) / 6
+            place(mix, sfx_pop(), R(a["glitch_at"]) + 0.25, 0.25)
+        cut = int(0.03 * SR)
+        seg[-cut:] *= np.linspace(1, 0, cut)                   # hard cuts, on purpose
+        place(mix, seg, a0, a.get("gain", 0.10))
     for kind, at, arg in clips:
         if kind == "voice":
             place(voice, arg, at, 1.0)
@@ -230,18 +392,44 @@ def build(episode_path, out_dir):
             place(mix, sfx_glitch(arg), at, 0.55)
         elif kind == "break":
             place(mix, sfx_break(), at, 0.75)
+        elif kind == "crackle":
+            place(mix, sfx_crackle(arg), at, 0.5)
+        elif kind == "run":
+            place(mix, sfx_run(arg), at, 0.45)
+        elif kind == "grab":
+            place(mix, sfx_thump(90, 0.4, 0.6), at + 0.05, 0.8)
+            place(mix, sfx_thump(70, 0.4, 0.5), at + 0.32, 0.6)
+        elif kind == "sub_drop":
+            place(mix, sfx_sub_drop(arg + 1.0), at, 0.8)
+        elif kind == "rumble_rise":
+            place(mix, sfx_rumble_rise(arg), at, 0.7)
+        elif kind == "jingle":
+            place(mix, sfx_jingle(), at + 0.1, 0.7)
+        elif kind == "whoosh":
+            place(mix, sfx_whoosh(), at, 0.6)
+    for name, ts in fx_times.items():
+        for k, h in enumerate(ts):
+            place(mix, sfx_pop(), h, 0.35 + 0.25 * (k % 3 == 0))
+        if name.startswith("bridge"):
+            place(mix, sfx_thump(200, 0.35, 1.0), ts[0], 0.6)
+            place(mix, sfx_whistle(1.4), ts[-1], 0.6)
     for h in impacts:
         place(mix, sfx_punch_wood(), h, 0.6)
-    # duck everything under dialogue
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     out = voice + mix * (1 - 0.45 * np.clip(duck * 3, 0, 1))
     out = norm(out, 0.89)
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
 
+    overlays = []
+    for o in ep.get("overlays", []):
+        o = dict(o)
+        o["start"] = round(R(o.pop("from")), 3)
+        o["end"] = round(R(o.pop("to")), 3)
+        overlays.append(o)
     timeline = {"id": ep["id"], "fps": 24, "length": round(length, 3),
                 "beats": {k: [round(a, 3), round(b, 3)] for k, (a, b) in beats.items()},
-                "impacts": [round(h, 3) for h in impacts],
-                "lines": lines, "cast": ep["cast"]}
+                "impacts": [round(h, 3) for h in impacts], "fx_times": fx_times,
+                "lines": lines, "cast": ep["cast"], "overlays": overlays}
     with open(os.path.join(out_dir, "timeline.json"), "w") as f:
         json.dump(timeline, f, indent=1)
     return timeline

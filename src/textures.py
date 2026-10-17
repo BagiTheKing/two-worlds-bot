@@ -196,6 +196,31 @@ def noob_face():
     return img
 
 
+def planks():
+    rnd = random.Random(16)
+    img = Image.new("RGB", (16, 16))
+    px = img.load()
+    for y in range(16):
+        row = y // 4
+        shade = (-10, 6, -4, 10)[row]
+        for x in range(16):
+            c = tuple(v + shade for v in (164, 128, 78))
+            if y % 4 == 3 or (x == (5 + row * 7) % 16):
+                c = (110, 82, 48)
+            px[x, y] = _jitter(c, 6, rnd)
+    return img
+
+
+def missing():
+    """The "missing texture" checkerboard: Null's face."""
+    img = Image.new("RGB", (8, 8))
+    px = img.load()
+    for y in range(8):
+        for x in range(8):
+            px[x, y] = (255, 0, 220) if (x // 2 + y // 2) % 2 == 0 else (0, 0, 0)
+    return img
+
+
 ALL = {
     "grass_top": grass_top, "grass_side": grass_side, "dirt": dirt,
     "stone": stone, "log_side": log_side, "log_top": log_top,
@@ -203,6 +228,7 @@ ALL = {
     "steve_face": steve_face, "steve_head_side": steve_head_side,
     "hair": hair, "shirt": shirt, "steve_arm": steve_arm,
     "steve_leg": steve_leg, "noob_face": noob_face,
+    "planks": planks, "missing": missing,
 }
 
 

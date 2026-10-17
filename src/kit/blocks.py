@@ -34,7 +34,7 @@ def image(path, smooth=False):
 
 
 def material(name, color=(0.8, 0.8, 0.8), tex=None, rough=0.9, smooth_tex=False,
-             emission=None, strength=0.0, spec=0.2, coat=0.0):
+             emission=None, strength=0.0, spec=0.2, coat=0.0, emit_tex=False):
     m = bpy.data.materials.new(name)
     try:
         m.use_nodes = True
@@ -53,7 +53,10 @@ def material(name, color=(0.8, 0.8, 0.8), tex=None, rough=0.9, smooth_tex=False,
         n.image = image(tex)
         n.interpolation = "Linear" if smooth_tex else "Closest"
         nt.links.new(n.outputs["Color"], b.inputs["Base Color"])
-    if emission:
+        if emit_tex:
+            nt.links.new(n.outputs["Color"], b.inputs["Emission Color"])
+            b.inputs["Emission Strength"].default_value = strength
+    if emission and not emit_tex:
         b.inputs["Emission Color"].default_value = (*emission, 1)
         b.inputs["Emission Strength"].default_value = strength
     return m
@@ -77,9 +80,12 @@ def _mesh_object(name, verts, faces, face_mats, materials, parent=None):
     return ob
 
 
-def voxels(name, cells, palette, location=(0, 0, 0)):
+def voxels(name, cells, palette, location=(0, 0, 0), solid=None):
     """cells: {(x, y, z): block}. palette: {block: {"top": mat, "side": mat,
-    "bottom": mat}} (missing keys fall back to "side")."""
+    "bottom": mat}} (missing keys fall back to "side"). solid: the cells that
+    hide faces (default: cells itself); pass a chunk's own cells so its sides
+    stay closed when a neighbouring chunk is deleted."""
+    solid = cells if solid is None else solid
     mats, index = [], {}
 
     def slot(m):
@@ -92,7 +98,7 @@ def voxels(name, cells, palette, location=(0, 0, 0)):
     for (x, y, z), block in cells.items():
         p = palette[block]
         for side, (n, corners) in SIDES.items():
-            if (x + n[0], y + n[1], z + n[2]) in cells:
+            if (x + n[0], y + n[1], z + n[2]) in solid:
                 continue
             key = side if side in ("top", "bottom") else "side"
             m = p.get(key, p["side"])
@@ -142,3 +148,25 @@ def empty(name, location=(0, 0, 0), parent=None):
 def aim(ob, direction):
     """Rotate a light/camera so its -Z axis points along `direction`."""
     ob.rotation_euler = (-Vector(direction)).to_track_quat("Z", "Y").to_euler()
+
+
+def hide_at(ob, frame, hidden=True, before=None):
+    """Key render visibility: `before` the frame it is the opposite."""
+    obs = [ob] + list(ob.children_recursive)
+    for o in obs:
+        if o.get("is_flash"):                # flash twins keep their own keys
+            continue
+        o.hide_render = not hidden
+        o.keyframe_insert("hide_render", frame=1)
+        o.hide_render = not hidden
+        o.keyframe_insert("hide_render", frame=max(1, frame - 1))
+        o.hide_render = hidden
+        o.keyframe_insert("hide_render", frame=frame)
+
+
+def show_between(ob, f0, f1):
+    """Visible only for frames f0..f1-1."""
+    for o in [ob] + list(ob.children_recursive):
+        for f, h in ((1, True), (f0, False), (f1, True)):
+            o.hide_render = h
+            o.keyframe_insert("hide_render", frame=max(1, f))
