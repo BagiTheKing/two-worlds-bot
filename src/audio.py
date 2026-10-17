@@ -398,9 +398,11 @@ def gemini_speak(turns, voices, notes=""):
         variants += [("per-line parts + notes", {"contents": [{"role": "user", "parts": parts}],
                                                  "systemInstruction": {"parts": [{"text": notes}]}}),
                      ("per-line parts", {"contents": [{"role": "user", "parts": parts}]})]
+    # acting notes only ever go in a system instruction: never in the text,
+    # where they would be read aloud
     variants += [("script + notes", {"contents": [{"parts": [{"text": script}]}],
                                      "systemInstruction": {"parts": [{"text": notes}]}}),
-                 ("script with notes inline", {"contents": [{"parts": [{"text": notes + "\n\n" + script}]}]})]
+                 ("script", {"contents": [{"parts": [{"text": script}]}]})]
     errors = []
     for label, body in variants:
         body["generationConfig"] = {"responseModalities": ["AUDIO"], "speechConfig": speech}

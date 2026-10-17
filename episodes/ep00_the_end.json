@@ -49,7 +49,8 @@
       "vo": true,
       "text": "There used to be two worlds.",
       "pad": 0.25,
-      "eleven_text": "[softly, like a storyteller] There used to be two worlds."
+      "eleven_text": "[softly, like a storyteller] There used to be two worlds.",
+      "direction_text": "[softly, like a storyteller] There used to be two worlds."
     },
     {
       "line": "steve",
@@ -57,7 +58,8 @@
       "vo": true,
       "text": "Mine...",
       "pad": 0.2,
-      "eleven_text": "[softly] Mine..."
+      "eleven_text": "[softly] Mine...",
+      "direction_text": "[softly] Mine..."
     },
     {
       "line": "steve",
@@ -65,7 +67,8 @@
       "vo": true,
       "text": "...and his.",
       "pad": 0.3,
-      "eleven_text": "[softly, a little amused] ...and his."
+      "eleven_text": "[softly, a little amused] ...and his.",
+      "direction_text": "[softly, a little amused] ...and his."
     },
     {
       "line": "steve",
@@ -73,7 +76,8 @@
       "vo": true,
       "text": "Then they crashed into each other.",
       "pad": 0.3,
-      "eleven_text": "[softly] Then they crashed into each other."
+      "eleven_text": "[softly] Then they crashed into each other.",
+      "direction_text": "[softly] Then they crashed into each other."
     },
     {
       "line": "steve",
@@ -81,7 +85,8 @@
       "vo": true,
       "text": "And one day... reality just stopped.",
       "pad": 0.1,
-      "eleven_text": "[quietly, ominous] And one day... [pause] reality just stopped."
+      "eleven_text": "[quietly, ominous] And one day... [pause] reality just stopped.",
+      "direction_text": "[quietly, ominous] And one day... [pause] reality just stopped."
     },
     {
       "beat": "freeze",
@@ -102,7 +107,8 @@
       "emotion": 0.85,
       "pace": 0.4,
       "pad": 0.05,
-      "eleven_text": "[shouting] Noob! Run!"
+      "eleven_text": "[shouting] Noob! Run!",
+      "direction_text": "[shouting] Noob! Run!"
     },
     {
       "line": "noob",
@@ -111,7 +117,8 @@
       "emotion": 0.95,
       "pace": 0.35,
       "pad": 0.05,
-      "eleven_text": "[panicked, shouting] I am running!"
+      "eleven_text": "[panicked, shouting] I am running!",
+      "direction_text": "[panicked, shouting] I am running!"
     },
     {
       "beat": "erasure_b",
@@ -127,7 +134,8 @@
       "emotion": 0.8,
       "pace": 0.3,
       "pad": 0.15,
-      "eleven_text": "[cheerfully, oblivious] Oh! The bridge is under maintenance!"
+      "eleven_text": "[cheerfully, oblivious] Oh! The bridge is under maintenance!",
+      "direction_text": "[cheerfully, oblivious] Oh! The bridge is under maintenance!"
     },
     {
       "beat": "bridge_delete",
@@ -151,7 +159,8 @@
       "emotion": 0.6,
       "pace": 0.45,
       "pad": 0.35,
-      "eleven_text": "[curious, innocent] Can you respawn if there's no world?"
+      "eleven_text": "[curious, innocent] Can you respawn if there's no world?",
+      "direction_text": "[curious, innocent] Can you respawn if there's no world?"
     },
     {
       "line": "steve",
@@ -159,7 +168,8 @@
       "text": "No.",
       "emotion": 0.3,
       "pad": 1.1,
-      "eleven_text": "[flatly] No."
+      "eleven_text": "[flatly] No.",
+      "direction_text": "[flatly] No."
     },
     {
       "line": "noob",
@@ -167,7 +177,8 @@
       "text": "...Oh.",
       "emotion": 0.4,
       "pad": 0.3,
-      "eleven_text": "[quietly, realizing] ...Oh."
+      "eleven_text": "[quietly, realizing] ...Oh.",
+      "direction_text": "[quietly, realizing] ...Oh."
     },
     {
       "beat": "look_down",
@@ -185,7 +196,8 @@
       "emotion": 0.45,
       "pace": 0.35,
       "pad": 0.2,
-      "eleven_text": "[whispering, scared] What... is that?"
+      "eleven_text": "[whispering, scared] What... is that?",
+      "direction_text": "[whispering, scared] What... is that?"
     },
     {
       "beat": "null_rise",
@@ -197,7 +209,8 @@
       "name": "null_1",
       "text": "Reality has been corrected.",
       "pad": 0.3,
-      "eleven_text": "[slow, cold, emotionless] Reality has been corrected."
+      "eleven_text": "[slow, cold, emotionless] Reality has been corrected.",
+      "direction_text": "[slow, cold, emotionless] Reality has been corrected."
     },
     {
       "beat": "null_hand",
@@ -224,9 +237,20 @@
     },
     {
       "beat": "forest",
-      "dur": 2.375,
+      "dur": 2.4,
       "retime": true,
       "audio_clip": "assets/clips/ep01_opening.wav"
+    },
+    {
+      "line": "noob",
+      "name": "noob_where",
+      "text": "Whoa. Where am I?",
+      "direction_text": "[amazed, a little dazed] Whoa. Where am I?",
+      "pad": 0.0
+    },
+    {
+      "beat": "forest_end",
+      "dur": 0.5
     },
     {
       "beat": "endcard",
@@ -270,6 +294,12 @@
       "from": "erasure",
       "to": "black",
       "gain": 0.12
+    },
+    {
+      "kind": "meadow",
+      "from": "forest+2.3",
+      "to": "endcard",
+      "gain": 0.08
     }
   ],
   "overlays": [
@@ -310,7 +340,7 @@
       "type": "clip",
       "video": "assets/clips/ep01_opening.mp4",
       "from": "forest",
-      "to": "forest.end"
+      "to": "forest_end.end"
     },
     {
       "type": "fade_in",
