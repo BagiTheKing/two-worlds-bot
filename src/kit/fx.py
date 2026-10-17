@@ -56,10 +56,20 @@ def sky(ctx, sun_dir, keys):
     sun.data.color = (1.0, 0.88, 0.7)
     sun.data.angle = math.radians(2.5)
     d = Vector(sun_dir).normalized()
-    disc = box("sun_disc", (28, 28, 0.1), (0, 0, 0),
-               {"default": material("sun_glow", (1, 1, 1), emission=(1.0, 0.95, 0.75), strength=9)})
-    disc.location = -d * 320
-    disc.rotation_euler = d.to_track_quat("Z", "Y").to_euler()
+    # a square sun (block-world style) with two soft glow layers, so it
+    # reads as the sun and not as a white box
+    glows = []
+    for k, (size, strength, alpha) in enumerate(((34, 12, 1.0), (60, 1.6, 0.35), (100, 0.6, 0.15))):
+        m = material(f"sun_glow_{k}", (1, 1, 1), emission=(1.0, 0.86, 0.55), strength=strength)
+        if alpha < 1:
+            b = m.node_tree.nodes["Principled BSDF"]
+            b.inputs["Alpha"].default_value = alpha
+            if hasattr(m, "surface_render_method"):
+                m.surface_render_method = "BLENDED"
+        disc = box(f"sun_disc_{k}", (size, size, 0.1), (0, 0, 0), {"default": m})
+        disc.location = -d * (320 + k * 2)
+        disc.rotation_euler = d.to_track_quat("Z", "Y").to_euler()
+        glows.append((m.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"], strength))
     strength = bg.inputs["Strength"]
     for t, energy, sky_s, direction in keys:
         f = ctx.F(t)
@@ -69,6 +79,9 @@ def sky(ctx, sun_dir, keys):
         strength.keyframe_insert("default_value", frame=f)
         aim(sun, direction or sun_dir)
         sun.keyframe_insert("rotation_euler", frame=f)
+        for sock, base in glows:                 # the visible sun dims with the light
+            sock.default_value = base * min(1.0, energy / 5.0) ** 2
+            sock.keyframe_insert("default_value", frame=f)
     return sun
 
 
@@ -246,3 +259,33 @@ def orbit(ctx, center_of, t0, t1, tex, mats, n=30, seed=9):
             ob.rotation_euler = tuple(k * t for k in spin)
             ob.keyframe_insert("location", frame=f)
             ob.keyframe_insert("rotation_euler", frame=f)
+
+
+def fill(ctx, direction, t_on, t_off, color=(0.45, 0.5, 1.0), energy=1.6):
+    """A soft second sun for night scenes, so dark characters stay readable."""
+    lamp = bpy.data.objects.new("fill", bpy.data.lights.new("fill", "SUN"))
+    bpy.context.scene.collection.objects.link(lamp)
+    lamp.data.color = color
+    lamp.data.angle = math.radians(10)
+    aim(lamp, direction)
+    for t, e in ((0, 0), (t_on, 0), (t_on + 0.8, energy), (t_off - 0.01, energy), (t_off, 0)):
+        lamp.data.energy = e
+        lamp.data.keyframe_insert("energy", frame=ctx.F(max(t, 0)))
+
+
+def erase_named(ctx, items, names, t):
+    """Erase specific chunks (e.g. the ledge the heroes hang from)."""
+    for it in items:
+        if it["ob"].name in names:
+            erase(ctx, it, t)
+
+
+def forest_portal(ctx, root, t_open, t_land, mats):
+    """Episode 1's portal over the forest clearing, opening on cue."""
+    import scene_poc as poc
+    before = set(bpy.data.objects)
+    beats = {"portal_open": [t_open, t_open + 0.6], "land": [t_land, t_land + 0.55]}
+    poc.portal(beats, mats)
+    for ob in set(bpy.data.objects) - before:
+        if ob.parent is None:
+            ob.parent = root

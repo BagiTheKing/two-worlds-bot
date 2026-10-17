@@ -202,8 +202,22 @@ def flail(c, t, st, actor=None):
         "arm_l": (-2.6 + 0.5 * math.sin(24 * t + 1.1), 0, -0.4)}
 
 
+def bounce(c, t, st, actor=None):
+    """Happy hopping on the spot (the Noob at play)."""
+    k = t - c["t0"]
+    h = c.get("height", 0.6)
+    rate = c.get("rate", 1.6)
+    z = h * abs(math.sin(math.pi * rate * k))
+    base = st["loc"]
+    arms = -2.6 * abs(math.sin(math.pi * rate * k))
+    parts = {"arm_r": (arms, 0, 0.3), "arm_l": (arms, 0, -0.3),
+             "leg_r": (0.3 * math.sin(2 * math.pi * rate * k), 0, 0),
+             "leg_l": (-0.3 * math.sin(2 * math.pi * rate * k), 0, 0)}
+    return dict(st, loc=(base[0], base[1], base[2] + (z if t < c["t1"] else 0))), parts
+
+
 LOCOMOTION = {"walk": walk, "run": run, "set": set_, "face": face, "fall": fall,
-              "rise": rise, "hang": hang, "dangle": dangle}
+              "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce}
 BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail}
 
 
@@ -223,7 +237,7 @@ class Actor:
             c["t1"] = resolve(beats, c.get("to", c["from"]), length)
             self.clips.append(c)
         self.clips.sort(key=lambda c: c["t0"])
-        self.lines = [ln for ln in lines if ln["who"] == self.cast]
+        self.lines = [ln for ln in lines if ln["who"] == self.cast and not ln.get("vo")]
         self.actors = actors
         self.idle_amp = spec.get("idle", 0.05)
         self._cache = {}
@@ -240,7 +254,7 @@ class Actor:
                 fn = LOCOMOTION.get(c["do"])
                 if fn is None or t < c["t0"]:
                     continue
-                st, _ = fn(c, t if self.holds(c) else min(t, c["t1"]), st, self)
+                st, _ = fn(c, min(t, c["t1"]), st, self)
             self._cache[key] = st
         return self._cache[key]
 
@@ -258,16 +272,16 @@ class Actor:
         parts = {"arm_r": (idle, 0, 0), "arm_l": (-idle, 0, 0), "head": (0, 0, 0)}
         for c in self.clips:
             hold = self.holds(c)
-            if t < c["t0"] - FADE or (not hold and t > c["t1"] + FADE):
+            if t < c["t0"] - FADE or t > c["t1"] + FADE:
                 continue
-            tc = t if hold else min(max(t, c["t0"]), c["t1"])
+            tc = min(max(t, c["t0"]), c["t1"])
             fn = LOCOMOTION.get(c["do"]) or BODY[c["do"]]
             _, p = fn(c, tc, self.state_at(tc), self)
             if not p:
                 continue
             w = ss(c["t0"] - FADE, c["t0"] + FADE * 0.5, t)
-            if not hold:
-                w *= 1 - ss(c["t1"] - FADE * 0.5, c["t1"] + FADE, t)
+            # held poses (hanging, dangling) stay at full strength to the end
+            w *= 1 - (ss(c["t1"], c["t1"] + FADE, t) if hold else ss(c["t1"] - FADE * 0.5, c["t1"] + FADE, t))
             for k, v in p.items():
                 parts[k] = lerp(parts.get(k, (0, 0, 0)), v, w)
         parts["head"] = add(parts["head"], self.talk(t))

@@ -82,7 +82,8 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "void_debris":
             worlds.void_debris(tex, mats, frames=ctx.F(ctx.end))
         elif k == "erasure":
-            fx.erasure(ctx, sets["seam"]["erasable"], tl["fx_times"][e["beat"]])
+            beats = e.get("beats") or [e["beat"]]
+            fx.erasure(ctx, sets["seam"]["erasable"], sum((tl["fx_times"][b] for b in beats), []))
         elif k == "obby_run":
             rigs = [make_noob(tex, name=f"avatar_{i}", shirt=tuple(a["shirt"]), pants=tuple(a["pants"]))
                     for i, a in enumerate(e["avatars"])]
@@ -93,6 +94,13 @@ def build(episode_path, timeline_path, tex_dir):
                              sign=sets["seam"].get("sign"))
         elif k == "backlight":
             fx.backlight(ctx, tuple(e["at"]), tuple(e["dir"]), ctx.T(e["from"]), ctx.T(e["to"]))
+        elif k == "fill":
+            fx.fill(ctx, tuple(e["dir"]), ctx.T(e["from"]), ctx.T(e["to"]))
+        elif k == "erase_named":
+            fx.erase_named(ctx, sets["seam"]["protected"] + sets["seam"]["erasable"],
+                           set(e["names"]), ctx.T(e["at"]))
+        elif k == "forest_portal":
+            fx.forest_portal(ctx, sets["forest_valley"], ctx.T(e["open"]), ctx.T(e["land"]), mats)
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))

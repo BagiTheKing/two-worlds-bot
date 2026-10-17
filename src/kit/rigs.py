@@ -128,7 +128,7 @@ def make_null(tex, name="null", s=9.0):
     """Half pixel-block, half plastic, with a missing-texture face. Built
     from the Noob's own proportions (it is made of him)."""
     pixel = material(f"{name}_pixel", tex=tex["null"], rough=0.8,
-                     emit_tex=True, strength=0.25)
+                     emit_tex=True, strength=0.7)
     plastic = material(f"{name}_plastic", srgb((12, 10, 18)), rough=0.3, spec=0.6, coat=0.5)
     face = material(f"{name}_face", tex=tex["missing"], emit_tex=True, strength=0.9)
     return make_r6(name, {"torso": plastic, "torso_l": pixel, "head": plastic,

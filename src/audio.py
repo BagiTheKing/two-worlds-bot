@@ -239,10 +239,20 @@ def sfx_sub_drop(dur):
 
 
 def sfx_rumble_rise(dur):
+    """Null rising: a slow cinematic braam over a sub swell (no noise)."""
+    import music
+    x = t(dur + 1.5)
+    sub = np.sin(2 * np.pi * 36 * x) * np.minimum(1, x / dur) ** 2
+    b = np.zeros(len(x))
+    place(b, music.braam(min(3.5, dur + 1.2)), max(0.0, dur - 1.0))
+    return norm(0.6 * sub + b, 0.9)
+
+
+def sfx_plunge(dur):
+    """Falling into the void: rushing air that rises in pitch."""
     x = t(dur)
-    rum = band(rng.standard_normal(len(x)), 25, 160) * np.linspace(0.2, 1, len(x))
-    rev = sfx_glitch(dur)[:len(x)][::-1] * 0.35
-    return norm(norm(rum) + rev[:len(rum)], 0.9)
+    air = band(rng.standard_normal(len(x)), 200, 2500) * np.linspace(0.3, 1, len(x))
+    return norm(air, 0.6) + sfx_whistle(dur) * 0.5
 
 
 def sfx_jingle():
@@ -286,8 +296,8 @@ def null_voice(s):
     a = pitch(s, 0.62)
     b = pitch(s, 0.31)[:len(a)]
     b = np.pad(b, (0, len(a) - len(b)))
-    v = a + 0.55 * b
-    v = np.round(v * 14) / 14                          # bit crush
+    v = a + 0.35 * b
+    v = np.round(v * 48) / 48                          # a light bit crush
     tail = rng.standard_normal(int(0.9 * SR)) * np.exp(-np.arange(int(0.9 * SR)) / (0.25 * SR))
     rev = np.convolve(v[::-1], tail * 0.02)[:len(v)][::-1]
     v = np.concatenate([np.zeros(int(0.35 * SR)), v])
@@ -349,7 +359,7 @@ def build(episode_path, out_dir):
             counts[who] = counts.get(who, 0) + 1
             name = ev.get("name", f"{who}_{counts[who]}")
             dur = len(audio) / SR
-            lines.append({"name": name, "who": who, "text": ev["text"],
+            lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))
@@ -407,6 +417,10 @@ def build(episode_path, out_dir):
             place(mix, sfx_jingle(), at + 0.1, 0.7)
         elif kind == "whoosh":
             place(mix, sfx_whoosh(), at, 0.6)
+        elif kind == "plunge":
+            place(mix, sfx_plunge(arg), at, 0.6)
+        elif kind == "ledge":
+            place(mix, sfx_thump(160, 0.3, 1.0), at, 0.7)
     for name, ts in fx_times.items():
         for k, h in enumerate(ts):
             place(mix, sfx_pop(), h, 0.35 + 0.25 * (k % 3 == 0))
@@ -415,8 +429,14 @@ def build(episode_path, out_dir):
             place(mix, sfx_whistle(1.4), ts[-1], 0.6)
     for h in impacts:
         place(mix, sfx_punch_wood(), h, 0.6)
+    score = np.zeros_like(mix)
+    import music
+    for k, m in enumerate(ep.get("music", [])):
+        m0, m1 = R(m["from"]), R(m["to"])
+        place(score, music.render(m["cue"], m1 - m0, seed=k), m0, m.get("gain", 0.32))
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
-    out = voice + mix * (1 - 0.45 * np.clip(duck * 3, 0, 1))
+    duck = np.clip(duck * 3, 0, 1)
+    out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.6 * duck)
     out = norm(out, 0.89)
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
 

@@ -15,8 +15,8 @@ writer chain, uploader, posting gate and analytics carry over in later steps.
 |---|---|---|
 | 1 | `episodes/*.json` | The episode: cast voices, and an ordered list of beats (actions) and dialogue lines |
 | 2 | `src/textures.py` | Draws the pixel textures and faces (original art, from code) |
-| 3 | `src/audio.py` | Voices every line, then lays out the timeline: beats get their durations, lines get their spoken length. Synthesises the sound effects and mixes the soundtrack. Writes `build/timeline.json` and `build/audio.wav` |
-| 4 | `src/scene_poc.py` | Builds the world, the cast and the cameras in Blender from the timeline, and renders frames. `blocks.py` (voxel mesher, boxes) and `cast.py` (rigs) are its parts |
+| 3 | `src/audio.py` | Voices every line (Chatterbox, acted per line; Kokoro for quick local tests), then lays out the timeline: beats get their durations, lines get their spoken length. Synthesises the sound effects, adds the score (`src/music.py`, composed in code) and mixes. Writes `build/timeline.json` and `build/audio.wav` |
+| 4 | `src/build_episode.py` | Builds any episode in Blender from its file and the timeline, and renders frames. Its parts live in `src/kit/`: worlds, rigs, actions, effects, cameras. (`scene_poc.py` is the hand-written proof of concept, still used for episode 1's forest) |
 | 5 | `src/assemble.py` | Upscales to 1080x1920, burns in captions, encodes the MP4 with the audio |
 
 Because the audio decides the timing, every punch, cut and head-bob lands on
@@ -38,7 +38,7 @@ Look-dev without rendering the whole episode:
 
 ## Run it on GitHub Actions
 
-**Actions → Render proof-of-concept → Run workflow.** One runner makes the
+**Actions → Render episode → Run workflow** (pick the episode file). One runner makes the
 voices and the timeline, twelve render frame ranges in parallel, and the last
 one assembles the Short (the run's `episode` artifact).
 
