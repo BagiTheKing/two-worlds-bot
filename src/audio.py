@@ -375,35 +375,57 @@ def gemini_model():
     return _gemini_model
 
 
-def gemini_speak(script, voices):
-    """script: the prompt text. voices: {speaker name: voice name}; one or
-    two speakers. Returns (samples, 24000)."""
+def gemini_speak(turns, voices, notes=""):
+    """turns: [(speaker, text)] (one or two speakers). voices: {speaker:
+    voice name}. notes: acting notes for the whole scene. Returns
+    (samples, 24000). Newer speech models take one part per line tagged with
+    its speaker; older ones a "Name: line" script. Both are tried."""
     import base64
     import requests
     import time
-    if len(voices) == 1:
-        speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": next(iter(voices.values()))}}}
-    else:
+    multi = len(voices) > 1
+    if multi:
         speech = {"multiSpeakerVoiceConfig": {"speakerVoiceConfigs": [
-            {"speaker": s, "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": v}}}
-            for s, v in voices.items()]}}
-    body = {"contents": [{"parts": [{"text": script}]}],
-            "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": speech}}
-    for attempt in range(5):
-        r = requests.post(f"{GEMINI}/models/{gemini_model()}:generateContent", json=body, timeout=300,
-                          headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]})
-        if r.status_code in (429, 500, 503):
-            wait = 20 * (attempt + 1)
-            print(f"Gemini busy or out of quota (HTTP {r.status_code}); retrying in {wait}s")
-            time.sleep(wait)
-            continue
-        if r.status_code != 200:
-            raise RuntimeError(f"Gemini speech: HTTP {r.status_code} {r.text[:300]}")
-        part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
-        pcm = base64.b64decode(part["data"])
-        return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
-    raise RuntimeError("Gemini speech: quota exhausted (the free tier allows only a few "
-                       "requests a day; try again tomorrow or with a key from another project)")
+            {"speaker": sp, "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": v}}}
+            for sp, v in voices.items()]}}
+    else:
+        speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": next(iter(voices.values()))}}}
+    notes = (SCENE_NOTES + " " + notes).strip()
+    script = "\n".join(f"{sp}: {t}" for sp, t in turns) if multi else " ".join(t for _, t in turns)
+    variants = []
+    if multi:
+        parts = [{"text": t, "speech_metadata": {"speaker": sp}} for sp, t in turns]
+        variants += [("per-line parts + notes", {"contents": [{"role": "user", "parts": parts}],
+                                                 "systemInstruction": {"parts": [{"text": notes}]}}),
+                     ("per-line parts", {"contents": [{"role": "user", "parts": parts}]})]
+    variants += [("script + notes", {"contents": [{"parts": [{"text": script}]}],
+                                     "systemInstruction": {"parts": [{"text": notes}]}}),
+                 ("script with notes inline", {"contents": [{"parts": [{"text": notes + "\n\n" + script}]}]})]
+    errors = []
+    for label, body in variants:
+        body["generationConfig"] = {"responseModalities": ["AUDIO"], "speechConfig": speech}
+        for attempt in range(5):
+            r = requests.post(f"{GEMINI}/models/{gemini_model()}:generateContent", json=body, timeout=300,
+                              headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]})
+            if r.status_code in (429, 500, 503):
+                wait = 20 * (attempt + 1)
+                print(f"Gemini busy or out of quota (HTTP {r.status_code}); retrying in {wait}s")
+                time.sleep(wait)
+                continue
+            break
+        if r.status_code == 200:
+            try:
+                part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
+            except (KeyError, IndexError):
+                errors.append(f"{label}: no audio in reply {r.text[:200]}")
+                continue
+            print(f"Gemini speech ok ({label})")
+            pcm = base64.b64decode(part["data"])
+            return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
+        errors.append(f"{label}: HTTP {r.status_code} {r.text[:240]}")
+        if r.status_code != 400:
+            break
+    raise RuntimeError("Gemini speech failed:\n" + "\n".join(errors))
 
 
 def _spoken(text):
@@ -468,8 +490,8 @@ def gemini_lines(ep, cache_dir):
         label = {w: w.capitalize() for w in whos}
         voices = {label[w]: cast[w]["gemini_voice"] for w in whos}
         notes = " ".join(f"{label[w]}: {cast[w].get('acting', '')}" for w in whos if cast[w].get("acting"))
-        script = SCENE_NOTES + (" " + notes if notes else "") + "\n\n" + "\n".join(
-            f"{label[w]}: {t}" for _, w, t in scene)
+        turns = [(label[w], t) for _, w, t in scene]
+        script = notes + "\n" + "\n".join(f"{sp}: {t}" for sp, t in turns)
         key = _cache_path(cache_dir, "gemini-scene", script, voices) if cache_dir else None
         names = [n for n, _, _ in scene]
         cached = key and all(os.path.exists(key.replace(".wav", f"_{n}.wav")) for n in names)
@@ -477,7 +499,7 @@ def gemini_lines(ep, cache_dir):
             for n in names:
                 out[n] = sf.read(key.replace(".wav", f"_{n}.wav"))
             continue
-        s, sr = gemini_speak(script, voices)
+        s, sr = gemini_speak(turns, voices, notes)
         spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
         print("scene", names, "placed", sorted(spans))
         for i, (n, w, t) in enumerate(scene):
@@ -487,7 +509,8 @@ def gemini_lines(ep, cache_dir):
                 clip = s[max(0, int((a - 0.08) * sr)):int(min(b + 0.2, nxt - 0.02) * sr)]
             else:                                        # redo this line on its own
                 print("  re-taking", n, "alone")
-                clip, _ = gemini_speak(SCENE_NOTES + "\n\n" + t, {label[w]: cast[w]["gemini_voice"]})
+                clip, _ = gemini_speak([(label[w], t)], {label[w]: cast[w]["gemini_voice"]},
+                                       f"{label[w]}: {cast[w].get('acting', '')}")
                 wds = transcribe(clip, sr)
                 if wds:
                     clip = clip[max(0, int((wds[0][1] - 0.08) * sr)):int((wds[-1][2] + 0.2) * sr)]

@@ -16,13 +16,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import audio  # noqa: E402
 
 PAIRS = [("Puck", "Charon"), ("Fenrir", "Orus"), ("Sadachbia", "Algenib"), ("Puck", "Iapetus")]
-SCENE = ("Noob: bright, fast, cheerful cartoon character, impulsive and oblivious. "
-         "Steve: calm, low, dry and deadpan.\n\n"
-         "Noob: [cheerfully, oblivious] Oh! The bridge is under maintenance!\n"
-         "Steve: [shouting] Noob! Run!\n"
-         "Noob: [curious, innocent] Can you respawn if there's no world?\n"
-         "Steve: [flatly] No.\n"
-         "Noob: [quietly, realizing] ...Oh.")
+NOTES = ("Noob: bright, fast, cheerful cartoon character, impulsive and oblivious. "
+         "Steve: calm, low, dry and deadpan.")
+TURNS = [("Noob", "[cheerfully, oblivious] Oh! The bridge is under maintenance!"),
+         ("Steve", "[shouting] Noob! Run!"),
+         ("Noob", "[curious, innocent] Can you respawn if there's no world?"),
+         ("Steve", "[flatly] No."),
+         ("Noob", "[quietly, realizing] ...Oh.")]
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
     with open(os.path.join(out, "pairs.txt"), "w") as f:
         for i, (noob, steve) in enumerate(PAIRS, 1):
             f.write(f"Pair {i}: Noob = {noob}, Steve = {steve}\n")
-            s, sr = audio.gemini_speak(audio.SCENE_NOTES + " " + SCENE, {"Noob": noob, "Steve": steve})
+            s, sr = audio.gemini_speak(TURNS, {"Noob": noob, "Steve": steve}, NOTES)
             sf.write(os.path.join(out, f"pair_{i}.wav"), s, sr)
             print("pair", i, noob, steve, round(len(s) / sr, 1), "s")
 
