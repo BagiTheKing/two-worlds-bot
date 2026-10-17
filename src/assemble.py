@@ -175,6 +175,15 @@ DRAW = {"hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in
 FULL = ("card", "fade_in", "endcard")
 
 
+def read_clip(path):
+    """All frames of a short clip, as 1080x1920 images."""
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-vf", f"scale={W}:{H}",
+                          "-f", "rawvideo", "-pix_fmt", "rgb24", "-"],
+                         capture_output=True, check=True).stdout
+    n = len(raw) // (W * H * 3)
+    return [Image.frombytes("RGB", (W, H), raw[i * W * H * 3:(i + 1) * W * H * 3]) for i in range(n)]
+
+
 def main(timeline, frames_dir, audio, out):
     tl = json.load(open(timeline))
     fps = tl["fps"]
@@ -188,6 +197,10 @@ def main(timeline, frames_dir, audio, out):
              "big": ImageFont.truetype(FONT, 80), "mid": ImageFont.truetype(FONT, 50),
              "small": ImageFont.truetype(FONT, 38), "title": ImageFont.truetype(FONT, 130)}
     overlays = tl.get("overlays", [])
+    clips = []                                    # ready-made footage replaces the render
+    for o in [o for o in overlays if o["type"] == "clip"]:
+        clips.append((o["start"], o["end"], read_clip(os.path.join(HERE, "..", o["video"]))))
+    overlays = [o for o in overlays if o["type"] != "clip"]
     for o in overlays:
         if o.get("steps"):
             steps = o["steps"] if isinstance(o["steps"], list) else [o["steps"]]
@@ -205,6 +218,9 @@ def main(timeline, frames_dir, audio, out):
         t = (f - 1) / fps
         path = os.path.join(frames_dir, f"{f:04d}.png")
         img = Image.open(path).convert("RGB") if os.path.exists(path) else black.copy()
+        for c0, c1, frames in clips:
+            if c0 <= t < c1 and frames:
+                img = frames[min(len(frames) - 1, int(round((t - c0) * fps)))].copy()
         if img.size != (W, H):
             img = img.resize((W, H), Image.LANCZOS)
         img = Image.composite(black, img, vig)

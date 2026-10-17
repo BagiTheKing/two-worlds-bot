@@ -412,6 +412,7 @@ def build(episode_path, out_dir, keep=None):
     old_lines = {ln["name"]: ln for ln in old["lines"]} if old else {}
     starts = sorted(a for a, _ in old["beats"].values()) if old else []
     cache_dir = os.getenv("VOICE_CACHE", os.path.join(out_dir, "voice_cache"))
+    keeping = old is not None        # until an event says "retime"
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0
     beats, lines, clips, impacts = {}, [], [], []
@@ -421,6 +422,8 @@ def build(episode_path, out_dir, keep=None):
         if "pause" in ev:
             cursor += ev["pause"]
             continue
+        if ev.get("retime"):
+            keeping = False
         if "beat" in ev:
             name, dur = ev["beat"], ev["dur"]
             beats[name] = [cursor, cursor + dur]
@@ -432,11 +435,11 @@ def build(episode_path, out_dir, keep=None):
                     impacts.append(h)
                     h += FLURRY_GAP
             kind = ev.get("sfx")
-            if old and name in old["beats"]:
+            if keeping and name in old["beats"]:
                 beats[name] = list(old["beats"][name])
                 cursor = beats[name][0]
                 dur = beats[name][1] - cursor
-            if old and name in old.get("fx_times", {}):
+            if keeping and name in old.get("fx_times", {}):
                 fx_times[name] = old["fx_times"][name]
             elif kind == "erasure":
                 r = np.random.default_rng(ev.get("seed", 1))
@@ -449,6 +452,8 @@ def build(episode_path, out_dir, keep=None):
                 fx_times[name] = [round(cursor + dur * 0.7 * i / (n - 1), 3) for i in range(n)]
             if kind:
                 clips.append((kind, cursor, dur))
+            if ev.get("audio_clip"):                 # a ready-made clip's own sound
+                clips.append(("file", cursor, ev["audio_clip"]))
             cursor += dur
         else:
             who = ev["line"]
@@ -461,7 +466,7 @@ def build(episode_path, out_dir, keep=None):
                 audio = null_voice(audio)
             counts[who] = counts.get(who, 0) + 1
             name = ev.get("name", f"{who}_{counts[who]}")
-            if name in old_lines:
+            if keeping and name in old_lines:
                 cursor = old_lines[name]["start"]
                 nxt = next((x for x in starts if x > cursor + 0.01), cursor + 99)
                 room = nxt + 0.1 - cursor
@@ -475,7 +480,7 @@ def build(episode_path, out_dir, keep=None):
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))
             cursor += dur + ev.get("pad", 0.2)
-    length = old["length"] if old else cursor
+    length = old["length"] if keeping else cursor
     R = lambda ref: resolve_ref(beats, ref, length)  # noqa: E731
 
     mix = np.zeros(int((length + 0.5) * SR))
@@ -528,6 +533,12 @@ def build(episode_path, out_dir, keep=None):
             place(mix, sfx_jingle(), at + 0.1, 0.7)
         elif kind == "whoosh":
             place(mix, sfx_whoosh(), at, 0.6)
+        elif kind == "file":
+            x, r = sf.read(arg)
+            x = x.mean(axis=1) if x.ndim > 1 else x
+            if r != SR:
+                x = np.interp(np.linspace(0, len(x) - 1, int(len(x) * SR / r)), np.arange(len(x)), x)
+            place(mix, x, at, 1.0)
         elif kind == "plunge":
             place(mix, sfx_plunge(arg), at, 0.6)
         elif kind == "ledge":

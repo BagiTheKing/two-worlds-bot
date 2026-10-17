@@ -206,7 +206,9 @@
     },
     {
       "beat": "forest",
-      "dur": 3.2
+      "dur": 2.375,
+      "retime": true,
+      "audio_clip": "assets/clips/ep01_opening.wav"
     },
     {
       "beat": "endcard",
@@ -250,12 +252,6 @@
       "from": "erasure",
       "to": "black",
       "gain": 0.12
-    },
-    {
-      "kind": "meadow",
-      "from": "forest",
-      "to": "endcard",
-      "glitch_at": "forest+1.0"
     }
   ],
   "overlays": [
@@ -293,6 +289,12 @@
       "to": "forest"
     },
     {
+      "type": "clip",
+      "video": "assets/clips/ep01_opening.mp4",
+      "from": "forest",
+      "to": "forest.end"
+    },
+    {
       "type": "fade_in",
       "from": "forest",
       "to": "forest+0.5"
@@ -311,14 +313,6 @@
     {
       "kind": "seam",
       "seed": 3
-    },
-    {
-      "kind": "forest_valley",
-      "origin": [
-        600,
-        0,
-        0
-      ]
     }
   ],
   "actors": {
@@ -349,15 +343,6 @@
       ],
       "yaw": -1.5708,
       "idle": 0.02
-    },
-    "noob_past": {
-      "rig": "noob",
-      "at": [
-        600.2,
-        -0.4,
-        13.6
-      ],
-      "yaw": 0.0
     }
   },
   "clips": [
@@ -580,17 +565,6 @@
       "to": "black",
       "arm": "arm_r",
       "ease": 0.8
-    },
-    {
-      "who": "noob_past",
-      "do": "fall",
-      "from": "forest+0.9",
-      "to": "forest+2.1",
-      "dest": [
-        600.2,
-        -0.4,
-        0.0
-      ]
     }
   ],
   "fx": [
@@ -616,17 +590,6 @@
           "darken+1.0",
           0.7,
           0.5
-        ],
-        [
-          "forest-0.05",
-          0.7,
-          0.5
-        ],
-        [
-          "forest",
-          5.0,
-          1.25,
-          "poc"
         ]
       ]
     },
@@ -765,20 +728,11 @@
         "west_-1_-1"
       ],
       "at": "ledge_gone"
-    },
-    {
-      "kind": "forest_portal",
-      "open": "forest+0.3",
-      "land": "forest+2.1"
     }
   ],
   "skip_render": [
     [
       "black",
-      "forest"
-    ],
-    [
-      "endcard",
       "end"
     ]
   ],
@@ -1448,62 +1402,6 @@
             0.6,
             1.0,
             -55
-          ]
-        ]
-      ]
-    },
-    {
-      "name": "forest",
-      "from": "black",
-      "to": "endcard",
-      "lens": 16,
-      "origin": [
-        600,
-        0,
-        0
-      ],
-      "shake": 0,
-      "path": [
-        [
-          "forest",
-          [
-            -4.6,
-            -9.6,
-            0.65
-          ]
-        ],
-        [
-          "endcard",
-          [
-            -4.4,
-            -9.2,
-            0.7
-          ]
-        ]
-      ],
-      "look": [
-        [
-          "forest",
-          [
-            0.2,
-            -0.4,
-            13.0
-          ]
-        ],
-        [
-          "forest+1.0",
-          [
-            0.2,
-            -0.4,
-            12.0
-          ]
-        ],
-        [
-          "endcard",
-          [
-            0.2,
-            -0.4,
-            5.5
           ]
         ]
       ]
