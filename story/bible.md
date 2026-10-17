@@ -15,10 +15,10 @@ rewinds 24 hours and shows how two idiots end up there.
 |---|---|---|---|
 | `steve` | The Engineer. Practical, stubborn, dry. Solves things with blocks, tools and time; hates improvising. Hiding that he built the first portal. | Calm, low, deadpan. Never shouts except once, when it matters. | Matte pixel textures, hard edges, pickaxe in the left hand |
 | `noob` | The Walking Bug. Fearless, impulsive, absurdly confident. Treats every danger like a tutorial. Respawns, and doesn't think about where the old bodies go. | Bright, fast, cheerful even when doomed. Comic timing over volume. | Smooth bevelled plastic, yellow/blue/green, toy smile |
-| `patch` | The Glitch Detector. A small floating device that remembers a reality nobody else does. Arrives in episode 5. | Calm, literal, slightly too quiet. Announces disasters politely. | Small cube, one cyan eye, flickers when it scans |
+| `patch` | The Glitch Detector. A small floating device that remembers a reality nobody else does. Arrives in episode 4. | Calm, literal, slightly too quiet. Announces disasters politely. | Small cube, one cyan eye, flickers when it scans |
 | `null` | The Corrector. Silent, methodical, enormous. Doesn't fight; deletes. | The Noob's own voice, pitched far down and distorted, as if the world speaks through a broken speaker. | Half pixel-block, half plastic. Face = the magenta/black "missing texture" checkerboard. Broken blocks orbit it |
 
-## The secret (never stated before episode 8)
+## The secret (never stated before episode 7)
 
 Every time the Noob respawns, his old body doesn't disappear: it falls into
 the void. Steve's first portal let those bodies leak into the space between
@@ -32,12 +32,14 @@ it in frame centre. Viewers should find these on rewatch.
 ## Series devices
 
 - **REALITY meter.** A small HUD readout of how much reality is intact.
-  Episode 1 (the cold open) shows 3%. Episode 2 starts at 100% and every
-  episode lowers it; the finale catches up to 3%. Who is measuring is never
+  Episode 0 (the cold open) counts it down from 100% to 3%. Episode 1
+  starts back at 100% and every episode lowers it; the finale catches up to 3%. Who is measuring is never
   answered in Season 1.
 - **The silence.** When Null is near, one sound disappears (wind, footsteps,
   music). Total silence means Null is here.
-- **Loops.** Every Short's last shot cuts cleanly into its own first shot.
+- **Every episode ends on an end card**: series title, "to be continued",
+  what's next, and one question for the audience ("Who is Null?").
+- **Episode label** at the start: "EPISODE n" and the title, small, for ~2 s.
 - **Hidden letters.** One glitched block per episode carries a letter; across
   the season they spell a message (to be decided, never shown in order).
 - **Achievements.** Cheerful game pop-ups at the worst possible moments.
@@ -48,7 +50,7 @@ Inside the story, the viewers are the answer to "who is measuring reality?":
 reality holds where someone is watching, and Null erases what nobody
 observes. Patch is the only character who notices them.
 
-- **Three choices per season**: episodes 5, 7 and 9. Each is one A/B
+- **Three choices per season**: episodes 4, 6 and 8. Each is one A/B
   question asked in-world (Patch looks into the camera: "Someone is
   watching... you. Left door or right?"). Viewers answer by commenting A or B.
 - **Both branches are written in advance and rejoin the main arc**; the
@@ -57,7 +59,7 @@ observes. Patch is the only character who notices them.
   counted from the comments. Never invent or round up a count.
 - **The finale uses the choices**: what the observers chose to save is what
   lets the heroes win.
-- Never tie the story to likes or subscriptions, and keep episodes 1-4
+- Never tie the story to likes or subscriptions, and keep episodes 0-3
   free of it so a new viewer gets a clean hook.
 
 ## Tone
@@ -70,13 +72,13 @@ cartoonish. Every Short must work for a viewer who has seen nothing else.
 
 | # | Title | Core | Cliffhanger | REALITY |
 |---|---|---|---|---|
-| 1 | The World Ended in 30 Seconds | Cold open: sun freezes, chunks vanish, bridge "under maintenance", ledge hang, "Can you respawn if there's no world?", Null rises, achievement, "24 HOURS EARLIER" | (loops to its own start) | 3% |
-| 2 | A Roblox Noob Punched a Minecraft Tree | Noob falls in, the floating-tree gag | The sky cracks | 100% → 99% |
-| 3 | Steve's Plan Lasted Three Seconds | Steve's portal machine; Noob "helps"; mobs and obby hazards pour into the forest | Something on the other side watches | 97% |
-| 4 | The Dragon Entered an Obby | Strategy vs tutorial-mode; they accidentally save trapped avatars | The dragon freezes mid-air and glitches | 92% |
-| 5 | This Block Shouldn't Exist | Patch arrives; the strange block reacts to the Noob's respawns | Patch recognises the Noob from a reality that never existed | 85% |
-| 6 | Noob Found Creative Mode | Absurd creations, then they start disappearing | A chunk vanishes with people on it | 71% |
-| 7 | The World Started Deleting Itself | Null appears; nothing works against it | Null copies the Noob, smile included | 52% |
-| 8 | Patch Remembered Another World | Patch replays the past: dark cubes drifting from every respawn | "How many times have we done this?" | 30% |
-| 9 | Steve Was Hiding Something | Steve built the first portal; the Noob feels betrayed, then understands | The original portal switches itself on | 12% |
-| 10 | The First Portal Was a Trap | The cold open catches up; they win by doing what Null can't predict, saving one fragment | Null speaks: "You weren't supposed to survive." | 3% → ? |
+| 0 | The End | Steve narrates the two worlds; reality stops; the erasure (meter 100% → 3%); "the bridge is under maintenance"; the ledge hang; Null rises and erases the ledge; they fall into the void; "24 HOURS EARLIER"; end card | Who is Null? | 3% |
+| 1 | The Noob Who Punched a Tree | The portal, the Noob falls in (repeats Ep 0's last shot), the floating-tree gag | The sky cracks | 100% → 99% |
+| 2 | Steve's Plan Lasted Three Seconds | Steve's portal machine; Noob "helps"; mobs and obby hazards pour into the forest | Something on the other side watches | 97% |
+| 3 | The Dragon Entered an Obby | Strategy vs tutorial-mode; they accidentally save trapped avatars | The dragon freezes mid-air and glitches | 92% |
+| 4 | This Block Shouldn't Exist | Patch arrives; the strange block reacts to the Noob's respawns | Patch recognises the Noob from a reality that never existed | 85% |
+| 5 | Noob Found Creative Mode | Absurd creations, then they start disappearing | A chunk vanishes with people on it | 71% |
+| 6 | The World Started Deleting Itself | Null appears; nothing works against it | Null copies the Noob, smile included | 52% |
+| 7 | Patch Remembered Another World | Patch replays the past: dark cubes drifting from every respawn | "How many times have we done this?" | 30% |
+| 8 | Steve Was Hiding Something | Steve built the first portal; the Noob feels betrayed, then understands | The original portal switches itself on | 12% |
+| 9 | The First Portal Was a Trap | The cold open catches up; they win by doing what Null can't predict, saving one fragment | Null speaks: "You weren't supposed to survive." | 3% → ? |
