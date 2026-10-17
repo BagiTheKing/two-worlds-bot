@@ -174,9 +174,53 @@ def _kokoro_say(text, voice, speed):
     return np.asarray(s, dtype=np.float64), sr
 
 
-def _chatterbox_say(text, voice, speed, emotion, pace, ref_dir):
-    """Chatterbox performs the line in the timbre of a Kokoro reference clip,
-    so every character keeps one voice but gets real delivery."""
+def tts_text(text):
+    """What the voice model reads. ALL-CAPS words get spelled out letter by
+    letter ("RUN" -> "R... run"), so shout with "!" instead of capitals."""
+    words = []
+    for k, w in enumerate(text.split()):
+        core = "".join(ch for ch in w if ch.isalpha())
+        if len(core) > 1 and core.isupper():
+            w = w.lower()
+            if k == 0 or words[-1][-1:] in ".!?":
+                w = w[0].upper() + w[1:]
+        words.append(w)
+    return " ".join(words)
+
+
+def _norm_words(text):
+    keep = "".join(ch.lower() if (ch.isalnum() or ch in "' ") else " " for ch in text)
+    return keep.split()
+
+
+_whisper = None
+
+
+def transcribe(samples, sr):
+    """Words with timings, from Whisper (faster-whisper, CPU)."""
+    global _whisper
+    from faster_whisper import WhisperModel
+    if _whisper is None:
+        _whisper = WhisperModel(os.getenv("WHISPER_MODEL", "base.en"), device="cpu", compute_type="int8")
+    x = np.interp(np.linspace(0, len(samples) - 1, int(len(samples) * 16000 / sr)),
+                  np.arange(len(samples)), samples).astype(np.float32)
+    segs, _ = _whisper.transcribe(x, language="en", word_timestamps=True, beam_size=5,
+                                  condition_on_previous_text=False)
+    return [(w.word, w.start, w.end) for seg in segs for w in (seg.words or [])]
+
+
+def score_take(text, words):
+    """How well a take says the line: similarity of the words, minus a
+    penalty for extra words (stutters, invented sounds)."""
+    import difflib
+    ref, hyp = _norm_words(text), _norm_words(" ".join(w for w, _, _ in words))
+    if not ref:
+        return 0.0
+    sim = difflib.SequenceMatcher(None, " ".join(ref), " ".join(hyp)).ratio()
+    return sim - 0.15 * max(0, len(hyp) - len(ref))
+
+
+def _chatterbox_take(text, voice, speed, emotion, pace, ref_dir, seed):
     global _chatterbox
     import torch
     if _chatterbox is None:
@@ -187,16 +231,62 @@ def _chatterbox_say(text, voice, speed, emotion, pace, ref_dir):
         s, sr = _kokoro_say(REF_LINES.get(voice, REF_LINES["am_puck"]), voice, speed)
         os.makedirs(ref_dir, exist_ok=True)
         sf.write(ref, s, sr)
-    torch.manual_seed(sum(map(ord, text)))
-    wav = _chatterbox.generate(text, audio_prompt_path=ref, exaggeration=emotion, cfg_weight=pace)
+    torch.manual_seed(seed)
+    wav = _chatterbox.generate(tts_text(text), audio_prompt_path=ref,
+                               exaggeration=emotion, cfg_weight=pace)
     return wav.squeeze(0).numpy().astype(np.float64), _chatterbox.sr
 
 
-def say(text, voice, speed, pitch, emotion=0.5, pace=0.5, ref_dir="build/voice_refs"):
-    if ENGINE == "chatterbox":
-        s, sr = _chatterbox_say(text, voice, speed, emotion, pace, ref_dir)
+def _chatterbox_say(text, voice, speed, emotion, pace, ref_dir, takes=3, max_takes=6):
+    """Chatterbox performs the line in the timbre of a Kokoro reference clip,
+    so every character keeps one voice but gets real delivery. Several takes
+    are generated; Whisper transcribes each and the take that says the line
+    best wins, trimmed to where its first word starts and last word ends."""
+    best = None
+    base = sum(map(ord, text))
+    k = 0
+    while k < max_takes and (k < takes or best[0] < 0.85):
+        e = emotion if k < takes else max(0.25, emotion - 0.15)
+        s, sr = _chatterbox_take(text, voice, speed, e, pace, ref_dir, base + 7919 * k)
+        try:
+            words = transcribe(s, sr)
+            sc = score_take(text, words)
+        except Exception as ex:                    # no Whisper: keep the first take
+            print("whisper unavailable:", ex)
+            return s, sr
+        print(f"  take {k}: {sc:.2f} {' '.join(w for w, _, _ in words)!r}")
+        if best is None or sc > best[0]:
+            best = (sc, s, sr, words)
+        k += 1
+    sc, s, sr, words = best
+    if words and sc >= 0.5:                        # trim stray sounds around the words
+        a = max(0, int((words[0][1] - 0.06) * sr))
+        b = min(len(s), int((words[-1][2] + 0.15) * sr))
+        s = s[a:b]
+    print(f"line {text!r}: best {sc:.2f}")
+    return s, sr
+
+
+def _cache_path(cache_dir, *key):
+    import hashlib
+    h = hashlib.sha1(json.dumps(key).encode()).hexdigest()[:16]
+    return os.path.join(cache_dir, h + ".wav")
+
+
+def say(text, voice, speed, pitch, emotion=0.5, pace=0.5, ref_dir="build/voice_refs",
+        cache_dir=None):
+    cache = _cache_path(cache_dir, ENGINE, text, voice, speed, emotion, pace, "v2") if cache_dir else None
+    if cache and os.path.exists(cache):
+        s, sr = sf.read(cache)
     else:
-        s, sr = _kokoro_say(text, voice, speed)
+        if ENGINE == "chatterbox":
+            s, sr = _chatterbox_say(text, voice, speed, emotion, pace, ref_dir)
+        else:
+            s, sr = _kokoro_say(tts_text(text), voice, speed)
+        if cache:
+            os.makedirs(cache_dir, exist_ok=True)
+            sf.write(cache, s, sr)
+    s = np.asarray(s, dtype=np.float64)
     loud = np.where(np.abs(s) > 0.02)[0]
     if len(loud):
         s = s[max(0, loud[0] - 240): loud[-1] + 2400]
@@ -313,8 +403,15 @@ def resolve_ref(beats, ref, length):
     return resolve(beats, ref, length)
 
 
-def build(episode_path, out_dir):
+def build(episode_path, out_dir, keep=None):
+    """keep: an earlier timeline whose timing must not change (the frames are
+    already rendered). New voices are placed at the old line starts; a take
+    that runs long is sped up slightly (at most 10%) to fit."""
     ep = json.load(open(episode_path))
+    old = json.load(open(keep)) if keep else None
+    old_lines = {ln["name"]: ln for ln in old["lines"]} if old else {}
+    starts = sorted(a for a, _ in old["beats"].values()) if old else []
+    cache_dir = os.getenv("VOICE_CACHE", os.path.join(out_dir, "voice_cache"))
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0
     beats, lines, clips, impacts = {}, [], [], []
@@ -335,7 +432,13 @@ def build(episode_path, out_dir):
                     impacts.append(h)
                     h += FLURRY_GAP
             kind = ev.get("sfx")
-            if kind == "erasure":
+            if old and name in old["beats"]:
+                beats[name] = list(old["beats"][name])
+                cursor = beats[name][0]
+                dur = beats[name][1] - cursor
+            if old and name in old.get("fx_times", {}):
+                fx_times[name] = old["fx_times"][name]
+            elif kind == "erasure":
                 r = np.random.default_rng(ev.get("seed", 1))
                 ts = np.sort(r.uniform(cursor + 0.2, cursor + dur - 0.2, ev.get("count", 40)))
                 # the pops accelerate as the corruption closes in
@@ -353,18 +456,26 @@ def build(episode_path, out_dir):
             audio = say(ev["text"], c["voice"], c["speed"], c["pitch"],
                         emotion=ev.get("emotion", c.get("emotion", 0.5)),
                         pace=ev.get("pace", c.get("pace", 0.5)),
-                        ref_dir=os.path.join(out_dir, "voice_refs"))
+                        ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir)
             if c.get("fx") == "null":
                 audio = null_voice(audio)
             counts[who] = counts.get(who, 0) + 1
             name = ev.get("name", f"{who}_{counts[who]}")
+            if name in old_lines:
+                cursor = old_lines[name]["start"]
+                nxt = next((x for x in starts if x > cursor + 0.01), cursor + 99)
+                room = nxt + 0.1 - cursor
+                if len(audio) / SR > room:
+                    ratio = min(1.10, len(audio) / SR / room)
+                    audio = np.interp(np.linspace(0, len(audio) - 1, int(len(audio) / ratio)),
+                                      np.arange(len(audio)), audio)
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))
             cursor += dur + ev.get("pad", 0.2)
-    length = cursor
+    length = old["length"] if old else cursor
     R = lambda ref: resolve_ref(beats, ref, length)  # noqa: E731
 
     mix = np.zeros(int((length + 0.5) * SR))
@@ -433,10 +544,10 @@ def build(episode_path, out_dir):
     import music
     for k, m in enumerate(ep.get("music", [])):
         m0, m1 = R(m["from"]), R(m["to"])
-        place(score, music.render(m["cue"], m1 - m0, seed=k), m0, m.get("gain", 0.32))
+        place(score, music.render(m["cue"], m1 - m0, seed=k), m0, m.get("gain", 0.2))
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
-    out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.6 * duck)
+    out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck)
     out = norm(out, 0.89)
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
 
@@ -456,5 +567,11 @@ def build(episode_path, out_dir):
 
 
 if __name__ == "__main__":
-    tl = build(sys.argv[1], sys.argv[2] if len(sys.argv) > 2 else "build")
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("episode")
+    ap.add_argument("out_dir", nargs="?", default="build")
+    ap.add_argument("--keep-timeline", help="re-voice only: keep this timeline's timing")
+    args = ap.parse_args()
+    tl = build(args.episode, args.out_dir, args.keep_timeline)
     print(json.dumps({k: tl[k] for k in ("length", "beats")}, indent=1))

@@ -1,0 +1,100 @@
+name: Re-voice episode
+
+# Manual. New voices and a new mix for an episode that is already rendered:
+# the frames of an earlier "Render episode" run are reused, the new takes
+# are placed at the same times (--keep-timeline), and the Short is
+# re-assembled. About 15 minutes instead of a full render.
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode file"
+        default: "episodes/ep00_the_end.json"
+      run_id:
+        description: "Run id of the 'Render episode' run whose frames to reuse"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  voices:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install kokoro-onnx soundfile numpy Pillow faster-whisper
+          pip install --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts
+      - name: Kokoro model
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: kokoro-v1.0-model-files
+      - run: |
+          mkdir -p models
+          [ -f models/kokoro-v1.0.onnx ] || curl -sSL -o models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+          [ -f models/voices-v1.0.bin ] || curl -sSL -o models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+      - name: Voice cache (unchanged lines are not re-generated)
+        uses: actions/cache@v4
+        with:
+          path: voice_cache
+          key: voices-${{ github.run_id }}
+          restore-keys: voices-
+      - uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: old/
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - env:
+          VOICE_ENGINE: chatterbox
+          VOICE_CACHE: voice_cache
+        run: python src/audio.py ${{ inputs.episode }} build --keep-timeline old/timeline.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: revoice
+          path: |
+            build/audio.wav
+            build/timeline.json
+          retention-days: 2
+
+  assemble:
+    needs: voices
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install Pillow
+      - uses: actions/download-artifact@v4
+        with:
+          name: revoice
+          path: build/
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: build/frames/
+          merge-multiple: true
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
+      - id: id
+        run: echo "id=$(python -c "import json;print(json.load(open('build/timeline.json'))['id'])")" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: episode
+          path: build/episode.mp4
+          retention-days: 30
+      - name: Publish to the preview branch
+        run: |
+          mkdir -p /tmp/pub && cp build/episode.mp4 build/timeline.json /tmp/pub/
+          cd /tmp/pub && git init -q -b "preview-${{ steps.id.outputs.id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Re-voice from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-${{ steps.id.outputs.id }}"

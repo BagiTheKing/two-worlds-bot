@@ -40,6 +40,7 @@ jobs:
       - run: |
           pip install kokoro-onnx soundfile numpy Pillow
           if [ "${{ inputs.voice }}" = "chatterbox" ]; then
+            pip install faster-whisper
             pip install --extra-index-url https://download.pytorch.org/whl/cpu chatterbox-tts
           fi
       - name: Kokoro model
@@ -51,8 +52,15 @@ jobs:
           mkdir -p models
           [ -f models/kokoro-v1.0.onnx ] || curl -sSL -o models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
           [ -f models/voices-v1.0.bin ] || curl -sSL -o models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+      - name: Voice cache (unchanged lines are not re-generated)
+        uses: actions/cache@v4
+        with:
+          path: voice_cache
+          key: voices-${{ github.run_id }}
+          restore-keys: voices-
       - env:
           VOICE_ENGINE: ${{ inputs.voice }}
+          VOICE_CACHE: voice_cache
         run: |
           python src/textures.py build/tex
           python src/audio.py ${{ inputs.episode }} build
