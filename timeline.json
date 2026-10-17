@@ -1,0 +1,228 @@
+{
+ "id": "ep01_the_end",
+ "fps": 24,
+ "length": 34.673,
+ "beats": {
+  "calm": [
+   0.0,
+   1.6
+  ],
+  "freeze": [
+   1.6,
+   3.4
+  ],
+  "erasure": [
+   3.4,
+   9.4
+  ],
+  "run_to_bridge": [
+   9.4,
+   10.7
+  ],
+  "noob_1": [
+   10.7,
+   12.185
+  ],
+  "bridge_delete": [
+   12.385,
+   13.085
+  ],
+  "fall": [
+   13.085,
+   13.535
+  ],
+  "grab": [
+   13.535,
+   14.135
+  ],
+  "noob_2": [
+   14.135,
+   15.989
+  ],
+  "steve_1": [
+   16.339,
+   17.579
+  ],
+  "noob_3": [
+   18.679,
+   19.096
+  ],
+  "look_down": [
+   19.396,
+   20.296
+  ],
+  "darken": [
+   20.296,
+   21.496
+  ],
+  "null_rise": [
+   21.496,
+   24.096
+  ],
+  "null_1": [
+   24.096,
+   27.073
+  ],
+  "achievement": [
+   27.473,
+   30.073
+  ],
+  "black": [
+   30.073,
+   32.073
+  ],
+  "forest": [
+   32.073,
+   34.673
+  ]
+ },
+ "impacts": [],
+ "fx_times": {
+  "erasure": [
+   4.349,
+   4.718,
+   4.986,
+   5.006,
+   5.088,
+   5.249,
+   5.291,
+   5.552,
+   6.018,
+   6.126,
+   6.163,
+   6.453,
+   6.608,
+   6.692,
+   6.698,
+   6.774,
+   6.783,
+   6.805,
+   6.818,
+   6.875,
+   6.93,
+   7.041,
+   7.232,
+   7.358,
+   7.365,
+   7.524,
+   7.644,
+   7.693,
+   7.774,
+   7.833,
+   8.146,
+   8.233,
+   8.293,
+   8.617,
+   8.757,
+   8.88,
+   8.883,
+   8.925,
+   8.942,
+   8.943,
+   9.014,
+   9.06,
+   9.093,
+   9.129
+  ],
+  "bridge_delete": [
+   12.385,
+   12.423,
+   12.461,
+   12.498,
+   12.536,
+   12.574,
+   12.611,
+   12.649,
+   12.687,
+   12.724,
+   12.762,
+   12.8,
+   12.838,
+   12.875
+  ]
+ },
+ "lines": [
+  {
+   "name": "noob_1",
+   "who": "noob",
+   "text": "The bridge is under maintenance.",
+   "start": 10.7,
+   "end": 12.185
+  },
+  {
+   "name": "noob_2",
+   "who": "noob",
+   "text": "Can you respawn if there's no world?",
+   "start": 14.135,
+   "end": 15.989
+  },
+  {
+   "name": "steve_1",
+   "who": "steve",
+   "text": "No.",
+   "start": 16.339,
+   "end": 17.579
+  },
+  {
+   "name": "noob_3",
+   "who": "noob",
+   "text": "...Oh.",
+   "start": 18.679,
+   "end": 19.096
+  },
+  {
+   "name": "null_1",
+   "who": "null",
+   "text": "Reality has been corrected.",
+   "start": 24.096,
+   "end": 27.073
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null"
+  }
+ },
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 3%",
+   "start": 1.6,
+   "end": 30.073
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "SURVIVE THE APOCALYPSE (0.1%)",
+   "start": 27.473,
+   "end": 30.073
+  },
+  {
+   "type": "card",
+   "text": "24 HOURS EARLIER",
+   "start": 30.073,
+   "end": 32.073
+  },
+  {
+   "type": "fade_in",
+   "start": 32.073,
+   "end": 32.573
+  }
+ ]
+}
