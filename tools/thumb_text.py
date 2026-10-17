@@ -14,10 +14,12 @@ plain words.
 import argparse
 import os
 import random
+import sys
 
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, "..", "src"))
 FONT = os.path.join(HERE, "..", "fonts", "InterDisplay-Black.otf")
 MAGENTA, CYAN = (255, 40, 210), (0, 230, 255)
 
@@ -33,8 +35,55 @@ def pixel_mask(text, height, base=34):
     return m.resize((int(m.width * k), int(m.height * k)), Image.NEAREST), k
 
 
-def blocky(canvas, text, cx, top, height, face, extrude, depth=5, glitch=0, seed=0):
-    """Pixel letters with a block extrusion and a black outline."""
+TEX = os.path.join(HERE, "..", "build", "tex")
+
+
+def grass_fill(size, px, glyph_top=0, glyph_h=None):
+    """The letters' faces as grass blocks: a green grass layer with an uneven
+    edge over dirt, both from our own pixel textures, at letter-pixel scale."""
+    import textures
+    w, h = size
+    glyph_h = glyph_h or h
+    dirt = textures.dirt().resize((16 * px, 16 * px), Image.NEAREST)
+    out = Image.new("RGB", size)
+    for y in range(0, h, dirt.height):
+        for x in range(0, w, dirt.width):
+            out.paste(dirt, (x, y))
+    out = Image.eval(out, lambda v: min(255, int(v * 1.15)))      # a little brighter
+    grass = textures.grass_top().resize((16 * px, 16 * px), Image.NEAREST)
+    layer = Image.new("RGB", size)
+    for y in range(0, h, grass.height):
+        for x in range(0, w, grass.width):
+            layer.paste(grass, (x, y))
+    mask = Image.new("L", size, 0)
+    d = ImageDraw.Draw(mask)
+    rnd = random.Random(2)
+    base = glyph_top + int(glyph_h * 0.3)                       # grass covers the top ~30%
+    for x in range(0, w, px):
+        drip = base + px * rnd.choice((0, 0, 1, 1, 2))
+        d.rectangle((x, 0, x + px - 1, drip), fill=255)
+    out.paste(layer, (0, 0), mask)
+    return out
+
+
+def plastic_fill(size, top, bottom, shine=(255, 255, 255)):
+    """Glossy toy plastic: a vertical gradient with a soft highlight band."""
+    w, h = size
+    out = Image.new("RGB", size)
+    d = ImageDraw.Draw(out)
+    for y in range(h):
+        u = y / max(1, h - 1)
+        c = tuple(int(a + (b - a) * u) for a, b in zip(top, bottom))
+        if 0.12 < u < 0.32:                         # the shine
+            k = 1 - abs(u - 0.22) / 0.1
+            c = tuple(int(v + (sv - v) * 0.55 * k) for v, sv in zip(c, shine))
+        d.line((0, y, w, y), fill=c)
+    return out
+
+
+def blocky(canvas, text, cx, top, height, face, extrude, depth=5, glitch=0, seed=0, fill=None):
+    """Pixel letters with a block extrusion and a black outline. fill: a
+    function (size, pixel) -> image for the letter faces (else plain face)."""
     m, k = pixel_mask(text, height)
     px = max(1, int(k))                                   # one "pixel" of the letters
     x0 = cx - m.width // 2
@@ -50,7 +99,15 @@ def blocky(canvas, text, cx, top, height, face, extrude, depth=5, glitch=0, seed
     if glitch:
         for dx, col in ((-glitch, MAGENTA), (glitch, CYAN)):
             layer.paste((*col, 255), (pad + dx, pad), m)
-    layer.paste((*face, 255), (pad, pad), m)
+    if fill is not None:
+        bb = m.getbbox() or (0, 0, m.width, m.height)
+        try:
+            face_img = fill(m.size, px, bb[1], bb[3] - bb[1])
+        except TypeError:
+            face_img = fill(m.size, px)
+        layer.paste(face_img, (pad, pad), m)
+    else:
+        layer.paste((*face, 255), (pad, pad), m)
     if glitch:                                            # a few torn scanlines
         rnd = random.Random(seed)
         for _ in range(6):
@@ -87,6 +144,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--episode", required=True)
     ap.add_argument("--subtitle", default="TWO WORLDS · ONE GLITCH")
+    ap.add_argument("--tagline", default="FAN ANIMATION")
     ap.add_argument("--erase-top", type=int, default=0,
                     help="blur away this many px at the top first (old title lettering)")
     ap.add_argument("--top-only", action="store_true", help="leave the bottom of the image as it is")
@@ -121,12 +179,13 @@ def main():
     h = fit(row_width, 210)
     lm, rm, xm = pixel_mask(left, h)[0], pixel_mask(right, h)[0], pixel_mask("x", int(h * 0.7))[0]
     x = cx - row_width(h) // 2
-    blocky(img, left, x + lm.width // 2, y, h, (236, 236, 236), (70, 150, 60), depth=5)
+    blocky(img, left, x + lm.width // 2, y, h, None, (58, 40, 26), depth=5, fill=grass_fill)
     blocky(img, "x", x + lm.width + gap + xm.width // 2, y + int(h * 0.22), int(h * 0.7),
-           (255, 210, 63), (150, 110, 20), depth=4)
+           (255, 255, 255), (120, 40, 160), depth=4)
     blocky(img, right, x + lm.width + 2 * gap + xm.width + rm.width // 2, y, h,
-           (236, 236, 236), (40, 100, 220), depth=5)
-    blocky(img, "ANIMATION", cx, y + h + 90, fit(lambda k: pixel_mask("ANIMATION", k)[0].width, 170),
+           None, (24, 70, 190), depth=5,
+           fill=lambda size, px: plastic_fill(size, (255, 222, 70), (240, 160, 20)))
+    blocky(img, a.tagline, cx, y + h + 90, fit(lambda k: pixel_mask(a.tagline, k)[0].width, 170),
            (255, 255, 255), (60, 20, 90), depth=4, glitch=10, seed=3)
 
     if a.top_only:
