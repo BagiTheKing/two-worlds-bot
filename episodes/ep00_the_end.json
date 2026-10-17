@@ -10,7 +10,9 @@
       "caption": "#FFD23F",
       "emotion": 0.6,
       "pace": 0.45,
-      "stability": 0.0
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
     },
     "steve": {
       "voice": "am_michael",
@@ -19,7 +21,9 @@
       "caption": "#3FE0D0",
       "emotion": 0.4,
       "pace": 0.5,
-      "stability": 0.5
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
     },
     "null": {
       "voice": "am_puck",
@@ -29,7 +33,9 @@
       "fx": "null",
       "emotion": 0.25,
       "pace": 0.3,
-      "stability": 0.5
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
     }
   },
   "events": [
@@ -203,16 +209,8 @@
       "sfx": "ledge"
     },
     {
-      "line": "noob",
-      "name": "noob_scream",
-      "text": "Aaaaaaaah!",
-      "emotion": 1.0,
-      "pace": 0.3,
-      "pad": 0.0,
-      "sfx_voice": {
-        "prompt": "cartoon young man screaming in panic while falling away into a deep void, the scream fading with distance",
-        "seconds": 1.8
-      }
+      "beat": "noob_scream",
+      "dur": 0.8
     },
     {
       "beat": "fall_void",

@@ -17,8 +17,8 @@ on:
         description: "Render samples per pixel"
         default: "16"
       voice:
-        description: "Voice engine: elevenlabs, chatterbox or kokoro"
-        default: "elevenlabs"
+        description: "Voice engine: gemini, elevenlabs, chatterbox or kokoro"
+        default: "gemini"
 
 permissions:
   contents: write
@@ -62,9 +62,21 @@ jobs:
           VOICE_ENGINE: ${{ inputs.voice }}
           VOICE_CACHE: voice_cache
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python src/textures.py build/tex
-          python src/audio.py ${{ inputs.episode }} build
+          set -o pipefail
+          mkdir -p build
+          python -u src/audio.py ${{ inputs.episode }} build 2>&1 | tee build/voice_log.txt
+      - name: Publish the voice log (also on failure)
+        if: always()
+        run: |
+          mkdir -p /tmp/log && cp build/voice_log.txt /tmp/log/ 2>/dev/null || echo "no log" > /tmp/log/voice_log.txt
+          cd /tmp/log && git init -q -b preview-logs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Voice log from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" preview-logs
       - id: len
         run: |
           python - >> $GITHUB_OUTPUT <<'PY'

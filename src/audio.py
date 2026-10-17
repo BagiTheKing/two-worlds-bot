@@ -336,6 +336,168 @@ def _eleven_say(text, voice_id, stability, takes=2, max_takes=4):
     return s, sr
 
 
+# ------------------------------------------------------------------- Gemini
+# Gemini's speech models voice up to two speakers in one request, so a whole
+# scene's dialogue costs one request of the small free daily quota. Whisper
+# then finds where each line starts and ends in the scene's audio. Direction
+# goes in [brackets] at the start of a line; the key comes from the
+# GEMINI_API_KEY secret and is never printed.
+
+GEMINI = "https://generativelanguage.googleapis.com/v1beta"
+SCENE_NOTES = ("Perform this scene from an animated comedy-adventure series like "
+               "professional voice actors: natural, expressive, with real comic timing. "
+               "Words in [brackets] are acting directions: follow them, never say them.")
+_gemini_model = None
+
+
+def gemini_model():
+    """The speech model to use: GEMINI_TTS_MODEL, or the best one the key can
+    see (asked from the API, so a renamed model does not break the run)."""
+    global _gemini_model
+    if _gemini_model:
+        return _gemini_model
+    if os.getenv("GEMINI_TTS_MODEL"):
+        _gemini_model = os.environ["GEMINI_TTS_MODEL"]
+        return _gemini_model
+    import requests
+    r = requests.get(f"{GEMINI}/models", params={"pageSize": 200},
+                     headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]}, timeout=60)
+    r.raise_for_status()
+    names = [m["name"].split("/")[-1] for m in r.json().get("models", []) if "tts" in m["name"]]
+
+    def rank(n):
+        return ("lite" in n, "pro" in n, [-int(x) for x in "".join(c if c.isdigit() else " " for c in n).split()])
+    names.sort(key=rank)
+    if not names:
+        raise RuntimeError("no Gemini speech (TTS) model is available to this key")
+    _gemini_model = names[0]
+    print("Gemini speech model:", _gemini_model)
+    return _gemini_model
+
+
+def gemini_speak(script, voices):
+    """script: the prompt text. voices: {speaker name: voice name}; one or
+    two speakers. Returns (samples, 24000)."""
+    import base64
+    import requests
+    import time
+    if len(voices) == 1:
+        speech = {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": next(iter(voices.values()))}}}
+    else:
+        speech = {"multiSpeakerVoiceConfig": {"speakerVoiceConfigs": [
+            {"speaker": s, "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": v}}}
+            for s, v in voices.items()]}}
+    body = {"contents": [{"parts": [{"text": script}]}],
+            "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": speech}}
+    for attempt in range(5):
+        r = requests.post(f"{GEMINI}/models/{gemini_model()}:generateContent", json=body, timeout=300,
+                          headers={"x-goog-api-key": os.environ["GEMINI_API_KEY"]})
+        if r.status_code in (429, 500, 503):
+            wait = 20 * (attempt + 1)
+            print(f"Gemini busy or out of quota (HTTP {r.status_code}); retrying in {wait}s")
+            time.sleep(wait)
+            continue
+        if r.status_code != 200:
+            raise RuntimeError(f"Gemini speech: HTTP {r.status_code} {r.text[:300]}")
+        part = r.json()["candidates"][0]["content"]["parts"][0]["inlineData"]
+        pcm = base64.b64decode(part["data"])
+        return np.frombuffer(pcm, dtype="<i2").astype(np.float64) / 32768.0, 24000
+    raise RuntimeError("Gemini speech: quota exhausted (the free tier allows only a few "
+                       "requests a day; try again tomorrow or with a key from another project)")
+
+
+def _spoken(text):
+    import re
+    return re.sub(r"\[[^\]]*\]", " ", text).strip()
+
+
+def split_scene(samples, sr, lines):
+    """Find each line in a scene's audio. lines: [(name, text)]. Returns
+    {name: (start, end)} for the lines Whisper could place."""
+    import difflib
+    words = transcribe(samples, sr)
+    hyp = [(_norm_words(w) or [""])[0] for w, _, _ in words]
+    ref, owner = [], []
+    for k, (_, text) in enumerate(lines):
+        for w in _norm_words(_spoken(text)):
+            ref.append(w)
+            owner.append(k)
+    match = {}
+    for a, b, n in difflib.SequenceMatcher(None, ref, hyp, autojunk=False).get_matching_blocks():
+        for i in range(n):
+            match[a + i] = b + i
+    spans = {}
+    for k, (name, text) in enumerate(lines):
+        idx = [match[i] for i in range(len(ref)) if owner[i] == k and i in match]
+        n_words = sum(1 for o in owner if o == k)
+        if n_words and len(idx) >= max(1, round(0.6 * n_words)):
+            spans[name] = (words[min(idx)][1], words[max(idx)][2])
+    return spans
+
+
+def gemini_lines(ep, cache_dir):
+    """Voice every line of an episode with Gemini, a scene at a time.
+    Returns {line name: (samples, sr)}."""
+    cast = ep["cast"]
+    todo, counts = [], {}
+    for ev in ep["events"]:
+        if "line" not in ev:
+            continue
+        who = ev["line"]
+        counts[who] = counts.get(who, 0) + 1
+        name = ev.get("name", f"{who}_{counts[who]}")
+        text = ev.get("direction_text") or ev.get("eleven_text") or ev["text"]
+        todo.append((name, who, text))
+    # scenes: consecutive lines with at most two voices (Null speaks alone)
+    scenes, cur = [], []
+    for item in todo:
+        speakers = {w for _, w, _ in cur} | {item[1]}
+        if cur and (len(speakers) > 2 or "null" in speakers and len(speakers) > 1):
+            scenes.append(cur)
+            cur = []
+        cur.append(item)
+    if cur:
+        scenes.append(cur)
+
+    out = {}
+    for scene in scenes:
+        whos = []
+        for _, w, _ in scene:
+            if w not in whos:
+                whos.append(w)
+        label = {w: w.capitalize() for w in whos}
+        voices = {label[w]: cast[w]["gemini_voice"] for w in whos}
+        notes = " ".join(f"{label[w]}: {cast[w].get('acting', '')}" for w in whos if cast[w].get("acting"))
+        script = SCENE_NOTES + (" " + notes if notes else "") + "\n\n" + "\n".join(
+            f"{label[w]}: {t}" for _, w, t in scene)
+        key = _cache_path(cache_dir, "gemini-scene", script, voices) if cache_dir else None
+        names = [n for n, _, _ in scene]
+        cached = key and all(os.path.exists(key.replace(".wav", f"_{n}.wav")) for n in names)
+        if cached:
+            for n in names:
+                out[n] = sf.read(key.replace(".wav", f"_{n}.wav"))
+            continue
+        s, sr = gemini_speak(script, voices)
+        spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
+        print("scene", names, "placed", sorted(spans))
+        for i, (n, w, t) in enumerate(scene):
+            if n in spans:
+                a, b = spans[n]
+                nxt = min([spans[m][0] for m, _, _ in scene[i + 1:] if m in spans] or [len(s) / sr])
+                clip = s[max(0, int((a - 0.08) * sr)):int(min(b + 0.2, nxt - 0.02) * sr)]
+            else:                                        # redo this line on its own
+                print("  re-taking", n, "alone")
+                clip, _ = gemini_speak(SCENE_NOTES + "\n\n" + t, {label[w]: cast[w]["gemini_voice"]})
+                wds = transcribe(clip, sr)
+                if wds:
+                    clip = clip[max(0, int((wds[0][1] - 0.08) * sr)):int((wds[-1][2] + 0.2) * sr)]
+            out[n] = (clip, sr)
+            if key:
+                os.makedirs(cache_dir, exist_ok=True)
+                sf.write(key.replace(".wav", f"_{n}.wav"), clip, sr)
+    return out
+
+
 def _cache_path(cache_dir, *key):
     import hashlib
     h = hashlib.sha1(json.dumps(key).encode()).hexdigest()[:16]
@@ -363,7 +525,11 @@ def say(text, voice, speed, pitch, emotion=0.5, pace=0.5, ref_dir="build/voice_r
         if cache:
             os.makedirs(cache_dir, exist_ok=True)
             sf.write(cache, s, sr)
-    s = np.asarray(s, dtype=np.float64)
+    return finish(np.asarray(s, dtype=np.float64), sr, pitch)
+
+
+def finish(s, sr, pitch):
+    """Trim silence, resample to the mix rate with the character's pitch."""
     loud = np.where(np.abs(s) > 0.02)[0]
     if len(loud):
         s = s[max(0, loud[0] - 240): loud[-1] + 2400]
@@ -490,6 +656,7 @@ def build(episode_path, out_dir, keep=None):
     starts = sorted(a for a, _ in old["beats"].values()) if old else []
     cache_dir = os.getenv("VOICE_CACHE", os.path.join(out_dir, "voice_cache"))
     keeping = old is not None        # until an event says "retime"
+    pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0
     beats, lines, clips, impacts = {}, [], [], []
@@ -535,7 +702,12 @@ def build(episode_path, out_dir, keep=None):
         else:
             who = ev["line"]
             c = ep["cast"][who]
-            audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
+            pre_name = ev.get("name", f"{who}_{counts.get(who, 0) + 1}")
+            if pre_name in pre:
+                s_, sr_ = pre[pre_name]
+                audio = finish(np.asarray(s_, dtype=np.float64), sr_, c["pitch"])
+            else:
+                audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
                         c["voice"], c["speed"], c["pitch"],
                         emotion=ev.get("emotion", c.get("emotion", 0.5)),
                         pace=ev.get("pace", c.get("pace", 0.5)),

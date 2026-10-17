@@ -14,8 +14,8 @@ on:
         description: "Run id of the 'Render episode' run whose frames to reuse"
         required: true
       voice:
-        description: "Voice engine: elevenlabs or chatterbox"
-        default: "elevenlabs"
+        description: "Voice engine: gemini, elevenlabs or chatterbox"
+        default: "gemini"
 
 permissions:
   contents: write
@@ -59,7 +59,20 @@ jobs:
           VOICE_ENGINE: ${{ inputs.voice }}
           VOICE_CACHE: voice_cache
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-        run: python src/audio.py ${{ inputs.episode }} build --keep-timeline old/timeline.json
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          mkdir -p build
+          set -o pipefail
+          python -u src/audio.py ${{ inputs.episode }} build --keep-timeline old/timeline.json 2>&1 | tee build/voice_log.txt
+      - name: Publish the voice log (also on failure)
+        if: always()
+        run: |
+          mkdir -p /tmp/log && cp build/voice_log.txt /tmp/log/ 2>/dev/null || echo "no log" > /tmp/log/voice_log.txt
+          cd /tmp/log && git init -q -b preview-logs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Voice log from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" preview-logs
       - uses: actions/upload-artifact@v4
         with:
           name: revoice
