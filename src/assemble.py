@@ -190,10 +190,13 @@ def retime_map(new_tl, old_tl):
     every beat or line in both is an anchor; times between anchors are
     interpolated (moved beats shift, longer lines stretch slightly)."""
     anchors = [(0.0, 0.0)]
+    lines = {ln["name"] for ln in new_tl.get("lines", [])}
     for name, (a, b) in new_tl["beats"].items():
         if name in old_tl["beats"]:
             oa, ob = old_tl["beats"][name]
-            anchors += [(a, oa), (b, ob)]
+            anchors.append((a, oa))
+            if name not in lines:           # a line's end is set by its voice; what follows anchors it
+                anchors.append((b, ob))
     anchors.sort()
     mono = [anchors[0]]
     for n, o in anchors[1:]:                     # keep it monotonic

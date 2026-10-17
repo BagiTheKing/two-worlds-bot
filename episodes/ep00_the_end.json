@@ -230,7 +230,8 @@
       "nonverbal": true,
       "fx": "falling",
       "pad": 0.0,
-      "solo_text": "Aaaaaaaaaaaahhhh!"
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "slot": 0.8
     },
     {
       "line": "noob",
@@ -241,7 +242,8 @@
       "fx": "falling",
       "together": true,
       "pad": 0.0,
-      "solo_text": "Aaaaaaaaaaaahhhh!"
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "slot": 0.8
     },
     {
       "beat": "fall_void",

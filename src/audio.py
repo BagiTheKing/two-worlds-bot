@@ -853,9 +853,12 @@ def build(episode_path, out_dir, keep=None):
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))
             end_here = cursor + dur + ev.get("pad", 0.2)
+            if ev.get("slot") is not None:        # the story moves on; the line plays over it
+                end_here = cursor + ev["slot"]
             if ev.get("together") and len(lines) > 1:
                 prev = lines[-2]
-                end_here = max(end_here, prev["end"] + ev.get("pad", 0.2))
+                prev_end = prev["start"] + ev["slot"] if ev.get("slot") is not None else prev["end"] + ev.get("pad", 0.2)
+                end_here = max(end_here, prev_end)
             cursor = end_here
     length = old["length"] if keeping else cursor
     R = lambda ref: resolve_ref(beats, ref, length)  # noqa: E731
