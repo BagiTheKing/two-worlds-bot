@@ -230,7 +230,12 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
     overlays = tl.get("overlays", [])
     clips = []                                    # ready-made footage replaces the render
     for o in [o for o in overlays if o["type"] == "clip"]:
-        clips.append((o["start"], o["end"], read_clip(os.path.join(HERE, "..", o["video"]))))
+        frames = read_clip(os.path.join(HERE, "..", o["video"]))
+        need = o["end"] - o["start"]
+        if len(frames) / fps < need - 0.05:      # would freeze on its last frame
+            print(f"WARNING: {o['video']} is {len(frames) / fps:.2f}s but plays for {need:.2f}s; "
+                  "its last frame will be held")
+        clips.append((o["start"], o["end"], frames))
     overlays = [o for o in overlays if o["type"] != "clip"]
     for o in overlays:
         if o.get("steps"):
