@@ -221,6 +221,39 @@ def missing():
     return img
 
 
+def steve_face_scared():
+    """Wide eyes, raised brows, open mouth."""
+    img = steve_face()
+    px = img.load()
+    for x in range(1, 7):
+        px[x, 2] = SKIN
+    px[1, 3] = px[2, 3] = px[5, 3] = px[6, 3] = HAIR          # brows raised
+    px[1, 4], px[2, 4] = (250, 250, 250), (60, 70, 160)
+    px[5, 4], px[6, 4] = (60, 70, 160), (250, 250, 250)
+    px[1, 5] = px[6, 5] = (250, 250, 250)                       # wider eyes
+    px[3, 5] = px[4, 5] = (150, 98, 72)
+    for x in (2, 3, 4, 5):
+        px[x, 6] = (70, 30, 30)                                 # open mouth
+    px[3, 7] = px[4, 7] = (70, 30, 30)
+    return img
+
+
+def noob_face_scared():
+    """The toy face, terrified: round eyes, worried brows, open mouth."""
+    s = 256
+    img = Image.new("RGB", (s, s), NOOB_YELLOW)
+    d = ImageDraw.Draw(img)
+    d.ellipse((70, 72, 110, 128), fill=(20, 20, 20))
+    d.ellipse((146, 72, 186, 128), fill=(20, 20, 20))
+    d.ellipse((84, 84, 96, 98), fill=(250, 250, 250))
+    d.ellipse((160, 84, 172, 98), fill=(250, 250, 250))
+    d.line((62, 62, 108, 46), fill=(20, 20, 20), width=10)       # worried brows
+    d.line((194, 62, 148, 46), fill=(20, 20, 20), width=10)
+    d.ellipse((100, 150, 156, 214), fill=(40, 10, 10))
+    d.ellipse((112, 186, 144, 210), fill=(200, 60, 70))
+    return img
+
+
 ALL = {
     "grass_top": grass_top, "grass_side": grass_side, "dirt": dirt,
     "stone": stone, "log_side": log_side, "log_top": log_top,
@@ -229,6 +262,7 @@ ALL = {
     "hair": hair, "shirt": shirt, "steve_arm": steve_arm,
     "steve_leg": steve_leg, "noob_face": noob_face,
     "planks": planks, "missing": missing,
+    "steve_face_scared": steve_face_scared, "noob_face_scared": noob_face_scared,
 }
 
 
