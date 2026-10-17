@@ -75,7 +75,7 @@ def shade(canvas, top, bottom):
     w, h = canvas.size
     g = Image.new("L", (1, h), 0)
     for y in range(h):
-        a = max(0.0, 1 - y / top) if y < top else max(0.0, (y - (h - bottom)) / bottom)
+        a = max(0.0, 1 - y / top) if y < top else (max(0.0, (y - (h - bottom)) / bottom) if bottom else 0.0)
         g.putpixel((0, y), int(200 * min(1.0, a) ** 1.4))
     g = g.resize((w, h))
     canvas.alpha_composite(Image.merge("RGBA", (*[Image.new("L", (w, h), 0)] * 3, g)))
@@ -87,11 +87,21 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--episode", required=True)
     ap.add_argument("--subtitle", default="TWO WORLDS · ONE GLITCH")
+    ap.add_argument("--erase-top", type=int, default=0,
+                    help="blur away this many px at the top first (old title lettering)")
+    ap.add_argument("--top-only", action="store_true", help="leave the bottom of the image as it is")
     a = ap.parse_args()
 
     img = Image.open(a.base).convert("RGBA").resize((2160, 3840), Image.LANCZOS)
     W, H = img.size
-    shade(img, 1250, 1300)
+    if a.erase_top:                                 # wipe old lettering, feathered into the image
+        band = img.crop((0, 0, W, a.erase_top + 200)).filter(ImageFilter.GaussianBlur(70))
+        band = Image.blend(band, Image.new("RGBA", band.size, (8, 6, 14, 255)), 0.45)
+        fade = Image.new("L", band.size, 255)
+        for y in range(a.erase_top, band.height):
+            ImageDraw.Draw(fade).line((0, y, W, y), fill=int(255 * (1 - (y - a.erase_top) / 200)))
+        img.paste(band, (0, 0), fade)
+    shade(img, 1250, 0 if a.top_only else 1300)
     cx = W // 2
 
     margin = 150                                    # keep clear of the edges
@@ -118,6 +128,11 @@ def main():
            (236, 236, 236), (40, 100, 220), depth=5)
     blocky(img, "ANIMATION", cx, y + h + 90, fit(lambda k: pixel_mask("ANIMATION", k)[0].width, 170),
            (255, 255, 255), (60, 20, 90), depth=4, glitch=10, seed=3)
+
+    if a.top_only:
+        img.convert("RGB").save(a.out, quality=95)
+        print("wrote", a.out, img.size)
+        return
 
     # bottom: the episode, big, then the series name
     ep = f"EPISODE {a.episode}"
