@@ -478,14 +478,17 @@ def split_scene(samples, sr, lines):
 
 
 def cut_lines(samples, sr, spans, order):
-    """Cut each line at the middle of the silence between it and the words
-    around it (scripted or not), so drawn-out words are never clipped, pauses
-    are not swallowed, and a direction read aloud stays outside the cut."""
+    """Cut each line at the middle of the silence between it and the lines
+    around it, so drawn-out words are never clipped and pauses are not
+    swallowed. (Cutting at any unrecognised word instead dropped scripted
+    words Whisper misheard, like "Noob" heard as "new".)"""
+    placed = [n for n in order if n in spans]
+    total = len(samples) / sr
     cuts = {}
-    for n in order:
-        if n not in spans:
-            continue
-        a, b, prev_end, next_start = spans[n]
+    for i, n in enumerate(placed):
+        a, b = spans[n][:2]
+        prev_end = spans[placed[i - 1]][1] if i else 0.0
+        next_start = spans[placed[i + 1]][0] if i + 1 < len(placed) else total
         start = max((prev_end + a) / 2, a - 0.3)
         end = min((b + next_start) / 2, b + 0.6)
         cuts[n] = samples[int(start * sr):int(end * sr)]
@@ -508,6 +511,7 @@ def gemini_lines(ep, cache_dir):
     so changing how lines are cut never costs another request."""
     cast = ep["cast"]
     todo, counts = [], {}
+    solos = {}          # lines re-done on their own; the scene recording stays as it was
     for ev in ep["events"]:
         if "line" not in ev:
             continue
@@ -516,6 +520,8 @@ def gemini_lines(ep, cache_dir):
         name = ev.get("name", f"{who}_{counts[who]}")
         text = ev.get("direction_text") or ev.get("eleven_text") or ev["text"]
         todo.append((name, who, text, ev.get("nonverbal", False)))
+        if ev.get("solo_text"):
+            solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
     # scenes: consecutive lines with at most two voices (Null speaks alone)
     scenes, cur = [], []
     for item in todo:
@@ -526,11 +532,13 @@ def gemini_lines(ep, cache_dir):
         cur.append(item)
     if cur:
         scenes.append(cur)
-    scenes = [[it[:3] for it in sc] + ([] if not sc[0][3] else []) for sc in scenes]
+    scenes = [[it[:3] for it in sc] for sc in scenes]
     nonverbal = {it[0] for it in todo if it[3]}
 
     out = {}
     for scene in scenes:
+        if len(scene) == 1 and scene[0][0] in nonverbal and scene[0][0] in solos:
+            continue                                            # voiced below, on its own
         whos = []
         for _, w, _ in scene:
             if w not in whos:
@@ -571,7 +579,38 @@ def gemini_lines(ep, cache_dir):
             if n in one_span:
                 clip = cut_lines(clip, sr, one_span, [n])[n]
             out[n] = (clip, sr)
+    for n, (w, text, nonverbal) in solos.items():
+        out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir)
     return out
+
+
+def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3):
+    """One line on its own, without touching the scene it belongs to. Speech
+    gets a few takes and Whisper keeps the one that says the words best;
+    non-words (screams) get one take. No [directions]: on their own, the
+    speech models tend to read them aloud."""
+    label = who.capitalize()
+    voice = {label: cast[who]["gemini_voice"]}
+    best = None
+    for k in range(1 if nonverbal else takes):
+        key = _cache_path(cache_dir, "gemini-solo-raw", label, text, voice, k) if cache_dir else None
+        if key and os.path.exists(key):
+            clip, sr = sf.read(key)
+        else:
+            clip, sr = gemini_speak([(label, text)], voice)
+            if key:
+                os.makedirs(cache_dir, exist_ok=True)
+                sf.write(key, clip, sr)
+        if nonverbal:
+            return clip, sr
+        span = split_scene(clip, sr, [("x", text)])
+        words = transcribe(clip, sr)
+        sc = score_take(text, words)
+        print(f"  solo take {k} for {text!r}: {sc:.2f} {' '.join(w for w, _, _ in words)!r}")
+        cut = cut_lines(clip, sr, span, ["x"]).get("x", clip)
+        if best is None or sc > best[0]:
+            best = (sc, cut, sr)
+    return best[1], best[2]
 
 
 def _cache_path(cache_dir, *key):
