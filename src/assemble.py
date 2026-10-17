@@ -264,12 +264,15 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         for o in overlays:                        # full-frame ones first
             if o["type"] in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)
+        row = 0
         for a, b, txt, color in caps:
             if a <= t < b:
+                y = CAPTION_Y + 115 * row                  # lines said together stack
+                row += 1
                 pop = min(1.0, (t - a) / 0.08)
                 size = int(92 * (0.82 + 0.18 * pop))
                 fnt = font if size == 92 else ImageFont.truetype(FONT, size)
-                ImageDraw.Draw(img).text((W // 2, CAPTION_Y), txt, font=fnt, fill=color,
+                ImageDraw.Draw(img).text((W // 2, y), txt, font=fnt, fill=color,
                                          anchor="mm", stroke_width=10, stroke_fill=(0, 0, 0))
         for o in overlays:
             if o["type"] not in FULL and o["start"] <= t < o["end"]:

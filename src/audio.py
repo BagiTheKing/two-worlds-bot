@@ -465,28 +465,41 @@ def split_scene(samples, sr, lines):
         for i in range(n):
             match[a + i] = b + i
     spans = {}
+    total = len(samples) / sr
     for k, (name, text) in enumerate(lines):
         idx = [match[i] for i in range(len(ref)) if owner[i] == k and i in match]
         n_words = sum(1 for o in owner if o == k)
         if n_words and len(idx) >= max(1, round(0.6 * n_words)):
-            spans[name] = (words[min(idx)][1], words[max(idx)][2])
+            i0, i1 = min(idx), max(idx)
+            prev_end = words[i0 - 1][2] if i0 > 0 else 0.0          # any word, scripted or not
+            next_start = words[i1 + 1][1] if i1 + 1 < len(words) else total
+            spans[name] = (words[i0][1], words[i1][2], prev_end, next_start)
     return spans
 
 
 def cut_lines(samples, sr, spans, order):
-    """Cut each line at the middle of the silence around it, so drawn-out
-    words are never clipped and pauses are not swallowed."""
-    placed = [n for n in order if n in spans]
-    total = len(samples) / sr
+    """Cut each line at the middle of the silence between it and the words
+    around it (scripted or not), so drawn-out words are never clipped, pauses
+    are not swallowed, and a direction read aloud stays outside the cut."""
     cuts = {}
-    for i, n in enumerate(placed):
-        a, b = spans[n]
-        prev_end = spans[placed[i - 1]][1] if i else 0.0
-        next_start = spans[placed[i + 1]][0] if i + 1 < len(placed) else total
+    for n in order:
+        if n not in spans:
+            continue
+        a, b, prev_end, next_start = spans[n]
         start = max((prev_end + a) / 2, a - 0.3)
         end = min((b + next_start) / 2, b + 0.6)
         cuts[n] = samples[int(start * sr):int(end * sr)]
     return cuts
+
+
+def falling(x, sr=SR):
+    """A voice falling away: fades and drops in pitch as it goes."""
+    n = len(x)
+    rate = np.linspace(1.0, 0.82, n)                       # playback speed, slowing
+    pos = np.cumsum(rate)
+    pos = pos[pos < n - 1]
+    y = np.interp(pos, np.arange(n), x)
+    return y * np.linspace(1.0, 0.12, len(y)) ** 1.5
 
 
 def gemini_lines(ep, cache_dir):
@@ -502,17 +515,19 @@ def gemini_lines(ep, cache_dir):
         counts[who] = counts.get(who, 0) + 1
         name = ev.get("name", f"{who}_{counts[who]}")
         text = ev.get("direction_text") or ev.get("eleven_text") or ev["text"]
-        todo.append((name, who, text))
+        todo.append((name, who, text, ev.get("nonverbal", False)))
     # scenes: consecutive lines with at most two voices (Null speaks alone)
     scenes, cur = [], []
     for item in todo:
-        speakers = {w for _, w, _ in cur} | {item[1]}
-        if cur and (len(speakers) > 2 or "null" in speakers and len(speakers) > 1):
-            scenes.append(cur)
+        speakers = {w for _, w, _, _ in cur} | {item[1]}
+        if cur and (item[3] or cur[-1][3] or len(speakers) > 2 or "null" in speakers and len(speakers) > 1):
+            scenes.append(cur)              # screams and Null are voiced on their own
             cur = []
         cur.append(item)
     if cur:
         scenes.append(cur)
+    scenes = [[it[:3] for it in sc] + ([] if not sc[0][3] else []) for sc in scenes]
+    nonverbal = {it[0] for it in todo if it[3]}
 
     out = {}
     for scene in scenes:
@@ -533,6 +548,9 @@ def gemini_lines(ep, cache_dir):
                 os.makedirs(cache_dir, exist_ok=True)
                 sf.write(raw, s, sr)
         names = [n for n, _, _ in scene]
+        if len(scene) == 1 and names[0] in nonverbal:          # a scream: no words to find
+            out[names[0]] = (s, sr)
+            continue
         spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
         print("scene", names, "placed", [n for n in names if n in spans])
         cuts = cut_lines(s, sr, spans, names)
@@ -776,6 +794,10 @@ def build(episode_path, out_dir, keep=None):
                         sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
             if c.get("fx") == "null":
                 audio = null_voice(audio)
+            if ev.get("fx") == "falling":
+                audio = norm(falling(audio), 0.95)
+            if ev.get("together") and lines:              # said at the same time as the last line
+                cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1
             name = ev.get("name", f"{who}_{counts[who]}")
             if keeping and name in old_lines:
@@ -791,7 +813,11 @@ def build(episode_path, out_dir, keep=None):
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))
-            cursor += dur + ev.get("pad", 0.2)
+            end_here = cursor + dur + ev.get("pad", 0.2)
+            if ev.get("together") and len(lines) > 1:
+                prev = lines[-2]
+                end_here = max(end_here, prev["end"] + ev.get("pad", 0.2))
+            cursor = end_here
     length = old["length"] if keeping else cursor
     R = lambda ref: resolve_ref(beats, ref, length)  # noqa: E731
 

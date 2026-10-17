@@ -155,12 +155,12 @@
     {
       "line": "noob",
       "name": "noob_respawn",
-      "text": "Can you respawn if there's no world?",
+      "text": "Steve... can you respawn if there's no world?",
       "emotion": 0.6,
       "pace": 0.45,
       "pad": 0.35,
       "eleven_text": "[curious, innocent] Can you respawn if there's no world?",
-      "direction_text": "[curious, innocent] Can you respawn if there's no world?"
+      "direction_text": "[curious] Steve... can you respawn if there's no world?"
     },
     {
       "line": "steve",
@@ -222,8 +222,23 @@
       "sfx": "ledge"
     },
     {
-      "beat": "noob_scream",
-      "dur": 0.8
+      "line": "steve",
+      "name": "steve_scream",
+      "text": "Aaaaaaah!",
+      "direction_text": "[screaming in terror] Aaaaaaaaaaah!",
+      "nonverbal": true,
+      "fx": "falling",
+      "pad": 0.0
+    },
+    {
+      "line": "noob",
+      "name": "noob_scream",
+      "text": "Aaaaaaaah!",
+      "direction_text": "[screaming in terror] Aaaaaaaaaaaaah!",
+      "nonverbal": true,
+      "fx": "falling",
+      "together": true,
+      "pad": 0.0
     },
     {
       "beat": "fall_void",
