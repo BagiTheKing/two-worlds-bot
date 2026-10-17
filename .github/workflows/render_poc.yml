@@ -1,0 +1,109 @@
+name: Render proof-of-concept
+
+# Manual. Voices + timeline on one runner, the frames split across parallel
+# runners (Blender on CPU), then captions + encode. The finished Short is the
+# "episode" artifact of the run.
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode file"
+        default: "episodes/ep00_poc.json"
+      res:
+        description: "Render height in pixels (upscaled to 1920 at the end)"
+        default: "1080"
+      samples:
+        description: "Render samples per pixel"
+        default: "24"
+
+permissions:
+  contents: read
+
+env:
+  SHARDS: 12
+
+jobs:
+  prep:
+    runs-on: ubuntu-latest
+    outputs:
+      frames: ${{ steps.len.outputs.frames }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install -r requirements.txt
+      - name: Kokoro model
+        uses: actions/cache@v4
+        with:
+          path: models
+          key: kokoro-v1.0-model-files
+      - run: |
+          mkdir -p models
+          [ -f models/kokoro-v1.0.onnx ] || curl -sSL -o models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+          [ -f models/voices-v1.0.bin ] || curl -sSL -o models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+      - run: |
+          python src/textures.py build/tex
+          python src/audio.py ${{ inputs.episode }} build
+      - id: len
+        run: echo "frames=$(python -c "import json;t=json.load(open('build/timeline.json'));print(int(round((t['length']+0.4)*t['fps']))+1)")" >> $GITHUB_OUTPUT
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prep
+          path: build/
+          retention-days: 2
+
+  render:
+    needs: prep
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install bpy Pillow numpy
+      - uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+      - name: Render this shard's frames
+        run: |
+          N=${{ needs.prep.outputs.frames }}
+          PER=$(( (N + SHARDS - 1) / SHARDS ))
+          FIRST=$(( ${{ matrix.shard }} * PER + 1 ))
+          LAST=$(( FIRST + PER - 1 )); [ $LAST -gt $N ] && LAST=$N
+          python src/scene_poc.py build/timeline.json build/tex build/frames \
+            --first $FIRST --last $LAST --res ${{ inputs.res }} --samples ${{ inputs.samples }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frames-${{ matrix.shard }}
+          path: build/frames/
+          retention-days: 2
+
+  assemble:
+    needs: render
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install Pillow
+      - uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: build/frames/
+          merge-multiple: true
+      - run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: episode
+          path: build/episode.mp4
+          retention-days: 30

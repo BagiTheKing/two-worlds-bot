@@ -1,0 +1,8 @@
+# Voices: Kokoro (Apache-2.0), local and offline, no key.
+kokoro-onnx>=0.6.1
+soundfile>=0.12.1
+numpy>=1.24
+Pillow>=10.0.0
+# Rendering: Blender as a Python module (CPU, ~400 MB). Only the render jobs
+# need it, so the workflow installs it there instead of from this file.
+# bpy>=5.0

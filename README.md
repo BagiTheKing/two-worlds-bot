@@ -1,0 +1,52 @@
+# two-worlds-bot
+
+The pipeline behind **Two Worlds. One Glitch.**: animated YouTube Shorts in which
+a blocky survival world and a plastic obstacle-course world collide. The cast
+are 3D rigs rendered by Blender on the CPU, so characters look identical in
+every shot of every episode. Voices are local (Kokoro), sound effects are
+synthesised, and nothing in the frame comes from a video model.
+
+Built from the Failure Point pipeline (`BagiTheKing/failure-point-bot`); its
+writer chain, uploader, posting gate and analytics carry over in later steps.
+
+## How an episode is made
+
+| Step | File | What it does |
+|---|---|---|
+| 1 | `episodes/*.json` | The episode: cast voices, and an ordered list of beats (actions) and dialogue lines |
+| 2 | `src/textures.py` | Draws the pixel textures and faces (original art, from code) |
+| 3 | `src/audio.py` | Voices every line, then lays out the timeline: beats get their durations, lines get their spoken length. Synthesises the sound effects and mixes the soundtrack. Writes `build/timeline.json` and `build/audio.wav` |
+| 4 | `src/scene_poc.py` | Builds the world, the cast and the cameras in Blender from the timeline, and renders frames. `blocks.py` (voxel mesher, boxes) and `cast.py` (rigs) are its parts |
+| 5 | `src/assemble.py` | Upscales to 1080x1920, burns in captions, encodes the MP4 with the audio |
+
+Because the audio decides the timing, every punch, cut and head-bob lands on
+its sound and line.
+
+## Run it locally
+
+```
+pip install -r requirements.txt bpy
+# Kokoro model files into models/ (see the workflow for the two URLs)
+python src/textures.py build/tex
+python src/audio.py episodes/ep00_poc.json build
+python src/scene_poc.py build/timeline.json build/tex build/frames --res 720 --samples 16
+python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
+```
+
+Look-dev without rendering the whole episode:
+`--stills 60,190,340` renders just those frames.
+
+## Run it on GitHub Actions
+
+**Actions → Render proof-of-concept → Run workflow.** One runner makes the
+voices and the timeline, twelve render frame ranges in parallel, and the last
+one assembles the Short (the run's `episode` artifact).
+
+## Ground rules
+
+- Original models, textures, sounds and music only; no game assets or logos.
+  The channel is unofficial and says so in every description.
+- YouTube's synthetic-content label covers realistic footage; this is
+  stylised animation. The real risk is the "inauthentic content" policy
+  (mass-produced, repetitive uploads), so every episode tells a new story.
+- Decide the "made for kids" setting deliberately for the channel.
