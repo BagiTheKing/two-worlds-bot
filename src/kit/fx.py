@@ -72,6 +72,7 @@ def sky(ctx, sun_dir, keys, below="void"):
         disc = box(f"sun_disc_{k}", (size, size, 0.1), (0, 0, 0), {"default": m})
         disc.location = -d * (320 + k * 2)
         disc.rotation_euler = d.to_track_quat("Z", "Y").to_euler()
+        disc.visible_shadow = False              # else it eclipses the sun lamp
         glows.append((m.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"], strength))
     strength = bg.inputs["Strength"]
     for t, energy, sky_s, direction in keys:

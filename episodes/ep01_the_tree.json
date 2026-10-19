@@ -29,7 +29,7 @@
   "events": [
     {
       "beat": "flash",
-      "dur": 2.75,
+      "dur": 2.0,
       "audio_clip": "assets/clips/ep00_flash.wav"
     },
     {
@@ -55,6 +55,10 @@
           "Noob": "Puck"
         }
       }
+    },
+    {
+      "beat": "look_around",
+      "dur": 1.8
     },
     {
       "beat": "walk_to_tree",
@@ -175,7 +179,7 @@
       "type": "clip",
       "video": "assets/clips/ep01_opening.mp4",
       "from": "forest",
-      "to": "walk_to_tree.end"
+      "to": "noob_where.end"
     },
     {
       "type": "fade_in",
@@ -241,11 +245,11 @@
     "noob": {
       "rig": "noob",
       "at": [
-        1.15,
-        0.5,
+        0.2,
+        -0.4,
         0
       ],
-      "yaw": 1.5708
+      "yaw": 0.0
     },
     "steve": {
       "rig": "steve",
@@ -258,6 +262,56 @@
     }
   },
   "clips": [
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "look_around-0.15",
+      "to": "look_around+0.5",
+      "head": [
+        0,
+        0,
+        0.8
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "look_around+0.55",
+      "to": "look_around+0.95",
+      "yaw": -0.45
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "look_around+0.7",
+      "to": "look_around+1.2",
+      "head": [
+        0,
+        0,
+        -0.75
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "look_around+1.35",
+      "to": "look_around.end",
+      "head": [
+        -0.4,
+        0,
+        0.15
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "walk",
+      "from": "walk_to_tree",
+      "to": "walk_to_tree.end",
+      "dest": [
+        1.15,
+        0.5
+      ]
+    },
     {
       "who": "noob",
       "do": "face",
@@ -462,6 +516,7 @@
   "fx": [
     {
       "kind": "sky",
+      "below": "sky",
       "sun_dir": [
         0.3,
         0.75,
@@ -502,6 +557,37 @@
     }
   ],
   "shots": [
+    {
+      "name": "look_around",
+      "from": "noob_where.end",
+      "to": "noob_tree",
+      "lens": 24,
+      "dof": 4.0,
+      "look_actor": "noob",
+      "look_offset": [
+        0,
+        0,
+        1.3
+      ],
+      "path": [
+        [
+          "noob_where.end",
+          [
+            -2.4,
+            -3.9,
+            1.05
+          ]
+        ],
+        [
+          "noob_tree",
+          [
+            -2.0,
+            -3.6,
+            1.1
+          ]
+        ]
+      ]
+    },
     {
       "name": "to_tree",
       "from": "noob_tree",
@@ -826,7 +912,7 @@
   "skip_render": [
     [
       "flash",
-      "walk_to_tree.end"
+      "noob_where.end"
     ]
   ]
 }
