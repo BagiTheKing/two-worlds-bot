@@ -512,6 +512,7 @@ def gemini_lines(ep, cache_dir):
     cast = ep["cast"]
     todo, counts = [], {}
     solos = {}          # lines re-done on their own; the scene recording stays as it was
+    borrowed = {}       # lines whose recording comes from another (cached) scene
     for ev in ep["events"]:
         if "line" not in ev:
             continue
@@ -522,6 +523,8 @@ def gemini_lines(ep, cache_dir):
         todo.append((name, who, text, ev.get("nonverbal", False)))
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
+        if ev.get("voice_from"):
+            borrowed[name] = ev["voice_from"]
     # scenes: consecutive lines with at most two voices (Null speaks alone)
     scenes, cur = [], []
     for item in todo:
@@ -581,6 +584,15 @@ def gemini_lines(ep, cache_dir):
             out[n] = (clip, sr)
     for n, (w, text, nonverbal) in solos.items():
         out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir)
+    for n, src in borrowed.items():                  # an earlier episode's exact take
+        turns = [tuple(t) for t in src["turns"]]
+        raw = _cache_path(cache_dir, "gemini-scene-raw", turns, src["voices"])
+        if not os.path.exists(raw):
+            raise SystemExit(f"{n}: the recording it reuses is not in the voice cache")
+        s, sr = sf.read(raw)
+        spans = split_scene(s, sr, [(n, turns[0][1])])
+        out[n] = (cut_lines(s, sr, spans, [n]).get(n, s), sr)
+        print(f"  {n}: reused an earlier recording")
     return out
 
 
@@ -935,7 +947,10 @@ def build(episode_path, out_dir, keep=None):
     import music
     for k, m in enumerate(ep.get("music", [])):
         m0, m1 = R(m["from"]), R(m["to"])
-        place(score, music.render(m["cue"], m1 - m0, seed=k), m0, m.get("gain", 0.2))
+        kw = {"hit_at": R(m["hit_at"]) - m0} if m.get("hit_at") else {}
+        if m.get("minimal"):
+            kw["minimal"] = True
+        place(score, music.render(m["cue"], m1 - m0, seed=k, **kw), m0, m.get("gain", 0.2))
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
     out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck)

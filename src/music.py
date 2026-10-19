@@ -223,11 +223,43 @@ def theme_full(sec, seed=0):
     return reverb(out, 1.8, 0.25, seed)[:int(sec * SR)]
 
 
-CUES = {"theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full}
+def dread(sec, seed=0, hit_at=None, minimal=False):
+    """The eye: a heartbeat that speeds up, a tension tone rising underneath,
+    a high dissonant shimmer, and one hard hit when it locks on (hit_at s)."""
+    out = np.zeros(int((sec + 3) * SR))
+    t = 0.0
+    while t < sec:                                   # heartbeat: lub-dub, faster and faster
+        place(out, kick(), t, 0.9)
+        place(out, kick(), t + 0.16, 0.6)
+        t += max(0.32, 0.8 - 0.22 * t)
+    x = _t(sec + 3)
+    if minimal:                                      # over Null's theme: heartbeat and the hit only
+        hit = hit_at if hit_at is not None else max(0.0, sec - 1.4)
+        place(out, braam(2.8, D - 26), hit, 1.0)
+        place(out, kick(), hit, 1.0)
+        out[int((hit + 2.6) * SR):] *= 0.0
+        return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
+    rise = np.zeros(len(x))
+    for m, det in ((D - 24, 0.0), (D - 23, 0.05), (D - 17, -0.04)):      # a tight, ugly cluster
+        f = hz(m + det) * (1 + 0.5 * np.minimum(1, x / max(sec, 0.1)))     # bends upward
+        rise += np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.3
+    rise = lowpass(rise, 900) * np.minimum(1, x / max(sec, 0.1)) ** 1.5
+    out += rise * 0.5
+    shimmer = (np.sin(2 * np.pi * hz(D + 25) * x) + np.sin(2 * np.pi * hz(D + 26) * x)) * 0.06
+    out += shimmer * np.minimum(1, x / 1.5)
+    hit = hit_at if hit_at is not None else max(0.0, sec - 1.4)
+    place(out, braam(2.8, D - 26), hit, 1.0)
+    place(out, kick(), hit, 1.0)
+    out[int((hit + 2.6) * SR):] *= 0.0
+    return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
 
 
-def render(cue, sec, seed=0):
-    x = CUES[cue](sec, seed)
+CUES = {"theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
+        "dread": dread}
+
+
+def render(cue, sec, seed=0, **kw):
+    x = CUES[cue](sec, seed, **kw)
     fade = int(min(0.4, sec / 4) * SR)
     x[:int(0.02 * SR)] *= np.linspace(0, 1, int(0.02 * SR))
     if fade:

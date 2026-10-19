@@ -206,7 +206,17 @@ def prompt(img, o, t, f, fonts):
     img.paste(layer, (0, o.get("y", 1500)), layer)
 
 
-DRAW = {"hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+def watermark(img, o, t, f, fonts):
+    """The channel handle, small and quiet, top-right on every frame."""
+    fnt = ImageFont.truetype(FONT, o.get("size", 40))
+    layer = Image.new("RGBA", (W, 120), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.text((W - 48, 60), o["text"], font=fnt, fill=(255, 255, 255, int(255 * o.get("opacity", 0.55))),
+           anchor="rm", stroke_width=3, stroke_fill=(0, 0, 0, int(160 * o.get("opacity", 0.55))))
+    img.paste(layer, (0, o.get("y", 70)), layer)
+
+
+DRAW = {"watermark": watermark, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt}
 FULL = ("card", "fade_in", "endcard")
 
@@ -274,7 +284,7 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         if len(frames) / fps < need - 0.05:      # would freeze on its last frame
             print(f"WARNING: {o['video']} is {len(frames) / fps:.2f}s but plays for {need:.2f}s; "
                   "its last frame will be held")
-        clips.append((o["start"], o["end"], frames))
+        clips.append((o["start"], o["end"], frames, o.get("graded", False)))
     overlays = [o for o in overlays if o["type"] != "clip"]
     for o in overlays:
         if o.get("steps"):
@@ -294,12 +304,15 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         src = int(round(to_old(t) * fps)) + 1
         path = os.path.join(frames_dir, f"{src:04d}.png")
         img = Image.open(path).convert("RGB") if os.path.exists(path) else black.copy()
-        for c0, c1, frames in clips:
+        graded = False
+        for c0, c1, frames, g in clips:
             if c0 <= t < c1 and frames:
                 img = frames[min(len(frames) - 1, int(round((t - c0) * fps)))].copy()
+                graded = g
         if img.size != (W, H):
             img = img.resize((W, H), Image.LANCZOS)
-        img = Image.composite(black, img, vig)
+        if not graded:                          # a finished episode's frames already have it
+            img = Image.composite(black, img, vig)
         for o in overlays:                        # full-frame ones first
             if o["type"] in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)

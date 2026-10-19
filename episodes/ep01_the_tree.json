@@ -28,36 +28,37 @@
   },
   "events": [
     {
-      "beat": "portal_open",
-      "dur": 0.5,
-      "sfx": "portal"
+      "beat": "flash",
+      "dur": 2.75,
+      "audio_clip": "assets/clips/ep00_flash.wav"
     },
     {
-      "line": "noob",
-      "name": "noob_scream",
-      "text": "Aaaaaah!",
-      "direction_text": "Aaaaaaaaaaahhhh!",
-      "pad": 0.2,
-      "solo_text": "Aaaaaaaaaaahhhh!",
-      "nonverbal": true,
-      "slot": 0.9
-    },
-    {
-      "beat": "land",
-      "dur": 0.5,
-      "sfx": "land"
+      "beat": "forest",
+      "dur": 2.4,
+      "sfx": "whoosh",
+      "audio_clip": "assets/clips/ep01_opening.wav"
     },
     {
       "line": "noob",
       "name": "noob_where",
       "text": "Whoa. Where am I?",
       "direction_text": "[amazed, a little dazed] Whoa. Where am I?",
-      "pad": 0.2
+      "pad": 0.2,
+      "voice_from": {
+        "turns": [
+          [
+            "Noob",
+            "[amazed, a little dazed] Whoa. Where am I?"
+          ]
+        ],
+        "voices": {
+          "Noob": "Puck"
+        }
+      }
     },
     {
       "beat": "walk_to_tree",
-      "dur": 1.0,
-      "sfx": "steps"
+      "dur": 1.0
     },
     {
       "line": "noob",
@@ -98,7 +99,8 @@
       "name": "noob_float",
       "text": "...Why is it floating?",
       "direction_text": "[confused] ...Why is it floating?",
-      "pad": 0.25
+      "pad": 0.25,
+      "solo_text": "...Why is it floating?"
     },
     {
       "line": "steve",
@@ -127,49 +129,70 @@
   "music": [
     {
       "cue": "theme_soft",
-      "from": "portal_open",
+      "from": "noob_tree",
       "to": "crack",
       "gain": 0.12
     },
     {
       "cue": "null",
       "from": "crack",
-      "to": "endcard",
-      "gain": 0.18
+      "to": "end",
+      "gain": 0.22
     },
     {
-      "cue": "theme_full",
-      "from": "endcard",
+      "cue": "dread",
+      "from": "steve_not",
       "to": "end",
-      "gain": 0.3
+      "gain": 0.26,
+      "hit_at": "steve_not+2.65",
+      "minimal": true
     }
   ],
   "ambience": [
     {
       "kind": "meadow",
-      "from": 0,
-      "to": "crack"
+      "from": "noob_tree",
+      "to": "crack",
+      "gain": 0.08
     }
   ],
   "overlays": [
     {
+      "type": "clip",
+      "video": "assets/clips/ep00_flash.mp4",
+      "from": "flash",
+      "to": "flash.end",
+      "graded": true
+    },
+    {
       "type": "hook",
-      "text": "A NOOB FELL\nINTO MINECRAFT...",
-      "from": 0,
-      "to": "land+0.2",
-      "y": 620
+      "text": "IN 24 HOURS...\nTHE WORLD ENDS.",
+      "from": 0.1,
+      "to": "flash.end",
+      "y": 760
+    },
+    {
+      "type": "clip",
+      "video": "assets/clips/ep01_opening.mp4",
+      "from": "forest",
+      "to": "walk_to_tree.end"
+    },
+    {
+      "type": "fade_in",
+      "from": "forest",
+      "to": "forest+0.3"
     },
     {
       "type": "label",
       "text": "EPISODE 1",
       "sub": "24 HOURS EARLIER",
-      "from": 0.2,
-      "to": "noob_where"
+      "from": "forest",
+      "to": "noob_where.end"
     },
     {
       "type": "hud",
       "text": "REALITY: 100%",
-      "from": "land",
+      "from": "forest+0.4",
       "to": "crack+0.4"
     },
     {
@@ -196,6 +219,12 @@
       "question": "WHAT BROKE THE SKY?",
       "question_sub": "Comment your theory",
       "pace": 0.4
+    },
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
     }
   ],
   "sets": [
@@ -212,11 +241,11 @@
     "noob": {
       "rig": "noob",
       "at": [
-        0.2,
-        -0.4,
-        13.6
+        1.15,
+        0.5,
+        0
       ],
-      "yaw": 0.0
+      "yaw": 1.5708
     },
     "steve": {
       "rig": "steve",
@@ -229,38 +258,6 @@
     }
   },
   "clips": [
-    {
-      "who": "noob",
-      "do": "fall",
-      "from": "noob_scream",
-      "to": "land",
-      "dest": [
-        0.2,
-        -0.4,
-        0.0
-      ]
-    },
-    {
-      "who": "noob",
-      "do": "look",
-      "from": "land+0.1",
-      "to": "noob_where.end",
-      "head": [
-        0,
-        0,
-        0.5
-      ]
-    },
-    {
-      "who": "noob",
-      "do": "walk",
-      "from": "walk_to_tree",
-      "to": "walk_to_tree.end",
-      "dest": [
-        1.15,
-        0.5
-      ]
-    },
     {
       "who": "noob",
       "do": "face",
@@ -489,9 +486,6 @@
       ]
     },
     {
-      "kind": "poc_portal"
-    },
-    {
       "kind": "poc_tree"
     },
     {
@@ -509,107 +503,22 @@
   ],
   "shots": [
     {
-      "name": "fall",
-      "from": 0,
-      "to": "land+0.35",
-      "lens": 16,
-      "path": [
-        [
-          0,
-          [
-            -4.4,
-            -9.2,
-            0.7
-          ]
-        ],
-        [
-          "land",
-          [
-            -2.4,
-            -5.4,
-            0.8
-          ]
-        ]
-      ],
-      "look": [
-        [
-          0,
-          [
-            0.2,
-            -0.4,
-            12.5
-          ]
-        ],
-        [
-          "noob_scream+0.1",
-          [
-            0.2,
-            -0.4,
-            12.0
-          ]
-        ],
-        [
-          "land",
-          [
-            0.2,
-            -0.4,
-            1.4
-          ]
-        ]
-      ]
-    },
-    {
-      "name": "where",
-      "from": "land+0.35",
-      "to": "walk_to_tree",
-      "lens": 30,
-      "dof": 4.0,
-      "path": [
-        [
-          "land+0.35",
-          [
-            0.95,
-            -3.7,
-            1.45
-          ]
-        ],
-        [
-          "walk_to_tree",
-          [
-            0.8,
-            -3.2,
-            1.5
-          ]
-        ]
-      ],
-      "look": [
-        [
-          "land+0.35",
-          [
-            0.2,
-            -0.4,
-            1.6
-          ]
-        ]
-      ]
-    },
-    {
       "name": "to_tree",
-      "from": "walk_to_tree",
+      "from": "noob_tree",
       "to": "punch",
       "lens": 24,
       "dof": 4.0,
       "path": [
         [
-          "walk_to_tree",
+          "noob_tree",
           [
-            3.3,
-            -2.6,
+            3.4,
+            -1.6,
             1.45
           ]
         ],
         [
-          "steve_tool",
+          "punch",
           [
             3.4,
             -1.2,
@@ -619,15 +528,7 @@
       ],
       "look": [
         [
-          "walk_to_tree",
-          [
-            0.5,
-            -0.2,
-            1.3
-          ]
-        ],
-        [
-          "walk_to_tree+1.0",
+          "noob_tree",
           [
             1.1,
             0.35,
@@ -921,5 +822,11 @@
         ]
       ]
     }
+  ],
+  "skip_render": [
+    [
+      "flash",
+      "walk_to_tree.end"
+    ]
   ]
 }
