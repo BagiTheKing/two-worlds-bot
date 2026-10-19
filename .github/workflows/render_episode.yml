@@ -19,9 +19,16 @@ on:
       voice:
         description: "Voice engine: gemini, elevenlabs, chatterbox or kokoro"
         default: "gemini"
+      shots:
+        description: "Only re-render these shots (comma-separated names); empty = all"
+        default: ""
+      reuse_run_id:
+        description: "With shots: the earlier run whose other frames to reuse"
+        default: ""
 
 permissions:
   contents: write
+  actions: read
 
 env:
   SHARDS: 16
@@ -100,7 +107,7 @@ jobs:
         with:
           name: prep
           path: build/
-          retention-days: 2
+          retention-days: 30
 
   render:
     needs: prep
@@ -125,13 +132,15 @@ jobs:
           FIRST=$(( ${{ matrix.shard }} * PER + 1 ))
           LAST=$(( FIRST + PER - 1 )); [ $LAST -gt $N ] && LAST=$N
           mkdir -p build/frames
+          SHOTS="${{ inputs.shots }}"
           python src/build_episode.py ${{ inputs.episode }} build/timeline.json build/tex build/frames \
-            --first $FIRST --last $LAST --res ${{ inputs.res }} --samples ${{ inputs.samples }}
+            --first $FIRST --last $LAST --res ${{ inputs.res }} --samples ${{ inputs.samples }} \
+            ${SHOTS:+--shots "$SHOTS"}
       - uses: actions/upload-artifact@v4
         with:
           name: frames-${{ matrix.shard }}
           path: build/frames/
-          retention-days: 2
+          retention-days: 30
           if-no-files-found: ignore
 
   assemble:
@@ -152,6 +161,20 @@ jobs:
           pattern: frames-*
           path: build/frames/
           merge-multiple: true
+      - name: Reuse the earlier render's other frames
+        if: inputs.reuse_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: build/frames_old/
+          merge-multiple: true
+          run-id: ${{ inputs.reuse_run_id }}
+          github-token: ${{ github.token }}
+      - if: inputs.reuse_run_id != ''
+        run: |
+          # new frames win; every frame not re-rendered comes from the earlier run
+          cp -n build/frames_old/*.png build/frames/ 2>/dev/null || true
+          ls build/frames | wc -l
       - run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
       - uses: actions/upload-artifact@v4
         with:

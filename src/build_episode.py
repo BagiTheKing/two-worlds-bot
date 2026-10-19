@@ -113,6 +113,12 @@ def build(episode_path, timeline_path, tex_dir):
                 scene_poc.target_block(poc_tl, bpy.data.objects["target"])
                 import random as _r
                 scene_poc.debris(poc_tl, mats, _r.Random(11))
+        elif k == "sky_tear":
+            fx.sky_tear(ctx, ctx.T(e["at"]), ctx.T(e["eye_at"]), ctx.T(e.get("end", "end")),
+                        center=tuple(e.get("center", (-5.0, 40.0, 26.0))), scale=e.get("scale", 2.0))
+            if e.get("tint", True):              # the tear's magenta light on the scene
+                fx.fill(ctx, (0.1, -0.86, -0.5), ctx.T(e["at"]), ctx.T(e.get("end", "end")) + 1,
+                        color=(1.0, 0.25, 0.85), energy=1.3)
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))
@@ -144,6 +150,8 @@ def main():
     ap.add_argument("--samples", type=int, default=16)
     ap.add_argument("--stills")
     ap.add_argument("--save-blend")
+    ap.add_argument("--shots", help="comma-separated shot names: render only their frames "
+                                    "(the rest are reused from an earlier render)")
     a = ap.parse_args()
 
     ctx, skip = build(a.episode, a.timeline, a.tex_dir)
@@ -162,6 +170,15 @@ def main():
         return
     first, last = a.first or 1, a.last or sc.frame_end
     frames = [f for f in range(first, last + 1) if not any(s0 <= f < s1 for s0, s1 in skip)]
+    if a.shots:
+        wanted = set(a.shots.split(","))
+        spans = [(ctx.F(ctx.T(s["from"])), ctx.F(ctx.T(s["to"])))
+                 for s in json.load(open(a.episode))["shots"] if s.get("name") in wanted]
+        missing = wanted - {s.get("name") for s in json.load(open(a.episode))["shots"]}
+        if missing:
+            raise SystemExit(f"unknown shot names: {sorted(missing)}")
+        frames = [f for f in frames if any(s0 - 1 <= f <= s1 + 1 for s0, s1 in spans)]
+        print("re-rendering", len(frames), "frames of shots", sorted(wanted))
     # render contiguous runs so persistent data is reused within each
     runs, start = [], None
     for f in frames:

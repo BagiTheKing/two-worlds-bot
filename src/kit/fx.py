@@ -289,3 +289,98 @@ def forest_portal(ctx, root, t_open, t_land, mats):
     for ob in set(bpy.data.objects) - before:
         if ob.parent is None:
             ob.parent = root
+
+
+def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3):
+    """The sky tears open: a jagged wound that widens to show the void behind
+    reality (black, with the missing-texture checker of Null's face), magenta
+    edges that flicker, cracks racing outward, shards of sky breaking off
+    towards the camera, and at t_eye an eye opening inside the tear."""
+    rnd = random.Random(seed)
+    root = empty("tear", center)
+    root.scale = (scale,) * 3
+    root.rotation_euler = (math.radians(70), 0, 0)          # faces a low camera
+    void = material("tear_void", (0.0, 0.0, 0.0), rough=1.0)
+    nt = void.node_tree
+    b = nt.nodes["Principled BSDF"]
+    tex = nt.nodes.new("ShaderNodeTexChecker")
+    tex.inputs["Scale"].default_value = 3.0
+    tex.inputs["Color1"].default_value = (0.5, 0.0, 0.42, 1)
+    tex.inputs["Color2"].default_value = (0.0, 0.0, 0.0, 1)
+    nt.links.new(tex.outputs["Color"], b.inputs["Emission Color"])
+    b.inputs["Emission Strength"].default_value = 0.55
+    edge = material("tear_edge", (0, 0, 0), emission=(1.0, 0.12, 0.85), strength=18)
+    vein = material("tear_vein", (1, 1, 1), emission=(1.0, 0.75, 1.0), strength=26)
+
+    # the main tear: jagged segments that open from a hairline to a wound
+    pts = [(-11.0, 0.0)]
+    while pts[-1][0] < 11:
+        x, z = pts[-1]
+        pts.append((x + rnd.uniform(1.4, 2.4), z + rnd.uniform(-1.6, 1.6)))
+    segs = list(zip(pts, pts[1:]))
+    for i, ((x0, z0), (x1, z1)) in enumerate(segs):
+        L = math.hypot(x1 - x0, z1 - z0)
+        seg = empty(f"tear_seg_{i}", (x0, 0, z0), root)
+        seg.rotation_euler = (0, -math.atan2(z1 - z0, x1 - x0), 0)
+        mid = 1 - abs((x0 + x1) / 2) / 12                  # widest in the middle
+        h = rnd.uniform(0.8, 1.4) + 3.2 * mid ** 1.5      # a gash, widest in the middle
+        box(f"tear_void_{i}", (L + 0.25, 0.2, 1.0), (L / 2, 0, 0), {"default": void}, seg)
+        box(f"tear_edge_{i}", (L + 0.7, 0.1, 1.0), (L / 2, 0.25, 0), {"default": edge}, seg)
+        start = t0 + 0.1 + abs((x0 + x1) / 2) / 11 * 0.35  # tears outward from the centre
+        for t, k in ((0, 0.0), (start, 0.0), (start + 0.18, 0.15), (start + 0.6, 1.0), (t_end, 1.25)):
+            for ch in seg.children:
+                grow = 1.0 if "void" in ch.name else 1.35
+                ch.scale = (1 if k else 0.001, 1, max(0.001, k * h * grow + (0.25 if "edge" in ch.name and k else 0)))
+                ch.keyframe_insert("scale", frame=ctx.F(t))
+
+    # cracks racing out from the wound
+    for j in range(10):
+        (x, z), _ = segs[rnd.randrange(1, len(segs) - 1)]
+        ang = rnd.choice((1, -1)) * rnd.uniform(0.6, 1.4) + rnd.uniform(-0.3, 0.3)
+        L = rnd.uniform(2.0, 5.0)
+        br = empty(f"tear_branch_{j}", (x, -0.05, z), root)
+        br.rotation_euler = (0, -ang, 0)
+        box(f"tear_branch_box_{j}", (L, 0.08, 0.12), (L / 2, 0, 0), {"default": vein}, br)
+        s0 = t0 + rnd.uniform(0.3, 0.9)
+        for t, k in ((0, 0.0), (s0, 0.0), (s0 + 0.15, 1.0)):
+            br.scale = (max(k, 0.001), 1 if k else 0.001, 1 if k else 0.001)
+            br.keyframe_insert("scale", frame=ctx.F(t))
+
+    # shards of sky breaking off and falling towards the camera
+    sky_mat = material("tear_shard", srgb((120, 160, 230)), rough=0.6, emission=(0.4, 0.55, 0.9), strength=0.6)
+    for k in range(26):
+        (x, z), _ = segs[rnd.randrange(len(segs))]
+        s = rnd.uniform(0.25, 0.7)
+        sh = box(f"tear_shard_{k}", (s, s * 0.4, s), (0, 0, 0), {"default": sky_mat})
+        sh.parent = root
+        p0 = (x + rnd.uniform(-0.5, 0.5), -0.3, z + rnd.choice((1, -1)) * rnd.uniform(0.5, 1.5))
+        v = (rnd.uniform(-0.8, 0.8), -rnd.uniform(1.5, 4.0), rnd.uniform(-0.5, 1.0))
+        spin = [rnd.uniform(-5, 5) for _ in range(3)]
+        born = t0 + rnd.uniform(0.25, 1.2)
+        show_between(sh, ctx.F(born), ctx.F(t_end + 1))
+        for f in range(ctx.F(born), ctx.F(t_end) + 2):
+            u = (f - ctx.F(born)) / ctx.fps
+            sh.location = (p0[0] + v[0] * u, p0[1] + v[1] * u, p0[2] + v[2] * u - 2.4 * u * u)
+            sh.rotation_euler = tuple(w * u for w in spin)
+            sh.keyframe_insert("location", frame=f)
+            sh.keyframe_insert("rotation_euler", frame=f)
+
+    # flicker on the wound's edges
+    em = edge.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+    for f in range(ctx.F(t0), ctx.F(t_end) + 2):
+        em.default_value = 12 + 14 * rnd.random()
+        em.keyframe_insert("default_value", frame=f)
+
+    # the eye: a blocky eye in the tear that opens and looks down at them
+    cx = min(range(len(pts)), key=lambda i: abs(pts[i][0]))
+    ex, ez = pts[cx]
+    eye = empty("tear_eye", (ex, -0.35, ez), root)
+    white = material("eye_white", srgb((235, 235, 240)), rough=0.4, emission=(0.9, 0.9, 1.0), strength=0.8)
+    iris = material("eye_iris", (0, 0, 0), emission=(1.0, 0.05, 0.75), strength=2.6)
+    pupil = material("eye_pupil", (0.0, 0.0, 0.0), rough=1.0)
+    box("eye_sclera", (5.6, 0.1, 2.5), (0, 0, 0), {"default": white}, eye)
+    box("eye_iris", (2.2, 0.12, 2.2), (0, -0.04, -0.15), {"default": iris}, eye)
+    box("eye_pupil", (0.7, 0.14, 1.7), (0, -0.07, -0.15), {"default": pupil}, eye)
+    for t, k in ((0, 0.0), (t_eye, 0.0), (t_eye + 0.08, 0.15), (t_eye + 0.35, 1.0)):
+        eye.scale = (1 if k else 0.001, 1, max(k, 0.001))
+        eye.keyframe_insert("scale", frame=ctx.F(t))

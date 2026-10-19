@@ -42,6 +42,18 @@ Look-dev without rendering the whole episode:
 voices and the timeline, sixteen render frame ranges in parallel, and the last
 one assembles the Short and pushes it to the `preview-<episode id>` branch.
 
+## Fixing an episode without re-rendering it
+
+- **Voices changed** (a line re-done, a new take): **Actions → Re-voice episode**
+  with the render's run id. The new voices set the timing and the existing
+  frames are retimed to it; nothing is rendered.
+- **One shot changed** (camera, effect, pose): **Actions → Render episode** with
+  `shots` = the changed shot names (e.g. `eye,sky`) and `reuse_run_id` = the
+  earlier render. Only those shots' frames are rendered; every other frame
+  comes from the earlier run. The lines must be unchanged, so the timing is
+  identical (they come from the voice cache).
+- Rendered frames are kept for 30 days.
+
 ## Ground rules
 
 - Original models, textures, sounds and music only; no game assets or logos.
