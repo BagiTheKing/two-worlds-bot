@@ -189,12 +189,13 @@
     {
       "type": "endcard",
       "over": true,
-      "from": "endcard",
+      "from": "endcard+1.4",
       "to": "end",
       "next_label": "NEXT  ·  EPISODE 2",
       "next_title": "STEVE'S PLAN LASTED 3 SECONDS",
       "question": "WHAT BROKE THE SKY?",
-      "question_sub": "Comment your theory"
+      "question_sub": "Comment your theory",
+      "pace": 0.4
     }
   ],
   "sets": [

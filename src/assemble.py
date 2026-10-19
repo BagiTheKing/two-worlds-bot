@@ -135,7 +135,7 @@ def endcard(img, o, t, f, fonts):
     else:
         img.paste((4, 3, 8), (0, 0, W, H))
     d = ImageDraw.Draw(img)
-    k = t - o["start"]
+    k = (t - o["start"]) / o.get("pace", 1.0)       # pace < 1: everything arrives sooner
     rnd = random.Random(f)
 
     def at(sec):

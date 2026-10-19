@@ -14,6 +14,9 @@ on:
       run_id:
         description: "Run id of the 'Render episode' run whose frames to reuse"
         required: true
+      base_run_id:
+        description: "Optional: an earlier full render under run_id's frames (when run_id re-rendered only some shots)"
+        default: ""
       voice:
         description: "Voice engine: gemini, elevenlabs or chatterbox"
         default: "gemini"
@@ -113,6 +116,17 @@ jobs:
           merge-multiple: true
           run-id: ${{ inputs.run_id }}
           github-token: ${{ github.token }}
+      - name: Fill in the frames that run_id did not re-render
+        if: inputs.base_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: build/frames_base/
+          merge-multiple: true
+          run-id: ${{ inputs.base_run_id }}
+          github-token: ${{ github.token }}
+      - if: inputs.base_run_id != ''
+        run: cp -n build/frames_base/*.png build/frames/ && ls build/frames | wc -l
       - run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4 build/source_timeline.json
       - id: id
         run: echo "id=$(python -c "import json;print(json.load(open('build/timeline.json'))['id'])")" >> $GITHUB_OUTPUT
