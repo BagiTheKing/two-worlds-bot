@@ -946,7 +946,9 @@ def build(episode_path, out_dir, keep=None):
     for o in ep.get("overlays", []):
         o = dict(o)
         o["start"] = round(R(o.pop("from")), 3)
-        o["end"] = round(R(o.pop("to")), 3)
+        to = o.pop("to")
+        # "end" means the last frame: the video runs 0.4 s past the last beat
+        o["end"] = round(length + 0.4 if to == "end" else R(to), 3)
         overlays.append(o)
     timeline = {"id": ep["id"], "fps": 24, "length": round(length, 3),
                 "beats": {k: [round(a, 3), round(b, 3)] for k, (a, b) in beats.items()},
