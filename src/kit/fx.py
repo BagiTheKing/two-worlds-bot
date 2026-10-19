@@ -379,8 +379,30 @@ def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3
     iris = material("eye_iris", (0, 0, 0), emission=(1.0, 0.05, 0.75), strength=2.6)
     pupil = material("eye_pupil", (0.0, 0.0, 0.0), rough=1.0)
     box("eye_sclera", (5.6, 0.1, 2.5), (0, 0, 0), {"default": white}, eye)
-    box("eye_iris", (2.2, 0.12, 2.2), (0, -0.04, -0.15), {"default": iris}, eye)
-    box("eye_pupil", (0.7, 0.14, 1.7), (0, -0.07, -0.15), {"default": pupil}, eye)
+    look = empty("tear_eye_look", (0, 0, 0), eye)           # iris and pupil move together
+    box("eye_iris", (2.2, 0.12, 2.2), (0, -0.04, -0.15), {"default": iris}, look)
+    pup = box("eye_pupil", (0.7, 0.14, 1.7), (0, -0.07, -0.15), {"default": pupil}, look)
     for t, k in ((0, 0.0), (t_eye, 0.0), (t_eye + 0.08, 0.15), (t_eye + 0.35, 1.0)):
         eye.scale = (1 if k else 0.001, 1, max(k, 0.001))
         eye.keyframe_insert("scale", frame=ctx.F(t))
+
+    # the gaze: stare, dart left, snap right (searching), creep back and lock
+    # on the camera with a slight tremble while the pupil narrows
+    gaze = [(0.0, 0.0), (0.45, 0.0), (0.53, -1.55), (1.05, -1.55), (1.13, 1.55),
+            (1.6, 1.55), (2.4, 0.0)]
+
+    def gaze_at(u):
+        if u <= gaze[0][0]:
+            return gaze[0][1]
+        for (ta, a), (tb, b) in zip(gaze, gaze[1:]):
+            if u <= tb:
+                return lerp(a, b, ss(ta, tb, u))
+        return gaze[-1][1]
+    for f in range(ctx.F(t_eye), ctx.F(t_end) + 2):
+        u = (f - 1) / ctx.fps - t_eye
+        locked = ss(2.2, 2.5, u)
+        tremble = 0.06 * locked * math.sin(57 * u) * math.sin(13 * u)
+        look.location = (gaze_at(u) + tremble, 0, 0.04 * locked * math.sin(41 * u))
+        look.keyframe_insert("location", frame=f)
+        pup.scale = (1 - 0.45 * locked, 1, 1)               # narrows as it focuses
+        pup.keyframe_insert("scale", frame=f)
