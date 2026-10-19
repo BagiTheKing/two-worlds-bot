@@ -270,15 +270,15 @@
       "head": [
         0,
         0,
-        0.8
+        -0.75
       ]
     },
     {
       "who": "noob",
       "do": "face",
-      "from": "look_around+0.55",
-      "to": "look_around+0.95",
-      "yaw": -0.45
+      "from": "look_around",
+      "to": "look_around+0.4",
+      "yaw": -0.35
     },
     {
       "who": "noob",
@@ -288,7 +288,7 @@
       "head": [
         0,
         0,
-        -0.75
+        0.45
       ]
     },
     {
@@ -299,7 +299,7 @@
       "head": [
         -0.4,
         0,
-        0.15
+        -0.25
       ]
     },
     {
@@ -560,7 +560,7 @@
     {
       "name": "look_around",
       "from": "noob_where.end",
-      "to": "noob_tree",
+      "to": "walk_to_tree",
       "lens": 24,
       "dof": 4.0,
       "look_actor": "noob",
@@ -579,11 +579,42 @@
           ]
         ],
         [
+          "walk_to_tree",
+          [
+            -2.1,
+            -3.7,
+            1.1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "walk",
+      "from": "walk_to_tree",
+      "to": "noob_tree",
+      "lens": 26,
+      "dof": 4.0,
+      "look_actor": "noob",
+      "look_offset": [
+        0,
+        0,
+        1.3
+      ],
+      "path": [
+        [
+          "walk_to_tree",
+          [
+            1.2,
+            3.4,
+            1.3
+          ]
+        ],
+        [
           "noob_tree",
           [
-            -2.0,
-            -3.6,
-            1.1
+            1.1,
+            2.9,
+            1.35
           ]
         ]
       ]
