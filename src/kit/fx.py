@@ -19,10 +19,12 @@ POC_SUN = (0.3, 0.75, -0.6)                  # episode 2's sun, for the shared s
 
 # ------------------------------------------------------------ sky and light
 
-def sky(ctx, sun_dir, keys):
+def sky(ctx, sun_dir, keys, below="void"):
     """World (episode 2's sky above the horizon, the void below it), a sun
     lamp and a visible square sun. keys: [(t, sun_energy, sky_strength,
-    sun_dir or None)] in seconds."""
+    sun_dir or None)] in seconds. below="sky" keeps the warm horizon colour
+    under the horizon too (a world with ground, as the proof of concept had):
+    much more light bounces up into the scene."""
     w = bpy.data.worlds.new("sky")
     bpy.context.scene.world = w
     try:
@@ -40,14 +42,15 @@ def sky(ctx, sun_dir, keys):
     el[0].position, el[0].color = 0.0, (0.95, 0.66, 0.42, 1)
     el[1].position, el[1].color = 0.6, (0.14, 0.33, 0.85, 1)
     el.new(0.22).color = (0.75, 0.68, 0.72, 1)
-    below = nt.nodes.new("ShaderNodeMapRange")
-    below.inputs["From Min"].default_value = -0.12
-    below.inputs["From Max"].default_value = 0.0
-    nt.links.new(sep.outputs["Z"], below.inputs["Value"])
+    horizon = nt.nodes.new("ShaderNodeMapRange")
+    horizon.inputs["From Min"].default_value = -0.12
+    horizon.inputs["From Max"].default_value = 0.0
+    nt.links.new(sep.outputs["Z"], horizon.inputs["Value"])
     mix = nt.nodes.new("ShaderNodeMix")
     mix.data_type = "RGBA"
-    nt.links.new(below.outputs["Result"], mix.inputs["Factor"])
-    mix.inputs["A"].default_value = (0.03, 0.01, 0.06, 1)          # the void
+    nt.links.new(horizon.outputs["Result"], mix.inputs["Factor"])
+    mix.inputs["A"].default_value = ((0.03, 0.01, 0.06, 1) if below == "void"
+                                     else tuple(el[0].color))     # the void, or the horizon
     nt.links.new(ramp.outputs["Color"], mix.inputs["B"])
     nt.links.new(mix.outputs["Result"], bg.inputs["Color"])
 

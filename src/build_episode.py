@@ -75,7 +75,7 @@ def build(episode_path, timeline_path, tex_dir):
         if k == "sky":
             keys = [(ctx.T(r), en, st, fx.POC_SUN if (len(rest) and rest[0] == "poc") else None)
                     for r, en, st, *rest in e["keys"]]
-            fx.sky(ctx, tuple(e["sun_dir"]), keys)
+            fx.sky(ctx, tuple(e["sun_dir"]), keys, below=e.get("below", "void"))
         elif k == "clouds":
             fx.drifting_clouds(ctx, ctx.T(e["freeze"]))
         elif k == "birds":
