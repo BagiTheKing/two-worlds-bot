@@ -608,8 +608,10 @@ def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3):
         key = _cache_path(cache_dir, "gemini-solo-raw", label, text, voice, k) if cache_dir else None
         if key and os.path.exists(key):
             clip, sr = sf.read(key)
+            print(f"  solo {label} {text!r} take {k}: from the cache")
         else:
             clip, sr = gemini_speak([(label, text)], voice)
+            print(f"  solo {label} {text!r} take {k}: NEW recording")
             if key:
                 os.makedirs(cache_dir, exist_ok=True)
                 sf.write(key, clip, sr)
@@ -847,6 +849,10 @@ def build(episode_path, out_dir, keep=None):
                 audio = null_voice(audio)
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
+            if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
+                audio = audio[:int(ev["trim"] * SR)].copy()
+                f = int(0.25 * SR)
+                audio[-f:] *= np.linspace(1, 0, f)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1
@@ -861,6 +867,7 @@ def build(episode_path, out_dir, keep=None):
                                       np.arange(len(audio)), audio)
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
+                          "caption": ev.get("caption", True),
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))

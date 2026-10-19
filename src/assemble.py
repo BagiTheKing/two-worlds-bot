@@ -270,6 +270,8 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
     n_frames = int(round((tl["length"] + 0.4) * fps)) + 1
     caps = []
     for ln in tl["lines"]:
+        if not ln.get("caption", True):
+            continue
         color = tl["cast"][ln["who"]]["caption"]
         caps += [(a, b, txt, color) for a, b, txt in chunks(ln)]
     font = ImageFont.truetype(FONT, 92)

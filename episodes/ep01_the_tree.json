@@ -29,8 +29,35 @@
   "events": [
     {
       "beat": "flash",
-      "dur": 2.0,
-      "audio_clip": "assets/clips/ep00_flash.wav"
+      "dur": 1.21,
+      "audio_clip": "assets/clips/ep00_recap_bed.wav"
+    },
+    {
+      "line": "steve",
+      "name": "recap_steve",
+      "text": "Aaaaaaah!",
+      "direction_text": "Aaaaaaaaaaaahhhh!",
+      "nonverbal": true,
+      "fx": "falling",
+      "pad": 0.0,
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "slot": 0.79,
+      "trim": 0.79,
+      "caption": false
+    },
+    {
+      "line": "noob",
+      "name": "recap_noob",
+      "text": "Aaaaaaaah!",
+      "direction_text": "Aaaaaaaaaaaahhhh!",
+      "nonverbal": true,
+      "fx": "falling",
+      "together": true,
+      "pad": 0.0,
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "slot": 0.79,
+      "trim": 0.79,
+      "caption": false
     },
     {
       "beat": "forest",
@@ -165,21 +192,20 @@
       "type": "clip",
       "video": "assets/clips/ep00_flash.mp4",
       "from": "flash",
-      "to": "flash.end",
-      "graded": true
+      "to": "forest"
     },
     {
-      "type": "hook",
-      "text": "IN 24 HOURS...\nTHE WORLD ENDS.",
-      "from": 0.1,
-      "to": "flash.end",
-      "y": 760
+      "type": "label",
+      "text": "",
+      "sub": "PREVIOUSLY...",
+      "from": "flash",
+      "to": "forest"
     },
     {
       "type": "clip",
       "video": "assets/clips/ep01_opening.mp4",
       "from": "forest",
-      "to": "noob_where.end"
+      "to": "noob_where+0.85"
     },
     {
       "type": "fade_in",
@@ -254,9 +280,9 @@
     "steve": {
       "rig": "steve",
       "at": [
-        -7.0,
+        -0.9,
         0.5,
-        0
+        -30
       ],
       "yaw": 1.5708
     }
@@ -432,14 +458,14 @@
     },
     {
       "who": "steve",
-      "do": "walk",
-      "from": "walk_to_tree",
-      "to": "steve_tool-0.35",
-      "dest": [
+      "do": "set",
+      "from": "punch+0.3",
+      "to": "punch+0.3",
+      "at": [
         -0.9,
-        0.5
-      ],
-      "rate": 1.9
+        0.5,
+        0
+      ]
     },
     {
       "who": "steve",
@@ -559,7 +585,7 @@
   "shots": [
     {
       "name": "look_around",
-      "from": "noob_where.end",
+      "from": "noob_where+0.85",
       "to": "walk_to_tree",
       "lens": 24,
       "dof": 4.0,
@@ -571,7 +597,7 @@
       ],
       "path": [
         [
-          "noob_where.end",
+          "noob_where+0.85",
           [
             -2.4,
             -3.9,
@@ -943,7 +969,7 @@
   "skip_render": [
     [
       "flash",
-      "noob_where.end"
+      "noob_where+0.85"
     ]
   ]
 }
