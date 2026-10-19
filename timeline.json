@@ -1,0 +1,421 @@
+{
+ "id": "ep00_the_end",
+ "fps": 24,
+ "length": 60.563,
+ "beats": {
+  "open": [
+   0.0,
+   0.4
+  ],
+  "vo_1": [
+   0.4,
+   2.919
+  ],
+  "vo_2": [
+   3.169,
+   4.519
+  ],
+  "vo_3": [
+   4.719,
+   5.91
+  ],
+  "vo_4": [
+   6.21,
+   8.091
+  ],
+  "vo_5": [
+   8.391,
+   11.511
+  ],
+  "freeze": [
+   11.611,
+   13.411
+  ],
+  "erasure": [
+   13.411,
+   15.811
+  ],
+  "steve_run": [
+   15.811,
+   17.193
+  ],
+  "noob_running": [
+   17.243,
+   18.719
+  ],
+  "erasure_b": [
+   18.769,
+   21.369
+  ],
+  "noob_bridge": [
+   21.369,
+   23.651
+  ],
+  "bridge_delete": [
+   23.801,
+   24.501
+  ],
+  "fall": [
+   24.501,
+   24.951
+  ],
+  "grab": [
+   24.951,
+   25.551
+  ],
+  "noob_respawn": [
+   25.551,
+   29.764
+  ],
+  "steve_no": [
+   30.114,
+   30.614
+  ],
+  "noob_oh": [
+   31.714,
+   32.136
+  ],
+  "look_down": [
+   32.436,
+   33.036
+  ],
+  "darken": [
+   33.036,
+   34.036
+  ],
+  "steve_what": [
+   34.036,
+   35.478
+  ],
+  "null_rise": [
+   35.678,
+   38.278
+  ],
+  "null_1": [
+   38.278,
+   44.569
+  ],
+  "null_hand": [
+   44.869,
+   45.769
+  ],
+  "ledge_gone": [
+   45.769,
+   46.119
+  ],
+  "steve_scream": [
+   46.119,
+   48.287
+  ],
+  "noob_scream": [
+   46.119,
+   48.606
+  ],
+  "fall_void": [
+   46.919,
+   48.519
+  ],
+  "black": [
+   48.519,
+   50.519
+  ],
+  "forest": [
+   50.519,
+   52.919
+  ],
+  "noob_where": [
+   52.919,
+   55.463
+  ],
+  "forest_end": [
+   55.463,
+   55.963
+  ],
+  "endcard": [
+   55.963,
+   60.563
+  ]
+ },
+ "impacts": [],
+ "fx_times": {
+  "erasure": [
+   13.879,
+   14.106,
+   14.513,
+   14.527,
+   14.63,
+   14.718,
+   14.781,
+   14.84,
+   14.953,
+   15.266,
+   15.287,
+   15.403,
+   15.453,
+   15.52,
+   15.573,
+   15.586
+  ],
+  "erasure_b": [
+   19.154,
+   19.166,
+   19.182,
+   19.204,
+   19.659,
+   19.745,
+   19.777,
+   19.991,
+   20.01,
+   20.044,
+   20.1,
+   20.219,
+   20.264,
+   20.344,
+   20.533,
+   20.579,
+   20.819,
+   20.824,
+   20.891,
+   20.987,
+   21.124,
+   21.168
+  ],
+  "bridge_delete": [
+   23.801,
+   23.838,
+   23.876,
+   23.914,
+   23.951,
+   23.989,
+   24.027,
+   24.065,
+   24.102,
+   24.14,
+   24.178,
+   24.215,
+   24.253,
+   24.291
+  ]
+ },
+ "lines": [
+  {
+   "name": "vo_1",
+   "who": "steve",
+   "text": "There used to be two worlds.",
+   "vo": true,
+   "start": 0.4,
+   "end": 2.919
+  },
+  {
+   "name": "vo_2",
+   "who": "steve",
+   "text": "Mine...",
+   "vo": true,
+   "start": 3.169,
+   "end": 4.519
+  },
+  {
+   "name": "vo_3",
+   "who": "steve",
+   "text": "...and his.",
+   "vo": true,
+   "start": 4.719,
+   "end": 5.91
+  },
+  {
+   "name": "vo_4",
+   "who": "steve",
+   "text": "Then they crashed into each other.",
+   "vo": true,
+   "start": 6.21,
+   "end": 8.091
+  },
+  {
+   "name": "vo_5",
+   "who": "steve",
+   "text": "And one day... reality just stopped.",
+   "vo": true,
+   "start": 8.391,
+   "end": 11.511
+  },
+  {
+   "name": "steve_run",
+   "who": "steve",
+   "text": "Noob! Run!",
+   "vo": false,
+   "start": 15.811,
+   "end": 17.193
+  },
+  {
+   "name": "noob_running",
+   "who": "noob",
+   "text": "I am running!",
+   "vo": false,
+   "start": 17.243,
+   "end": 18.719
+  },
+  {
+   "name": "noob_bridge",
+   "who": "noob",
+   "text": "Oh! The bridge is under maintenance!",
+   "vo": false,
+   "start": 21.369,
+   "end": 23.651
+  },
+  {
+   "name": "noob_respawn",
+   "who": "noob",
+   "text": "Steve... can you respawn if there's no world?",
+   "vo": false,
+   "start": 25.551,
+   "end": 29.764
+  },
+  {
+   "name": "steve_no",
+   "who": "steve",
+   "text": "No.",
+   "vo": false,
+   "start": 30.114,
+   "end": 30.614
+  },
+  {
+   "name": "noob_oh",
+   "who": "noob",
+   "text": "...Oh.",
+   "vo": false,
+   "start": 31.714,
+   "end": 32.136
+  },
+  {
+   "name": "steve_what",
+   "who": "steve",
+   "text": "What... is that?",
+   "vo": false,
+   "start": 34.036,
+   "end": 35.478
+  },
+  {
+   "name": "null_1",
+   "who": "null",
+   "text": "Reality has been corrected.",
+   "vo": false,
+   "start": 38.278,
+   "end": 44.569
+  },
+  {
+   "name": "steve_scream",
+   "who": "steve",
+   "text": "Aaaaaaah!",
+   "vo": false,
+   "start": 46.119,
+   "end": 48.287
+  },
+  {
+   "name": "noob_scream",
+   "who": "noob",
+   "text": "Aaaaaaaah!",
+   "vo": false,
+   "start": 46.119,
+   "end": 48.606
+  },
+  {
+   "name": "noob_where",
+   "who": "noob",
+   "text": "Whoa. Where am I?",
+   "vo": false,
+   "start": 52.919,
+   "end": 55.463
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "label",
+   "text": "EPISODE 0",
+   "sub": "THE END",
+   "start": 0.0,
+   "end": 3.169
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: {pct}%",
+   "steps": [
+    "erasure",
+    "erasure_b"
+   ],
+   "count_from": 100,
+   "count_to": 3,
+   "start": 11.611,
+   "end": 48.519
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "SURVIVE THE APOCALYPSE",
+   "sub": "0.1% of players have this",
+   "start": 46.419,
+   "end": 48.519
+  },
+  {
+   "type": "card",
+   "text": "24 HOURS EARLIER",
+   "start": 48.519,
+   "end": 50.519
+  },
+  {
+   "type": "clip",
+   "video": "assets/clips/ep01_opening.mp4",
+   "start": 50.519,
+   "end": 55.963
+  },
+  {
+   "type": "fade_in",
+   "start": 50.519,
+   "end": 51.019
+  },
+  {
+   "type": "endcard",
+   "next_label": "NEXT  \u00b7  EPISODE 1",
+   "next_title": "THE NOOB WHO PUNCHED A TREE",
+   "question": "WHO IS NULL?",
+   "question_sub": "Comment your theory",
+   "start": 55.963,
+   "end": 60.963
+  }
+ ]
+}
