@@ -218,7 +218,49 @@ def bounce(c, t, st, actor=None):
 
 LOCOMOTION = {"walk": walk, "run": run, "set": set_, "face": face, "fall": fall,
               "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce}
-BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail}
+def punch(c, t, st, actor=None):
+    """One punch: wind-up, strike landing on the timeline's impact, then a
+    stinging hand. The fist lands on the first impact inside the clip."""
+    arm = c.get("arm", "arm_r")
+    side = 1 if arm == "arm_r" else -1
+    hits = [h for h in c.get("impacts", []) if c["t0"] <= h <= c["t1"]]
+    hit = hits[0] if hits else c["t0"] + 0.18
+    t0 = c["t0"]
+    if t < hit - 0.1:
+        return st, {arm: (0.5 * ss(t0, hit - 0.1, t), 0, 0)}
+    if t < hit + 0.12:
+        e = ss(hit - 0.1, hit, t)
+        return st, {arm: (lerp(0.5, -1.57, e), 0, 0.55 * e * side)}
+    e = 1 - ss(hit + 0.12, hit + 0.45, t)
+    shake = 0.25 * math.sin(42 * t) * (1 - ss(hit + 0.2, c["t1"], t))
+    return st, {arm: (-1.57 * e + shake, 0, 0.55 * e * side),
+                "head": (0, 0, 0.15 * math.sin(30 * t) * e)}
+
+
+def flurry(c, t, st, actor=None):
+    """Rapid alternating punches, one fist per impact in the timeline."""
+    hits = [h for h in c.get("impacts", []) if c["t0"] - 0.05 <= h <= c["t1"]]
+    parts = {"arm_r": (-0.25, 0, 0), "arm_l": (-0.25, 0, 0)}
+    for i, h in enumerate(hits):
+        e = ss(h - 0.07, h, t) * (1 - ss(h + 0.02, h + 0.11, t))
+        if e > 0:
+            arm = "arm_r" if i % 2 == 0 else "arm_l"
+            parts[arm] = (lerp(-0.25, -1.57, e), 0, (0.55 if arm == "arm_r" else -0.55) * e)
+    return st, parts
+
+
+def cheer(c, t, st, actor=None):
+    """Both arms up and a little jump."""
+    k = ss(c["t0"], c["t0"] + 0.12, t)
+    j = (t - c["t0"] - 0.05) / 0.42
+    lift = 0.4 * math.sin(math.pi * j) if 0 <= j <= 1 else 0.0
+    loc = st["loc"]
+    return dict(st, loc=(loc[0], loc[1], loc[2] + lift)), {
+        "arm_r": (-2.8 * k, 0, 0.25 * k), "arm_l": (-2.8 * k, 0, -0.25 * k)}
+
+
+BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
+        "punch": punch, "flurry": flurry, "cheer": cheer}
 
 
 # --------------------------------------------------------------- the actor

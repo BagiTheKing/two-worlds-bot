@@ -66,7 +66,8 @@ def build(episode_path, timeline_path, tex_dir):
     actors = {}
     for name, spec in ep.get("actors", {}).items():
         rig = RIGS[spec.get("rig", name)](tex, name=name)
-        clips = [c for c in ep.get("clips", []) if c["who"] == name]
+        clips = [dict(c, impacts=tl.get("impacts", [])) if c["do"] in ("punch", "flurry") else c
+                 for c in ep.get("clips", []) if c["who"] == name]
         actors[name] = Actor(name, rig, spec, clips, ctx.beats, ctx.end, tl["lines"], actors)
 
     for e in ep.get("fx", []):
@@ -101,6 +102,17 @@ def build(episode_path, timeline_path, tex_dir):
                            set(e["names"]), ctx.T(e["at"]))
         elif k == "forest_portal":
             fx.forest_portal(ctx, sets["forest_valley"], ctx.T(e["open"]), ctx.T(e["land"]), mats)
+        elif k in ("poc_portal", "poc_crack", "poc_tree"):
+            # episode 1's hand-built effects, driven by this timeline
+            poc_tl = scene_poc.TL(timeline_path)
+            if k == "poc_portal":
+                scene_poc.portal(poc_tl, mats)
+            elif k == "poc_crack":
+                scene_poc.sky_crack(poc_tl)
+            else:
+                scene_poc.target_block(poc_tl, bpy.data.objects["target"])
+                import random as _r
+                scene_poc.debris(poc_tl, mats, _r.Random(11))
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))

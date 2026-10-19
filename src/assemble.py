@@ -65,13 +65,13 @@ def hud(img, o, t, f, fonts):
     rnd = random.Random(f)
     if rnd.random() < 0.08:                      # drop-out frames
         return
-    pct = None
+    pct = o.get("value")
     if o.get("_steps"):
         k = sum(1 for x in o["_steps"] if x <= t)
         a, b = o["count_from"], o["count_to"]
         pct = round(a - (a - b) * k / len(o["_steps"]))
     text = o["text"].format(pct=pct)
-    low = pct is not None and pct < 30 or pct is None
+    low = o.get("alert") or (pct is not None and pct < 30) or (pct is None and "{pct}" in o["text"])
     d = ImageDraw.Draw(img)
     x, y = 70 + rnd.choice((0, 0, 0, 3, -3)), 150
     for dx, col in ((-4, (255, 0, 200)), (4, (0, 230, 255))):
@@ -129,7 +129,11 @@ def achievement(img, o, t, f, fonts):
 def endcard(img, o, t, f, fonts):
     """Series title, to be continued, what's next, and a question for the
     audience. Elements arrive one after another."""
-    img.paste((4, 3, 8), (0, 0, W, H))
+    if o.get("over"):                    # over the last shot: darken it, keep it moving
+        dim = min(0.62, (t - o["start"]) / 0.4 * 0.62)
+        img.paste(Image.blend(img, Image.new("RGB", (W, H), (4, 3, 8)), dim))
+    else:
+        img.paste((4, 3, 8), (0, 0, W, H))
     d = ImageDraw.Draw(img)
     k = t - o["start"]
     rnd = random.Random(f)
@@ -170,8 +174,40 @@ def fade_in(img, o, t, f, fonts):
         img.paste(Image.blend(img, black, k))
 
 
+def hook(img, o, t, f, fonts):
+    """The first-seconds hook: one big line that pops in."""
+    a, b = o["start"], o["end"]
+    k = min(1.0, (t - a) / 0.12, (b - t) / 0.15)
+    if k <= 0:
+        return
+    size = int(104 * (0.85 + 0.15 * min(1.0, (t - a) / 0.12)))
+    fnt = ImageFont.truetype(FONT, size)
+    d = ImageDraw.Draw(img)
+    y = o.get("y", 560)
+    for i, line in enumerate(o["text"].split("\n")):
+        d.text((W // 2, y + i * int(size * 1.1)), line, font=fnt, fill=o.get("color", "#FFFFFF"),
+               anchor="mm", stroke_width=12, stroke_fill=(0, 0, 0))
+
+
+def prompt(img, o, t, f, fonts):
+    """A small mid-video nudge to comment, in the series' glitch style."""
+    a, b = o["start"], o["end"]
+    k = min(1.0, (t - a) / 0.2, (b - t) / 0.2)
+    if k <= 0:
+        return
+    fnt = ImageFont.truetype(FONT, 54)
+    layer = Image.new("RGBA", (W, 160), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    w = d.textlength(o["text"], font=fnt) + 80
+    x0 = (W - w) / 2
+    d.rounded_rectangle((x0, 20, x0 + w, 130), radius=26, fill=(8, 6, 14, int(220 * k)),
+                        outline=(255, 59, 212, int(255 * k)), width=4)
+    d.text((W // 2, 75), o["text"], font=fnt, fill=(255, 255, 255, int(255 * k)), anchor="mm")
+    img.paste(layer, (0, o.get("y", 1500)), layer)
+
+
 DRAW = {"hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
-        "label": label, "endcard": endcard}
+        "label": label, "endcard": endcard, "hook": hook, "prompt": prompt}
 FULL = ("card", "fade_in", "endcard")
 
 
