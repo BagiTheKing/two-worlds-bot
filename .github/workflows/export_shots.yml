@@ -1,0 +1,43 @@
+name: Export shots
+
+# Manual. The clean frames of an earlier "Render episode" run (no overlays,
+# no captions) as one video per shot, pushed to preview-<episode id>-shots.
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id of the 'Render episode' run"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: build/frames/
+          merge-multiple: true
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - run: |
+          mkdir -p /tmp/pub && cp build/timeline.json /tmp/pub/
+          python tools/shot_clips.py build/frames /tmp/pub
+          ID=$(python -c "import json;print(json.load(open('build/timeline.json'))['id'])")
+          cd /tmp/pub && git init -q -b "preview-$ID-shots"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Shots from run ${{ inputs.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-$ID-shots"

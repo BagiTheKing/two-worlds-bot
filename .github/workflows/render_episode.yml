@@ -178,25 +178,8 @@ jobs:
       - name: Shots only, nothing to reuse - publish the clean shots instead of an episode
         if: inputs.shots != '' && inputs.reuse_run_id == ''
         run: |
-          # each contiguous run of frames becomes shot_<first frame>.mp4 (no
-          # overlays, no captions), e.g. to quote one episode in another
           mkdir -p /tmp/pub && cp build/timeline.json /tmp/pub/
-          python - <<'PY'
-          import os, subprocess
-          fs = sorted(int(n[:-4]) for n in os.listdir("build/frames") if n.endswith(".png"))
-          runs = []
-          for f in fs:
-              if runs and f == runs[-1][1] + 1:
-                  runs[-1][1] = f
-              else:
-                  runs.append([f, f])
-          for a, b in runs:
-              subprocess.run(["ffmpeg", "-loglevel", "error", "-framerate", "24", "-start_number", str(a),
-                              "-i", "build/frames/%04d.png", "-frames:v", str(b - a + 1),
-                              "-c:v", "libx264", "-crf", "12", "-pix_fmt", "yuv420p",
-                              f"/tmp/pub/shot_{a:04d}.mp4"], check=True)
-              print("shot", a, b)
-          PY
+          python tools/shot_clips.py build/frames /tmp/pub
           cd /tmp/pub && git init -q -b "preview-${{ needs.prep.outputs.id }}-shots"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
