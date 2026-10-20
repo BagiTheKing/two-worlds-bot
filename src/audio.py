@@ -824,7 +824,9 @@ def build(episode_path, out_dir, keep=None):
             elif kind == "bridge":
                 n = ev.get("count", 14)
                 fx_times[name] = [round(cursor + dur * 0.7 * i / (n - 1), 3) for i in range(n)]
-            if kind:
+            if kind == "steps" and "step_every" in ev:     # on the walk cycle's foot contacts
+                clips.append((kind, cursor, (dur, ev["step_every"], ev.get("step_first", 0.1))))
+            elif kind:
                 clips.append((kind, cursor, dur))
             if ev.get("audio_clip"):                 # a ready-made clip's own sound
                 clips.append(("file", cursor, ev["audio_clip"]))
@@ -900,6 +902,9 @@ def build(episode_path, out_dir, keep=None):
             place(mix, sfx_pop(), R(a["glitch_at"]) + 0.25, 0.25)
         cut = int(0.03 * SR)
         seg[-cut:] *= np.linspace(1, 0, cut)                   # hard cuts, on purpose
+        if a.get("fade_in"):
+            f = int(a["fade_in"] * SR)
+            seg[:f] *= np.linspace(0, 1, f)
         place(mix, seg, a0, a.get("gain", 0.10))
     for kind, at, arg in clips:
         if kind == "voice":
@@ -911,8 +916,9 @@ def build(episode_path, out_dir, keep=None):
         elif kind == "land":
             place(mix, sfx_land(arg), at, 0.7)
         elif kind == "steps":
-            for i in range(int(arg / 0.25)):
-                place(mix, sfx_step(), at + 0.1 + i * 0.25, 0.5)
+            dur, every, first = arg if isinstance(arg, tuple) else (arg, 0.25, 0.1)
+            for i in range(int((dur - first) / every) + 1):
+                place(mix, sfx_step(), at + first + i * every, 0.5)
         elif kind == "glitch":
             place(mix, sfx_glitch(arg), at, 0.55)
         elif kind == "break":

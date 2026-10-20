@@ -89,7 +89,10 @@
     },
     {
       "beat": "walk_to_tree",
-      "dur": 1.0
+      "dur": 1.0,
+      "sfx": "steps",
+      "step_every": 0.227,
+      "step_first": 0.114
     },
     {
       "line": "noob",
@@ -160,7 +163,7 @@
   "music": [
     {
       "cue": "theme_soft",
-      "from": "noob_tree",
+      "from": "noob_where",
       "to": "crack",
       "gain": 0.12
     },
@@ -182,9 +185,10 @@
   "ambience": [
     {
       "kind": "meadow",
-      "from": "noob_tree",
+      "from": "forest+1.5",
       "to": "crack",
-      "gain": 0.08
+      "gain": 0.08,
+      "fade_in": 0.4
     }
   ],
   "overlays": [
