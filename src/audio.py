@@ -963,7 +963,19 @@ def build(episode_path, out_dir, keep=None):
         kw = {"hit_at": R(m["hit_at"]) - m0} if m.get("hit_at") else {}
         if m.get("minimal"):
             kw["minimal"] = True
-        place(score, music.render(m["cue"], m1 - m0, seed=k, **kw), m0, m.get("gain", 0.2))
+        x = music.render(m["cue"], m1 - m0, seed=k, **kw)
+        for sw in m.get("swell", []):           # louder while nobody speaks, eased in and out
+            s0, s1 = int((R(sw["from"]) - m0) * SR), int((R(sw["to"]) - m0) * SR)
+            ramp = int(sw.get("ramp", 0.3) * SR)
+            g = np.ones(len(x))
+            g[max(0, s0):max(0, s1)] = sw["gain"]
+            for i0, i1, up in ((s0 - ramp, s0, True), (s1, s1 + ramp, False)):
+                a_, b_ = max(0, i0), min(len(x), i1)
+                if b_ > a_:
+                    r = np.linspace(0, 1, i1 - i0)[a_ - i0:b_ - i0]
+                    g[a_:b_] = 1 + (sw["gain"] - 1) * (r if up else 1 - r)
+            x = x * g
+        place(score, x, m0, m.get("gain", 0.2))
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
     out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck)

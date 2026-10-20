@@ -165,7 +165,15 @@
       "cue": "theme_soft",
       "from": "noob_where",
       "to": "crack",
-      "gain": 0.12
+      "gain": 0.12,
+      "swell": [
+        {
+          "from": "noob_where.end",
+          "to": "noob_tree",
+          "gain": 3.5,
+          "ramp": 0.35
+        }
+      ]
     },
     {
       "cue": "null",
