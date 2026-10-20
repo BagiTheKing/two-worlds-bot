@@ -1,0 +1,266 @@
+{
+ "id": "ep01_the_tree",
+ "fps": 24,
+ "length": 30.935,
+ "beats": {
+  "flash": [
+   0.0,
+   0.95
+  ],
+  "recap_steve": [
+   0.95,
+   2.0
+  ],
+  "recap_noob": [
+   0.95,
+   2.0
+  ],
+  "forest": [
+   2.0,
+   4.4
+  ],
+  "noob_where": [
+   4.4,
+   6.944
+  ],
+  "look_around": [
+   7.144,
+   8.944
+  ],
+  "walk_to_tree": [
+   8.944,
+   9.944
+  ],
+  "noob_tree": [
+   9.944,
+   13.264
+  ],
+  "punch": [
+   13.364,
+   14.214
+  ],
+  "steve_tool": [
+   14.214,
+   16.085
+  ],
+  "noob_roblox": [
+   16.335,
+   19.531
+  ],
+  "flurry": [
+   19.631,
+   20.931
+  ],
+  "break": [
+   20.931,
+   21.831
+  ],
+  "noob_float": [
+   21.831,
+   23.414
+  ],
+  "steve_normal": [
+   23.664,
+   24.552
+  ],
+  "crack": [
+   25.052,
+   26.652
+  ],
+  "steve_not": [
+   26.652,
+   27.635
+  ],
+  "endcard": [
+   27.935,
+   30.935
+  ]
+ },
+ "impacts": [
+  13.544,
+  19.751,
+  19.941,
+  20.131,
+  20.321,
+  20.511,
+  20.701
+ ],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "recap_steve",
+   "who": "steve",
+   "text": "Aaaaaaah!",
+   "vo": false,
+   "caption": false,
+   "start": 0.95,
+   "end": 2.0
+  },
+  {
+   "name": "recap_noob",
+   "who": "noob",
+   "text": "Aaaaaaaah!",
+   "vo": false,
+   "caption": false,
+   "start": 0.95,
+   "end": 2.0
+  },
+  {
+   "name": "noob_where",
+   "who": "noob",
+   "text": "Whoa. Where am I?",
+   "vo": false,
+   "caption": true,
+   "start": 4.4,
+   "end": 6.944
+  },
+  {
+   "name": "noob_tree",
+   "who": "noob",
+   "text": "Okay. A tree. One punch. Watch this.",
+   "vo": false,
+   "caption": true,
+   "start": 9.944,
+   "end": 13.264
+  },
+  {
+   "name": "steve_tool",
+   "who": "steve",
+   "text": "It's a tree. You need a tool.",
+   "vo": false,
+   "caption": true,
+   "start": 14.214,
+   "end": 16.085
+  },
+  {
+   "name": "noob_roblox",
+   "who": "noob",
+   "text": "I don't need tools. I'm a Roblox player.",
+   "vo": false,
+   "caption": true,
+   "start": 16.335,
+   "end": 19.531
+  },
+  {
+   "name": "noob_float",
+   "who": "noob",
+   "text": "...Why is it floating?",
+   "vo": false,
+   "caption": true,
+   "start": 21.831,
+   "end": 23.414
+  },
+  {
+   "name": "steve_normal",
+   "who": "steve",
+   "text": "That's normal.",
+   "vo": false,
+   "caption": true,
+   "start": 23.664,
+   "end": 24.552
+  },
+  {
+   "name": "steve_not",
+   "who": "steve",
+   "text": "...That's not.",
+   "vo": false,
+   "caption": true,
+   "start": 26.652,
+   "end": 27.635
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "clip",
+   "video": "assets/clips/ep00_flash.mp4",
+   "start": 0.0,
+   "end": 2.0
+  },
+  {
+   "type": "label",
+   "text": "",
+   "sub": "PREVIOUSLY...",
+   "start": 0.0,
+   "end": 2.0
+  },
+  {
+   "type": "clip",
+   "video": "assets/clips/ep01_opening.mp4",
+   "start": 2.0,
+   "end": 5.25
+  },
+  {
+   "type": "fade_in",
+   "start": 2.0,
+   "end": 2.3
+  },
+  {
+   "type": "label",
+   "text": "EPISODE 1",
+   "sub": "24 HOURS EARLIER",
+   "start": 2.0,
+   "end": 6.944
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 100%",
+   "start": 2.4,
+   "end": 25.452
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 99%",
+   "alert": true,
+   "start": 25.452,
+   "end": 27.935
+  },
+  {
+   "type": "prompt",
+   "text": "IS THIS NORMAL? COMMENT \u2193",
+   "y": 1480,
+   "start": 23.664,
+   "end": 25.052
+  },
+  {
+   "type": "endcard",
+   "over": true,
+   "next_label": "NEXT  \u00b7  EPISODE 2",
+   "next_title": "STEVE'S PLAN LASTED 3 SECONDS",
+   "question": "WHAT BROKE THE SKY?",
+   "question_sub": "Comment your theory",
+   "pace": 0.4,
+   "start": 29.335,
+   "end": 31.335
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 31.335
+  }
+ ]
+}
