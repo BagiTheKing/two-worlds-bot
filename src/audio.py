@@ -531,7 +531,7 @@ def stretch(x, ratio, sr=SR):
     return (out / weight)[:n_out]
 
 
-def tighten(x, max_gap=0.22, sr=SR):
+def tighten(x, max_gap=0.22, sr=SR, floor=0.03):
     """Shorten every pause inside a line to at most max_gap seconds: the same
     take and delivery, less dead air between sentences."""
     win = int(0.01 * sr)
@@ -539,7 +539,7 @@ def tighten(x, max_gap=0.22, sr=SR):
     if n < 3:
         return x
     rms = np.sqrt(np.mean(x[:n * win].reshape(n, win) ** 2, axis=1))
-    quiet = rms < 0.03 * rms.max()
+    quiet = rms < floor * rms.max()
     keep = np.ones(len(x), bool)
     fade = int(0.008 * sr)
     i = 0
@@ -653,7 +653,8 @@ def gemini_lines(ep, cache_dir):
             clip, _ = gemini_solo(cast, w, _spoken(t), False, cache_dir)
             out[n] = (clip, sr)
     for n, (w, text, nonverbal) in solos.items():
-        out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir)
+        out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir, takes=ep.get("solo_takes", 3),
+                             whole=ep.get("solo_whole", False))
     for n, src in borrowed.items():                  # an earlier episode's exact take
         turns = [tuple(t) for t in src["turns"]]
         raw = _cache_path(cache_dir, "gemini-scene-raw", turns, src["voices"])
@@ -666,11 +667,13 @@ def gemini_lines(ep, cache_dir):
     return out
 
 
-def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3):
+def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3, whole=False):
     """One line on its own, without touching the scene it belongs to. Speech
     gets a few takes and Whisper keeps the one that says the words best;
     non-words (screams) get one take. No [directions]: on their own, the
-    speech models tend to read them aloud."""
+    speech models tend to read them aloud. whole: keep each take whole (only
+    its silence trimmed) instead of cutting it at the words Whisper found,
+    for languages where Whisper's word timings are too loose to cut by."""
     label = who.capitalize()
     voice = {label: cast[who]["gemini_voice"]}
     best = None
@@ -691,7 +694,7 @@ def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3):
         words = transcribe(clip, sr)
         sc = score_take(text, words)
         print(f"  solo take {k} for {text!r}: {sc:.2f} {' '.join(w for w, _, _ in words)!r}")
-        cut = cut_lines(clip, sr, span, ["x"]).get("x", clip)
+        cut = clip if whole else cut_lines(clip, sr, span, ["x"]).get("x", clip)
         if best is None or sc > best[0]:
             best = (sc, cut, sr)
     return best[1], best[2]
@@ -1022,7 +1025,7 @@ def build(episode_path, out_dir, keep=None):
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
             if ev.get("tighten"):                     # shorter pauses inside the line
-                audio = tighten(audio, ev["tighten"])
+                audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
             if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
                 audio = audio[:int(ev["trim"] * SR)].copy()
                 f = int(0.25 * SR)
