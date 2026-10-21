@@ -118,7 +118,7 @@
       "pace": 0.4,
       "pad": 0.05,
       "direction_text": "[shouting] Noob! Corre!",
-      "tighten": 0.3,
+      "tighten": 0.12,
       "solo_only": true,
       "solo_text": "Noob! Corre!"
     },
