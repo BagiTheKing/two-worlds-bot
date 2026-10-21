@@ -157,6 +157,18 @@
   ],
   "sfx": [
     {
+      "kind": "glitch",
+      "at": 0,
+      "dur": 0.35,
+      "gain": 0.55
+    },
+    {
+      "kind": "thump",
+      "at": 0.36,
+      "freq": 95,
+      "gain": 0.7
+    },
+    {
       "kind": "snap",
       "at": "eye+1.05",
       "gain": 0.8
@@ -684,7 +696,7 @@
       "do": "wave",
       "from": "wave_back+0.2",
       "to": "snap",
-      "arm": "arm_r",
+      "arm": "arm_l",
       "rate": 1.1
     },
     {

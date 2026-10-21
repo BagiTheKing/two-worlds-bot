@@ -28,8 +28,12 @@ MAX_WORDS = 3
 def chunks(line):
     """Split a line into groups of up to MAX_WORDS words, timed by length."""
     words = line["text"].split()
+    wide = ImageFont.truetype(FONT, 92)
     groups, cur = [], []
     for w in words:
+        if cur and wide.getlength(" ".join(cur + [w]).upper()) > W - 140:   # keep it on screen
+            groups.append(cur)
+            cur = []
         cur.append(w)
         if len(cur) == MAX_WORDS or w[-1] in ".?!,":
             groups.append(cur)
@@ -45,6 +49,14 @@ def chunks(line):
         out.append((t, t + d, " ".join(g).upper()))
         t += d
     return out
+
+
+def fitted(text, size, max_w=W - 100, path=None):
+    """The font at `size`, or smaller if `text` would not fit max_w."""
+    path = path or FONT
+    f = ImageFont.truetype(path, size)
+    w = f.getlength(text)
+    return f if w <= max_w else ImageFont.truetype(path, max(20, int(size * max_w / w)))
 
 
 def vignette():
@@ -157,7 +169,7 @@ def endcard(img, o, t, f, fonts):
         d.text((W // 2, 1090), o["next_label"], font=fonts["small"], fill=(255, 210, 63), anchor="mm")
         d.text((W // 2, 1150), o["next_title"], font=fonts["mid"], fill=(255, 255, 255), anchor="mm")
     if at(2.2):
-        d.text((W // 2, 1340), o["question"], font=fonts["big"], fill=(255, 59, 212), anchor="mm")
+        d.text((W // 2, 1340), o["question"], font=fitted(o["question"], 80), fill=(255, 59, 212), anchor="mm")
         d.text((W // 2, 1420), o["question_sub"], font=fonts["small"], fill=(200, 200, 210), anchor="mm")
 
 
@@ -345,7 +357,7 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
                 row += 1
                 pop = min(1.0, (t - a) / 0.08)
                 size = int(92 * (0.82 + 0.18 * pop))
-                fnt = font if size == 92 else ImageFont.truetype(FONT, size)
+                fnt = fitted(txt, size, W - 140)
                 ImageDraw.Draw(img).text((W // 2, y), txt, font=fnt, fill=color,
                                          anchor="mm", stroke_width=10, stroke_fill=(0, 0, 0))
         for o in overlays:
