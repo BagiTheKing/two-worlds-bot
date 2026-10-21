@@ -1035,6 +1035,8 @@ def build(episode_path, out_dir, keep=None):
                 cursor = old_lines[name]["start"]
                 nxt = next((x for x in starts if x > cursor + 0.01), cursor + 99)
                 room = nxt + 0.1 - cursor
+                if ev.get("slot") is not None:          # plays over what follows, on purpose
+                    room = len(audio) / SR
                 if len(audio) / SR > room:              # faster, same pitch
                     ratio = min(ep.get("fit_max", 1.10), len(audio) / SR / room)
                     audio = stretch(audio, ratio)
