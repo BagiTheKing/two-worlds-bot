@@ -36,14 +36,16 @@
       "name": "steve_rule",
       "text": "New rule. We leave. Today.",
       "direction_text": "[flat, decisive] New rule. We leave. Today.",
-      "pad": 0.15
+      "pad": 0.15,
+      "tighten": 0.25
     },
     {
       "line": "steve",
       "name": "steve_plan",
       "text": "Portal home. Three steps. Nobody touches anything.",
       "direction_text": "[dry, matter-of-fact] Portal home. Three steps. Nobody touches anything.",
-      "pad": 0.15
+      "pad": 0.15,
+      "tighten": 0.25
     },
     {
       "line": "noob",
@@ -84,7 +86,8 @@
       "name": "noob_fine",
       "text": "I'm fine! New record!",
       "direction_text": "[cheerful, a little dazed] I'm fine! New record!",
-      "pad": 0.1
+      "pad": 0.1,
+      "tighten": 0.25
     },
     {
       "beat": "smash",
