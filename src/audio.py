@@ -189,12 +189,16 @@ def tts_text(text):
 
 
 def _norm_words(text):
+    import unicodedata
+    # diacritics (Arabic harakat, accents) are dropped, not taken for word breaks
+    text = "".join(ch for ch in unicodedata.normalize("NFD", text) if unicodedata.category(ch) != "Mn")
     keep = "".join(ch.lower() if (ch.isalnum() or ch in "' ") else " " for ch in text)
     return keep.split()
 
 
 _whisper = None
 WHISPER_LANG = "en"            # an episode's "language" (dubs) sets it
+PIN_MODEL = None               # an episode's "tts_model" pins every take to one model
 
 
 def transcribe(samples, sr):
@@ -379,6 +383,8 @@ def gemini_models():
         names.sort(key=rank)
         if os.getenv("GEMINI_TTS_MODEL"):
             names.insert(0, os.environ["GEMINI_TTS_MODEL"])
+        if PIN_MODEL:                # one model for the whole job: no voice changes mid-dub
+            names = [PIN_MODEL]
         if not names:
             raise RuntimeError("no Gemini speech (TTS) model is available to this key")
         _gemini_models = names
@@ -1014,8 +1020,9 @@ def build(episode_path, out_dir, keep=None):
     already rendered). New voices are placed at the old line starts; a take
     that runs long is sped up slightly (at most 10%) to fit."""
     ep = json.load(open(episode_path))
-    global WHISPER_LANG
+    global WHISPER_LANG, PIN_MODEL
     WHISPER_LANG = ep.get("language", "en")
+    PIN_MODEL = ep.get("tts_model")
     old = json.load(open(keep)) if keep else None
     old_lines = {ln["name"]: ln for ln in old["lines"]} if old else {}
     starts = sorted(a for a, _ in old["beats"].values()) if old else []

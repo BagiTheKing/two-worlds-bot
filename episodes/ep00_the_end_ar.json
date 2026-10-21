@@ -47,55 +47,55 @@
       "line": "steve",
       "name": "vo_1",
       "vo": true,
-      "text": "كان هناك عالمان.",
+      "text": "كَانَ هُنَاكَ عَالَمَانِ.",
       "pad": 0.25,
-      "direction_text": "[softly, like a storyteller] كان هناك عالمان.",
+      "direction_text": "[softly, like a storyteller] كَانَ هُنَاكَ عَالَمَانِ.",
       "solo_only": true,
-      "solo_text": "كان هناك عالمان.",
+      "solo_text": "كَانَ هُنَاكَ عَالَمَانِ.",
       "tighten": 0.3
     },
     {
       "line": "steve",
       "name": "vo_2",
       "vo": true,
-      "text": "عالمي...",
+      "text": "عَالَمِي...",
       "pad": 0.2,
-      "direction_text": "[softly] عالمي...",
+      "direction_text": "[softly] عَالَمِي...",
       "solo_only": true,
-      "solo_text": "عالمي...",
+      "solo_text": "عَالَمِي...",
       "tighten": 0.3
     },
     {
       "line": "steve",
       "name": "vo_3",
       "vo": true,
-      "text": "...وعالمه.",
+      "text": "...وَعَالَمُهُ.",
       "pad": 0.3,
-      "direction_text": "[softly, a little amused] ...وعالمه.",
+      "direction_text": "[softly, a little amused] ...وَعَالَمُهُ.",
       "solo_only": true,
-      "solo_text": "...وعالمه.",
+      "solo_text": "...وَعَالَمُهُ.",
       "tighten": 0.3
     },
     {
       "line": "steve",
       "name": "vo_4",
       "vo": true,
-      "text": "ثم اصطدما ببعضهما.",
+      "text": "ثُمَّ اصْطَدَمَا بِبَعْضِهِمَا.",
       "pad": 0.3,
-      "direction_text": "[softly] ثم اصطدما ببعضهما.",
+      "direction_text": "[softly] ثُمَّ اصْطَدَمَا بِبَعْضِهِمَا.",
       "solo_only": true,
-      "solo_text": "ثم اصطدما ببعضهما.",
+      "solo_text": "ثُمَّ اصْطَدَمَا بِبَعْضِهِمَا.",
       "tighten": 0.3
     },
     {
       "line": "steve",
       "name": "vo_5",
       "vo": true,
-      "text": "وفي يوم ما... توقف الواقع.",
+      "text": "وَفِي يَوْمٍ مَا... تَوَقَّفَ الْوَاقِعُ.",
       "pad": 0.1,
-      "direction_text": "[quietly, ominous] وفي يوم ما... توقف الواقع.",
+      "direction_text": "[quietly, ominous] وَفِي يَوْمٍ مَا... تَوَقَّفَ الْوَاقِعُ.",
       "solo_only": true,
-      "solo_text": "وفي يوم ما... توقف الواقع.",
+      "solo_text": "وَفِي يَوْمٍ مَا... تَوَقَّفَ الْوَاقِعُ.",
       "tighten": 0.3
     },
     {
@@ -113,25 +113,25 @@
     {
       "line": "steve",
       "name": "steve_run",
-      "text": "نوب! اهرب!",
+      "text": "نُوب! اهْرُبْ!",
       "emotion": 0.85,
       "pace": 0.4,
       "pad": 0.05,
-      "direction_text": "[shouting] نوب! اهرب!",
+      "direction_text": "[shouting] نُوب! اهْرُبْ!",
       "solo_only": true,
-      "solo_text": "نوب! اهرب!",
+      "solo_text": "نُوب! اهْرُبْ!",
       "tighten": 0.3
     },
     {
       "line": "noob",
       "name": "noob_running",
-      "text": "أنا أهرب!",
+      "text": "أَنَا أَهْرُبُ!",
       "emotion": 0.95,
       "pace": 0.35,
       "pad": 0.05,
-      "direction_text": "[panicked, shouting] أنا أهرب!",
+      "direction_text": "[panicked, shouting] أَنَا أَهْرُبُ!",
       "solo_only": true,
-      "solo_text": "أنا أهرب!",
+      "solo_text": "أَنَا أَهْرُبُ!",
       "tighten": 0.3
     },
     {
@@ -144,13 +144,13 @@
     {
       "line": "noob",
       "name": "noob_bridge",
-      "text": "أوه! الجسر تحت الصيانة!",
+      "text": "أُوه! الْجِسْرُ تَحْتَ الصِّيَانَةِ!",
       "emotion": 0.8,
       "pace": 0.3,
       "pad": 0.15,
-      "direction_text": "[cheerfully, oblivious] أوه! الجسر تحت الصيانة!",
+      "direction_text": "[cheerfully, oblivious] أُوه! الْجِسْرُ تَحْتَ الصِّيَانَةِ!",
       "solo_only": true,
-      "solo_text": "أوه! الجسر تحت الصيانة!",
+      "solo_text": "أُوه! الْجِسْرُ تَحْتَ الصِّيَانَةِ!",
       "tighten": 0.3
     },
     {
@@ -171,35 +171,35 @@
     {
       "line": "noob",
       "name": "noob_respawn",
-      "text": "ستيف... هل نعود للحياة إذا اختفى العالم؟",
+      "text": "سْتِيف... هَلْ نَعُودُ لِلْحَيَاةِ إِذَا اخْتَفَى الْعَالَمُ؟",
       "emotion": 0.6,
       "pace": 0.45,
       "pad": 0.35,
-      "direction_text": "[curious, innocent] ستيف... هل نعود للحياة إذا اختفى العالم؟",
-      "solo_text": "ستيف... هل نعود للحياة إذا اختفى العالم؟",
+      "direction_text": "[curious, innocent] سْتِيف... هَلْ نَعُودُ لِلْحَيَاةِ إِذَا اخْتَفَى الْعَالَمُ؟",
+      "solo_text": "سْتِيف... هَلْ نَعُودُ لِلْحَيَاةِ إِذَا اخْتَفَى الْعَالَمُ؟",
       "solo_only": true,
       "tighten": 0.3
     },
     {
       "line": "steve",
       "name": "steve_no",
-      "text": "لا.",
+      "text": "لَا.",
       "emotion": 0.3,
       "pad": 1.1,
-      "direction_text": "[flatly] لا.",
+      "direction_text": "[flatly] لَا.",
       "solo_only": true,
-      "solo_text": "لا.",
+      "solo_text": "لَا.",
       "tighten": 0.3
     },
     {
       "line": "noob",
       "name": "noob_oh",
-      "text": "...أوه.",
+      "text": "...أُوه.",
       "emotion": 0.4,
       "pad": 0.3,
-      "direction_text": "[quietly, realizing] ...أوه.",
+      "direction_text": "[quietly, realizing] ...أُوه.",
       "solo_only": true,
-      "solo_text": "...أوه.",
+      "solo_text": "...أُوه.",
       "tighten": 0.3
     },
     {
@@ -214,13 +214,13 @@
     {
       "line": "steve",
       "name": "steve_what",
-      "text": "ما... هذا؟",
+      "text": "مَا... هَذَا؟",
       "emotion": 0.45,
       "pace": 0.35,
       "pad": 0.2,
-      "direction_text": "[whispering, scared] ما... هذا؟",
+      "direction_text": "[whispering, scared] مَا... هَذَا؟",
       "solo_only": true,
-      "solo_text": "ما... هذا؟",
+      "solo_text": "مَا... هَذَا؟",
       "tighten": 0.3
     },
     {
@@ -231,11 +231,11 @@
     {
       "line": "null",
       "name": "null_1",
-      "text": "تم تصحيح الواقع.",
+      "text": "تَمَّ تَصْحِيحُ الْوَاقِعِ.",
       "pad": 0.3,
-      "direction_text": "[slow, cold, emotionless] تم تصحيح الواقع.",
+      "direction_text": "[slow, cold, emotionless] تَمَّ تَصْحِيحُ الْوَاقِعِ.",
       "solo_only": true,
-      "solo_text": "تم تصحيح الواقع.",
+      "solo_text": "تَمَّ تَصْحِيحُ الْوَاقِعِ.",
       "tighten": 0.3
     },
     {
@@ -288,11 +288,11 @@
     {
       "line": "noob",
       "name": "noob_where",
-      "text": "واو. أين أنا؟",
-      "direction_text": "[amazed, a little dazed] واو. أين أنا؟",
+      "text": "وَاو. أَيْنَ أَنَا؟",
+      "direction_text": "[amazed, a little dazed] وَاو. أَيْنَ أَنَا؟",
       "pad": 0.0,
       "solo_only": true,
-      "solo_text": "واو. أين أنا؟",
+      "solo_text": "وَاو. أَيْنَ أَنَا؟",
       "tighten": 0.3
     },
     {
@@ -1507,5 +1507,6 @@
   "solo_whole": true,
   "solo_takes": 2,
   "tighten_floor": 0.012,
-  "gate": -32
+  "gate": -32,
+  "tts_model": "gemini-3.8-flash-tts"
 }
