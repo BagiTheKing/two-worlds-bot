@@ -9,6 +9,7 @@ full-black card) are drawn black.
 """
 
 import json
+import math
 import os
 import random
 import subprocess
@@ -216,7 +217,26 @@ def watermark(img, o, t, f, fonts):
     img.paste(layer, (0, o.get("y", 70)), layer)
 
 
-DRAW = {"watermark": watermark, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+def timer(img, o, t, f, fonts):
+    """A stopwatch on someone's plan: counts up, then fails at `fail_after`
+    seconds (shaking, in red)."""
+    el = t - o["start"]
+    fail = o.get("fail_after", 3.0)
+    d = ImageDraw.Draw(img)
+    fnt = ImageFont.truetype(MONO, 66)
+    if el < fail:
+        text, col, dx = f"{o.get('label', 'PLAN')}: {el:4.2f}s", (245, 245, 245), 0
+    else:
+        k = el - fail
+        text, col = f"{o.get('label', 'PLAN')} FAILED: {fail:4.2f}s", (255, 70, 90)
+        dx = int(14 * math.sin(60 * k) * max(0.0, 1 - k / 0.35))
+    x, y = W // 2 + dx, o.get("y", 430)
+    for ox, c in ((-4, (255, 0, 200)), (4, (0, 230, 255))):
+        d.text((x + ox, y), text, font=fnt, fill=c, anchor="mm")
+    d.text((x, y), text, font=fnt, fill=col, anchor="mm", stroke_width=3, stroke_fill=(0, 0, 0))
+
+
+DRAW = {"watermark": watermark, "timer": timer, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt}
 FULL = ("card", "fade_in", "endcard")
 

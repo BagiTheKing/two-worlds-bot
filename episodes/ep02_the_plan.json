@@ -1,0 +1,1316 @@
+{
+  "id": "ep02_the_plan",
+  "number": 2,
+  "title": "Steve's Plan Lasted 3 Seconds",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    }
+  },
+  "events": [
+    {
+      "beat": "eye",
+      "dur": 1.4
+    },
+    {
+      "line": "steve",
+      "name": "steve_rule",
+      "text": "New rule. We leave. Today.",
+      "direction_text": "[flat, decisive] New rule. We leave. Today.",
+      "pad": 0.15
+    },
+    {
+      "line": "steve",
+      "name": "steve_plan",
+      "text": "Portal home. Three steps. Nobody touches anything.",
+      "direction_text": "[dry, matter-of-fact] Portal home. Three steps. Nobody touches anything.",
+      "pad": 0.15
+    },
+    {
+      "line": "noob",
+      "name": "noob_this",
+      "text": "This one?",
+      "direction_text": "[innocent, curious] This one?",
+      "pad": 0.05
+    },
+    {
+      "line": "steve",
+      "name": "steve_dont",
+      "text": "Don't!",
+      "direction_text": "[sharp, alarmed] Don't!",
+      "pad": 0.0
+    },
+    {
+      "beat": "press",
+      "dur": 0.35
+    },
+    {
+      "beat": "portal_open",
+      "dur": 0.8
+    },
+    {
+      "beat": "pour",
+      "dur": 1.9
+    },
+    {
+      "beat": "hit",
+      "dur": 0.55
+    },
+    {
+      "beat": "respawn",
+      "dur": 0.35
+    },
+    {
+      "line": "noob",
+      "name": "noob_fine",
+      "text": "I'm fine! New record!",
+      "direction_text": "[cheerful, a little dazed] I'm fine! New record!",
+      "pad": 0.1
+    },
+    {
+      "beat": "smash",
+      "dur": 0.9
+    },
+    {
+      "line": "noob",
+      "name": "noob_hi",
+      "text": "Hi!",
+      "direction_text": "[cheerful, waving] Hi!",
+      "pad": 0.2
+    },
+    {
+      "beat": "wave_back",
+      "dur": 1.7
+    },
+    {
+      "beat": "snap",
+      "dur": 0.9
+    },
+    {
+      "beat": "endcard",
+      "dur": 3.0
+    }
+  ],
+  "music": [
+    {
+      "cue": "dread",
+      "from": 0,
+      "to": "eye.end",
+      "gain": 0.22,
+      "hit_at": "eye+1.05",
+      "minimal": true
+    },
+    {
+      "cue": "theme_soft",
+      "from": "steve_rule",
+      "to": "press",
+      "gain": 0.14
+    },
+    {
+      "cue": "chase",
+      "from": "press",
+      "to": "smash",
+      "gain": 0.2
+    },
+    {
+      "cue": "dread",
+      "from": "smash",
+      "to": "snap",
+      "gain": 0.25,
+      "hit_at": "snap",
+      "minimal": true
+    },
+    {
+      "cue": "null",
+      "from": "snap",
+      "to": "end",
+      "gain": 0.22
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "meadow",
+      "from": "eye.end",
+      "to": "smash",
+      "gain": 0.08,
+      "fade_in": 0.3
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "snap",
+      "at": "eye+1.05",
+      "gain": 0.8
+    },
+    {
+      "kind": "place",
+      "from": "steve_plan",
+      "to": "steve_plan.end-0.1",
+      "count": 18,
+      "gain": 0.5
+    },
+    {
+      "kind": "click",
+      "at": "press",
+      "gain": 0.8
+    },
+    {
+      "kind": "portal",
+      "at": "portal_open",
+      "dur": 0.9,
+      "gain": 0.6
+    },
+    {
+      "kind": "whoosh",
+      "at": "portal_open+0.1",
+      "gain": 0.6
+    },
+    {
+      "kind": "jingle",
+      "at": "portal_open+0.3",
+      "gain": 0.5
+    },
+    {
+      "kind": "pop",
+      "from": "pour",
+      "to": "pour+1.4",
+      "count": 9,
+      "gain": 0.35
+    },
+    {
+      "kind": "whir",
+      "at": "pour+0.2",
+      "to": "smash+0.1",
+      "gain": 0.4
+    },
+    {
+      "kind": "groan",
+      "at": "pour+0.4",
+      "gain": 0.5
+    },
+    {
+      "kind": "groan",
+      "at": "pour+1.2",
+      "gain": 0.45,
+      "dur": 1.1
+    },
+    {
+      "kind": "groan",
+      "at": "hit+0.3",
+      "gain": 0.4
+    },
+    {
+      "kind": "burst",
+      "at": "hit",
+      "gain": 0.8
+    },
+    {
+      "kind": "respawn",
+      "at": "respawn",
+      "gain": 0.7
+    },
+    {
+      "kind": "break",
+      "at": "smash",
+      "gain": 0.8
+    },
+    {
+      "kind": "pop",
+      "from": "smash+0.1",
+      "to": "smash+0.35",
+      "count": 6,
+      "gain": 0.4
+    },
+    {
+      "kind": "snap",
+      "at": "snap",
+      "gain": 0.9
+    }
+  ],
+  "overlays": [
+    {
+      "type": "label",
+      "text": "EPISODE 2",
+      "sub": "STEVE'S PLAN LASTED 3 SECONDS",
+      "from": "eye.end",
+      "to": "steve_rule.end+0.4"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 99%",
+      "from": "eye.end",
+      "to": "smash"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 97%",
+      "alert": true,
+      "from": "smash",
+      "to": "endcard"
+    },
+    {
+      "type": "timer",
+      "label": "PLAN",
+      "from": "press-3.0",
+      "to": "portal_open+1.2",
+      "fail_after": 3.0,
+      "y": 430
+    },
+    {
+      "type": "prompt",
+      "text": "WOULD YOU PRESS IT? COMMENT ↓",
+      "from": "noob_this",
+      "to": "portal_open+0.6",
+      "y": 1480
+    },
+    {
+      "type": "achievement",
+      "title": "ACHIEVEMENT UNLOCKED",
+      "text": "TEAMWORK!",
+      "sub": "Build a portal together",
+      "from": "portal_open+0.3",
+      "to": "portal_open+2.6"
+    },
+    {
+      "type": "endcard",
+      "over": true,
+      "from": "snap+0.9",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 3",
+      "next_title": "THE DRAGON ENTERED AN OBBY",
+      "question": "WHAT WAS WATCHING THEM?",
+      "question_sub": "Comment your theory",
+      "pace": 0.4
+    },
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    }
+  ],
+  "sets": [
+    {
+      "kind": "forest_valley",
+      "origin": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "actors": {
+    "noob": {
+      "rig": "noob",
+      "at": [
+        1.15,
+        0.5,
+        0
+      ],
+      "yaw": 3.1416,
+      "visible": [
+        [
+          0,
+          "hit"
+        ],
+        [
+          "respawn",
+          "end"
+        ]
+      ]
+    },
+    "steve": {
+      "rig": "steve",
+      "at": [
+        -0.9,
+        0.5,
+        0
+      ],
+      "yaw": 3.1416
+    },
+    "zombie_1": {
+      "rig": "zombie",
+      "at": [
+        -4.3,
+        5.3,
+        0
+      ],
+      "yaw": 0.0,
+      "visible": [
+        [
+          "pour+0.15",
+          "smash+0.15"
+        ]
+      ]
+    },
+    "zombie_2": {
+      "rig": "zombie",
+      "at": [
+        -3.4,
+        5.3,
+        0
+      ],
+      "yaw": 0.0,
+      "visible": [
+        [
+          "pour+0.45",
+          "smash+0.15"
+        ]
+      ]
+    },
+    "zombie_3": {
+      "rig": "zombie",
+      "at": [
+        -2.6,
+        5.3,
+        0
+      ],
+      "yaw": 0.0,
+      "visible": [
+        [
+          "pour+0.8",
+          "smash+0.15"
+        ]
+      ]
+    },
+    "null": {
+      "rig": "null",
+      "s": 3.0,
+      "at": [
+        302.5,
+        12.0,
+        0
+      ],
+      "yaw": 0.0,
+      "visible": [
+        [
+          "smash.end",
+          "snap"
+        ]
+      ]
+    }
+  },
+  "clips": [
+    {
+      "who": "steve",
+      "do": "look",
+      "from": 0,
+      "to": "eye.end-0.2",
+      "head": [
+        -0.5,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": 0,
+      "to": "eye.end-0.2",
+      "head": [
+        -0.5,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "eye.end-0.1",
+      "to": "eye.end+0.3",
+      "yaw": 1.0
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "eye.end",
+      "to": "eye.end+0.3",
+      "yaw": -1.3
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "steve_plan",
+      "to": "steve_plan",
+      "at": [
+        -0.4,
+        4.9,
+        0
+      ],
+      "yaw": -0.9
+    },
+    {
+      "who": "steve",
+      "do": "swing",
+      "from": "steve_plan",
+      "to": "steve_plan.end-0.1",
+      "count": 18,
+      "arm": "arm_r"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "steve_plan",
+      "to": "steve_plan",
+      "at": [
+        2.6,
+        1.6,
+        0
+      ],
+      "yaw": -1.3
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "noob_this",
+      "to": "noob_this",
+      "at": [
+        0.45,
+        3.6,
+        0
+      ],
+      "yaw": 0.0
+    },
+    {
+      "who": "noob",
+      "do": "pose",
+      "from": "noob_this",
+      "to": "press",
+      "parts": {
+        "arm_r": [
+          -0.45,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "who": "noob",
+      "do": "pose",
+      "from": "press",
+      "to": "press+0.25",
+      "parts": {
+        "arm_r": [
+          0.15,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "steve_dont-0.15",
+      "to": "steve_dont+0.1",
+      "yaw": 0.58
+    },
+    {
+      "who": "steve",
+      "do": "pose",
+      "from": "steve_dont",
+      "to": "press+0.4",
+      "parts": {
+        "arm_r": [
+          -1.5,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "who": "noob",
+      "do": "cheer",
+      "from": "portal_open",
+      "to": "portal_open+0.5"
+    },
+    {
+      "who": "steve",
+      "do": "shock",
+      "from": "portal_open",
+      "to": "pour+0.5"
+    },
+    {
+      "who": "zombie_1",
+      "do": "walk",
+      "from": "pour+0.15",
+      "to": "smash",
+      "dest": [
+        -5.6,
+        3.2
+      ],
+      "rate": 1.3
+    },
+    {
+      "who": "zombie_2",
+      "do": "walk",
+      "from": "pour+0.45",
+      "to": "smash",
+      "dest": [
+        -3.6,
+        1.6
+      ],
+      "rate": 1.3
+    },
+    {
+      "who": "zombie_3",
+      "do": "walk",
+      "from": "pour+0.8",
+      "to": "smash",
+      "dest": [
+        -1.6,
+        1.4
+      ],
+      "rate": 1.3
+    },
+    {
+      "who": "zombie_1",
+      "do": "reach",
+      "from": "pour+0.15",
+      "to": "smash"
+    },
+    {
+      "who": "zombie_2",
+      "do": "reach",
+      "from": "pour+0.45",
+      "to": "smash"
+    },
+    {
+      "who": "zombie_3",
+      "do": "reach",
+      "from": "pour+0.8",
+      "to": "smash"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "respawn",
+      "to": "respawn",
+      "at": [
+        3.4,
+        2.6,
+        0
+      ],
+      "yaw": 0.0
+    },
+    {
+      "who": "noob",
+      "do": "pop",
+      "from": "respawn",
+      "to": "respawn+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "cheer",
+      "from": "noob_fine+0.1",
+      "to": "noob_fine.end"
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "smash-0.5",
+      "to": "smash-0.5",
+      "at": [
+        -0.95,
+        3.45,
+        0
+      ],
+      "yaw": 1.5708
+    },
+    {
+      "who": "steve",
+      "do": "punch",
+      "from": "smash-0.2",
+      "to": "smash+0.45",
+      "arm": "arm_l"
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "smash.end",
+      "to": "smash.end+0.3",
+      "yaw": -2.25
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "smash.end",
+      "to": "smash.end",
+      "at": [
+        -2.0,
+        3.0,
+        0
+      ],
+      "yaw": -1.6
+    },
+    {
+      "who": "noob",
+      "do": "wave",
+      "from": "noob_hi",
+      "to": "wave_back+0.5",
+      "arm": "arm_r"
+    },
+    {
+      "who": "null",
+      "do": "look",
+      "from": "smash.end",
+      "to": "snap",
+      "head": [
+        0,
+        0.25,
+        0
+      ]
+    },
+    {
+      "who": "null",
+      "do": "wave",
+      "from": "wave_back+0.2",
+      "to": "snap",
+      "arm": "arm_r",
+      "rate": 1.1
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": "snap",
+      "to": "end"
+    },
+    {
+      "who": "steve",
+      "do": "shock",
+      "from": "snap",
+      "to": "end"
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          0.8,
+          0.25
+        ],
+        [
+          "eye+1.05",
+          0.8,
+          0.25
+        ],
+        [
+          "eye.end+0.2",
+          5.0,
+          1.25
+        ],
+        [
+          "smash+0.3",
+          5.0,
+          1.25
+        ],
+        [
+          "smash+1.0",
+          2.2,
+          0.6
+        ]
+      ]
+    },
+    {
+      "kind": "tree_broken"
+    },
+    {
+      "kind": "sky_tear",
+      "at": -3.0,
+      "eye_at": -1.0,
+      "end": "eye.end+0.3",
+      "close": "eye+1.05",
+      "center": [
+        -10.0,
+        34.0,
+        21.0
+      ],
+      "scale": 2.6,
+      "gaze": [
+        [
+          0,
+          -1.55
+        ],
+        [
+          1.3,
+          -1.55
+        ],
+        [
+          1.38,
+          0.0
+        ]
+      ],
+      "lock": [
+        1.38,
+        1.45
+      ]
+    },
+    {
+      "kind": "portal_machine",
+      "origin": [
+        -6,
+        5,
+        0
+      ],
+      "build": [
+        "steve_plan",
+        "steve_plan.end-0.1"
+      ],
+      "open": "portal_open",
+      "dark": "smash+0.3",
+      "snap": "snap"
+    },
+    {
+      "kind": "button",
+      "at": [
+        -0.2,
+        3.6
+      ],
+      "press": "press",
+      "smash": "smash"
+    },
+    {
+      "kind": "spawn_pad",
+      "at": [
+        3.4,
+        2.6
+      ],
+      "appear": "portal_open+0.35"
+    },
+    {
+      "kind": "hazards",
+      "src": [
+        -3.5,
+        5.3,
+        3.0
+      ],
+      "from": "pour",
+      "to": "pour+1.4",
+      "clear": "smash+0.1",
+      "n": 9,
+      "hit": {
+        "at": "hit",
+        "actor": "noob",
+        "flight": 0.55
+      },
+      "bar": {
+        "from": "pour+0.2",
+        "at": [
+          -3.0,
+          2.4,
+          0.55
+        ],
+        "pass": "pour+0.9",
+        "actor": "steve",
+        "rate": 0.8
+      }
+    },
+    {
+      "kind": "burst",
+      "actor": "noob",
+      "at": "hit"
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "noob",
+      "from": "hit",
+      "to": "smash"
+    },
+    {
+      "kind": "void_room",
+      "frame": [
+        300,
+        5,
+        0
+      ],
+      "show": [
+        "smash.end",
+        "snap"
+      ],
+      "null_at": [
+        302.5,
+        12.0,
+        0
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "name": "eye",
+      "from": 0,
+      "to": "eye.end",
+      "lens": 50,
+      "shake": 0.02,
+      "path": [
+        [
+          0,
+          [
+            -3.4,
+            -2.6,
+            1.0
+          ]
+        ],
+        [
+          "eye.end",
+          [
+            -3.5,
+            -2.3,
+            1.1
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            -10.0,
+            34.0,
+            21.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_rule",
+      "from": "eye.end",
+      "to": "steve_plan",
+      "lens": 38,
+      "dof": 2.8,
+      "path": [
+        [
+          "eye.end",
+          [
+            0.4,
+            -1.3,
+            1.85
+          ]
+        ],
+        [
+          "steve_plan",
+          [
+            0.3,
+            -1.15,
+            1.85
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "eye.end",
+          [
+            -0.9,
+            0.5,
+            1.75
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "build",
+      "from": "steve_plan",
+      "to": "noob_this",
+      "lens": 20,
+      "path": [
+        [
+          "steve_plan",
+          [
+            0.9,
+            0.3,
+            1.9
+          ]
+        ],
+        [
+          "noob_this",
+          [
+            0.7,
+            0.6,
+            1.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_plan",
+          [
+            -2.6,
+            5.0,
+            2.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_this",
+      "from": "noob_this",
+      "to": "steve_dont",
+      "lens": 26,
+      "dof": 3.0,
+      "path": [
+        [
+          "noob_this",
+          [
+            0.2,
+            1.3,
+            0.95
+          ]
+        ],
+        [
+          "steve_dont",
+          [
+            0.15,
+            1.5,
+            0.95
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_this",
+          [
+            0.0,
+            3.6,
+            1.15
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_dont",
+      "from": "steve_dont",
+      "to": "press",
+      "lens": 35,
+      "dof": 3.0,
+      "path": [
+        [
+          "steve_dont",
+          [
+            -1.6,
+            2.6,
+            1.8
+          ]
+        ],
+        [
+          "press",
+          [
+            -1.65,
+            2.7,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_dont",
+          [
+            -0.4,
+            4.9,
+            1.75
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "press",
+      "from": "press",
+      "to": "portal_open",
+      "lens": 30,
+      "shake": 0.03,
+      "path": [
+        [
+          "press",
+          [
+            0.1,
+            2.3,
+            1.05
+          ]
+        ],
+        [
+          "portal_open",
+          [
+            0.1,
+            2.4,
+            1.05
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "press",
+          [
+            -0.15,
+            3.6,
+            0.85
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "wide",
+      "from": "portal_open",
+      "to": "hit",
+      "lens": 18,
+      "shake": 0.03,
+      "path": [
+        [
+          "portal_open",
+          [
+            0.3,
+            -1.9,
+            1.8
+          ]
+        ],
+        [
+          "hit",
+          [
+            0.25,
+            -1.5,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "portal_open",
+          [
+            -2.2,
+            4.2,
+            2.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "hit",
+      "from": "hit",
+      "to": "respawn",
+      "lens": 28,
+      "shake": 0.04,
+      "path": [
+        [
+          "hit",
+          [
+            2.4,
+            1.4,
+            1.3
+          ]
+        ],
+        [
+          "respawn",
+          [
+            2.45,
+            1.3,
+            1.3
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "hit",
+          [
+            0.45,
+            3.6,
+            1.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "pad",
+      "from": "respawn",
+      "to": "smash",
+      "lens": 26,
+      "path": [
+        [
+          "respawn",
+          [
+            4.1,
+            -0.6,
+            1.3
+          ]
+        ],
+        [
+          "smash",
+          [
+            4.05,
+            -0.35,
+            1.3
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "respawn",
+          [
+            3.4,
+            2.6,
+            1.15
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "smash",
+      "from": "smash",
+      "to": "smash.end",
+      "lens": 24,
+      "shake": 0.04,
+      "path": [
+        [
+          "smash",
+          [
+            0.9,
+            0.5,
+            1.5
+          ]
+        ],
+        [
+          "smash.end",
+          [
+            0.85,
+            0.6,
+            1.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "smash",
+          [
+            -0.9,
+            3.4,
+            0.9
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "hi",
+      "from": "smash.end",
+      "to": "wave_back",
+      "lens": 20,
+      "path": [
+        [
+          "smash.end",
+          [
+            -4.9,
+            1.3,
+            1.7
+          ]
+        ],
+        [
+          "wave_back",
+          [
+            -4.8,
+            1.5,
+            1.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "smash.end",
+          [
+            -2.6,
+            3.7,
+            2.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "null_wave",
+      "from": "wave_back",
+      "to": "snap",
+      "lens": 30,
+      "path": [
+        [
+          "wave_back",
+          [
+            302.5,
+            1.6,
+            2.9
+          ]
+        ],
+        [
+          "snap",
+          [
+            302.5,
+            2.4,
+            3.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "wave_back",
+          [
+            302.5,
+            12.0,
+            4.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "snap",
+      "from": "snap",
+      "to": "end",
+      "lens": 20,
+      "shake": 0.03,
+      "path": [
+        [
+          "snap",
+          [
+            -4.8,
+            1.5,
+            1.7
+          ]
+        ],
+        [
+          "end",
+          [
+            -4.6,
+            1.9,
+            1.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "snap",
+          [
+            -2.6,
+            3.7,
+            2.0
+          ]
+        ]
+      ]
+    }
+  ]
+}

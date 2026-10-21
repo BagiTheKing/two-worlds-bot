@@ -135,3 +135,30 @@ def make_null(tex, name="null", s=9.0):
                           "face": face, "arm_r": plastic, "arm_l": pixel,
                           "leg_r": plastic, "leg_l": pixel}, s,
                    bevel=0.03, head_bevel=0.05)
+
+
+def make_zombie(tex, name="zombie"):
+    """A blocky zombie: the Engineer's build in green, with a torn shirt."""
+    from textures import ZOMBIE_SKIN, ZOMBIE_SHIRT, ZOMBIE_PANTS
+    face = material(f"{name}_face", tex=tex["zombie_face"])
+    skin = material(f"{name}_skin", srgb(ZOMBIE_SKIN))
+    top = material(f"{name}_shirt_tex", tex=tex["zombie_shirt"])
+    shirt = material(f"{name}_shirt", srgb(ZOMBIE_SHIRT))
+    arm = material(f"{name}_arm", tex=tex["zombie_arm"])
+    leg = material(f"{name}_leg", tex=tex["zombie_leg"])
+    pants = material(f"{name}_pants", srgb(ZOMBIE_PANTS))
+    root = empty(name)
+    parts = {}
+    parts["torso"] = empty(f"{name}_torso", (0, 0, 0.75), root)
+    box(f"{name}_body", (0.5, 0.25, 0.75), (0, 0, 0.375), {"front": top, "default": shirt}, parts["torso"])
+    parts["head"] = empty(f"{name}_head", (0, 0, 1.5), root)
+    box(f"{name}_skull", (0.5, 0.5, 0.5), (0, 0, 0.25), {"front": face, "default": skin}, parts["head"])
+    for tag, x in (("arm_r", -0.375), ("arm_l", 0.375)):
+        parts[tag] = empty(f"{name}_{tag}", (x, 0, 1.5), root)
+        box(f"{name}_{tag}_box", (0.25, 0.25, 0.75), (0, 0, -0.375),
+            {"top": shirt, "bottom": skin, "default": arm}, parts[tag])
+    for tag, x in (("leg_r", -0.125), ("leg_l", 0.125)):
+        parts[tag] = empty(f"{name}_{tag}", (x, 0, 0.75), root)
+        box(f"{name}_{tag}_box", (0.25, 0.25, 0.75), (0, 0, -0.375),
+            {"top": pants, "default": leg}, parts[tag])
+    return Rig(name, root, parts, {})

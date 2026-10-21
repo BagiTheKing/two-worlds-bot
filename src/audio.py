@@ -745,6 +745,81 @@ def sfx_run(dur, step=0.16):
     return out
 
 
+def sfx_place():
+    """A block snapping into place: a dense knock with a click on top."""
+    x = t(0.22)
+    knock = np.sin(2 * np.pi * 150 * x * (1 - 0.3 * x)) * env(len(x), 0.001, 0.05)
+    click = band(rng.standard_normal(len(x)), 1500, 6000) * env(len(x), 0.0003, 0.008)
+    return norm(knock + 0.5 * norm(click), 0.9)
+
+
+def sfx_click():
+    """A big plastic button going down."""
+    out = np.zeros(int(0.3 * SR))
+    for at, f in ((0.0, 2400), (0.06, 1600)):
+        n = int(0.03 * SR)
+        place(out, band(rng.standard_normal(n), f * 0.6, f * 1.6) * env(n, 0.0002, 0.006), at)
+    place(out, sfx_thump(110, 0.2, 0.3), 0.0, 0.6)
+    return norm(out, 0.8)
+
+
+def sfx_respawn():
+    """Popping back into existence: three quick rising blips and a sparkle."""
+    out = np.zeros(int(0.6 * SR))
+    for i, f in enumerate((660, 880, 1320)):
+        x = t(0.12)
+        place(out, np.sin(2 * np.pi * f * x) * env(len(x), 0.002, 0.05), i * 0.06, 0.6)
+    x = t(0.35)
+    place(out, band(rng.standard_normal(len(x)), 4000, 11000) * env(len(x), 0.005, 0.12), 0.15, 0.25)
+    return norm(out, 0.8)
+
+
+def sfx_groan(dur=0.9):
+    """A blocky zombie: a low, wobbling, throaty moan."""
+    x = t(dur)
+    f = 95 + 18 * np.sin(2 * np.pi * 3.2 * x) - 25 * x / dur
+    saw = 2 * ((np.cumsum(f) / SR) % 1.0) - 1
+    voice = band(saw, 150, 900) + 0.4 * band(rng.standard_normal(len(x)), 200, 700)
+    return norm(voice * env(len(x), 0.08, dur * 0.4), 0.6)
+
+
+def sfx_burst():
+    """The Noob breaking apart: a pop, a plastic clatter."""
+    out = np.zeros(int(0.9 * SR))
+    place(out, sfx_pop(), 0.0, 1.0)
+    place(out, sfx_thump(300, 0.15, 1.0), 0.0, 0.7)
+    for i in range(6):
+        n = int(0.05 * SR)
+        place(out, band(rng.standard_normal(n), 1200, 5000) * env(n, 0.0005, 0.012),
+              0.2 + i * 0.07 + 0.03 * rng.random(), 0.5)
+    return norm(out, 0.9)
+
+
+def sfx_whir(dur):
+    """The spinning bar: air cut twice a turn."""
+    x = t(dur)
+    air = band(rng.standard_normal(len(x)), 250, 2200)
+    return norm(air * (0.35 + 0.65 * np.abs(np.sin(2 * np.pi * 0.8 * x))) * np.minimum(1, x / 0.3), 0.4)
+
+
+def sfx_snap():
+    """A portal slamming shut: a hard hit, a sub drop, a burst of glitch."""
+    out = np.zeros(int(1.6 * SR))
+    place(out, sfx_thump(48, 0.7, 1.0), 0.0, 1.0)
+    place(out, sfx_sub_drop(1.2), 0.0, 0.8)
+    place(out, sfx_glitch(0.15)[:int(0.5 * SR)], 0.02, 0.5)
+    return norm(out, 0.95)
+
+
+SFX = {"place": lambda e: sfx_place(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
+       "groan": lambda e: sfx_groan(e.get("dur", 0.9)), "burst": lambda e: sfx_burst(),
+       "whir": lambda e: sfx_whir(e.get("dur", 2.0)), "snap": lambda e: sfx_snap(),
+       "pop": lambda e: sfx_pop(), "thump": lambda e: sfx_thump(e.get("freq", 70), 0.45, 0.6),
+       "glitch": lambda e: sfx_glitch(e.get("dur", 0.3)), "portal": lambda e: sfx_portal(e.get("dur", 0.9)),
+       "whoosh": lambda e: sfx_whoosh(e.get("dur", 0.7)), "break": lambda e: sfx_break(),
+       "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0))}
+
+
 def void_wind(length):
     n = int(length * SR)
     w = band(rng.standard_normal(n), 50, 320)
@@ -948,6 +1023,13 @@ def build(episode_path, out_dir, keep=None):
             place(mix, sfx_plunge(arg), at, 0.6)
         elif kind == "ledge":
             place(mix, sfx_thump(160, 0.3, 1.0), at, 0.7)
+    from kit.timeref import spread
+    for e in ep.get("sfx", []):                   # timed effects, not tied to a beat
+        times = (spread(R(e["from"]), R(e["to"]), e["count"]) if "count" in e else [R(e["at"])])
+        if "to" in e and "count" not in e:       # a sound that lasts until a moment
+            e = dict(e, dur=R(e["to"]) - R(e["at"]))
+        for h in times:
+            place(mix, SFX[e["kind"]](e), h, e.get("gain", 0.6))
     for name, ts in fx_times.items():
         for k, h in enumerate(ts):
             place(mix, sfx_pop(), h, 0.35 + 0.25 * (k % 3 == 0))

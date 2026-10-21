@@ -254,6 +254,62 @@ def noob_face_scared():
     return img
 
 
+def obsidian():
+    """The portal frame: near-black volcanic glass with violet glints."""
+    rnd = random.Random(31)
+    img = _noise(16, 16, (24, 16, 36), 7, 31, specks=((52, 30, 78), 0.16))
+    px = img.load()
+    for _ in range(6):
+        px[rnd.randrange(16), rnd.randrange(16)] = (120, 70, 190)
+    return img
+
+
+ZOMBIE_SKIN = (92, 146, 74)
+ZOMBIE_SHIRT = (52, 104, 104)
+ZOMBIE_PANTS = (60, 52, 104)
+
+
+def zombie_face():
+    """8x8 front of a blocky zombie's head (our own drawing): hollow eyes,
+    a dark slack mouth."""
+    rnd = random.Random(32)
+    img = _noise(8, 8, ZOMBIE_SKIN, 8, 32)
+    px = img.load()
+    for x in range(8):
+        px[x, 0] = _jitter((60, 104, 50), 6, rnd)
+    for x in (1, 2, 5, 6):
+        px[x, 3] = (14, 14, 14)
+    px[2, 4] = px[5, 4] = (14, 14, 14)
+    for x in (2, 3, 4, 5):
+        px[x, 6] = (40, 60, 34)
+    return img
+
+
+def zombie_shirt():
+    """Torn: skin shows through at the hem."""
+    rnd = random.Random(33)
+    img = _noise(8, 12, ZOMBIE_SHIRT, 8, 33)
+    px = img.load()
+    for x in range(8):
+        for y in range(9 + rnd.randint(0, 2), 12):
+            px[x, y] = _jitter(ZOMBIE_SKIN, 6, rnd)
+    return img
+
+
+def zombie_arm():
+    rnd = random.Random(34)
+    img = _noise(4, 12, ZOMBIE_SKIN, 8, 34)
+    px = img.load()
+    for y in range(3):
+        for x in range(4):
+            px[x, y] = _jitter(ZOMBIE_SHIRT, 8, rnd)
+    return img
+
+
+def zombie_leg():
+    return _noise(4, 12, ZOMBIE_PANTS, 8, 35)
+
+
 ALL = {
     "grass_top": grass_top, "grass_side": grass_side, "dirt": dirt,
     "stone": stone, "log_side": log_side, "log_top": log_top,
@@ -263,6 +319,8 @@ ALL = {
     "steve_leg": steve_leg, "noob_face": noob_face,
     "planks": planks, "missing": missing,
     "steve_face_scared": steve_face_scared, "noob_face_scared": noob_face_scared,
+    "obsidian": obsidian, "zombie_face": zombie_face, "zombie_shirt": zombie_shirt,
+    "zombie_arm": zombie_arm, "zombie_leg": zombie_leg,
 }
 
 

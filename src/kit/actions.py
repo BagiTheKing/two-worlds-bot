@@ -216,8 +216,15 @@ def bounce(c, t, st, actor=None):
     return dict(st, loc=(base[0], base[1], base[2] + (z if t < c["t1"] else 0))), parts
 
 
+def pop(c, t, st, actor=None):
+    """Pops into existence (a respawn): from nothing, overshoot, settle."""
+    u = (t - c["t0"]) / max(1e-6, c["t1"] - c["t0"])
+    k = 0.0 if u <= 0 else (1.18 * ss(0, 0.55, u) - 0.18 * ss(0.55, 1, u) if u < 1 else 1.0)
+    return dict(st, scale=(max(k, 0.001),) * 3), None
+
+
 LOCOMOTION = {"walk": walk, "run": run, "set": set_, "face": face, "fall": fall,
-              "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce}
+              "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce, "pop": pop}
 def punch(c, t, st, actor=None):
     """One punch: wind-up, strike landing on the timeline's impact, then a
     stinging hand. The fist lands on the first impact inside the clip."""
@@ -259,8 +266,40 @@ def cheer(c, t, st, actor=None):
         "arm_r": (-2.8 * k, 0, 0.25 * k), "arm_l": (-2.8 * k, 0, -0.25 * k)}
 
 
+def wave(c, t, st, actor=None):
+    """Arm up, hand waving side to side."""
+    arm = c.get("arm", "arm_r")
+    side = 1 if arm == "arm_r" else -1
+    k = ss(c["t0"], c["t0"] + 0.25, t)
+    w = c.get("rate", 2.2) * 2 * math.pi * (t - c["t0"])
+    return st, {arm: (-2.7 * k, 0, side * k * (0.35 + 0.3 * math.sin(w)))}
+
+
+def swing(c, t, st, actor=None):
+    """Placing blocks: a quick forward arm swing on each of `times` (or every
+    `every` seconds)."""
+    arm = c.get("arm", "arm_r")
+    if c.get("count"):                        # on the same moments as the blocks (spread)
+        from kit.timeref import spread
+        times = spread(c["t0"], c["t1"], c["count"])
+    else:
+        times = c.get("times") or [c["t0"] + i * c.get("every", 0.3)
+                                   for i in range(int((c["t1"] - c["t0"]) / c.get("every", 0.3)) + 1)]
+    e = max((ss(h - 0.08, h, t) * (1 - ss(h + 0.02, h + 0.14, t)) for h in times), default=0.0)
+    return st, {arm: (lerp(-0.5, -1.7, e), 0, 0)}
+
+
+def reach(c, t, st, actor=None):
+    """Both arms straight out in front (a zombie's walk)."""
+    k = ss(c["t0"], c["t0"] + 0.2, t)
+    sway = 0.12 * math.sin(2 * math.pi * 1.1 * t)
+    return st, {"arm_r": (-1.5 * k + sway, 0, 0), "arm_l": (-1.5 * k - sway, 0, 0),
+                "head": (0.1 * k, 0, 0.15 * math.sin(2 * math.pi * 0.7 * t))}
+
+
 BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
-        "punch": punch, "flurry": flurry, "cheer": cheer}
+        "punch": punch, "flurry": flurry, "cheer": cheer, "wave": wave, "swing": swing,
+        "reach": reach}
 
 
 # --------------------------------------------------------------- the actor
@@ -277,6 +316,8 @@ class Actor:
             c = dict(c)
             c["t0"] = resolve(beats, c["from"], length)
             c["t1"] = resolve(beats, c.get("to", c["from"]), length)
+            if c["do"] == "set":                # on the frame grid, like the camera cuts
+                c["t0"] = c["t1"] = round(c["t0"] * 24) / 24
             self.clips.append(c)
         self.clips.sort(key=lambda c: c["t0"])
         self.lines = [ln for ln in lines if ln["who"] == self.cast and not ln.get("vo")]
@@ -327,6 +368,7 @@ class Actor:
             for k, v in p.items():
                 parts[k] = lerp(parts.get(k, (0, 0, 0)), v, w)
         parts["head"] = add(parts["head"], self.talk(t))
-        out = {"loc": st["loc"], "yaw": st["yaw"], "tilt": st.get("tilt", (0, 0))}
+        out = {"loc": st["loc"], "yaw": st["yaw"], "tilt": st.get("tilt", (0, 0)),
+               "scale": st.get("scale", (1, 1, 1))}
         out.update(parts)
         return out

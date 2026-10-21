@@ -295,12 +295,17 @@ def forest_portal(ctx, root, t_open, t_land, mats):
             ob.parent = root
 
 
-def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3):
+def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3,
+             gaze=None, lock=(2.2, 2.5), close_at=None):
     """The sky tears open: a jagged wound that widens to show the void behind
     reality (black, with the missing-texture checker of Null's face), magenta
     edges that flicker, cracks racing outward, shards of sky breaking off
-    towards the camera, and at t_eye an eye opening inside the tear."""
+    towards the camera, and at t_eye an eye opening inside the tear.
+    gaze: [(seconds after t_eye, sideways offset)] for the eye's search;
+    lock: when (after t_eye) it locks on the camera. close_at: the tear
+    slams shut (times before 0 start a shot with it already open)."""
     rnd = random.Random(seed)
+    first = min(0.0, t0 - 0.5)                  # before anything happens (t0 < 0: open from the start)
     root = empty("tear", center)
     root.scale = (scale,) * 3
     root.rotation_euler = (math.radians(70), 0, 0)          # faces a low camera
@@ -331,7 +336,7 @@ def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3
         box(f"tear_void_{i}", (L + 0.25, 0.2, 1.0), (L / 2, 0, 0), {"default": void}, seg)
         box(f"tear_edge_{i}", (L + 0.7, 0.1, 1.0), (L / 2, 0.25, 0), {"default": edge}, seg)
         start = t0 + 0.1 + abs((x0 + x1) / 2) / 11 * 0.35  # tears outward from the centre
-        for t, k in ((0, 0.0), (start, 0.0), (start + 0.18, 0.15), (start + 0.6, 1.0), (t_end, 1.25)):
+        for t, k in ((first, 0.0), (start, 0.0), (start + 0.18, 0.15), (start + 0.6, 1.0), (t_end, 1.25)):
             for ch in seg.children:
                 grow = 1.0 if "void" in ch.name else 1.35
                 ch.scale = (1 if k else 0.001, 1, max(0.001, k * h * grow + (0.25 if "edge" in ch.name and k else 0)))
@@ -346,7 +351,7 @@ def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3
         br.rotation_euler = (0, -ang, 0)
         box(f"tear_branch_box_{j}", (L, 0.08, 0.12), (L / 2, 0, 0), {"default": vein}, br)
         s0 = t0 + rnd.uniform(0.3, 0.9)
-        for t, k in ((0, 0.0), (s0, 0.0), (s0 + 0.15, 1.0)):
+        for t, k in ((first, 0.0), (s0, 0.0), (s0 + 0.15, 1.0)):
             br.scale = (max(k, 0.001), 1 if k else 0.001, 1 if k else 0.001)
             br.keyframe_insert("scale", frame=ctx.F(t))
 
@@ -386,14 +391,14 @@ def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3
     look = empty("tear_eye_look", (0, 0, 0), eye)           # iris and pupil move together
     box("eye_iris", (2.2, 0.12, 2.2), (0, -0.04, -0.15), {"default": iris}, look)
     pup = box("eye_pupil", (0.7, 0.14, 1.7), (0, -0.07, -0.15), {"default": pupil}, look)
-    for t, k in ((0, 0.0), (t_eye, 0.0), (t_eye + 0.08, 0.15), (t_eye + 0.35, 1.0)):
+    for t, k in ((first, 0.0), (t_eye, 0.0), (t_eye + 0.08, 0.15), (t_eye + 0.35, 1.0)):
         eye.scale = (1 if k else 0.001, 1, max(k, 0.001))
         eye.keyframe_insert("scale", frame=ctx.F(t))
 
     # the gaze: stare, dart left, snap right (searching), creep back and lock
     # on the camera with a slight tremble while the pupil narrows
-    gaze = [(0.0, 0.0), (0.45, 0.0), (0.53, -1.55), (1.05, -1.55), (1.13, 1.55),
-            (1.6, 1.55), (2.4, 0.0)]
+    gaze = gaze or [(0.0, 0.0), (0.45, 0.0), (0.53, -1.55), (1.05, -1.55), (1.13, 1.55),
+                    (1.6, 1.55), (2.4, 0.0)]
 
     def gaze_at(u):
         if u <= gaze[0][0]:
@@ -404,9 +409,15 @@ def sky_tear(ctx, t0, t_eye, t_end, center=(-5.0, 40.0, 26.0), scale=2.0, seed=3
         return gaze[-1][1]
     for f in range(ctx.F(t_eye), ctx.F(t_end) + 2):
         u = (f - 1) / ctx.fps - t_eye
-        locked = ss(2.2, 2.5, u)
+        locked = ss(lock[0], lock[1], u)
         tremble = 0.06 * locked * math.sin(57 * u) * math.sin(13 * u)
         look.location = (gaze_at(u) + tremble, 0, 0.04 * locked * math.sin(41 * u))
         look.keyframe_insert("location", frame=f)
         pup.scale = (1 - 0.45 * locked, 1, 1)               # narrows as it focuses
         pup.keyframe_insert("scale", frame=f)
+
+    if close_at is not None:                             # slams shut: squashed flat, gone
+        for t, k in ((close_at, (1, 1, 1)), (close_at + 0.07, (1.12, 1, 0.25)),
+                     (close_at + 0.16, (0.001, 1, 0.001))):
+            root.scale = tuple(scale * v for v in k)
+            root.keyframe_insert("scale", frame=ctx.F(t))
