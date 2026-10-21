@@ -194,6 +194,7 @@ def _norm_words(text):
 
 
 _whisper = None
+WHISPER_LANG = "en"            # an episode's "language" (dubs) sets it
 
 
 def transcribe(samples, sr):
@@ -206,7 +207,7 @@ def transcribe(samples, sr):
                   np.arange(len(samples)), samples).astype(np.float32)
     # temperature 0 only: Whisper's default retries at higher temperatures
     # sample at random, so the same audio could be cut differently each run
-    segs, _ = _whisper.transcribe(x, language="en", word_timestamps=True, beam_size=5,
+    segs, _ = _whisper.transcribe(x, language=WHISPER_LANG, word_timestamps=True, beam_size=5,
                                   condition_on_previous_text=False, temperature=0.0)
     return [(w.word, w.start, w.end) for seg in segs for w in (seg.words or [])]
 
@@ -495,6 +496,39 @@ def cut_lines(samples, sr, spans, order):
         end = min((b + next_start) / 2, b + 0.6)
         cuts[n] = samples[int(start * sr):int(end * sr)]
     return cuts
+
+
+def stretch(x, ratio, sr=SR):
+    """Play x `ratio` times faster without changing its pitch (WSOLA: overlap
+    windows of the original, each shifted a little to line up its waveform
+    with the last one, so nothing clicks or turns into a chipmunk)."""
+    if abs(ratio - 1) < 1e-3 or len(x) < sr // 10:
+        return x
+    n = int(0.04 * sr)
+    hop = n // 2
+    tol = int(0.012 * sr)
+    win = np.hanning(n)
+    n_out = int(len(x) / ratio)
+    out = np.zeros(n_out + n)
+    weight = np.zeros(n_out + n)
+    prev = None
+    k = 0
+    while k * hop + n <= len(out):
+        centre = int(k * hop * ratio)
+        if centre + n + tol >= len(x):
+            break
+        best = centre
+        if prev is not None and prev + hop + n <= len(x):
+            target = x[prev + hop:prev + hop + n]
+            lo, hi = max(0, centre - tol), min(len(x) - n, centre + tol)
+            scores = [(np.dot(x[c:c + n], target), c) for c in range(lo, hi + 1, 4)]
+            best = max(scores)[1] if scores else centre
+        out[k * hop:k * hop + n] += x[best:best + n] * win
+        weight[k * hop:k * hop + n] += win
+        prev = best
+        k += 1
+    weight[weight < 1e-3] = 1.0
+    return (out / weight)[:n_out]
 
 
 def tighten(x, max_gap=0.22, sr=SR):
@@ -915,6 +949,8 @@ def build(episode_path, out_dir, keep=None):
     already rendered). New voices are placed at the old line starts; a take
     that runs long is sped up slightly (at most 10%) to fit."""
     ep = json.load(open(episode_path))
+    global WHISPER_LANG
+    WHISPER_LANG = ep.get("language", "en")
     old = json.load(open(keep)) if keep else None
     old_lines = {ln["name"]: ln for ln in old["lines"]} if old else {}
     starts = sorted(a for a, _ in old["beats"].values()) if old else []
@@ -999,10 +1035,10 @@ def build(episode_path, out_dir, keep=None):
                 cursor = old_lines[name]["start"]
                 nxt = next((x for x in starts if x > cursor + 0.01), cursor + 99)
                 room = nxt + 0.1 - cursor
-                if len(audio) / SR > room:
-                    ratio = min(1.10, len(audio) / SR / room)
-                    audio = np.interp(np.linspace(0, len(audio) - 1, int(len(audio) / ratio)),
-                                      np.arange(len(audio)), audio)
+                if len(audio) / SR > room:              # faster, same pitch
+                    ratio = min(ep.get("fit_max", 1.10), len(audio) / SR / room)
+                    audio = stretch(audio, ratio)
+                    print(f"  {name}: sped up x{ratio:.2f} to fit its {room:.2f}s")
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
                           "caption": ev.get("caption", True),

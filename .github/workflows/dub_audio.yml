@@ -1,0 +1,67 @@
+name: Dub audio
+
+# Manual. A dubbed soundtrack for an episode that is already published: the
+# dub's lines are placed exactly where the published lines start (a line
+# that runs long is sped up, keeping its pitch), with the same music and
+# sound effects, so the track can be added to the video as another language.
+# Pushed to preview-<dub id>-audio.
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Dub episode file (with \"language\")"
+        default: "episodes/ep00_the_end_id.json"
+      timeline:
+        description: "The published episode's timeline"
+        default: "assets/timelines/ep00_published.json"
+
+permissions:
+  contents: write
+
+jobs:
+  dub:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install soundfile numpy Pillow faster-whisper requests
+      - name: Voice cache (unchanged lines are not re-generated)
+        uses: actions/cache/restore@v4
+        with:
+          path: voice_cache
+          key: voices-${{ github.run_id }}
+          restore-keys: voices-
+      - env:
+          VOICE_ENGINE: gemini
+          VOICE_CACHE: voice_cache
+          WHISPER_MODEL: small            # multilingual, to check the dubbed words
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+          GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
+          GEMINI_API_KEY_4: ${{ secrets.GEMINI_API_KEY_4 }}
+        run: |
+          mkdir -p build
+          set -o pipefail
+          python -u src/audio.py ${{ inputs.episode }} build --keep-timeline ${{ inputs.timeline }} 2>&1 | tee build/voice_log.txt
+      - name: Save the voice cache (also when a later line failed)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: voice_cache
+          key: voices-${{ github.run_id }}
+      - name: Publish the track (and the log, also on failure)
+        if: always()
+        run: |
+          mkdir -p /tmp/pub && cp build/voice_log.txt build/timeline.json /tmp/pub/ 2>/dev/null || true
+          if [ -f build/audio.wav ]; then
+            ffmpeg -loglevel error -i build/audio.wav -c:a flac -sample_fmt s16 /tmp/pub/audio.flac
+            ffmpeg -loglevel error -i build/audio.wav -c:a aac -b:a 256k /tmp/pub/audio.m4a
+          fi
+          ID=$(python -c "import json;print(json.load(open('${{ inputs.episode }}'))['id'])")
+          cd /tmp/pub && git init -q -b "preview-$ID-audio"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Dub from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-$ID-audio"
