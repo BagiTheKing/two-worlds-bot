@@ -50,7 +50,8 @@
       "text": "Antes había dos mundos.",
       "pad": 0.25,
       "direction_text": "[softly, like a storyteller] Antes había dos mundos.",
-      "tighten": 0.3
+      "tighten": 0.3,
+      "cut": "tight"
     },
     {
       "line": "steve",
@@ -211,7 +212,8 @@
       "text": "La realidad ha sido corregida.",
       "pad": 0.3,
       "direction_text": "[slow, cold, emotionless] La realidad ha sido corregida.",
-      "tighten": 0.3
+      "tighten": 0.3,
+      "cut": "tight"
     },
     {
       "beat": "null_hand",
@@ -1478,5 +1480,6 @@
   "language": "es",
   "fit_max": 1.3,
   "cut_loose": true,
-  "gate": -32
+  "gate": -32,
+  "solo_whole": true
 }

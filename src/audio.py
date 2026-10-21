@@ -620,6 +620,7 @@ def gemini_lines(ep, cache_dir):
     cast = ep["cast"]
     todo, counts = [], {}
     solos = {}          # lines re-done on their own; the scene recording stays as it was
+    cut_style = {}      # lines that ask for their own cut
     borrowed = {}       # lines whose recording comes from another (cached) scene
     for ev in ep["events"]:
         if "line" not in ev:
@@ -631,6 +632,8 @@ def gemini_lines(ep, cache_dir):
         todo.append((name, who, text, ev.get("nonverbal", False)))
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
+        if ev.get("cut"):
+            cut_style[name] = ev["cut"]
         if ev.get("solo_only"):            # recorded on its own: the scenes stay as they were
             todo.pop()
             if not ev.get("solo_text"):
@@ -676,7 +679,10 @@ def gemini_lines(ep, cache_dir):
             continue
         spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
         print("scene", names, "placed", [n for n in names if n in spans])
-        cuts = cut_lines(s, sr, spans, names, loose=ep.get("cut_loose", False))
+        # each line's cut: the episode's choice, or the line's own ("cut": tight/loose)
+        loose = {n: cut_style.get(n, "loose" if ep.get("cut_loose") else "tight") == "loose" for n in names}
+        both = {k: cut_lines(s, sr, spans, names, loose=k) for k in (False, True)}
+        cuts = {n: both[loose[n]][n] for n in names if n in both[loose[n]]}
         for n, w, t in scene:
             if n in cuts:
                 out[n] = (cuts[n], sr)
