@@ -289,6 +289,21 @@ def swing(c, t, st, actor=None):
     return st, {arm: (lerp(-0.5, -1.7, e), 0, 0)}
 
 
+def chop(c, t, st, actor=None):
+    """A big overhead swing: the arm goes up behind the head, holds for a
+    beat, then crashes down on `hit` seconds after the start."""
+    arm = c.get("arm", "arm_l")
+    hit = c["t0"] + c.get("hit", 0.4)
+    if t < hit - 0.09:
+        up = ss(c["t0"], hit - 0.18, t)
+        return st, {arm: (-3.3 * up, 0, 0), "head": (-0.25 * up, 0, 0)}
+    if t < hit:
+        e = ss(hit - 0.09, hit, t)
+        return st, {arm: (lerp(-3.3, -0.55, e), 0, 0), "head": (lerp(-0.25, 0.2, e), 0, 0)}
+    k = 1 - ss(hit + 0.15, c["t1"], t)
+    return st, {arm: (-0.55 * k, 0, 0), "head": (0.2 * k, 0, 0)}
+
+
 def reach(c, t, st, actor=None):
     """Both arms straight out in front (a zombie's walk)."""
     k = ss(c["t0"], c["t0"] + 0.2, t)
@@ -299,7 +314,7 @@ def reach(c, t, st, actor=None):
 
 BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
         "punch": punch, "flurry": flurry, "cheer": cheer, "wave": wave, "swing": swing,
-        "reach": reach}
+        "reach": reach, "chop": chop}
 
 
 # --------------------------------------------------------------- the actor

@@ -72,9 +72,12 @@ def _ballistic(ob, ctx, p0, v, t0, t1, ground=0.0, half=0.25, spin=(0, 0, 0), bo
 # ------------------------------------------------------------ the portal
 
 def portal_machine(ctx, tex, origin, w=5, h=6, build=None, open_at=None, dark_at=None,
-                   snap_at=None, name="portal"):
+                   snap_at=None, flicker=None, see=1.0, reveal=None, name="portal"):
     """origin: the frame's bottom-left block corner. The frame is w x h blocks
-    in the x-z plane, one block deep; it faces -y."""
+    in the x-z plane, one block deep; it faces -y. flicker: (t0, t1) the
+    surface stutters (e.g. while it swallows everything back); see: how
+    opaque the surface is once dark (below 1 it shows what is behind it);
+    reveal: when it thins to that (else at once, as it goes dark)."""
     ox, oy, oz = origin
     obsidian = material(f"{name}_obsidian", tex=tex["obsidian"], rough=0.3, spec=0.6)
     ring = [(i, 0) for i in range(w)] + [(w - 1, j) for j in range(1, h)] + \
@@ -119,25 +122,37 @@ def portal_machine(ctx, tex, origin, w=5, h=6, build=None, open_at=None, dark_at
     nt.links.new(noise.outputs["Fac"], ramp.inputs["Fac"])
     nt.links.new(ramp.outputs["Color"], mix.inputs["A"])
     nt.links.new(mix.outputs["Result"], emit.inputs["Color"])
-    nt.links.new(emit.outputs["Emission"], outn.inputs["Surface"])
+    clear = nt.nodes.new("ShaderNodeBsdfTransparent")
+    shade = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(clear.outputs["BSDF"], shade.inputs[1])
+    nt.links.new(emit.outputs["Emission"], shade.inputs[2])
+    nt.links.new(shade.outputs["Shader"], outn.inputs["Surface"])
     surf = box(f"{name}_surface", (w - 2, 0.1, h - 2), (0, 0, 0), {"default": m})
     surf.location = center
     end = snap_at if snap_at is not None else ctx.end
     for t, wv in ((0, 0.0), (end + 1, (end + 1) * 1.3)):          # the swirl keeps moving
         noise.inputs["W"].default_value = wv
         noise.inputs["W"].keyframe_insert("default_value", frame=ctx.F(t))
-    strength, dark = emit.inputs["Strength"], mix.inputs["Factor"]
-    keys = [(0, 1.6, 0.0), (open_at, 5.0, 0.0), (open_at + 0.35, 1.6, 0.0)]
+    strength, dark, opaque = emit.inputs["Strength"], mix.inputs["Factor"], shade.inputs[0]
+    keys = [(0, 1.6, 0.0, 1.0), (open_at, 5.0, 0.0, 1.0), (open_at + 0.35, 1.6, 0.0, 1.0)]
+    if flicker:
+        rnd = random.Random(7)
+        for f in range(ctx.F(flicker[0]), ctx.F(flicker[1])):
+            keys.append(((f - 1) / ctx.fps, rnd.choice((0.3, 0.6, 1.6, 4.0, 7.0)), 0.0, 1.0))
     if dark_at is not None:
-        keys += [(dark_at, 1.6, 0.0), (dark_at + 0.35, 1.2, 1.0)]
+        keys += [(dark_at, 1.6, 0.0, 1.0), (dark_at + 0.35, 1.2, 1.0, 1.0 if reveal is not None else see)]
+        if reveal is not None:
+            keys += [(reveal, 1.2, 1.0, 1.0), (reveal + 0.8, 0.9, 1.0, see)]
     if snap_at is not None:
-        keys += [(snap_at - 1 / ctx.fps, 1.2 if dark_at is not None else 1.6, 1.0 if dark_at is not None else 0.0),
-                 (snap_at, 40.0, 0.0)]
-    for t, s, d in keys:
-        strength.default_value = s
+        held = ((0.9 if reveal is not None else 1.2), 1.0, see) if dark_at is not None else (1.6, 0.0, 1.0)
+        keys += [(snap_at - 1 / ctx.fps, *held), (snap_at, 40.0, 0.0, 1.0)]
+    for t, s_, d, o in sorted(keys):
+        strength.default_value = s_
         strength.keyframe_insert("default_value", frame=ctx.F(t))
         dark.default_value = d
         dark.keyframe_insert("default_value", frame=ctx.F(t))
+        opaque.default_value = o
+        opaque.keyframe_insert("default_value", frame=ctx.F(t))
     sk = [(0, 0.001), (open_at, 0.001), (open_at + 0.12, (1.12, 1, 1.12)), (open_at + 0.3, 1.0)]
     if snap_at is not None:
         sk += [(snap_at, 1.0), (snap_at + 0.05, (1.15, 1, 1.15)), (snap_at + 0.16, 0.001)]
@@ -213,12 +228,13 @@ def spawn_pad(ctx, at, appear_at, name="spawn"):
 
 # ------------------------------------------------------------ the obby's hazards
 
-def hazards(ctx, src, t0, t1, clear_at, n=9, seed=4, hit=None, bar=None):
+def hazards(ctx, src, t0, t1, clear_at, n=9, seed=4, hit=None, bar=None, suck=None):
     """Kill bricks flung out of `src` at n evenly spread moments from t0 to t1,
     one of them (hit) aimed to land on a target at a given time; and a
     spinning red-and-white bar that lands at bar["at"] and sweeps under
     bar["pass_at"] (where someone has to jump) at bar["pass_t"]."""
     rnd = random.Random(seed)
+    stop = suck[0] if suck else clear_at        # flying until the pull begins
     neon = material("kill_brick", srgb((255, 40, 40)), rough=0.25, spec=0.6, coat=0.4,
                     emission=srgb((255, 30, 30)), strength=2.5)
     objs = []
@@ -226,7 +242,7 @@ def hazards(ctx, src, t0, t1, clear_at, n=9, seed=4, hit=None, bar=None):
         b = box(f"kill_brick_{k}", (0.5, 0.5, 0.5), (0, 0, 0), {"default": neon}, bevel=0.04)
         v = (rnd.uniform(-2.2, 2.6), -rnd.uniform(3.0, 5.5), rnd.uniform(2.5, 5.0))
         show_between(b, ctx.F(tl), ctx.F(clear_at))
-        _ballistic(b, ctx, src, v, tl, clear_at, spin=[rnd.uniform(-8, 8) for _ in range(3)])
+        _ballistic(b, ctx, src, v, tl, stop, spin=[rnd.uniform(-8, 8) for _ in range(3)])
         objs.append(b)
     if hit:
         th, tgt = hit["t"], hit["target"]
@@ -237,7 +253,7 @@ def hazards(ctx, src, t0, t1, clear_at, n=9, seed=4, hit=None, bar=None):
         show_between(b, ctx.F(th - dt), ctx.F(clear_at))
         _ballistic(b, ctx, src, v, th - dt, th, spin=(9, 4, 0))
         # bounces off the Noob and drops
-        _ballistic(b, ctx, tgt, (-v[0] * 0.2, -v[1] * 0.15, 2.5), th + 1 / ctx.fps, clear_at, spin=(5, 9, 2))
+        _ballistic(b, ctx, tgt, (-v[0] * 0.2, -v[1] * 0.15, 2.5), th + 1 / ctx.fps, stop, spin=(5, 9, 2))
         objs.append(b)
     if bar:
         pivot = empty("spin_bar")
@@ -254,7 +270,7 @@ def hazards(ctx, src, t0, t1, clear_at, n=9, seed=4, hit=None, bar=None):
         a0 = math.atan2(py - land[1], px - land[0])
         tb, tp = bar["t"], bar["pass_t"]
         show_between(pivot, ctx.F(tb), ctx.F(clear_at))
-        for f in range(ctx.F(tb), ctx.F(clear_at) + 1):
+        for f in range(ctx.F(tb), ctx.F(stop) + 1):
             t = (f - 1) / ctx.fps
             u = ss(tb, tb + 0.45, t)
             pivot.location = (lerp(src[0], land[0], u), lerp(src[1], land[1], u),
@@ -263,6 +279,23 @@ def hazards(ctx, src, t0, t1, clear_at, n=9, seed=4, hit=None, bar=None):
             pivot.keyframe_insert("location", frame=f)
             pivot.keyframe_insert("rotation_euler", frame=f)
         objs.append(pivot)
+    if suck:                                   # swallowed back into the portal
+        s0, s1 = suck
+        rnd2 = random.Random(seed + 1)
+        for ob in objs:
+            p = tuple(ob.location)             # where it was when the pull began
+            spin = [rnd2.uniform(-14, 14) for _ in range(3)]
+            r0 = tuple(ob.rotation_euler)
+            lag = rnd2.uniform(0, 0.25)
+            for f in range(ctx.F(s0), ctx.F(s1) + 1):
+                t = (f - 1) / ctx.fps
+                u = ss(s0 + lag, s1, t) ** 2
+                ob.location = tuple(lerp(p[i], src[i], u) for i in range(3))
+                ob.rotation_euler = tuple(r0[i] + spin[i] * u for i in range(3))
+                ob.keyframe_insert("location", frame=f)
+                ob.keyframe_insert("rotation_euler", frame=f)
+            _key_scale(ob, ctx, ((s0 + lag, 1.0), (s1 - 0.02, 0.15), (s1, 0.001)))
+        return objs
     # cleared: everything pops away
     for ob in objs:
         _key_scale(ob, ctx, ((clear_at - 0.01, 1.0), (clear_at + 0.08, 1.3), (clear_at + 0.14, 0.001)))
@@ -403,3 +436,70 @@ def void_room(ctx, tex, frame_origin, show, null_at, w=5, h=6, seed=12, name="vo
             ob.rotation_euler = (a, 2 * a, 0)
             ob.keyframe_insert("location", frame=f)
             ob.keyframe_insert("rotation_euler", frame=f)
+
+
+def room_behind(ctx, tex, frame_origin, show, w=5, h=6, depth=4.5, name="behind"):
+    """The other side, right behind a portal frame: a dark, star-flecked room.
+    Its walls face inwards and are see-through to the camera from outside
+    (still opaque to light), so from the side the portal shows the forest
+    behind it and only through the portal is there a room."""
+    ox, oy, oz = frame_origin
+    x0, x1, y0, y1, z0, z1 = ox + 0.02, ox + w - 0.02, oy + 1.0, oy + 1.0 + depth, oz + 0.02, oz + h - 0.02
+    v = [(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0),
+         (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)]
+    # faces wound so their normals point into the room (no front face)
+    faces = [(0, 1, 2, 3), (4, 7, 6, 5), (3, 2, 6, 7), (0, 3, 7, 4), (1, 5, 6, 2)]
+    me = bpy.data.meshes.new(f"{name}_room")
+    me.from_pydata(v, [], faces)
+    me.update()
+    room = bpy.data.objects.new(f"{name}_room", me)
+    bpy.context.scene.collection.objects.link(room)
+    m = bpy.data.materials.new(f"{name}_wall")
+    m.use_nodes = True
+    nt = m.node_tree
+    for n in list(nt.nodes):
+        nt.nodes.remove(n)
+    outn = nt.nodes.new("ShaderNodeOutputMaterial")
+    emit = nt.nodes.new("ShaderNodeEmission")
+    vor = nt.nodes.new("ShaderNodeTexVoronoi")
+    vor.inputs["Scale"].default_value = 9.0
+    stars = nt.nodes.new("ShaderNodeValToRGB")
+    se = stars.color_ramp.elements
+    se[0].position, se[0].color = 0.0, (0.9, 0.8, 1.0, 1)
+    se[1].position, se[1].color = 0.035, (0.0, 0.0, 0.0, 1)
+    noise = nt.nodes.new("ShaderNodeTexNoise")
+    noise.inputs["Scale"].default_value = 0.7
+    haze = nt.nodes.new("ShaderNodeValToRGB")
+    he = haze.color_ramp.elements
+    he[0].color, he[1].color = (0.004, 0.0, 0.01, 1), (0.05, 0.0, 0.09, 1)
+    add = nt.nodes.new("ShaderNodeMix")
+    add.data_type = "RGBA"
+    add.blend_type = "ADD"
+    add.inputs["Factor"].default_value = 1.0
+    nt.links.new(vor.outputs["Distance"], stars.inputs["Fac"])
+    nt.links.new(noise.outputs["Fac"], haze.inputs["Fac"])
+    nt.links.new(haze.outputs["Color"], add.inputs["A"])
+    nt.links.new(stars.outputs["Color"], add.inputs["B"])
+    nt.links.new(add.outputs["Result"], emit.inputs["Color"])
+    geo = nt.nodes.new("ShaderNodeNewGeometry")
+    path = nt.nodes.new("ShaderNodeLightPath")
+    both = nt.nodes.new("ShaderNodeMath")
+    both.operation = "MULTIPLY"
+    nt.links.new(geo.outputs["Backfacing"], both.inputs[0])
+    nt.links.new(path.outputs["Is Camera Ray"], both.inputs[1])
+    clear = nt.nodes.new("ShaderNodeBsdfTransparent")
+    pick = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(both.outputs["Value"], pick.inputs[0])
+    nt.links.new(emit.outputs["Emission"], pick.inputs[1])
+    nt.links.new(clear.outputs["BSDF"], pick.inputs[2])
+    nt.links.new(pick.outputs["Shader"], outn.inputs["Surface"])
+    me.materials.append(m)
+    glow = bpy.data.objects.new(f"{name}_glow", bpy.data.lights.new(f"{name}_glow", "POINT"))
+    bpy.context.scene.collection.objects.link(glow)
+    glow.data.color = (0.8, 0.45, 1.0)
+    glow.data.energy = 1100
+    glow.data.shadow_soft_size = 1.2
+    glow.location = ((x0 + x1) / 2, y0 + 0.8, oz + h * 0.55)
+    f0, f1 = ctx.F(show[0]), ctx.F(show[1])
+    for ob in (room, glow):
+        show_between(ob, f0, f1)

@@ -90,8 +90,37 @@
       "tighten": 0.25
     },
     {
+      "beat": "chaos",
+      "dur": 1.1
+    },
+    {
+      "line": "steve",
+      "name": "steve_planb",
+      "text": "Plan B!",
+      "direction_text": "[shouting] Plan B!",
+      "solo_only": true,
+      "pad": 0.05
+    },
+    {
+      "beat": "dash",
+      "dur": 0.45
+    },
+    {
       "beat": "smash",
-      "dur": 0.9
+      "dur": 0.75
+    },
+    {
+      "beat": "suck",
+      "dur": 1.3
+    },
+    {
+      "line": "steve",
+      "name": "steve_never",
+      "text": "...Never again.",
+      "direction_text": "[exhausted, relieved] ...Never again.",
+      "solo_only": true,
+      "pad": 0.25,
+      "tighten": 0.3
     },
     {
       "line": "noob",
@@ -101,8 +130,17 @@
       "pad": 0.2
     },
     {
-      "beat": "wave_back",
+      "beat": "mirror",
       "dur": 1.7
+    },
+    {
+      "line": "noob",
+      "name": "noob_waved",
+      "text": "...Steve? It waved back.",
+      "direction_text": "[uneasy, small voice] ...Steve? It waved back.",
+      "solo_only": true,
+      "pad": 0.35,
+      "tighten": 0.3
     },
     {
       "beat": "snap",
@@ -131,12 +169,12 @@
     {
       "cue": "chase",
       "from": "press",
-      "to": "smash",
+      "to": "suck+0.5",
       "gain": 0.2
     },
     {
       "cue": "dread",
-      "from": "smash",
+      "from": "suck.end",
       "to": "snap",
       "gain": 0.25,
       "hit_at": "snap",
@@ -153,7 +191,7 @@
     {
       "kind": "meadow",
       "from": "eye.end",
-      "to": "smash",
+      "to": "suck",
       "gain": 0.08,
       "fade_in": 0.3
     }
@@ -212,12 +250,6 @@
       "gain": 0.35
     },
     {
-      "kind": "whir",
-      "at": "pour+0.2",
-      "to": "smash+0.1",
-      "gain": 0.4
-    },
-    {
       "kind": "groan",
       "at": "pour+0.4",
       "gain": 0.5
@@ -244,16 +276,46 @@
       "gain": 0.7
     },
     {
-      "kind": "break",
-      "at": "smash",
+      "kind": "whir",
+      "at": "pour+0.2",
+      "to": "suck+0.6",
+      "gain": 0.4
+    },
+    {
+      "kind": "groan",
+      "at": "chaos+0.15",
+      "gain": 0.5,
+      "dur": 1.0
+    },
+    {
+      "kind": "whoosh",
+      "at": "dash",
+      "dur": 0.45,
+      "gain": 0.6
+    },
+    {
+      "kind": "crunch",
+      "at": "smash+0.35",
+      "gain": 0.95
+    },
+    {
+      "kind": "suck",
+      "at": "suck",
+      "dur": 1.1,
       "gain": 0.8
     },
     {
       "kind": "pop",
-      "from": "smash+0.1",
-      "to": "smash+0.35",
+      "from": "suck+0.5",
+      "to": "suck+1.0",
       "count": 6,
-      "gain": 0.4
+      "gain": 0.35
+    },
+    {
+      "kind": "sub_drop",
+      "at": "noob_hi",
+      "dur": 1.6,
+      "gain": 0.45
     },
     {
       "kind": "snap",
@@ -268,19 +330,6 @@
       "sub": "STEVE'S PLAN LASTED 3 SECONDS",
       "from": "eye.end",
       "to": "steve_rule.end+0.4"
-    },
-    {
-      "type": "hud",
-      "text": "REALITY: 99%",
-      "from": "eye.end",
-      "to": "smash"
-    },
-    {
-      "type": "hud",
-      "text": "REALITY: 97%",
-      "alert": true,
-      "from": "smash",
-      "to": "endcard"
     },
     {
       "type": "timer",
@@ -306,6 +355,31 @@
       "to": "portal_open+2.6"
     },
     {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 99%",
+      "from": "eye.end",
+      "to": "suck+0.6"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 97%",
+      "alert": true,
+      "from": "suck+0.6",
+      "to": "endcard"
+    },
+    {
+      "type": "flash",
+      "from": "smash+0.35",
+      "to": "smash+0.5",
+      "strength": 0.8
+    },
+    {
       "type": "endcard",
       "over": true,
       "from": "snap+0.9",
@@ -315,12 +389,6 @@
       "question": "WHAT WAS WATCHING THEM?",
       "question_sub": "Comment your theory",
       "pace": 0.4
-    },
-    {
-      "type": "watermark",
-      "text": "@GLITCHBOUND2469",
-      "from": 0,
-      "to": "end"
     }
   ],
   "sets": [
@@ -373,7 +441,7 @@
       "visible": [
         [
           "pour+0.15",
-          "smash+0.15"
+          "suck+1.0"
         ]
       ]
     },
@@ -388,7 +456,7 @@
       "visible": [
         [
           "pour+0.45",
-          "smash+0.15"
+          "suck+1.0"
         ]
       ]
     },
@@ -403,23 +471,23 @@
       "visible": [
         [
           "pour+0.8",
-          "smash+0.15"
+          "suck+1.0"
         ]
       ]
     },
     "null": {
       "rig": "null",
-      "s": 3.0,
+      "s": 1.5,
       "at": [
-        302.5,
-        12.0,
-        0
+        -3.5,
+        8.8,
+        0.02
       ],
       "yaw": 0.0,
       "visible": [
         [
-          "smash.end",
-          "snap"
+          "noob_hi-0.3",
+          "snap+0.15"
         ]
       ]
     }
@@ -567,7 +635,7 @@
       "who": "zombie_1",
       "do": "walk",
       "from": "pour+0.15",
-      "to": "smash",
+      "to": "suck",
       "dest": [
         -5.6,
         3.2
@@ -578,7 +646,7 @@
       "who": "zombie_2",
       "do": "walk",
       "from": "pour+0.45",
-      "to": "smash",
+      "to": "suck",
       "dest": [
         -3.6,
         1.6
@@ -589,10 +657,10 @@
       "who": "zombie_3",
       "do": "walk",
       "from": "pour+0.8",
-      "to": "smash",
+      "to": "suck",
       "dest": [
-        -1.6,
-        1.4
+        -1.4,
+        5.0
       ],
       "rate": 1.3
     },
@@ -600,19 +668,19 @@
       "who": "zombie_1",
       "do": "reach",
       "from": "pour+0.15",
-      "to": "smash"
+      "to": "suck"
     },
     {
       "who": "zombie_2",
       "do": "reach",
       "from": "pour+0.45",
-      "to": "smash"
+      "to": "suck"
     },
     {
       "who": "zombie_3",
       "do": "reach",
       "from": "pour+0.8",
-      "to": "smash"
+      "to": "suck"
     },
     {
       "who": "noob",
@@ -640,53 +708,175 @@
     },
     {
       "who": "steve",
-      "do": "set",
-      "from": "smash-0.5",
-      "to": "smash-0.5",
-      "at": [
-        -0.95,
-        3.45,
-        0
-      ],
-      "yaw": 1.5708
+      "do": "face",
+      "from": "chaos",
+      "to": "chaos+0.3",
+      "yaw": -0.4
     },
     {
       "who": "steve",
-      "do": "punch",
-      "from": "smash-0.2",
-      "to": "smash+0.45",
-      "arm": "arm_l"
+      "do": "shock",
+      "from": "chaos",
+      "to": "chaos.end"
     },
     {
       "who": "steve",
       "do": "face",
-      "from": "smash.end",
-      "to": "smash.end+0.3",
-      "yaw": -2.25
+      "from": "steve_planb-0.1",
+      "to": "steve_planb+0.1",
+      "yaw": 0.42
+    },
+    {
+      "who": "steve",
+      "do": "raise_arm",
+      "from": "steve_planb",
+      "to": "dash.end",
+      "arm": "arm_l",
+      "ease": 0.2
+    },
+    {
+      "who": "steve",
+      "do": "run",
+      "from": "dash",
+      "to": "dash.end",
+      "dest": [
+        -0.95,
+        3.45
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "dash.end-0.08",
+      "to": "smash+0.05",
+      "yaw": 1.5708
+    },
+    {
+      "who": "steve",
+      "do": "chop",
+      "from": "smash",
+      "to": "suck",
+      "arm": "arm_l",
+      "hit": 0.35
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "suck+0.6",
+      "to": "suck+1.0",
+      "yaw": 0.0
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "steve_never",
+      "to": "noob_hi",
+      "head": [
+        0.3,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "noob_hi",
+      "to": "noob_hi+0.4",
+      "yaw": -2.0
+    },
+    {
+      "who": "steve",
+      "do": "shock",
+      "from": "snap",
+      "to": "end"
+    },
+    {
+      "who": "zombie_1",
+      "do": "fall",
+      "from": "suck",
+      "to": "suck+0.9",
+      "dest": [
+        -3.5,
+        5.6,
+        1.6
+      ]
+    },
+    {
+      "who": "zombie_2",
+      "do": "fall",
+      "from": "suck+0.1",
+      "to": "suck+0.95",
+      "dest": [
+        -3.3,
+        5.6,
+        1.8
+      ]
+    },
+    {
+      "who": "zombie_3",
+      "do": "fall",
+      "from": "suck+0.05",
+      "to": "suck+1.0",
+      "dest": [
+        -3.7,
+        5.6,
+        1.4
+      ]
     },
     {
       "who": "noob",
       "do": "set",
-      "from": "smash.end",
-      "to": "smash.end",
+      "from": "steve_never",
+      "to": "steve_never",
       "at": [
-        -2.0,
-        3.0,
+        -5.0,
+        3.2,
         0
       ],
-      "yaw": -1.6
+      "yaw": -0.5
+    },
+    {
+      "who": "noob",
+      "do": "walk",
+      "from": "steve_never",
+      "to": "noob_hi-0.1",
+      "dest": [
+        -6.6,
+        4.6
+      ],
+      "rate": 2.0
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "noob_hi-0.15",
+      "to": "noob_hi+0.1",
+      "yaw": 1.88
     },
     {
       "who": "noob",
       "do": "wave",
       "from": "noob_hi",
-      "to": "wave_back+0.5",
+      "to": "mirror+0.9",
       "arm": "arm_r"
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "noob_waved-0.15",
+      "to": "noob_waved+0.2",
+      "yaw": -0.26
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": "snap",
+      "to": "end"
     },
     {
       "who": "null",
       "do": "look",
-      "from": "smash.end",
+      "from": "noob_hi-0.3",
       "to": "snap",
       "head": [
         0,
@@ -697,22 +887,20 @@
     {
       "who": "null",
       "do": "wave",
-      "from": "wave_back+0.2",
+      "from": "noob_hi+0.35",
       "to": "snap",
-      "arm": "arm_l",
-      "rate": 1.1
+      "arm": "arm_l"
     },
     {
-      "who": "noob",
-      "do": "shock",
-      "from": "snap",
-      "to": "end"
-    },
-    {
-      "who": "steve",
-      "do": "shock",
-      "from": "snap",
-      "to": "end"
+      "who": "null",
+      "do": "walk",
+      "from": "noob_waved",
+      "to": "snap",
+      "dest": [
+        -3.5,
+        6.6
+      ],
+      "rate": 1.0
     }
   ],
   "fx": [
@@ -741,12 +929,12 @@
           1.25
         ],
         [
-          "smash+0.3",
+          "suck.end",
           5.0,
           1.25
         ],
         [
-          "smash+1.0",
+          "suck.end+0.8",
           2.2,
           0.6
         ]
@@ -798,8 +986,21 @@
         "steve_plan.end"
       ],
       "open": "portal_open",
-      "dark": "smash+0.3",
-      "snap": "snap"
+      "dark": "suck.end-0.3",
+      "snap": "snap",
+      "flicker": [
+        "suck",
+        "suck.end-0.3"
+      ],
+      "reveal": "noob_hi-0.3",
+      "see": 0.32,
+      "behind": {
+        "show": [
+          "noob_hi-0.3",
+          "snap+0.2"
+        ],
+        "depth": 4.5
+      }
     },
     {
       "kind": "button",
@@ -808,7 +1009,7 @@
         3.6
       ],
       "press": "press",
-      "smash": "smash"
+      "smash": "smash+0.35"
     },
     {
       "kind": "spawn_pad",
@@ -827,7 +1028,7 @@
       ],
       "from": "pour",
       "to": "pour+1.4",
-      "clear": "smash+0.1",
+      "clear": "suck+1.0",
       "n": 9,
       "hit": {
         "at": "hit",
@@ -844,7 +1045,11 @@
         "pass": "pour+0.9",
         "actor": "steve",
         "rate": 0.8
-      }
+      },
+      "suck": [
+        "suck",
+        "suck+1.0"
+      ]
     },
     {
       "kind": "burst",
@@ -855,24 +1060,7 @@
       "kind": "dark_cube",
       "actor": "noob",
       "from": "hit",
-      "to": "smash"
-    },
-    {
-      "kind": "void_room",
-      "frame": [
-        300,
-        5,
-        0
-      ],
-      "show": [
-        "smash.end",
-        "snap"
-      ],
-      "null_at": [
-        302.5,
-        12.0,
-        0
-      ]
+      "to": "suck"
     }
   ],
   "shots": [
@@ -1158,7 +1346,7 @@
     {
       "name": "pad",
       "from": "respawn",
-      "to": "smash",
+      "to": "chaos",
       "lens": 26,
       "path": [
         [
@@ -1170,7 +1358,7 @@
           ]
         ],
         [
-          "smash",
+          "chaos",
           [
             4.05,
             -0.35,
@@ -1190,139 +1378,280 @@
       ]
     },
     {
-      "name": "smash",
-      "from": "smash",
-      "to": "smash.end",
-      "lens": 24,
+      "name": "chaos",
+      "from": "chaos",
+      "to": "steve_planb",
+      "lens": 18,
       "shake": 0.04,
       "path": [
         [
-          "smash",
+          "chaos",
           [
-            0.9,
-            0.5,
-            1.5
+            0.3,
+            -1.9,
+            1.8
           ]
         ],
         [
-          "smash.end",
+          "steve_planb",
           [
-            0.85,
-            0.6,
-            1.5
+            0.25,
+            -1.5,
+            1.8
           ]
         ]
       ],
       "look": [
         [
-          "smash",
+          "chaos",
           [
-            -0.9,
-            3.4,
-            0.9
-          ]
-        ]
-      ]
-    },
-    {
-      "name": "hi",
-      "from": "smash.end",
-      "to": "wave_back",
-      "lens": 20,
-      "path": [
-        [
-          "smash.end",
-          [
-            -4.9,
-            1.3,
-            1.7
-          ]
-        ],
-        [
-          "wave_back",
-          [
-            -4.8,
-            1.5,
-            1.7
-          ]
-        ]
-      ],
-      "look": [
-        [
-          "smash.end",
-          [
-            -2.6,
-            3.7,
+            -1.6,
+            4.2,
             2.0
           ]
         ]
       ]
     },
     {
-      "name": "null_wave",
-      "from": "wave_back",
-      "to": "snap",
-      "lens": 30,
+      "name": "planb",
+      "from": "steve_planb",
+      "to": "dash",
+      "lens": 32,
+      "shake": 0.03,
+      "dof": 3.0,
       "path": [
         [
-          "wave_back",
+          "steve_planb",
           [
-            302.5,
-            1.6,
-            2.9
+            0.5,
+            2.9,
+            1.75
           ]
         ],
         [
-          "snap",
+          "dash",
           [
-            302.5,
-            2.4,
-            3.0
+            0.45,
+            3.0,
+            1.75
           ]
         ]
       ],
       "look": [
         [
-          "wave_back",
+          "steve_planb",
           [
-            302.5,
-            12.0,
-            4.6
+            -0.4,
+            4.9,
+            1.8
           ]
         ]
       ]
     },
     {
-      "name": "snap",
-      "from": "snap",
-      "to": "end",
-      "lens": 20,
-      "shake": 0.03,
+      "name": "dash",
+      "from": "dash",
+      "to": "smash",
+      "lens": 24,
       "path": [
         [
-          "snap",
+          "dash",
           [
-            -4.8,
-            1.5,
+            1.4,
+            1.2,
+            1.4
+          ]
+        ],
+        [
+          "smash",
+          [
+            1.35,
+            1.3,
+            1.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "dash",
+          [
+            -0.6,
+            4.0,
+            1.2
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "smash",
+      "from": "smash",
+      "to": "suck",
+      "lens": 18,
+      "shake": 0.06,
+      "path": [
+        [
+          "smash",
+          [
+            0.25,
+            4.75,
+            0.8
+          ]
+        ],
+        [
+          "suck",
+          [
+            0.3,
+            4.85,
+            0.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "smash",
+          [
+            -0.5,
+            3.55,
+            1.35
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "suck",
+      "from": "suck",
+      "to": "steve_never",
+      "lens": 18,
+      "shake": 0.05,
+      "path": [
+        [
+          "suck",
+          [
+            0.3,
+            -1.9,
+            1.8
+          ]
+        ],
+        [
+          "steve_never",
+          [
+            0.25,
+            -1.6,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "suck",
+          [
+            -2.2,
+            4.4,
+            2.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "never",
+      "from": "steve_never",
+      "to": "noob_hi",
+      "lens": 30,
+      "dof": 3.0,
+      "path": [
+        [
+          "steve_never",
+          [
+            -0.3,
+            1.0,
             1.7
+          ]
+        ],
+        [
+          "noob_hi",
+          [
+            -0.35,
+            1.15,
+            1.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_never",
+          [
+            -0.9,
+            3.5,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "mirror",
+      "from": "noob_hi",
+      "to": "noob_waved",
+      "lens": 20,
+      "path": [
+        [
+          "noob_hi",
+          [
+            -3.9,
+            -0.8,
+            1.9
+          ]
+        ],
+        [
+          "noob_waved",
+          [
+            -4.0,
+            0.6,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_hi",
+          [
+            -5.0,
+            5.0,
+            2.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "waved",
+      "from": "noob_waved",
+      "to": "end",
+      "lens": 22,
+      "shake": 0.02,
+      "path": [
+        [
+          "noob_waved",
+          [
+            -7.4,
+            1.6,
+            1.8
           ]
         ],
         [
           "end",
           [
-            -4.6,
-            1.9,
-            1.7
+            -7.2,
+            2.1,
+            1.8
           ]
         ]
       ],
       "look": [
         [
-          "snap",
+          "noob_waved",
           [
-            -2.6,
-            3.7,
-            2.0
+            -5.0,
+            5.3,
+            2.1
           ]
         ]
       ]

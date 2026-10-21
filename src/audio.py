@@ -562,6 +562,10 @@ def gemini_lines(ep, cache_dir):
         todo.append((name, who, text, ev.get("nonverbal", False)))
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
+        if ev.get("solo_only"):            # recorded on its own: the scenes stay as they were
+            todo.pop()
+            if not ev.get("solo_text"):
+                solos[name] = (who, _spoken(text), ev.get("nonverbal", False))
         if ev.get("voice_from"):
             borrowed[name] = ev["voice_from"]
     # scenes: consecutive lines with at most two voices (Null speaks alone)
@@ -843,7 +847,30 @@ def sfx_snap():
     return norm(out, 0.95)
 
 
-SFX = {"place": lambda e: sfx_place(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
+def sfx_suck(dur=1.2):
+    """A portal swallowing everything back: rushing air that rises and is
+    cut off, over a falling sub."""
+    x = t(dur)
+    air = band(rng.standard_normal(len(x)), 300, 4000) * np.linspace(0.2, 1.0, len(x)) ** 2
+    air[-int(0.03 * SR):] *= np.linspace(1, 0, int(0.03 * SR))
+    f = 220 - 160 * x / dur
+    tone = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.linspace(0.6, 0.0, len(x))
+    return norm(norm(air) + 0.5 * tone + 0.6 * sfx_sub_drop(dur)[:len(x)], 0.9)
+
+
+def sfx_crunch():
+    """The pickaxe through the button: a heavy hit, plastic shattering."""
+    out = np.zeros(int(1.0 * SR))
+    place(out, sfx_thump(60, 0.6, 1.0), 0.0, 1.0)
+    place(out, sfx_break(), 0.0, 0.9)
+    for i in range(5):
+        n = int(0.06 * SR)
+        place(out, band(rng.standard_normal(n), 2500, 9000) * env(n, 0.0005, 0.015), 0.05 + i * 0.05, 0.5)
+    return norm(out, 0.95)
+
+
+SFX = {"place": lambda e: sfx_place(), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
+       "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
        "groan": lambda e: sfx_groan(e.get("dur", 0.9)), "burst": lambda e: sfx_burst(),
        "whir": lambda e: sfx_whir(e.get("dur", 2.0)), "snap": lambda e: sfx_snap(),
        "pop": lambda e: sfx_pop(), "thump": lambda e: sfx_thump(e.get("freq", 70), 0.45, 0.6),

@@ -248,7 +248,13 @@ def timer(img, o, t, f, fonts):
     d.text((x, y), text, font=fnt, fill=col, anchor="mm", stroke_width=3, stroke_fill=(0, 0, 0))
 
 
-DRAW = {"watermark": watermark, "timer": timer, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+def flash(img, o, t, f, fonts):
+    """A white impact flash, fading out."""
+    k = 1 - (t - o["start"]) / max(1e-6, o["end"] - o["start"])
+    img.paste(Image.blend(img, Image.new("RGB", img.size, (255, 255, 255)), max(0.0, min(1.0, k)) * o.get("strength", 0.85)))
+
+
+DRAW = {"watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt}
 FULL = ("card", "fade_in", "endcard")
 

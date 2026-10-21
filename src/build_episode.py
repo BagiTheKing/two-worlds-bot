@@ -171,7 +171,13 @@ def build(episode_path, timeline_path, tex_dir):
                                  build=(ctx.T(e["build"][0]), ctx.T(e["build"][1])) if e.get("build") else None,
                                  open_at=ctx.T(e["open"]) if e.get("open") else None,
                                  dark_at=ctx.T(e["dark"]) if e.get("dark") else None,
-                                 snap_at=ctx.T(e["snap"]) if e.get("snap") else None)
+                                 snap_at=ctx.T(e["snap"]) if e.get("snap") else None,
+                                 flicker=(ctx.T(e["flicker"][0]), ctx.T(e["flicker"][1])) if e.get("flicker") else None,
+                                 see=e.get("see", 1.0), reveal=ctx.T(e["reveal"]) if e.get("reveal") else None)
+            if e.get("behind"):                  # what stands on the other side
+                b = e["behind"]
+                props.room_behind(ctx, tex, tuple(e["origin"]), (ctx.T(b["show"][0]), ctx.T(b["show"][1])),
+                                  e.get("w", 5), e.get("h", 6), depth=b.get("depth", 4.5))
         elif k == "button":
             props.button(ctx, tuple(e["at"]), ctx.T(e["press"]) if e.get("press") else None,
                          ctx.T(e["smash"]) if e.get("smash") else None)
@@ -191,7 +197,8 @@ def build(episode_path, timeline_path, tex_dir):
                 bar = {"t": ctx.T(b["from"]), "at": tuple(b["at"]), "pass_t": tp,
                        "pass_at": actors[b["actor"]].state_at(tp)["loc"], "rate": b.get("rate", 0.8)}
             props.hazards(ctx, tuple(e["src"]), ctx.T(e["from"]), ctx.T(e["to"]), ctx.T(e["clear"]),
-                          n=e.get("n", 9), seed=e.get("seed", 4), hit=hit, bar=bar)
+                          n=e.get("n", 9), seed=e.get("seed", 4), hit=hit, bar=bar,
+                          suck=(ctx.T(e["suck"][0]), ctx.T(e["suck"][1])) if e.get("suck") else None)
         elif k == "burst":
             t = ctx.T(e["at"])
             props.burst(ctx, actors[e["actor"]].state_at(t)["loc"], t)
