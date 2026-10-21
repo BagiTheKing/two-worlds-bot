@@ -170,7 +170,15 @@
       "cue": "chase",
       "from": "press",
       "to": "suck+0.5",
-      "gain": 0.2
+      "gain": 0.2,
+      "swell": [
+        {
+          "from": "chaos",
+          "to": "steve_planb",
+          "gain": 1.9,
+          "ramp": 0.25
+        }
+      ]
     },
     {
       "cue": "dread",
@@ -321,6 +329,13 @@
       "kind": "snap",
       "at": "snap",
       "gain": 0.9
+    },
+    {
+      "kind": "pop",
+      "from": "chaos+0.1",
+      "to": "chaos.end-0.1",
+      "count": 4,
+      "gain": 0.35
     }
   ],
   "overlays": [
