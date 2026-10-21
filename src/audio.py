@@ -495,6 +495,43 @@ def cut_lines(samples, sr, spans, order):
     return cuts
 
 
+def tighten(x, max_gap=0.22, sr=SR):
+    """Shorten every pause inside a line to at most max_gap seconds: the same
+    take and delivery, less dead air between sentences."""
+    win = int(0.01 * sr)
+    n = len(x) // win
+    if n < 3:
+        return x
+    rms = np.sqrt(np.mean(x[:n * win].reshape(n, win) ** 2, axis=1))
+    quiet = rms < 0.03 * rms.max()
+    keep = np.ones(len(x), bool)
+    fade = int(0.008 * sr)
+    i = 0
+    loud = np.nonzero(~quiet)[0]
+    first, last = (loud[0], loud[-1]) if len(loud) else (0, n - 1)
+    i = first
+    while i <= last:
+        if quiet[i]:
+            j = i
+            while j <= last and quiet[j]:
+                j += 1
+            gap = (j - i) * win
+            if gap > max_gap * sr:                 # cut the middle of the pause
+                cut = gap - int(max_gap * sr)
+                a0 = i * win + (gap - cut) // 2
+                keep[a0:a0 + cut] = False
+            i = j
+        else:
+            i += 1
+    out = x[keep].copy()
+    # soften each splice
+    for k in np.nonzero(np.diff(keep.astype(int)) == 1)[0]:
+        pos = int(np.sum(keep[:k + 1]))
+        lo, hi = max(0, pos - fade), min(len(out), pos + fade)
+        out[lo:hi] *= np.concatenate([np.linspace(1, 0.3, pos - lo), np.linspace(0.3, 1, hi - pos)])
+    return out
+
+
 def falling(x, sr=SR):
     """A voice falling away: fades and drops in pitch as it goes."""
     n = len(x)
@@ -926,6 +963,8 @@ def build(episode_path, out_dir, keep=None):
                 audio = null_voice(audio)
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
+            if ev.get("tighten"):                     # shorter pauses inside the line
+                audio = tighten(audio, ev["tighten"])
             if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
                 audio = audio[:int(ev["trim"] * SR)].copy()
                 f = int(0.25 * SR)
