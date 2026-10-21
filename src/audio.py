@@ -480,7 +480,7 @@ def split_scene(samples, sr, lines):
     return spans
 
 
-def cut_lines(samples, sr, spans, order):
+def cut_lines(samples, sr, spans, order, loose=False):
     """Cut each line at the middle of the silence between it and the lines
     around it, so drawn-out words are never clipped and pauses are not
     swallowed. (Cutting at any unrecognised word instead dropped scripted
@@ -492,8 +492,10 @@ def cut_lines(samples, sr, spans, order):
         a, b = spans[n][:2]
         prev_end = spans[placed[i - 1]][1] if i else 0.0
         next_start = spans[placed[i + 1]][0] if i + 1 < len(placed) else total
-        start = max((prev_end + a) / 2, a - 0.3)
-        end = min((b + next_start) / 2, b + 0.6)
+        # loose (dubs): halfway into the gaps, without the 0.3 s / 0.6 s limits,
+        # where Whisper's word timings are late and would chop a line's start
+        start = (prev_end + a) / 2 if loose else max((prev_end + a) / 2, a - 0.3)
+        end = (b + next_start) / 2 if loose else min((b + next_start) / 2, b + 0.6)
         cuts[n] = samples[int(start * sr):int(end * sr)]
     return cuts
 
@@ -529,6 +531,39 @@ def stretch(x, ratio, sr=SR):
         k += 1
     weight[weight < 1e-3] = 1.0
     return (out / weight)[:n_out]
+
+
+def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
+    """Turn down breaths and mouth noise between words: wherever the voice
+    stays more than thr_db below its peak for min_gap or longer, it drops by
+    cut_db, with smooth ramps so nothing pumps. Words, soft consonants
+    included, sit well above the threshold. The line's edges get a short fade."""
+    win = int(0.01 * sr)
+    n = len(x) // win
+    if n < 3:
+        return x
+    rms = np.sqrt(np.mean(x[:n * win].reshape(n, win) ** 2, axis=1))
+    quiet = 20 * np.log10(rms / (rms.max() + 1e-12) + 1e-12) < thr_db
+    g = np.ones(n)
+    i = 0
+    while i < n:
+        if quiet[i]:
+            j = i
+            while j < n and quiet[j]:
+                j += 1
+            if (j - i) * 0.01 >= min_gap:
+                g[i:j] = 10 ** (cut_db / 20)
+            i = j
+        else:
+            i += 1
+    k = np.ones(5) / 5                                   # 50 ms ramps
+    g = np.convolve(np.concatenate([[g[0]] * 2, g, [g[-1]] * 2]), k, "valid")
+    gain = np.interp(np.arange(len(x)), np.arange(n) * win + win / 2, g)
+    y = x * gain
+    f = int(0.006 * sr)
+    y[:f] *= np.linspace(0, 1, f)
+    y[-f:] *= np.linspace(1, 0, f)
+    return y
 
 
 def tighten(x, max_gap=0.22, sr=SR, floor=0.03):
@@ -641,7 +676,7 @@ def gemini_lines(ep, cache_dir):
             continue
         spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
         print("scene", names, "placed", [n for n in names if n in spans])
-        cuts = cut_lines(s, sr, spans, names)
+        cuts = cut_lines(s, sr, spans, names, loose=ep.get("cut_loose", False))
         for n, w, t in scene:
             if n in cuts:
                 out[n] = (cuts[n], sr)
@@ -1020,6 +1055,8 @@ def build(episode_path, out_dir, keep=None):
                         eleven_voice=c.get("eleven_voice"),
                         stability=ev.get("stability", c.get("stability", 0.5)),
                         sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
+            if ep.get("gate") is not None:              # breaths and mouth noise down
+                audio = gate(audio, ep["gate"])
             if c.get("fx") == "null":
                 audio = null_voice(audio)
             if ev.get("fx") == "falling":
