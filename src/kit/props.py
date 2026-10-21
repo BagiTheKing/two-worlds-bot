@@ -131,7 +131,7 @@ def portal_machine(ctx, tex, origin, w=5, h=6, build=None, open_at=None, dark_at
     if dark_at is not None:
         keys += [(dark_at, 1.6, 0.0), (dark_at + 0.35, 1.2, 1.0)]
     if snap_at is not None:
-        keys += [(snap_at - 0.02, 1.2 if dark_at is not None else 1.6, 1.0 if dark_at is not None else 0.0),
+        keys += [(snap_at - 1 / ctx.fps, 1.2 if dark_at is not None else 1.6, 1.0 if dark_at is not None else 0.0),
                  (snap_at, 40.0, 0.0)]
     for t, s, d in keys:
         strength.default_value = s
@@ -152,7 +152,7 @@ def portal_machine(ctx, tex, origin, w=5, h=6, build=None, open_at=None, dark_at
     if dark_at is not None:
         lk += [(dark_at, 900), (dark_at + 0.35, 120)]
     if snap_at is not None:
-        lk += [(snap_at - 0.02, 120 if dark_at is not None else 900), (snap_at, 9000), (snap_at + 0.25, 0)]
+        lk += [(snap_at - 1 / ctx.fps, 120 if dark_at is not None else 900), (snap_at, 9000), (snap_at + 0.25, 0)]
     for t, e in lk:
         lamp.data.energy = e
         lamp.data.keyframe_insert("energy", frame=ctx.F(t))
