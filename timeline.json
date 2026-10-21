@@ -1,0 +1,272 @@
+{
+ "id": "ep02_the_plan",
+ "fps": 24,
+ "length": 28.795,
+ "beats": {
+  "eye": [
+   0.0,
+   1.4
+  ],
+  "steve_rule": [
+   1.4,
+   3.483
+  ],
+  "steve_plan": [
+   3.633,
+   6.759
+  ],
+  "noob_this": [
+   6.909,
+   7.494
+  ],
+  "steve_dont": [
+   7.544,
+   7.987
+  ],
+  "press": [
+   7.987,
+   8.337
+  ],
+  "portal_open": [
+   8.337,
+   9.137
+  ],
+  "pour": [
+   9.137,
+   11.037
+  ],
+  "hit": [
+   11.037,
+   11.587
+  ],
+  "respawn": [
+   11.587,
+   11.937
+  ],
+  "noob_fine": [
+   11.937,
+   13.321
+  ],
+  "chaos": [
+   13.421,
+   14.521
+  ],
+  "steve_planb": [
+   14.521,
+   15.714
+  ],
+  "dash": [
+   15.764,
+   16.214
+  ],
+  "smash": [
+   16.214,
+   16.964
+  ],
+  "suck": [
+   16.964,
+   18.264
+  ],
+  "steve_never": [
+   18.264,
+   19.708
+  ],
+  "noob_hi": [
+   19.958,
+   20.371
+  ],
+  "mirror": [
+   20.571,
+   22.271
+  ],
+  "noob_waved": [
+   22.271,
+   24.545
+  ],
+  "snap": [
+   24.895,
+   25.795
+  ],
+  "endcard": [
+   25.795,
+   28.795
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_rule",
+   "who": "steve",
+   "text": "New rule. We leave. Today.",
+   "vo": false,
+   "caption": true,
+   "start": 1.4,
+   "end": 3.483
+  },
+  {
+   "name": "steve_plan",
+   "who": "steve",
+   "text": "Portal home. Three steps. Nobody touches anything.",
+   "vo": false,
+   "caption": true,
+   "start": 3.633,
+   "end": 6.759
+  },
+  {
+   "name": "noob_this",
+   "who": "noob",
+   "text": "This one?",
+   "vo": false,
+   "caption": true,
+   "start": 6.909,
+   "end": 7.494
+  },
+  {
+   "name": "steve_dont",
+   "who": "steve",
+   "text": "Don't!",
+   "vo": false,
+   "caption": true,
+   "start": 7.544,
+   "end": 7.987
+  },
+  {
+   "name": "noob_fine",
+   "who": "noob",
+   "text": "I'm fine! New record!",
+   "vo": false,
+   "caption": true,
+   "start": 11.937,
+   "end": 13.321
+  },
+  {
+   "name": "steve_planb",
+   "who": "steve",
+   "text": "Plan B!",
+   "vo": false,
+   "caption": true,
+   "start": 14.521,
+   "end": 15.714
+  },
+  {
+   "name": "steve_never",
+   "who": "steve",
+   "text": "...Never again.",
+   "vo": false,
+   "caption": true,
+   "start": 18.264,
+   "end": 19.708
+  },
+  {
+   "name": "noob_hi",
+   "who": "noob",
+   "text": "Hi!",
+   "vo": false,
+   "caption": true,
+   "start": 19.958,
+   "end": 20.371
+  },
+  {
+   "name": "noob_waved",
+   "who": "noob",
+   "text": "...Steve? It waved back.",
+   "vo": false,
+   "caption": true,
+   "start": 22.271,
+   "end": 24.545
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "label",
+   "text": "EPISODE 2",
+   "sub": "STEVE'S PLAN LASTED 3 SECONDS",
+   "start": 1.4,
+   "end": 3.883
+  },
+  {
+   "type": "timer",
+   "label": "PLAN",
+   "fail_after": 3.0,
+   "y": 430,
+   "start": 4.987,
+   "end": 9.537
+  },
+  {
+   "type": "prompt",
+   "text": "WOULD YOU PRESS IT? COMMENT \u2193",
+   "y": 1480,
+   "start": 6.909,
+   "end": 8.937
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "TEAMWORK!",
+   "sub": "Build a portal together",
+   "start": 8.637,
+   "end": 10.937
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 29.195
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 99%",
+   "start": 1.4,
+   "end": 17.564
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 97%",
+   "alert": true,
+   "start": 17.564,
+   "end": 25.795
+  },
+  {
+   "type": "flash",
+   "strength": 0.8,
+   "start": 16.564,
+   "end": 16.714
+  },
+  {
+   "type": "endcard",
+   "over": true,
+   "next_label": "NEXT  \u00b7  EPISODE 3",
+   "next_title": "THE DRAGON ENTERED AN OBBY",
+   "question": "WHAT WAS WATCHING THEM?",
+   "question_sub": "Comment your theory",
+   "pace": 0.4,
+   "start": 25.795,
+   "end": 29.195
+  }
+ ]
+}
