@@ -37,6 +37,7 @@ jobs:
           VOICE_ENGINE: gemini
           VOICE_CACHE: voice_cache
           WHISPER_MODEL: small            # multilingual, to check the dubbed words
+          VOICE_STEM: "1"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
           GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
@@ -58,6 +59,7 @@ jobs:
           if [ -f build/audio.wav ]; then
             ffmpeg -loglevel error -i build/audio.wav -c:a flac -sample_fmt s16 /tmp/pub/audio.flac
             ffmpeg -loglevel error -i build/audio.wav -c:a aac -b:a 256k /tmp/pub/audio.m4a
+            [ -f build/voice.wav ] && ffmpeg -loglevel error -i build/voice.wav -c:a flac -sample_fmt s16 /tmp/pub/voice.flac
           fi
           ID=$(python -c "import json;print(json.load(open('${{ inputs.episode }}'))['id'])")
           cd /tmp/pub && git init -q -b "preview-$ID-audio"

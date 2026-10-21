@@ -1165,6 +1165,8 @@ def build(episode_path, out_dir, keep=None):
     out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck)
     out = norm(out, 0.89)
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
+    if os.getenv("VOICE_STEM"):                    # the voices alone, for checking dubs
+        sf.write(os.path.join(out_dir, "voice.wav"), voice.astype(np.float32), SR)
 
     overlays = []
     for o in ep.get("overlays", []):
