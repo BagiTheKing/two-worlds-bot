@@ -556,6 +556,27 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
             i = j
         else:
             i += 1
+    # stray noise bursts: short, mostly hiss, after a silence (the "tch" a
+    # speech model can leave at the end of a take). A word's own final "s"
+    # is attached to the word, with no silence before it, and stays.
+    loud = ~(20 * np.log10(rms / (rms.max() + 1e-12) + 1e-12) < -40)
+    i = 0
+    while i < n:
+        if loud[i]:
+            j = i
+            while j < n and loud[j]:
+                j += 1
+            calm_before = i == 0 or not loud[max(0, i - 10):i].any()
+            calm_after = j >= n or not loud[j:min(n, j + 5)].any()
+            if j - i <= 20 and calm_before and calm_after and i > 0:
+                y = x[i * win:j * win]
+                S = np.abs(np.fft.rfft(y * np.hanning(len(y))))
+                f = np.fft.rfftfreq(len(y), 1 / sr)
+                if S[f > 3000].sum() / (S.sum() + 1e-12) > 0.45:
+                    g[max(0, i - 1):min(n, j + 1)] = 10 ** (-60 / 20)
+            i = j
+        else:
+            i += 1
     k = np.ones(5) / 5                                   # 50 ms ramps
     g = np.convolve(np.concatenate([[g[0]] * 2, g, [g[-1]] * 2]), k, "valid")
     gain = np.interp(np.arange(len(x)), np.arange(n) * win + win / 2, g)
