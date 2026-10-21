@@ -1,0 +1,1511 @@
+{
+  "id": "ep00_the_end_ar",
+  "number": 0,
+  "title": "The End",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing; speaks clear Modern Standard Arabic, like a classic dubbed cartoon"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice; speaks clear Modern Standard Arabic, like a classic dubbed cartoon"
+    },
+    "null": {
+      "voice": "am_puck",
+      "speed": 0.92,
+      "pitch": 1.0,
+      "caption": "#FF3BD4",
+      "fx": "null",
+      "emotion": 0.25,
+      "pace": 0.3,
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "slow, cold, completely emotionless, like a machine announcing a verdict; speaks clear Modern Standard Arabic, like a classic dubbed cartoon"
+    }
+  },
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.4
+    },
+    {
+      "line": "steve",
+      "name": "vo_1",
+      "vo": true,
+      "text": "كان هناك عالمان.",
+      "pad": 0.25,
+      "direction_text": "[softly, like a storyteller] كان هناك عالمان.",
+      "solo_only": true,
+      "solo_text": "كان هناك عالمان.",
+      "tighten": 0.3
+    },
+    {
+      "line": "steve",
+      "name": "vo_2",
+      "vo": true,
+      "text": "عالمي...",
+      "pad": 0.2,
+      "direction_text": "[softly] عالمي...",
+      "solo_only": true,
+      "solo_text": "عالمي...",
+      "tighten": 0.3
+    },
+    {
+      "line": "steve",
+      "name": "vo_3",
+      "vo": true,
+      "text": "...وعالمه.",
+      "pad": 0.3,
+      "direction_text": "[softly, a little amused] ...وعالمه.",
+      "solo_only": true,
+      "solo_text": "...وعالمه.",
+      "tighten": 0.3
+    },
+    {
+      "line": "steve",
+      "name": "vo_4",
+      "vo": true,
+      "text": "ثم اصطدما ببعضهما.",
+      "pad": 0.3,
+      "direction_text": "[softly] ثم اصطدما ببعضهما.",
+      "solo_only": true,
+      "solo_text": "ثم اصطدما ببعضهما.",
+      "tighten": 0.3
+    },
+    {
+      "line": "steve",
+      "name": "vo_5",
+      "vo": true,
+      "text": "وفي يوم ما... توقف الواقع.",
+      "pad": 0.1,
+      "direction_text": "[quietly, ominous] وفي يوم ما... توقف الواقع.",
+      "solo_only": true,
+      "solo_text": "وفي يوم ما... توقف الواقع.",
+      "tighten": 0.3
+    },
+    {
+      "beat": "freeze",
+      "dur": 1.8,
+      "sfx": "crackle"
+    },
+    {
+      "beat": "erasure",
+      "dur": 2.4,
+      "sfx": "erasure",
+      "count": 16,
+      "seed": 4
+    },
+    {
+      "line": "steve",
+      "name": "steve_run",
+      "text": "نوب! اهرب!",
+      "emotion": 0.85,
+      "pace": 0.4,
+      "pad": 0.05,
+      "direction_text": "[shouting] نوب! اهرب!",
+      "solo_only": true,
+      "solo_text": "نوب! اهرب!",
+      "tighten": 0.3
+    },
+    {
+      "line": "noob",
+      "name": "noob_running",
+      "text": "أنا أهرب!",
+      "emotion": 0.95,
+      "pace": 0.35,
+      "pad": 0.05,
+      "direction_text": "[panicked, shouting] أنا أهرب!",
+      "solo_only": true,
+      "solo_text": "أنا أهرب!",
+      "tighten": 0.3
+    },
+    {
+      "beat": "erasure_b",
+      "dur": 2.6,
+      "sfx": "erasure",
+      "count": 22,
+      "seed": 5
+    },
+    {
+      "line": "noob",
+      "name": "noob_bridge",
+      "text": "أوه! الجسر تحت الصيانة!",
+      "emotion": 0.8,
+      "pace": 0.3,
+      "pad": 0.15,
+      "direction_text": "[cheerfully, oblivious] أوه! الجسر تحت الصيانة!",
+      "solo_only": true,
+      "solo_text": "أوه! الجسر تحت الصيانة!",
+      "tighten": 0.3
+    },
+    {
+      "beat": "bridge_delete",
+      "dur": 0.7,
+      "sfx": "bridge",
+      "count": 14
+    },
+    {
+      "beat": "fall",
+      "dur": 0.45
+    },
+    {
+      "beat": "grab",
+      "dur": 0.6,
+      "sfx": "grab"
+    },
+    {
+      "line": "noob",
+      "name": "noob_respawn",
+      "text": "ستيف... هل نعود للحياة إذا اختفى العالم؟",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "pad": 0.35,
+      "direction_text": "[curious, innocent] ستيف... هل نعود للحياة إذا اختفى العالم؟",
+      "solo_text": "ستيف... هل نعود للحياة إذا اختفى العالم؟",
+      "solo_only": true,
+      "tighten": 0.3
+    },
+    {
+      "line": "steve",
+      "name": "steve_no",
+      "text": "لا.",
+      "emotion": 0.3,
+      "pad": 1.1,
+      "direction_text": "[flatly] لا.",
+      "solo_only": true,
+      "solo_text": "لا.",
+      "tighten": 0.3
+    },
+    {
+      "line": "noob",
+      "name": "noob_oh",
+      "text": "...أوه.",
+      "emotion": 0.4,
+      "pad": 0.3,
+      "direction_text": "[quietly, realizing] ...أوه.",
+      "solo_only": true,
+      "solo_text": "...أوه.",
+      "tighten": 0.3
+    },
+    {
+      "beat": "look_down",
+      "dur": 0.6
+    },
+    {
+      "beat": "darken",
+      "dur": 1.0,
+      "sfx": "sub_drop"
+    },
+    {
+      "line": "steve",
+      "name": "steve_what",
+      "text": "ما... هذا؟",
+      "emotion": 0.45,
+      "pace": 0.35,
+      "pad": 0.2,
+      "direction_text": "[whispering, scared] ما... هذا؟",
+      "solo_only": true,
+      "solo_text": "ما... هذا؟",
+      "tighten": 0.3
+    },
+    {
+      "beat": "null_rise",
+      "dur": 2.6,
+      "sfx": "rumble_rise"
+    },
+    {
+      "line": "null",
+      "name": "null_1",
+      "text": "تم تصحيح الواقع.",
+      "pad": 0.3,
+      "direction_text": "[slow, cold, emotionless] تم تصحيح الواقع.",
+      "solo_only": true,
+      "solo_text": "تم تصحيح الواقع.",
+      "tighten": 0.3
+    },
+    {
+      "beat": "null_hand",
+      "dur": 0.9
+    },
+    {
+      "beat": "ledge_gone",
+      "dur": 0.35,
+      "sfx": "ledge"
+    },
+    {
+      "line": "steve",
+      "name": "steve_scream",
+      "text": "Aaaaaaah!",
+      "direction_text": "Aaaaaaaaaaaahhhh!",
+      "nonverbal": true,
+      "fx": "falling",
+      "pad": 0.0,
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "slot": 0.8
+    },
+    {
+      "line": "noob",
+      "name": "noob_scream",
+      "text": "Aaaaaaaah!",
+      "direction_text": "Aaaaaaaaaaaahhhh!",
+      "nonverbal": true,
+      "fx": "falling",
+      "together": true,
+      "pad": 0.0,
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "slot": 0.8
+    },
+    {
+      "beat": "fall_void",
+      "dur": 1.6,
+      "sfx": "plunge"
+    },
+    {
+      "beat": "black",
+      "dur": 2.0,
+      "sfx": "whoosh"
+    },
+    {
+      "beat": "forest",
+      "dur": 2.4,
+      "audio_clip": "assets/clips/ep01_opening.wav"
+    },
+    {
+      "line": "noob",
+      "name": "noob_where",
+      "text": "واو. أين أنا؟",
+      "direction_text": "[amazed, a little dazed] واو. أين أنا؟",
+      "pad": 0.0,
+      "solo_only": true,
+      "solo_text": "واو. أين أنا؟",
+      "tighten": 0.3
+    },
+    {
+      "beat": "forest_end",
+      "dur": 0.5
+    },
+    {
+      "beat": "endcard",
+      "dur": 4.6
+    }
+  ],
+  "music": [
+    {
+      "cue": "theme_soft",
+      "from": "open",
+      "to": "freeze",
+      "gain": 0.17
+    },
+    {
+      "cue": "chase",
+      "from": "erasure",
+      "to": "bridge_delete+0.3",
+      "gain": 0.17
+    },
+    {
+      "cue": "null",
+      "from": "darken",
+      "to": "black",
+      "gain": 0.2
+    },
+    {
+      "cue": "theme_full",
+      "from": "endcard",
+      "to": "end",
+      "gain": 0.3
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "meadow",
+      "from": 0,
+      "to": "freeze"
+    },
+    {
+      "kind": "void",
+      "from": "erasure",
+      "to": "black",
+      "gain": 0.12
+    },
+    {
+      "kind": "meadow",
+      "from": "forest+2.3",
+      "to": "endcard",
+      "gain": 0.08
+    }
+  ],
+  "overlays": [
+    {
+      "type": "label",
+      "text": "EPISODE 0",
+      "sub": "THE END",
+      "from": "open",
+      "to": "vo_2"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: {pct}%",
+      "from": "freeze",
+      "to": "black",
+      "steps": [
+        "erasure",
+        "erasure_b"
+      ],
+      "count_from": 100,
+      "count_to": 3
+    },
+    {
+      "type": "achievement",
+      "title": "ACHIEVEMENT UNLOCKED",
+      "text": "SURVIVE THE APOCALYPSE",
+      "sub": "0.1% of players have this",
+      "from": "noob_scream+0.3",
+      "to": "black"
+    },
+    {
+      "type": "card",
+      "text": "24 HOURS EARLIER",
+      "from": "black",
+      "to": "forest"
+    },
+    {
+      "type": "clip",
+      "video": "assets/clips/ep01_opening.mp4",
+      "from": "forest",
+      "to": "forest_end.end"
+    },
+    {
+      "type": "fade_in",
+      "from": "forest",
+      "to": "forest+0.5"
+    },
+    {
+      "type": "endcard",
+      "from": "endcard",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 1",
+      "next_title": "THE NOOB WHO PUNCHED A TREE",
+      "question": "WHO IS NULL?",
+      "question_sub": "Comment your theory"
+    }
+  ],
+  "sets": [
+    {
+      "kind": "seam",
+      "seed": 3
+    }
+  ],
+  "actors": {
+    "steve": {
+      "rig": "steve",
+      "at": [
+        -5.0,
+        1.0,
+        0
+      ],
+      "yaw": 1.5708
+    },
+    "noob": {
+      "rig": "noob",
+      "at": [
+        17.5,
+        0.5,
+        0
+      ],
+      "yaw": 0.0
+    },
+    "null": {
+      "rig": "null",
+      "at": [
+        26.0,
+        0.5,
+        -64.0
+      ],
+      "yaw": -1.5708,
+      "idle": 0.02
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "bounce",
+      "from": "open",
+      "to": "freeze",
+      "height": 0.55,
+      "rate": 1.5
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "freeze",
+      "to": "erasure+1.3",
+      "head": [
+        -0.2,
+        0,
+        0.6
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "run",
+      "from": "erasure+1.3",
+      "to": "erasure_b.end-0.1",
+      "dest": [
+        2.2,
+        -0.2
+      ],
+      "rate": 3.0
+    },
+    {
+      "who": "steve",
+      "do": "run",
+      "from": "erasure_b",
+      "to": "erasure_b.end",
+      "dest": [
+        1.3,
+        1.0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "erasure_b.end-0.1",
+      "to": "erasure_b.end+0.3",
+      "yaw": 1.25
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "noob_bridge",
+      "to": "noob_bridge.end",
+      "head": [
+        0.15,
+        0,
+        -0.25
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "noob_bridge+0.3",
+      "to": "bridge_delete+0.4",
+      "head": [
+        -0.1,
+        0,
+        0.5
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "shock",
+      "from": "noob_bridge+0.6",
+      "to": "bridge_delete+0.4"
+    },
+    {
+      "who": "steve",
+      "do": "fall",
+      "from": "bridge_delete+0.42",
+      "to": "grab",
+      "dest": [
+        0.22,
+        1.0,
+        -2.25
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "fall",
+      "from": "bridge_delete+0.46",
+      "to": "grab+0.25",
+      "dest": [
+        0.22,
+        1.0,
+        -4.7
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "hang",
+      "from": "grab",
+      "to": "ledge_gone+0.1",
+      "grip": [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "yaw": -1.5708
+    },
+    {
+      "who": "noob",
+      "do": "dangle",
+      "from": "grab+0.25",
+      "to": "ledge_gone+0.1",
+      "from_actor": "steve",
+      "yaw": 1.5708
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "noob_respawn-0.2",
+      "to": "steve_no.end+0.3",
+      "head": [
+        -0.55,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "steve_no-0.15",
+      "to": "darken+0.2",
+      "head": [
+        0.65,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "noob_oh-0.1",
+      "to": "darken+0.3",
+      "head": [
+        0.45,
+        0,
+        0.2
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "darken+0.2",
+      "to": "ledge_gone",
+      "head": [
+        -0.25,
+        0,
+        1.3
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "darken+0.3",
+      "to": "ledge_gone",
+      "head": [
+        -0.35,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "fall",
+      "from": "ledge_gone+0.1",
+      "to": "fall_void.end",
+      "dest": [
+        0.6,
+        1.0,
+        -75.0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "fall",
+      "from": "ledge_gone+0.15",
+      "to": "fall_void.end",
+      "dest": [
+        0.8,
+        1.2,
+        -78.0
+      ]
+    },
+    {
+      "who": "null",
+      "do": "rise",
+      "from": "null_rise",
+      "to": "null_rise.end",
+      "z": -12.0
+    },
+    {
+      "who": "null",
+      "do": "look",
+      "from": "null_1",
+      "to": "black",
+      "head": [
+        0.15,
+        0.12,
+        0
+      ]
+    },
+    {
+      "who": "null",
+      "do": "raise_arm",
+      "from": "null_1.end",
+      "to": "black",
+      "arm": "arm_r",
+      "ease": 0.8
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "sun_dir": [
+        -0.4,
+        -0.38,
+        -0.83
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ],
+        [
+          "darken",
+          5.0,
+          1.25
+        ],
+        [
+          "darken+1.0",
+          0.7,
+          0.5
+        ]
+      ]
+    },
+    {
+      "kind": "fill",
+      "dir": [
+        0.25,
+        0.9,
+        -0.35
+      ],
+      "from": "darken",
+      "to": "black"
+    },
+    {
+      "kind": "clouds",
+      "freeze": "freeze"
+    },
+    {
+      "kind": "birds",
+      "freeze": "freeze",
+      "spots": [
+        [
+          -2,
+          0,
+          12
+        ],
+        [
+          0,
+          2,
+          14
+        ],
+        [
+          1,
+          -1,
+          13
+        ],
+        [
+          -3,
+          3,
+          15
+        ],
+        [
+          2,
+          1,
+          16
+        ]
+      ]
+    },
+    {
+      "kind": "void_debris"
+    },
+    {
+      "kind": "erasure",
+      "beats": [
+        "erasure",
+        "erasure_b"
+      ]
+    },
+    {
+      "kind": "obby_run",
+      "from": "erasure+0.2",
+      "to": "erasure+2.4",
+      "avatars": [
+        {
+          "shirt": [
+            220,
+            60,
+            60
+          ],
+          "pants": [
+            40,
+            40,
+            50
+          ]
+        },
+        {
+          "shirt": [
+            150,
+            80,
+            220
+          ],
+          "pants": [
+            230,
+            230,
+            235
+          ]
+        },
+        {
+          "shirt": [
+            250,
+            140,
+            30
+          ],
+          "pants": [
+            50,
+            90,
+            160
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "bridge",
+      "beat": "bridge_delete"
+    },
+    {
+      "kind": "backlight",
+      "at": [
+        50,
+        0.5,
+        10
+      ],
+      "dir": [
+        -1,
+        0,
+        -0.15
+      ],
+      "from": "darken",
+      "to": "black"
+    },
+    {
+      "kind": "orbit",
+      "actor": "null",
+      "offset": [
+        0,
+        0,
+        10.8
+      ],
+      "from": "null_rise",
+      "to": "black"
+    },
+    {
+      "kind": "erase_named",
+      "names": [
+        "west_-1_0",
+        "west_-1_-1"
+      ],
+      "at": "ledge_gone"
+    }
+  ],
+  "skip_render": [
+    [
+      "black",
+      "end"
+    ]
+  ],
+  "shots": [
+    {
+      "name": "both_worlds",
+      "from": 0,
+      "to": "vo_2",
+      "lens": 18,
+      "path": [
+        [
+          0,
+          [
+            -18,
+            -26,
+            16
+          ]
+        ],
+        [
+          "vo_2",
+          [
+            -16,
+            -24,
+            15
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            10,
+            4,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "mine",
+      "from": "vo_2",
+      "to": "vo_3",
+      "lens": 35,
+      "dof": 2.8,
+      "path": [
+        [
+          "vo_2",
+          [
+            -2.6,
+            -1.2,
+            1.9
+          ]
+        ],
+        [
+          "vo_3",
+          [
+            -2.8,
+            -1.0,
+            1.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "vo_2",
+          [
+            -5,
+            1,
+            1.7
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "his",
+      "from": "vo_3",
+      "to": "vo_4",
+      "lens": 30,
+      "path": [
+        [
+          "vo_3",
+          [
+            18.8,
+            -4.5,
+            1.6
+          ]
+        ],
+        [
+          "vo_4",
+          [
+            18.6,
+            -4.1,
+            1.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "vo_3",
+          [
+            17.5,
+            0.5,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "collision",
+      "from": "vo_4",
+      "to": "vo_5",
+      "lens": 20,
+      "path": [
+        [
+          "vo_4",
+          [
+            7,
+            -16,
+            -1
+          ]
+        ],
+        [
+          "vo_5",
+          [
+            7,
+            -15,
+            -0.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "vo_4",
+          [
+            7,
+            0.5,
+            -0.5
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "sky",
+      "from": "vo_5",
+      "to": "erasure",
+      "lens": 18,
+      "shake": 0,
+      "path": [
+        [
+          "vo_5",
+          [
+            -12.4,
+            -10.4,
+            2.4
+          ]
+        ],
+        [
+          "freeze",
+          [
+            -12.0,
+            -10.0,
+            2.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "vo_5",
+          [
+            5.8,
+            6.9,
+            19.7
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "erasure_wide",
+      "from": "erasure",
+      "to": "erasure+1.3",
+      "lens": 18,
+      "path": [
+        [
+          "erasure",
+          [
+            -22,
+            -18,
+            14
+          ]
+        ],
+        [
+          "erasure+1.3",
+          [
+            -21,
+            -17,
+            13.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "erasure",
+          [
+            14,
+            2,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "obby",
+      "from": "erasure+1.3",
+      "to": "steve_run",
+      "lens": 28,
+      "path": [
+        [
+          "erasure+1.3",
+          [
+            42,
+            -22,
+            10
+          ]
+        ],
+        [
+          "steve_run",
+          [
+            41,
+            -21.5,
+            9.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "erasure+1.3",
+          [
+            40,
+            -8,
+            10
+          ]
+        ],
+        [
+          "steve_run",
+          [
+            34,
+            -4,
+            8
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "run_shout",
+      "from": "steve_run",
+      "to": "noob_running",
+      "lens": 35,
+      "dof": 2.8,
+      "path": [
+        [
+          "steve_run",
+          [
+            -2.6,
+            -1.2,
+            1.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_run",
+          [
+            -5,
+            1,
+            1.7
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_runs",
+      "from": "noob_running",
+      "to": "erasure_b+1.6",
+      "lens": 24,
+      "path": [
+        [
+          "noob_running",
+          [
+            4.0,
+            -2.6,
+            1.6
+          ]
+        ],
+        [
+          "erasure_b+1.6",
+          [
+            3.2,
+            -2.4,
+            1.5
+          ]
+        ]
+      ],
+      "look_actor": "noob",
+      "look_offset": [
+        0,
+        0,
+        1.2
+      ],
+      "look": [
+        [
+          "noob_running",
+          [
+            22,
+            0,
+            2
+          ]
+        ]
+      ],
+      "look_mix": 0.3
+    },
+    {
+      "name": "bridge_side",
+      "from": "erasure_b+1.6",
+      "to": "erasure_b.end+0.1",
+      "lens": 24,
+      "path": [
+        [
+          "erasure_b+1.6",
+          [
+            5,
+            -12,
+            2.5
+          ]
+        ],
+        [
+          "erasure_b.end+0.1",
+          [
+            4.5,
+            -11.5,
+            2.3
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "erasure_b+1.6",
+          [
+            4,
+            0.5,
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "sign",
+      "from": "erasure_b.end+0.1",
+      "to": "noob_bridge+1.0",
+      "lens": 26,
+      "path": [
+        [
+          "erasure_b.end+0.1",
+          [
+            1.4,
+            -1.7,
+            1.6
+          ]
+        ],
+        [
+          "noob_bridge+1.0",
+          [
+            1.6,
+            -1.65,
+            1.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "erasure_b.end+0.1",
+          [
+            3.2,
+            -1.05,
+            1.5
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "two_shot",
+      "from": "noob_bridge+1.0",
+      "to": "bridge_delete+0.3",
+      "lens": 30,
+      "dof": 5.6,
+      "path": [
+        [
+          "noob_bridge+1.0",
+          [
+            5.0,
+            3.8,
+            1.3
+          ]
+        ],
+        [
+          "bridge_delete+0.3",
+          [
+            4.8,
+            3.6,
+            1.3
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_bridge+1.0",
+          [
+            1.6,
+            0.2,
+            1.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "drop",
+      "from": "bridge_delete+0.3",
+      "to": "grab.end",
+      "lens": 24,
+      "shake": 0.03,
+      "path": [
+        [
+          "bridge_delete+0.3",
+          [
+            1.0,
+            -11.0,
+            -1.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "bridge_delete+0.3",
+          [
+            0.8,
+            0.5,
+            -1.2
+          ]
+        ],
+        [
+          "grab",
+          [
+            0.6,
+            0.6,
+            -2.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "below",
+      "from": "grab.end",
+      "to": "steve_no",
+      "lens": 22,
+      "path": [
+        [
+          "grab.end",
+          [
+            4.0,
+            -2.5,
+            -8.5
+          ]
+        ],
+        [
+          "steve_no",
+          [
+            3.7,
+            -2.3,
+            -8.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "grab.end",
+          [
+            0.3,
+            0.8,
+            -3.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "faces",
+      "from": "steve_no",
+      "to": "steve_what.end",
+      "lens": 30,
+      "dof": 4.0,
+      "path": [
+        [
+          "steve_no",
+          [
+            2.3,
+            -0.9,
+            -5.4
+          ]
+        ],
+        [
+          "steve_what.end",
+          [
+            2.0,
+            -0.6,
+            -5.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_no",
+          [
+            0.4,
+            0.9,
+            -3.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "reveal",
+      "from": "steve_what.end",
+      "to": "null_1",
+      "lens": 14,
+      "path": [
+        [
+          "steve_what.end",
+          [
+            8,
+            -30,
+            -3
+          ]
+        ],
+        [
+          "null_1",
+          [
+            8.5,
+            -28.5,
+            -2.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_what.end",
+          [
+            16,
+            0.5,
+            -3
+          ]
+        ],
+        [
+          "null_1",
+          [
+            16,
+            0.5,
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "null_close",
+      "from": "null_1",
+      "to": "ledge_gone",
+      "lens": 22,
+      "path": [
+        [
+          "null_1",
+          [
+            8,
+            -9,
+            -6
+          ]
+        ],
+        [
+          "ledge_gone",
+          [
+            9,
+            -8.4,
+            -5.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "null_1",
+          [
+            26,
+            0.5,
+            2.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "ledge",
+      "from": "ledge_gone",
+      "to": "noob_scream+0.5",
+      "lens": 22,
+      "shake": 0.03,
+      "path": [
+        [
+          "ledge_gone",
+          [
+            4.0,
+            -2.5,
+            -8.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "ledge_gone",
+          [
+            0.3,
+            0.8,
+            -3.0
+          ]
+        ],
+        [
+          "noob_scream+0.5",
+          [
+            0.4,
+            0.9,
+            -8.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "plunge",
+      "from": "noob_scream+0.5",
+      "to": "black",
+      "lens": 24,
+      "shake": 0.04,
+      "path": [
+        [
+          "noob_scream+0.5",
+          [
+            2.5,
+            -2.5,
+            -58
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_scream+0.5",
+          [
+            0.5,
+            1.0,
+            -18
+          ]
+        ],
+        [
+          "black",
+          [
+            0.6,
+            1.0,
+            -55
+          ]
+        ]
+      ]
+    }
+  ],
+  "language": "ar",
+  "fit_max": 1.3,
+  "solo_whole": true,
+  "solo_takes": 2,
+  "tighten_floor": 0.012,
+  "gate": -32
+}
