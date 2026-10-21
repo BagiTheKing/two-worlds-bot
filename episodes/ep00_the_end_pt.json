@@ -49,7 +49,8 @@
       "vo": true,
       "text": "Antes, existiam dois mundos.",
       "pad": 0.25,
-      "direction_text": "[softly, like a storyteller] Antes, existiam dois mundos."
+      "direction_text": "[softly, like a storyteller] Antes, existiam dois mundos.",
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -57,7 +58,8 @@
       "vo": true,
       "text": "O meu...",
       "pad": 0.2,
-      "direction_text": "[softly] O meu..."
+      "direction_text": "[softly] O meu...",
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -65,7 +67,8 @@
       "vo": true,
       "text": "...e o dele.",
       "pad": 0.3,
-      "direction_text": "[softly, a little amused] ...e o dele."
+      "direction_text": "[softly, a little amused] ...e o dele.",
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -73,7 +76,8 @@
       "vo": true,
       "text": "Até que eles colidiram.",
       "pad": 0.3,
-      "direction_text": "[softly] Até que eles colidiram."
+      "direction_text": "[softly] Até que eles colidiram.",
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -81,7 +85,8 @@
       "vo": true,
       "text": "E um dia... a realidade parou.",
       "pad": 0.1,
-      "direction_text": "[quietly, ominous] E um dia... a realidade parou."
+      "direction_text": "[quietly, ominous] E um dia... a realidade parou.",
+      "tighten": 0.3
     },
     {
       "beat": "freeze",
@@ -102,7 +107,8 @@
       "emotion": 0.85,
       "pace": 0.4,
       "pad": 0.05,
-      "direction_text": "[shouting] Noob! Corre!"
+      "direction_text": "[shouting] Noob! Corre!",
+      "tighten": 0.3
     },
     {
       "line": "noob",
@@ -111,7 +117,8 @@
       "emotion": 0.95,
       "pace": 0.35,
       "pad": 0.05,
-      "direction_text": "[panicked, shouting] Eu tô correndo!"
+      "direction_text": "[panicked, shouting] Eu tô correndo!",
+      "tighten": 0.3
     },
     {
       "beat": "erasure_b",
@@ -127,7 +134,8 @@
       "emotion": 0.8,
       "pace": 0.3,
       "pad": 0.15,
-      "direction_text": "[cheerfully, oblivious] Ah! A ponte tá em manutenção!"
+      "direction_text": "[cheerfully, oblivious] Ah! A ponte tá em manutenção!",
+      "tighten": 0.3
     },
     {
       "beat": "bridge_delete",
@@ -152,7 +160,8 @@
       "pace": 0.45,
       "pad": 0.35,
       "direction_text": "[curious, innocent] Steve... dá pra renascer se não tem mundo?",
-      "solo_text": "Steve... dá pra renascer se não tem mundo?"
+      "solo_text": "Steve... dá pra renascer se não tem mundo?",
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -160,7 +169,8 @@
       "text": "Não.",
       "emotion": 0.3,
       "pad": 1.1,
-      "direction_text": "[flatly] Não."
+      "direction_text": "[flatly] Não.",
+      "tighten": 0.3
     },
     {
       "line": "noob",
@@ -168,7 +178,8 @@
       "text": "...Ah.",
       "emotion": 0.4,
       "pad": 0.3,
-      "direction_text": "[quietly, realizing] ...Ah."
+      "direction_text": "[quietly, realizing] ...Ah.",
+      "tighten": 0.3
     },
     {
       "beat": "look_down",
@@ -186,7 +197,8 @@
       "emotion": 0.45,
       "pace": 0.35,
       "pad": 0.2,
-      "direction_text": "[whispering, scared] O que... é aquilo?"
+      "direction_text": "[whispering, scared] O que... é aquilo?",
+      "tighten": 0.3
     },
     {
       "beat": "null_rise",
@@ -198,7 +210,8 @@
       "name": "null_1",
       "text": "A realidade foi corrigida.",
       "pad": 0.3,
-      "direction_text": "[slow, cold, emotionless] A realidade foi corrigida."
+      "direction_text": "[slow, cold, emotionless] A realidade foi corrigida.",
+      "tighten": 0.3
     },
     {
       "beat": "null_hand",
@@ -252,7 +265,8 @@
       "name": "noob_where",
       "text": "Uau. Onde eu tô?",
       "direction_text": "[amazed, a little dazed] Uau. Onde eu tô?",
-      "pad": 0.0
+      "pad": 0.0,
+      "tighten": 0.3
     },
     {
       "beat": "forest_end",
