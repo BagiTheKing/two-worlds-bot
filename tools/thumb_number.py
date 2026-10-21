@@ -45,7 +45,47 @@ def glyph(digit, h):
                   fill=255)
         d.rounded_rectangle((0, s + 4, s - 8, s + 62), 8, fill=255)
         return m.filter(ImageFilter.MaxFilter(3))
+    if digit == "2":
+        # the 0's rounded top and right side, a diagonal down to the left,
+        # and a flat base
+        w = FACE[2] - FACE[0]
+        m = Image.new("L", (w, h), 0)
+        d = ImageDraw.Draw(m)
+        top = int(h * 0.5)
+        d.rounded_rectangle((0, 0, w - 1, top), RADIUS * 2, fill=255)
+        d.rounded_rectangle((s, s + 10, w - 1 - s, top + 200), RADIUS, fill=0)   # the counter
+        d.rectangle((0, int(h * 0.3), s + 2, top + 1), fill=0)                  # open on the left
+        d.rectangle((0, top - s // 2, w, top + 1), fill=0)
+        d.polygon([(w - 1, int(h * 0.36)), (w - 1, int(h * 0.36) + s + 22), (s + 30, h - s),
+                   (0, h - s), (0, h - s - 26)], fill=255)                       # the diagonal
+        d.rectangle((w - 1 - s, int(h * 0.3), w - 1, int(h * 0.36) + 6), fill=255)
+        d.rounded_rectangle((0, h - s, w - 1, h - 1), 10, fill=255)            # the base
+        return m
+    if digit in SEGMENTS:
+        # the other digits from the lettering's own strokes: straight bars of
+        # the 0's thickness, joined, with the 0's rounded outer corners
+        w = FACE[2] - FACE[0]
+        mid = h // 2
+        bars = {"a": (0, 0, w, s), "b": (w - s, 0, w, mid + s // 2), "c": (w - s, mid - s // 2, w, h),
+                "d": (0, h - s, w, h), "e": (0, mid - s // 2, s, h), "f": (0, 0, s, mid + s // 2),
+                "g": (0, mid - s // 2, w, mid + s // 2)}
+        m = Image.new("L", (w, h), 0)
+        d = ImageDraw.Draw(m)
+        for k in SEGMENTS[digit]:
+            x0, y0, x1, y1 = bars[k]
+            d.rectangle((x0, y0, x1 - 1, y1 - 1), fill=255)
+        # round the outer corners like the 0 (a corner is outer if both of its
+        # sides are on the glyph's edge)
+        r = RADIUS * 2
+        cut = Image.new("L", (w, h), 0)
+        cd = ImageDraw.Draw(cut)
+        cd.rounded_rectangle((0, 0, w - 1, h - 1), r, fill=255)
+        return ImageChops.multiply(m, cut)
     raise SystemExit(f"no glyph for {digit!r} yet")
+
+
+SEGMENTS = {"2": "abged", "3": "abgcd", "4": "fgbc", "5": "afgcd", "6": "afgedc",
+            "7": "abc", "8": "abcdefg", "9": "abfgcd"}
 
 
 def tear(m, seed, n=2):
