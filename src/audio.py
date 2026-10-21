@@ -204,8 +204,10 @@ def transcribe(samples, sr):
         _whisper = WhisperModel(os.getenv("WHISPER_MODEL", "base.en"), device="cpu", compute_type="int8")
     x = np.interp(np.linspace(0, len(samples) - 1, int(len(samples) * 16000 / sr)),
                   np.arange(len(samples)), samples).astype(np.float32)
+    # temperature 0 only: Whisper's default retries at higher temperatures
+    # sample at random, so the same audio could be cut differently each run
     segs, _ = _whisper.transcribe(x, language="en", word_timestamps=True, beam_size=5,
-                                  condition_on_previous_text=False)
+                                  condition_on_previous_text=False, temperature=0.0)
     return [(w.word, w.start, w.end) for seg in segs for w in (seg.words or [])]
 
 
@@ -606,18 +608,11 @@ def gemini_lines(ep, cache_dir):
             if n in cuts:
                 out[n] = (cuts[n], sr)
                 continue
-            print("  re-taking", n, "alone")                # Whisper could not place it
-            one = _cache_path(cache_dir, "gemini-line-raw", label[w], t, voices[label[w]]) if cache_dir else None
-            if one and os.path.exists(one):
-                clip, _ = sf.read(one)
-            else:
-                clip, _ = gemini_speak([(label[w], t)], {label[w]: voices[label[w]]})
-                if one:
-                    sf.write(one, clip, sr)
-            # keep only the scripted words: a direction read aloud is cut off
-            one_span = split_scene(clip, sr, [(n, t)])
-            if n in one_span:
-                clip = cut_lines(clip, sr, one_span, [n])[n]
+            # Whisper could not place it: re-take it alone, without the
+            # [direction] (on their own the models tend to read it aloud), best
+            # of three by how well each says the words
+            print("  re-taking", n, "alone")
+            clip, _ = gemini_solo(cast, w, _spoken(t), False, cache_dir)
             out[n] = (clip, sr)
     for n, (w, text, nonverbal) in solos.items():
         out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir)
