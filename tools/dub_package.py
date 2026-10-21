@@ -53,7 +53,8 @@ def main(video, pub_tl, dub_dir, out):
     print(f"largest line-start difference: {worst * 1000:.0f} ms")
     lines = sorted(dub["lines"], key=lambda ln: ln["start"])
     for x, y in zip(lines, lines[1:]):
-        if x["end"] > y["start"] + 0.02 and y["start"] - x["start"] > 0.05:    # not lines said together
+        # each take ends in a 0.25 s silent tail; past that the voices overlap
+        if x["end"] > y["start"] + 0.25 and y["start"] - x["start"] > 0.05:    # not lines said together
             print(f"  OVERLAP: {x['name']} runs {x['end'] - y['start']:.2f}s into {y['name']}")
 
     tmp = tempfile.mkdtemp()
