@@ -179,7 +179,7 @@
     {
       "kind": "place",
       "from": "steve_plan",
-      "to": "steve_plan.end-0.1",
+      "to": "steve_plan.end",
       "count": 18,
       "gain": 0.5
     },
@@ -477,7 +477,7 @@
       "who": "steve",
       "do": "swing",
       "from": "steve_plan",
-      "to": "steve_plan.end-0.1",
+      "to": "steve_plan.end",
       "count": 18,
       "arm": "arm_r"
     },
@@ -795,7 +795,7 @@
       ],
       "build": [
         "steve_plan",
-        "steve_plan.end-0.1"
+        "steve_plan.end"
       ],
       "open": "portal_open",
       "dark": "smash+0.3",
