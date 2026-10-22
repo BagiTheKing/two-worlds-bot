@@ -566,6 +566,7 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
     # speech model can leave at the end of a take). A word's own final "s"
     # is attached to the word, with no silence before it, and stays.
     loud = ~(20 * np.log10(rms / (rms.max() + 1e-12) + 1e-12) < -40)
+    bursts = []
     i = 0
     while i < n:
         if loud[i]:
@@ -581,13 +582,21 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
                 S = np.abs(np.fft.rfft(y * np.hanning(len(y))))
                 f = np.fft.rfftfreq(len(y), 1 / sr)
                 if end_tick or S[f > 3000].sum() / (S.sum() + 1e-12) > 0.45:
-                    g[max(0, i - 1):min(n, j + 1)] = 10 ** (-60 / 20)
+                    bursts.append((max(0, i - 1) * win, min(n, j + 1) * win))
             i = j
         else:
             i += 1
     k = np.ones(5) / 5                                   # 50 ms ramps
     g = np.convolve(np.concatenate([[g[0]] * 2, g, [g[-1]] * 2]), k, "valid")
     gain = np.interp(np.arange(len(x)), np.arange(n) * win + win / 2, g)
+    # bursts go after the smoothing, which would blur a cut this short away
+    r = int(0.003 * sr)
+    for a, b in bursts:
+        cut = np.full(b - a + 2 * r, 10 ** (-60 / 20))
+        cut[:r], cut[-r:] = np.linspace(1, cut[r], r), np.linspace(cut[r], 1, r)
+        a0 = a - r
+        lo, hi = max(0, a0), min(len(x), b + r)
+        gain[lo:hi] *= cut[lo - a0:hi - a0]
     y = x * gain
     f = int(0.006 * sr)
     y[:f] *= np.linspace(0, 1, f)
