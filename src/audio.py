@@ -574,11 +574,13 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
                 j += 1
             calm_before = i == 0 or not loud[max(0, i - 10):i].any()
             calm_after = j >= n or not loud[j:min(n, j + 5)].any()
+            # and the tick some takes end on: a few ms alone after the last word
+            end_tick = j - i <= 3 and not loud[j:].any()
             if j - i <= 20 and calm_before and calm_after and i > 0:
                 y = x[i * win:j * win]
                 S = np.abs(np.fft.rfft(y * np.hanning(len(y))))
                 f = np.fft.rfftfreq(len(y), 1 / sr)
-                if S[f > 3000].sum() / (S.sum() + 1e-12) > 0.45:
+                if end_tick or S[f > 3000].sum() / (S.sum() + 1e-12) > 0.45:
                     g[max(0, i - 1):min(n, j + 1)] = 10 ** (-60 / 20)
             i = j
         else:
