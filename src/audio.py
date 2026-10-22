@@ -545,10 +545,12 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
     cut_db, with smooth ramps so nothing pumps. Words, soft consonants
     included, sit well above the threshold. The line's edges get a short fade."""
     win = int(0.01 * sr)
-    n = len(x) // win
-    if n < 3:
+    if len(x) < 3 * win:
         return x
-    rms = np.sqrt(np.mean(x[:n * win].reshape(n, win) ** 2, axis=1))
+    size = len(x)
+    x = np.concatenate([x, np.zeros(-size % win)])      # the last few ms count too (a take can end on a pop)
+    n = len(x) // win
+    rms = np.sqrt(np.mean(x.reshape(n, win) ** 2, axis=1))
     quiet = 20 * np.log10(rms / (rms.max() + 1e-12) + 1e-12) < thr_db
     g = np.ones(n)
     i = 0
@@ -597,7 +599,7 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
         a0 = a - r
         lo, hi = max(0, a0), min(len(x), b + r)
         gain[lo:hi] *= cut[lo - a0:hi - a0]
-    y = x * gain
+    y = (x * gain)[:size]
     f = int(0.006 * sr)
     y[:f] *= np.linspace(0, 1, f)
     y[-f:] *= np.linspace(1, 0, f)
