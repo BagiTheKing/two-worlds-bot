@@ -1,0 +1,307 @@
+{
+ "id": "ep03_the_dragon",
+ "fps": 24,
+ "length": 26.159,
+ "beats": {
+  "open": [
+   0.0,
+   0.25
+  ],
+  "noob_boss": [
+   0.25,
+   1.584
+  ],
+  "steve_hide": [
+   1.684,
+   3.947
+  ],
+  "tutorial": [
+   4.047,
+   4.347
+  ],
+  "noob_tut": [
+   4.347,
+   5.66
+  ],
+  "steve_dont": [
+   5.66,
+   6.304
+  ],
+  "jump": [
+   6.304,
+   7.204
+  ],
+  "kill": [
+   7.204,
+   7.654
+  ],
+  "respawn": [
+   7.654,
+   8.004
+  ],
+  "noob_cp": [
+   8.004,
+   9.007
+  ],
+  "steve_wall": [
+   9.157,
+   10.401
+  ],
+  "build": [
+   10.401,
+   11.401
+  ],
+  "crash": [
+   11.401,
+   12.101
+  ],
+  "leap": [
+   12.101,
+   12.901
+  ],
+  "noob_done": [
+   12.901,
+   13.934
+  ],
+  "dive": [
+   14.034,
+   15.634
+  ],
+  "free": [
+   15.634,
+   16.834
+  ],
+  "steve_myplan": [
+   16.834,
+   18.388
+  ],
+  "noob_planwall": [
+   18.488,
+   19.751
+  ],
+  "freeze": [
+   20.001,
+   21.001
+  ],
+  "noob_lag": [
+   21.001,
+   22.078
+  ],
+  "steve_lag": [
+   22.278,
+   23.159
+  ],
+  "glitch": [
+   23.459,
+   24.659
+  ],
+  "endcard": [
+   24.659,
+   26.159
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_boss",
+   "who": "noob",
+   "text": "BOSS FIGHT!",
+   "vo": false,
+   "caption": true,
+   "start": 0.25,
+   "end": 1.584
+  },
+  {
+   "name": "steve_hide",
+   "who": "steve",
+   "text": "It used our portal. Hide!",
+   "vo": false,
+   "caption": true,
+   "start": 1.684,
+   "end": 3.947
+  },
+  {
+   "name": "noob_tut",
+   "who": "noob",
+   "text": "Tutorial says jump!",
+   "vo": false,
+   "caption": true,
+   "start": 4.347,
+   "end": 5.66
+  },
+  {
+   "name": "steve_dont",
+   "who": "steve",
+   "text": "Don't\u2014",
+   "vo": false,
+   "caption": true,
+   "start": 5.66,
+   "end": 6.304
+  },
+  {
+   "name": "noob_cp",
+   "who": "noob",
+   "text": "Checkpoint!",
+   "vo": false,
+   "caption": true,
+   "start": 8.004,
+   "end": 9.007
+  },
+  {
+   "name": "steve_wall",
+   "who": "steve",
+   "text": "Plan: wall.",
+   "vo": false,
+   "caption": true,
+   "start": 9.157,
+   "end": 10.401
+  },
+  {
+   "name": "noob_done",
+   "who": "noob",
+   "text": "Tutorial complete!",
+   "vo": false,
+   "caption": true,
+   "start": 12.901,
+   "end": 13.934
+  },
+  {
+   "name": "steve_myplan",
+   "who": "steve",
+   "text": "That was my plan.",
+   "vo": false,
+   "caption": true,
+   "start": 16.834,
+   "end": 18.388
+  },
+  {
+   "name": "noob_planwall",
+   "who": "noob",
+   "text": "Your plan was a wall.",
+   "vo": false,
+   "caption": true,
+   "start": 18.488,
+   "end": 19.751
+  },
+  {
+   "name": "noob_lag",
+   "who": "noob",
+   "text": "...Is it lagging?",
+   "vo": false,
+   "caption": true,
+   "start": 21.001,
+   "end": 22.078
+  },
+  {
+   "name": "steve_lag",
+   "who": "steve",
+   "text": "Worlds don't lag.",
+   "vo": false,
+   "caption": true,
+   "start": 22.278,
+   "end": 23.159
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "label",
+   "text": "EPISODE 3",
+   "sub": "THE DRAGON ENTERED AN OBBY",
+   "start": 0.3,
+   "end": 3.947
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 97%",
+   "start": 0.0,
+   "end": 23.459
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 92%",
+   "alert": true,
+   "start": 23.459,
+   "end": 24.659
+  },
+  {
+   "type": "tutorial",
+   "title": "TUTORIAL",
+   "text": "JUMP ON THE BOSS!",
+   "arrow": "up",
+   "y": 330,
+   "start": 4.047,
+   "end": 6.304
+  },
+  {
+   "type": "prompt",
+   "text": "WOULD YOU JUMP? COMMENT \u2193",
+   "y": 1480,
+   "start": 4.347,
+   "end": 7.654
+  },
+  {
+   "type": "timer",
+   "label": "PLAN",
+   "fail_after": 0.8,
+   "y": 430,
+   "start": 10.801,
+   "end": 12.401
+  },
+  {
+   "type": "flash",
+   "strength": 0.7,
+   "start": 11.601,
+   "end": 11.721
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "ACCIDENTAL HERO",
+   "sub": "Free the frozen players",
+   "start": 15.884,
+   "end": 17.734
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 26.559
+  },
+  {
+   "type": "endcard",
+   "over": true,
+   "next_label": "NEXT  \u00b7  EPISODE 4",
+   "next_title": "THIS BLOCK SHOULDN'T EXIST",
+   "question": "WHO FROZE THE DRAGON?",
+   "question_sub": "Comment your theory",
+   "pace": 0.25,
+   "start": 24.659,
+   "end": 26.559
+  }
+ ]
+}
