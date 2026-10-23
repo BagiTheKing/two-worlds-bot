@@ -683,6 +683,8 @@ def gemini_lines(ep, cache_dir):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
         if ev.get("cut"):
             cut_style[name] = ev["cut"]
+        if ev.get("cut_at"):               # pinned: [start, end] seconds in its scene's recording
+            cut_style[name] = ("at", ev["cut_at"])
         if ev.get("solo_only"):            # recorded on its own: the scenes stay as they were
             todo.pop()
             if not ev.get("solo_text"):
@@ -728,10 +730,24 @@ def gemini_lines(ep, cache_dir):
             continue
         spans = split_scene(s, sr, [(n, t) for n, _, t in scene])
         print("scene", names, "placed", [n for n in names if n in spans])
+        for n in names:
+            if n in spans:
+                print(f"  {n}: words at {spans[n][0]:.2f}-{spans[n][1]:.2f}s of the scene")
+        if os.getenv("SCENES_OUT"):         # the recording itself, to check or pin cuts by hand
+            os.makedirs(os.environ["SCENES_OUT"], exist_ok=True)
+            sf.write(os.path.join(os.environ["SCENES_OUT"], names[0] + ".wav"), s, sr)
         # each line's cut: the episode's choice, or the line's own ("cut": tight/loose)
         loose = {n: cut_style.get(n, "loose" if ep.get("cut_loose") else "tight") == "loose" for n in names}
+        pinned = {n: cut_style[n][1] for n in names if isinstance(cut_style.get(n), tuple)}
         both = {k: cut_lines(s, sr, spans, names, loose=k) for k in (False, True)}
         cuts = {n: both[loose[n]][n] for n in names if n in both[loose[n]]}
+        for n, (a, b) in pinned.items():
+            seg = s[int(a * sr):int(b * sr)].copy()
+            f = int(0.006 * sr)
+            seg[:f] *= np.linspace(0, 1, f)
+            seg[-f:] *= np.linspace(1, 0, f)
+            cuts[n] = seg
+            print(f"  {n}: pinned cut {a:.2f}-{b:.2f}s")
         for n, w, t in scene:
             if n in cuts:
                 out[n] = (cuts[n], sr)
