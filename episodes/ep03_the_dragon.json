@@ -1919,11 +1919,11 @@
     {
       "line": "steve",
       "name": "steve_hide",
-      "text": "It used our portal. Hide.",
+      "text": "It used our portal. Hide!",
       "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
       "pad": 0.1,
       "tighten": 0.2,
-      "solo_text": "It used our portal. Hide."
+      "solo_text": "It used our portal. HIDE!"
     },
     {
       "beat": "tutorial",
@@ -2005,10 +2005,11 @@
     {
       "line": "steve",
       "name": "steve_myplan",
-      "text": "...That was my plan.",
+      "text": "That was my plan.",
       "direction_text": "[unimpressed, quiet] ...That was my plan.",
       "pad": 0.1,
-      "tighten": 0.25
+      "tighten": 0.25,
+      "solo_text": "That was my plan."
     },
     {
       "line": "noob",
