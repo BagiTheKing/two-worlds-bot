@@ -1969,8 +1969,7 @@
       "name": "steve_wall",
       "text": "Plan: wall.",
       "direction_text": "[dry, decisive] Plan: wall.",
-      "pad": 0.0,
-      "solo_text": "Plan: wall."
+      "pad": 0.0
     },
     {
       "beat": "build",

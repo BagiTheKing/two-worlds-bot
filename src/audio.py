@@ -480,6 +480,15 @@ def split_scene(samples, sr, lines):
         n_words = sum(1 for o in owner if o == k)
         if n_words and len(idx) >= max(1, round(0.6 * n_words)):
             i0, i1 = min(idx), max(idx)
+            # the line's last words misheard ("wall" heard as "well"): take as
+            # many unmatched words right after it as there are scripted words missing
+            last = max(i for i in range(len(ref)) if owner[i] == k)
+            missing = sum(1 for i in range(len(ref)) if owner[i] == k and i not in match and i > max(
+                j for j in range(len(ref)) if owner[j] == k and j in match))
+            taken = set(match.values())
+            while missing and i1 + 1 < len(words) and i1 + 1 not in taken and last not in match:
+                i1 += 1
+                missing -= 1
             prev_end = words[i0 - 1][2] if i0 > 0 else 0.0          # any word, scripted or not
             next_start = words[i1 + 1][1] if i1 + 1 < len(words) else total
             spans[name] = (words[i0][1], words[i1][2], prev_end, next_start)
