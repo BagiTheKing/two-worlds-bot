@@ -670,6 +670,7 @@ def gemini_lines(ep, cache_dir):
     todo, counts = [], {}
     solos = {}          # lines re-done on their own; the scene recording stays as it was
     cut_style = {}      # lines that ask for their own cut
+    pick = {}           # lines that use a chosen take of their solo recording
     borrowed = {}       # lines whose recording comes from another (cached) scene
     for ev in ep["events"]:
         if "line" not in ev:
@@ -681,6 +682,8 @@ def gemini_lines(ep, cache_dir):
         todo.append((name, who, text, ev.get("nonverbal", False)))
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
+        if ev.get("solo_take") is not None:         # this take by number, not Whisper's pick
+            pick[name] = ev["solo_take"]
         if ev.get("cut"):
             cut_style[name] = ev["cut"]
         if ev.get("cut_at"):               # pinned: [start, end] seconds in its scene's recording
@@ -760,7 +763,7 @@ def gemini_lines(ep, cache_dir):
             out[n] = (clip, sr)
     for n, (w, text, nonverbal) in solos.items():
         out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir, takes=ep.get("solo_takes", 3),
-                             whole=ep.get("solo_whole", False))
+                             whole=ep.get("solo_whole", False), pick=pick.get(n))
     for n, src in borrowed.items():                  # an earlier episode's exact take
         turns = [tuple(t) for t in src["turns"]]
         raw = _cache_path(cache_dir, "gemini-scene-raw", turns, src["voices"])
@@ -773,7 +776,7 @@ def gemini_lines(ep, cache_dir):
     return out
 
 
-def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3, whole=False):
+def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3, whole=False, pick=None):
     """One line on its own, without touching the scene it belongs to. Speech
     gets a few takes and Whisper keeps the one that says the words best;
     non-words (screams) get one take. No [directions]: on their own, the
@@ -801,8 +804,8 @@ def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3, whole=False):
         sc = score_take(text, words)
         print(f"  solo take {k} for {text!r}: {sc:.2f} {' '.join(w for w, _, _ in words)!r}")
         cut = clip if whole else cut_lines(clip, sr, span, ["x"]).get("x", clip)
-        if best is None or sc > best[0]:
-            best = (sc, cut, sr)
+        if best is None or sc > best[0] or k == pick:
+            best = (sc if k != pick else 99, cut, sr)        # a picked take always wins
     return best[1], best[2]
 
 

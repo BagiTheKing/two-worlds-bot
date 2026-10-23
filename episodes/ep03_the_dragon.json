@@ -1923,7 +1923,8 @@
       "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
       "pad": 0.1,
       "tighten": 0.2,
-      "solo_text": "It used our portal. HIDE!"
+      "solo_text": "It used our portal. HIDE!",
+      "solo_take": 1
     },
     {
       "beat": "tutorial",
@@ -2009,7 +2010,8 @@
       "direction_text": "[unimpressed, quiet] ...That was my plan.",
       "pad": 0.1,
       "tighten": 0.25,
-      "solo_text": "That was my plan."
+      "solo_text": "That was my plan.",
+      "solo_take": 1
     },
     {
       "line": "noob",
