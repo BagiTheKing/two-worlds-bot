@@ -1920,9 +1920,10 @@
       "line": "steve",
       "name": "steve_hide",
       "text": "It used our portal. Hide.",
-      "direction_text": "[flat, deadpan, unimpressed] It used our portal. Hide.",
+      "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
       "pad": 0.1,
-      "tighten": 0.2
+      "tighten": 0.2,
+      "solo_text": "It used our portal. Hide."
     },
     {
       "beat": "tutorial",
