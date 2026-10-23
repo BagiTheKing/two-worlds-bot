@@ -1919,8 +1919,8 @@
     {
       "line": "steve",
       "name": "steve_hide",
-      "text": "That's a dragon. We hide.",
-      "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
+      "text": "It used our portal. Hide.",
+      "direction_text": "[flat, deadpan, unimpressed] It used our portal. Hide.",
       "pad": 0.1,
       "tighten": 0.2
     },
