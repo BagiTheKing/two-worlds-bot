@@ -1969,7 +1969,11 @@
       "name": "steve_wall",
       "text": "Plan: wall.",
       "direction_text": "[dry, decisive] Plan: wall.",
-      "pad": 0.0
+      "pad": 0.0,
+      "cut_at": [
+        4.52,
+        6.12
+      ]
     },
     {
       "beat": "build",
