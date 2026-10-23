@@ -219,6 +219,33 @@ def prompt(img, o, t, f, fonts):
     img.paste(layer, (0, o.get("y", 1500)), layer)
 
 
+def tutorial(img, o, t, f, fonts):
+    """The obby's cheerful tutorial pop-up (the Noob's world talking): a white
+    rounded panel with a bouncing arrow pointing down at what it means."""
+    a, b = o["start"], o["end"]
+    k = min(1.0, (t - a) / 0.15, (b - t) / 0.15)
+    if k <= 0:
+        return
+    pop = 1.0 + 0.12 * max(0.0, 1 - (t - a) / 0.25)                 # a little overshoot on arrival
+    layer = Image.new("RGBA", (W, 520), (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    small = ImageFont.truetype(FONT, int(40 * pop))
+    big = ImageFont.truetype(FONT, int(70 * pop))
+    w = max(d.textlength(o["text"], font=big), 360) + 90
+    x0 = (W - w) / 2
+    alpha = int(255 * k)
+    d.rounded_rectangle((x0 + 8, 28, x0 + w + 8, 228), radius=34, fill=(0, 0, 0, int(90 * k)))
+    d.rounded_rectangle((x0, 20, x0 + w, 220), radius=34, fill=(250, 250, 252, alpha),
+                        outline=(40, 160, 255, alpha), width=6)
+    d.text((W // 2, 72), o.get("title", "TUTORIAL"), font=small, fill=(40, 160, 255, alpha), anchor="mm")
+    d.text((W // 2, 150), o["text"], font=big, fill=(30, 30, 40, alpha), anchor="mm")
+    bob = 26 * abs(math.sin(2 * math.pi * 1.6 * (t - a)))
+    ax, ay = o.get("arrow_x", W // 2), 260 + bob
+    d.polygon([(ax - 26, ay), (ax + 26, ay), (ax + 26, ay + 90), (ax + 62, ay + 90), (ax, ay + 170),
+               (ax - 62, ay + 90), (ax - 26, ay + 90)], fill=(255, 210, 40, alpha), outline=(30, 30, 40, alpha))
+    img.paste(layer, (0, o.get("y", 330)), layer)
+
+
 def watermark(img, o, t, f, fonts):
     """The channel handle, small and quiet, top-right on every frame."""
     fnt = ImageFont.truetype(FONT, o.get("size", 40))
@@ -255,7 +282,7 @@ def flash(img, o, t, f, fonts):
 
 
 DRAW = {"watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
-        "label": label, "endcard": endcard, "hook": hook, "prompt": prompt}
+        "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
 FULL = ("card", "fade_in", "endcard")
 
 

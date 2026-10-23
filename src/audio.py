@@ -987,7 +987,33 @@ def sfx_crunch():
     return norm(out, 0.95)
 
 
-SFX = {"place": lambda e: sfx_place(), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
+def sfx_roar(dur=1.2):
+    """The dragon's roar: a growling low buzz that rises and falls, with
+    breath noise and a rough, rattling edge."""
+    x = t(dur)
+    f0 = 62 + 38 * np.sin(np.pi * x / dur) ** 1.5                  # pitch swells, then sinks
+    ph = 2 * np.pi * np.cumsum(f0) / SR
+    saw = sum(np.sin(k * ph) / k for k in range(1, 14))             # a buzzy, throaty tone
+    rattle = 1 + 0.45 * np.sin(2 * np.pi * 27 * x)                  # the growl's flutter
+    breath = band(rng.standard_normal(len(x)), 250, 3200)
+    shape = np.minimum(1, x / 0.08) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.6
+    return norm((norm(saw) * rattle + 0.55 * norm(breath)) * shape, 0.95)
+
+
+def sfx_flaps(dur=2.0, rate=1.3):
+    """Big wingbeats: a low whump on every downstroke."""
+    out = np.zeros(int((dur + 0.5) * SR))
+    k = 0.0
+    while k < dur:
+        n = int(0.32 * SR)
+        y = band(rng.standard_normal(n), 60, 900) * np.sin(np.pi * np.arange(n) / n) ** 2
+        place(out, norm(y, 0.8), k, 1.0)
+        k += 1 / rate
+    return out
+
+
+SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
+       "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
        "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
        "groan": lambda e: sfx_groan(e.get("dur", 0.9)), "burst": lambda e: sfx_burst(),
        "whir": lambda e: sfx_whir(e.get("dur", 2.0)), "snap": lambda e: sfx_snap(),

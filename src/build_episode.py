@@ -19,7 +19,7 @@ import sys
 import bpy
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from kit import fx, props, worlds                            # noqa: E402
+from kit import fx, obby, props, worlds                      # noqa: E402
 from kit.actions import Actor, add                           # noqa: E402
 from kit.cameras import shot                                 # noqa: E402
 from kit.rigs import make_dragon, make_noob, make_null, make_steve, make_zombie  # noqa: E402
@@ -103,7 +103,11 @@ def build(episode_path, timeline_path, tex_dir):
 
     actors = {}
     for name, spec in ep.get("actors", {}).items():
-        rig = RIGS[spec.get("rig", name)](tex, name=name, **({"s": spec["s"]} if "s" in spec else {}))
+        kw = {"s": spec["s"]} if "s" in spec else {}
+        for part in ("shirt", "pants", "skin"):           # avatars in their own colours
+            if part in spec:
+                kw[part] = tuple(spec[part])
+        rig = RIGS[spec.get("rig", name)](tex, name=name, **kw)
         clips = [dict(c, impacts=tl.get("impacts", [])) if c["do"] in ("punch", "flurry") else c
                  for c in ep.get("clips", []) if c["who"] == name]
         actors[name] = Actor(name, rig, spec, clips, ctx.beats, ctx.end, tl["lines"], actors)
@@ -210,6 +214,22 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "void_room":
             props.void_room(ctx, tex, tuple(e["frame"]), (ctx.T(e["show"][0]), ctx.T(e["show"][1])),
                             tuple(e["null_at"]))
+        elif k == "obby_course":
+            sets["obby"] = obby.course(ctx, e["platforms"])
+        elif k == "flag":
+            obby.flag(ctx, tuple(e["at"]), e.get("colour", "green"))
+        elif k == "smash_near":
+            obby.smash_near(ctx, actors[e["actor"]], e["targets"], sets["obby"],
+                            radius=e.get("radius", 3.5), push=e.get("push", 6.0))
+        elif k == "wall":
+            obby.wall(ctx, tex, tuple(e["at"]), e.get("cols", 3), e.get("rows", 2),
+                      (ctx.T(e["build"][0]), ctx.T(e["build"][1])), ctx.T(e["smash"]),
+                      push=tuple(e.get("push", (0, -7, 2))))
+        elif k == "cages":
+            obby.cages(ctx, [tuple(actors[a].start["loc"]) for a in e["actors"]], ctx.T(e["free"]))
+        elif k == "flicker":
+            obby.flicker(ctx, actors[e["actor"]].rig, mats["missing"], ctx.T(e["from"]), ctx.T(e["to"]),
+                         rate=e.get("rate", 0.45))
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))

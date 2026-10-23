@@ -265,7 +265,8 @@ def fly(c, t, st, actor=None):
     a2, b2 = at(u - 3 * d), at(u + 3 * d)
     turn = (yaw_towards(b2[0] - p[0], b2[1] - p[1]) - yaw_towards(p[0] - a2[0], p[1] - a2[1]))
     turn = (turn + math.pi) % (2 * math.pi) - math.pi
-    bank = clamp(-turn * c.get("bank", 2.0), -0.7, 0.7)
+    # near either end of the path the look-ahead runs out: level the wings there
+    bank = clamp(-turn * c.get("bank", 2.0), -0.7, 0.7) * ss(0, 0.08, u) * ss(0, 0.08, 1 - u)
     return dict(st, loc=p, yaw=yaw, tilt=(pitch, bank)), None
 
 
@@ -293,9 +294,30 @@ def ride(c, t, st, actor=None):
     return dict(st, loc=loc, yaw=other["yaw"], tilt=other.get("tilt", (0, 0))), parts
 
 
+def leap(c, t, st, actor=None):
+    """A big jump in an arc `height` above the straight line to `dest`, or
+    onto another actor (`onto`, landing on its `seat` as it is at the end)."""
+    t0, t1 = c["t0"], c["t1"]
+    if c.get("onto"):
+        o = actor.actors[c["onto"]].state_at(t1)
+        dest = add(o["loc"], _turn(tuple(c.get("seat", (0, -1.6, 0.25))), o.get("tilt", (0, 0)), o["yaw"]))
+    else:
+        d = c["dest"]
+        dest = (d[0], d[1], d[2] if len(d) > 2 else st["loc"][2])
+    u = clamp((t - t0) / (t1 - t0))
+    a = st["loc"]
+    loc = lerp(a, dest, u)
+    loc = (loc[0], loc[1], loc[2] + 4 * c.get("height", 1.5) * u * (1 - u))
+    yaw = lerp_angle(st["yaw"], c.get("yaw", yaw_towards(dest[0] - a[0], dest[1] - a[1])), ss(t0, t0 + 0.15, t))
+    tuck = math.sin(math.pi * u)
+    parts = {"arm_r": (-2.8, 0, 0.4), "arm_l": (-2.8, 0, -0.4),
+             "leg_r": (-0.9 * tuck, 0, 0), "leg_l": (-0.5 * tuck, 0, 0)}
+    return dict(st, loc=loc, yaw=yaw), (parts if t < t1 else None)
+
+
 LOCOMOTION = {"walk": walk, "run": run, "set": set_, "face": face, "fall": fall,
               "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce, "pop": pop,
-              "fly": fly, "ride": ride}
+              "fly": fly, "ride": ride, "leap": leap}
 def punch(c, t, st, actor=None):
     """One punch: wind-up, strike landing on the timeline's impact, then a
     stinging hand. The fist lands on the first impact inside the clip."""

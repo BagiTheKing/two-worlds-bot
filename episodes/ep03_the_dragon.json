@@ -1,0 +1,2041 @@
+{
+  "id": "ep03_the_dragon",
+  "number": 3,
+  "title": "The Dragon Entered an Obby",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    }
+  },
+  "music": [
+    {
+      "cue": "chase",
+      "from": 0,
+      "to": "freeze",
+      "gain": 0.2,
+      "swell": [
+        {
+          "from": "dive",
+          "to": "free.end",
+          "gain": 1.6,
+          "ramp": 0.3
+        }
+      ]
+    },
+    {
+      "cue": "dread",
+      "from": "glitch",
+      "to": "end",
+      "gain": 0.24,
+      "hit_at": "glitch",
+      "minimal": true
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "sky",
+      "from": 0,
+      "to": "freeze",
+      "gain": 0.06,
+      "fade_in": 0.2
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "crunch",
+      "at": 0.0,
+      "gain": 0.7
+    },
+    {
+      "kind": "break",
+      "at": 0.25,
+      "gain": 0.6
+    },
+    {
+      "kind": "roar",
+      "at": 0.1,
+      "dur": 1.0,
+      "gain": 0.75
+    },
+    {
+      "kind": "flaps",
+      "at": 0,
+      "dur": 1.6,
+      "rate": 1.3,
+      "gain": 0.35
+    },
+    {
+      "kind": "whoosh",
+      "at": 1.0,
+      "dur": 0.8,
+      "gain": 0.55
+    },
+    {
+      "kind": "flaps",
+      "at": "steve_hide",
+      "dur": 3.0,
+      "rate": 1.3,
+      "gain": 0.15
+    },
+    {
+      "kind": "jingle",
+      "at": "tutorial",
+      "gain": 0.5
+    },
+    {
+      "kind": "whoosh",
+      "at": "jump",
+      "dur": 0.9,
+      "gain": 0.6
+    },
+    {
+      "kind": "burst",
+      "at": "kill",
+      "gain": 0.8
+    },
+    {
+      "kind": "respawn",
+      "at": "respawn",
+      "gain": 0.7
+    },
+    {
+      "kind": "place",
+      "from": "build",
+      "to": "build.end-0.1",
+      "count": 6,
+      "gain": 0.5
+    },
+    {
+      "kind": "roar",
+      "at": "crash-0.7",
+      "dur": 0.8,
+      "gain": 0.6
+    },
+    {
+      "kind": "crunch",
+      "at": "crash+0.2",
+      "gain": 0.95
+    },
+    {
+      "kind": "break",
+      "at": "crash+0.25",
+      "gain": 0.7
+    },
+    {
+      "kind": "whoosh",
+      "at": "leap",
+      "dur": 0.8,
+      "gain": 0.5
+    },
+    {
+      "kind": "flaps",
+      "at": "leap",
+      "dur": 4.0,
+      "rate": 1.3,
+      "gain": 0.3
+    },
+    {
+      "kind": "break",
+      "at": "free",
+      "gain": 0.8
+    },
+    {
+      "kind": "glitch",
+      "at": "free",
+      "dur": 0.25,
+      "gain": 0.5
+    },
+    {
+      "kind": "jingle",
+      "at": "free+0.3",
+      "gain": 0.5
+    },
+    {
+      "kind": "flaps",
+      "at": "free.end",
+      "dur": 3.0,
+      "rate": 1.3,
+      "gain": 0.25
+    },
+    {
+      "kind": "snap",
+      "at": "freeze",
+      "gain": 0.7
+    },
+    {
+      "kind": "glitch",
+      "at": "glitch",
+      "dur": 0.5,
+      "gain": 0.6
+    },
+    {
+      "kind": "sub_drop",
+      "at": "glitch",
+      "dur": 1.2,
+      "gain": 0.45
+    }
+  ],
+  "overlays": [
+    {
+      "type": "label",
+      "text": "EPISODE 3",
+      "sub": "THE DRAGON ENTERED AN OBBY",
+      "from": 0.3,
+      "to": "steve_hide.end"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 97%",
+      "from": 0,
+      "to": "glitch"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 92%",
+      "alert": true,
+      "from": "glitch",
+      "to": "endcard"
+    },
+    {
+      "type": "tutorial",
+      "title": "TUTORIAL",
+      "text": "JUMP ON THE BOSS!",
+      "from": "tutorial",
+      "to": "steve_dont.end"
+    },
+    {
+      "type": "prompt",
+      "text": "WOULD YOU JUMP? COMMENT ↓",
+      "from": "noob_tut",
+      "to": "respawn",
+      "y": 1480
+    },
+    {
+      "type": "timer",
+      "label": "PLAN",
+      "from": "crash-0.6",
+      "to": "crash.end+0.3",
+      "fail_after": 0.8,
+      "y": 430
+    },
+    {
+      "type": "flash",
+      "from": "crash+0.2",
+      "to": "crash+0.32",
+      "strength": 0.7
+    },
+    {
+      "type": "achievement",
+      "title": "ACHIEVEMENT UNLOCKED",
+      "text": "ACCIDENTAL HERO",
+      "sub": "Free the frozen players",
+      "from": "free+0.25",
+      "to": "free.end+0.9"
+    },
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "endcard",
+      "over": true,
+      "from": "endcard",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 4",
+      "next_title": "THIS BLOCK SHOULDN'T EXIST",
+      "question": "WHO FROZE THE DRAGON?",
+      "question_sub": "Comment your theory",
+      "pace": 0.25
+    }
+  ],
+  "actors": {
+    "steve": {
+      "rig": "steve",
+      "at": [
+        -2.4,
+        0.8,
+        0
+      ],
+      "yaw": 0
+    },
+    "noob": {
+      "rig": "noob",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.2,
+      "visible": [
+        [
+          0,
+          "kill"
+        ],
+        [
+          "respawn",
+          "end"
+        ]
+      ]
+    },
+    "dragon": {
+      "rig": "dragon",
+      "s": 0.75,
+      "at": [
+        -3.6,
+        9.5,
+        5.2
+      ],
+      "yaw": 0,
+      "freeze": "freeze"
+    },
+    "frozen_0": {
+      "shirt": [
+        128,
+        130,
+        138
+      ],
+      "pants": [
+        96,
+        98,
+        106
+      ],
+      "skin": [
+        168,
+        170,
+        176
+      ],
+      "rig": "noob",
+      "at": [
+        -11.7,
+        9,
+        1.5
+      ],
+      "yaw": -0.15000000000000002,
+      "idle": 0,
+      "visible": [
+        [
+          0,
+          "free"
+        ]
+      ]
+    },
+    "freed_0": {
+      "rig": "noob",
+      "shirt": [
+        232,
+        64,
+        64
+      ],
+      "pants": [
+        60,
+        60,
+        70
+      ],
+      "at": [
+        -11.7,
+        9,
+        1.5
+      ],
+      "yaw": -0.15000000000000002,
+      "visible": [
+        [
+          "free",
+          "end"
+        ]
+      ]
+    },
+    "frozen_1": {
+      "shirt": [
+        128,
+        130,
+        138
+      ],
+      "pants": [
+        96,
+        98,
+        106
+      ],
+      "skin": [
+        168,
+        170,
+        176
+      ],
+      "rig": "noob",
+      "at": [
+        -9.9,
+        9,
+        1.5
+      ],
+      "yaw": -0.05,
+      "idle": 0,
+      "visible": [
+        [
+          0,
+          "free"
+        ]
+      ]
+    },
+    "freed_1": {
+      "rig": "noob",
+      "shirt": [
+        245,
+        150,
+        40
+      ],
+      "pants": [
+        40,
+        90,
+        200
+      ],
+      "at": [
+        -9.9,
+        9,
+        1.5
+      ],
+      "yaw": -0.05,
+      "visible": [
+        [
+          "free",
+          "end"
+        ]
+      ]
+    },
+    "frozen_2": {
+      "shirt": [
+        128,
+        130,
+        138
+      ],
+      "pants": [
+        96,
+        98,
+        106
+      ],
+      "skin": [
+        168,
+        170,
+        176
+      ],
+      "rig": "noob",
+      "at": [
+        -8.1,
+        9,
+        1.5
+      ],
+      "yaw": 0.05,
+      "idle": 0,
+      "visible": [
+        [
+          0,
+          "free"
+        ]
+      ]
+    },
+    "freed_2": {
+      "rig": "noob",
+      "shirt": [
+        150,
+        90,
+        230
+      ],
+      "pants": [
+        96,
+        182,
+        50
+      ],
+      "at": [
+        -8.1,
+        9,
+        1.5
+      ],
+      "yaw": 0.05,
+      "visible": [
+        [
+          "free",
+          "end"
+        ]
+      ]
+    },
+    "frozen_3": {
+      "shirt": [
+        128,
+        130,
+        138
+      ],
+      "pants": [
+        96,
+        98,
+        106
+      ],
+      "skin": [
+        168,
+        170,
+        176
+      ],
+      "rig": "noob",
+      "at": [
+        -6.3,
+        9,
+        1.5
+      ],
+      "yaw": 0.15000000000000002,
+      "idle": 0,
+      "visible": [
+        [
+          0,
+          "free"
+        ]
+      ]
+    },
+    "freed_3": {
+      "rig": "noob",
+      "shirt": [
+        240,
+        100,
+        190
+      ],
+      "pants": [
+        245,
+        210,
+        50
+      ],
+      "at": [
+        -6.3,
+        9,
+        1.5
+      ],
+      "yaw": 0.15000000000000002,
+      "visible": [
+        [
+          "free",
+          "end"
+        ]
+      ]
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "bounce",
+      "from": 0,
+      "to": "noob_boss.end",
+      "height": 0.35,
+      "rate": 2.2
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "tutorial",
+      "to": "jump",
+      "head": [
+        -0.25,
+        0,
+        0.5
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "leap",
+      "from": "jump",
+      "to": "jump.end",
+      "dest": [
+        3.2,
+        4.6,
+        -0.3
+      ],
+      "height": 1.8
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "respawn",
+      "at": [
+        6.0,
+        -0.9,
+        0
+      ],
+      "yaw": -0.3
+    },
+    {
+      "who": "noob",
+      "do": "pop",
+      "from": "respawn",
+      "to": "respawn+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "cheer",
+      "from": "noob_cp",
+      "to": "noob_cp+0.5"
+    },
+    {
+      "who": "noob",
+      "do": "leap",
+      "from": "leap",
+      "to": "leap.end",
+      "onto": "dragon",
+      "seat": [
+        0,
+        -1.2,
+        -0.05
+      ],
+      "height": 1.0
+    },
+    {
+      "who": "noob",
+      "do": "ride",
+      "on": "dragon",
+      "from": "leap.end",
+      "to": "end",
+      "seat": [
+        0,
+        -1.2,
+        -0.05
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "noob_lag",
+      "to": "glitch",
+      "head": [
+        0.4,
+        0,
+        0.3
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "steve_wall",
+      "to": "steve_wall+0.25",
+      "yaw": 3.1416
+    },
+    {
+      "who": "steve",
+      "do": "swing",
+      "from": "build",
+      "to": "build.end",
+      "count": 6
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "steve_myplan",
+      "yaw": 0
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "steve_lag",
+      "to": "endcard",
+      "head": [
+        -0.2,
+        0,
+        0.35
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": 0,
+      "to": "steve_hide",
+      "path": [
+        [
+          -2.6,
+          4,
+          6.2
+        ],
+        [
+          -1,
+          -2,
+          7.8
+        ],
+        [
+          3,
+          -9,
+          12
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "roar",
+      "from": -0.25,
+      "to": 0.85
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "steve_hide",
+      "to": "jump",
+      "path": [
+        [
+          12,
+          0,
+          14
+        ],
+        [
+          6,
+          18,
+          12
+        ],
+        [
+          -4,
+          22,
+          10
+        ],
+        [
+          -8,
+          14,
+          8
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "jump",
+      "to": "jump.end+0.5",
+      "path": [
+        [
+          -2,
+          8,
+          3.6
+        ],
+        [
+          3.2,
+          5.2,
+          3.0
+        ],
+        [
+          10,
+          3,
+          5
+        ],
+        [
+          16,
+          8,
+          8
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "jump.end+0.5",
+      "to": "crash",
+      "path": [
+        [
+          14,
+          18,
+          9
+        ],
+        [
+          4,
+          22,
+          6
+        ],
+        [
+          -2.4,
+          10,
+          2.2
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "roar",
+      "from": "crash-0.7",
+      "to": "crash"
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "crash",
+      "to": "crash.end",
+      "path": [
+        [
+          -2.4,
+          2.0,
+          1.8
+        ],
+        [
+          -2.4,
+          -1.5,
+          4.4
+        ],
+        [
+          -1,
+          -9,
+          8
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "crash.end",
+      "to": "leap.end",
+      "path": [
+        [
+          6,
+          -14,
+          9
+        ],
+        [
+          12,
+          -6,
+          6
+        ],
+        [
+          8,
+          -1.5,
+          3.0
+        ],
+        [
+          6,
+          -0.9,
+          2.6
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "leap.end",
+      "to": "free",
+      "path": [
+        [
+          2,
+          1,
+          3.5
+        ],
+        [
+          -4,
+          4,
+          4
+        ],
+        [
+          -6.3,
+          9,
+          2.9
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "free",
+      "to": "free.end",
+      "path": [
+        [
+          -9.9,
+          9,
+          2.9
+        ],
+        [
+          -13.5,
+          9,
+          3.2
+        ],
+        [
+          -17,
+          12,
+          6
+        ]
+      ]
+    },
+    {
+      "who": "dragon",
+      "do": "fly",
+      "from": "free.end",
+      "to": "noob_planwall",
+      "path": [
+        [
+          -14,
+          20,
+          9
+        ],
+        [
+          -2,
+          22,
+          7
+        ],
+        [
+          2,
+          12,
+          4.2
+        ],
+        [
+          2,
+          6,
+          4.2
+        ]
+      ]
+    },
+    {
+      "who": "frozen_0",
+      "do": "pose",
+      "from": 0,
+      "to": "free",
+      "parts": {
+        "arm_r": [
+          -2.6,
+          0,
+          0.3
+        ],
+        "arm_l": [
+          -2.2,
+          0,
+          -0.3
+        ],
+        "leg_r": [
+          -0.5,
+          0,
+          0
+        ],
+        "leg_l": [
+          0.3,
+          0,
+          0
+        ]
+      },
+      "hold": true
+    },
+    {
+      "who": "freed_0",
+      "do": "cheer",
+      "from": "free+0.05",
+      "to": "free+0.55"
+    },
+    {
+      "who": "freed_0",
+      "do": "bounce",
+      "from": "free+0.60",
+      "to": "end",
+      "height": 0.4,
+      "rate": 1.8
+    },
+    {
+      "who": "frozen_1",
+      "do": "pose",
+      "from": 0,
+      "to": "free",
+      "parts": {
+        "arm_r": [
+          -2.6,
+          0,
+          0.3
+        ],
+        "arm_l": [
+          -2.4000000000000004,
+          0,
+          -0.3
+        ],
+        "leg_r": [
+          -0.5,
+          0,
+          0
+        ],
+        "leg_l": [
+          0.3,
+          0,
+          0
+        ]
+      },
+      "hold": true
+    },
+    {
+      "who": "freed_1",
+      "do": "cheer",
+      "from": "free+0.13",
+      "to": "free+0.63"
+    },
+    {
+      "who": "freed_1",
+      "do": "bounce",
+      "from": "free+0.68",
+      "to": "end",
+      "height": 0.4,
+      "rate": 1.95
+    },
+    {
+      "who": "frozen_2",
+      "do": "pose",
+      "from": 0,
+      "to": "free",
+      "parts": {
+        "arm_r": [
+          -2.6,
+          0,
+          0.3
+        ],
+        "arm_l": [
+          -2.6,
+          0,
+          -0.3
+        ],
+        "leg_r": [
+          -0.5,
+          0,
+          0
+        ],
+        "leg_l": [
+          0.3,
+          0,
+          0
+        ]
+      },
+      "hold": true
+    },
+    {
+      "who": "freed_2",
+      "do": "cheer",
+      "from": "free+0.21",
+      "to": "free+0.71"
+    },
+    {
+      "who": "freed_2",
+      "do": "bounce",
+      "from": "free+0.76",
+      "to": "end",
+      "height": 0.4,
+      "rate": 2.1
+    },
+    {
+      "who": "frozen_3",
+      "do": "pose",
+      "from": 0,
+      "to": "free",
+      "parts": {
+        "arm_r": [
+          -2.6,
+          0,
+          0.3
+        ],
+        "arm_l": [
+          -2.8000000000000003,
+          0,
+          -0.3
+        ],
+        "leg_r": [
+          -0.5,
+          0,
+          0
+        ],
+        "leg_l": [
+          0.3,
+          0,
+          0
+        ]
+      },
+      "hold": true
+    },
+    {
+      "who": "freed_3",
+      "do": "cheer",
+      "from": "free+0.29",
+      "to": "free+0.79"
+    },
+    {
+      "who": "freed_3",
+      "do": "bounce",
+      "from": "free+0.84",
+      "to": "end",
+      "height": 0.4,
+      "rate": 2.25
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ],
+        [
+          "glitch",
+          5.0,
+          1.25
+        ],
+        [
+          "glitch+0.3",
+          2.6,
+          0.7
+        ]
+      ]
+    },
+    {
+      "kind": "obby_course",
+      "platforms": [
+        {
+          "name": "noob_pad",
+          "at": [
+            1.6,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "steve_pad",
+          "at": [
+            -2.4,
+            0.8,
+            0
+          ],
+          "size": [
+            3,
+            3.2
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "kill_pad",
+          "at": [
+            3.2,
+            4.6,
+            -0.3
+          ],
+          "size": [
+            2.4,
+            2.4
+          ],
+          "colour": "red",
+          "kill": true
+        },
+        {
+          "name": "cp_pad",
+          "at": [
+            6.0,
+            -0.9,
+            0
+          ],
+          "size": [
+            2.6,
+            2.6
+          ],
+          "colour": "white"
+        },
+        {
+          "name": "slider",
+          "at": [
+            -6.2,
+            4.2,
+            0.6
+          ],
+          "size": [
+            2.2,
+            2.2
+          ],
+          "colour": "orange",
+          "slide": [
+            1.4,
+            0,
+            0,
+            2.6
+          ]
+        },
+        {
+          "name": "deco_1",
+          "at": [
+            -7.5,
+            0,
+            -0.8
+          ],
+          "size": [
+            3.5,
+            3.5
+          ],
+          "colour": "purple"
+        },
+        {
+          "name": "deco_2",
+          "at": [
+            9.5,
+            3,
+            -0.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "yellow"
+        },
+        {
+          "name": "deco_3",
+          "at": [
+            10,
+            14,
+            1.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "pink"
+        },
+        {
+          "name": "deco_4",
+          "at": [
+            -12,
+            16,
+            2.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "jail",
+          "at": [
+            -9,
+            9,
+            1.5
+          ],
+          "size": [
+            8.5,
+            3.2
+          ],
+          "colour": "grey"
+        },
+        {
+          "name": "s0",
+          "at": [
+            -3,
+            9,
+            1.5
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "red"
+        },
+        {
+          "name": "s1",
+          "at": [
+            -1,
+            11.5,
+            2.3
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "orange"
+        },
+        {
+          "name": "s2",
+          "at": [
+            1,
+            14,
+            3.1
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "yellow"
+        },
+        {
+          "name": "s3",
+          "at": [
+            2.8,
+            16.5,
+            3.9
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "s4",
+          "at": [
+            4.5,
+            19,
+            4.7
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "s5",
+          "at": [
+            6,
+            21.5,
+            5.5
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "purple"
+        },
+        {
+          "name": "s6",
+          "at": [
+            -2.5,
+            24,
+            6.5
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "pink"
+        },
+        {
+          "name": "s7",
+          "at": [
+            0,
+            27,
+            7.5
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "red"
+        }
+      ]
+    },
+    {
+      "kind": "flag",
+      "at": [
+        6.9,
+        -1.7,
+        0
+      ]
+    },
+    {
+      "kind": "spawn_pad",
+      "at": [
+        6.0,
+        -0.9
+      ],
+      "appear": 0
+    },
+    {
+      "kind": "smash_near",
+      "actor": "dragon",
+      "targets": [
+        {
+          "name": "s2",
+          "at": -0.45
+        },
+        {
+          "name": "s1",
+          "at": -0.3
+        },
+        {
+          "name": "s0",
+          "at": -0.1
+        }
+      ],
+      "radius": 3.6
+    },
+    {
+      "kind": "wall",
+      "at": [
+        -2.4,
+        2.1,
+        0
+      ],
+      "cols": 3,
+      "rows": 2,
+      "build": [
+        "build",
+        "build.end-0.1"
+      ],
+      "smash": "crash+0.2",
+      "push": [
+        0,
+        -8,
+        2
+      ]
+    },
+    {
+      "kind": "burst",
+      "actor": "noob",
+      "at": "kill"
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "noob",
+      "from": "kill",
+      "to": "kill+3.0",
+      "offset": [
+        0.6,
+        0.4,
+        1.2
+      ]
+    },
+    {
+      "kind": "cages",
+      "actors": [
+        "frozen_0",
+        "frozen_1",
+        "frozen_2",
+        "frozen_3"
+      ],
+      "free": "free"
+    },
+    {
+      "kind": "flicker",
+      "actor": "dragon",
+      "from": "glitch",
+      "to": "end",
+      "rate": 0.4
+    }
+  ],
+  "shots": [
+    {
+      "name": "hook",
+      "from": 0,
+      "to": "steve_hide",
+      "lens": 20,
+      "path": [
+        [
+          0,
+          [
+            3.4,
+            -4.6,
+            0.8
+          ]
+        ],
+        [
+          "steve_hide",
+          [
+            3.3,
+            -4.9,
+            0.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            0.2,
+            6,
+            4.0
+          ]
+        ]
+      ],
+      "look_actor": "dragon",
+      "look_offset": [
+        0,
+        0,
+        0
+      ],
+      "look_mix": 0.3
+    },
+    {
+      "name": "steve_hide",
+      "from": "steve_hide",
+      "to": "tutorial",
+      "lens": 35,
+      "path": [
+        [
+          "steve_hide",
+          [
+            -1.4,
+            -3.4,
+            1.65
+          ]
+        ],
+        [
+          "tutorial",
+          [
+            -1.45,
+            -3.3,
+            1.65
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_hide",
+          [
+            -2.4,
+            0.8,
+            1.45
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "tutorial",
+      "from": "tutorial",
+      "to": "jump",
+      "lens": 24,
+      "path": [
+        [
+          "tutorial",
+          [
+            0.0,
+            -7.0,
+            2.0
+          ]
+        ],
+        [
+          "jump",
+          [
+            0.1,
+            -6.8,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "tutorial",
+          [
+            0.3,
+            1.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "jump",
+      "from": "jump",
+      "to": "respawn",
+      "lens": 24,
+      "path": [
+        [
+          "jump",
+          [
+            -1.8,
+            -5.0,
+            2.6
+          ]
+        ],
+        [
+          "respawn",
+          [
+            -1.7,
+            -5.1,
+            2.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "jump",
+          [
+            3.2,
+            3.6,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "checkpoint",
+      "from": "respawn",
+      "to": "steve_wall",
+      "lens": 32,
+      "path": [
+        [
+          "respawn",
+          [
+            5.0,
+            -4.8,
+            1.4
+          ]
+        ],
+        [
+          "steve_wall",
+          [
+            5.05,
+            -4.6,
+            1.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "respawn",
+          [
+            6.0,
+            -0.9,
+            1.1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "wall",
+      "from": "steve_wall",
+      "to": "crash.end",
+      "lens": 22,
+      "path": [
+        [
+          "steve_wall",
+          [
+            4.5,
+            -0.6,
+            2.2
+          ]
+        ],
+        [
+          "crash.end",
+          [
+            4.5,
+            -0.8,
+            2.25
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_wall",
+          [
+            -2.4,
+            1.6,
+            1.8
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "leap",
+      "from": "crash.end",
+      "to": "noob_done.end",
+      "lens": 24,
+      "path": [
+        [
+          "crash.end",
+          [
+            10.5,
+            -6.5,
+            2.4
+          ]
+        ],
+        [
+          "noob_done.end",
+          [
+            10.0,
+            -6.0,
+            2.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "crash.end",
+          [
+            5.0,
+            -0.5,
+            2.6
+          ]
+        ]
+      ],
+      "look_actor": "noob",
+      "look_mix": 0.45
+    },
+    {
+      "name": "dive",
+      "from": "noob_done.end",
+      "to": "free.end",
+      "lens": 22,
+      "path": [
+        [
+          "noob_done.end",
+          [
+            -9.0,
+            2.0,
+            3.4
+          ]
+        ],
+        [
+          "free.end",
+          [
+            -9.4,
+            1.8,
+            3.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_done.end",
+          [
+            -8.5,
+            9,
+            2.6
+          ]
+        ]
+      ],
+      "look_actor": "dragon",
+      "look_offset": [
+        0,
+        0,
+        0
+      ],
+      "look_mix": 0.3
+    },
+    {
+      "name": "myplan",
+      "from": "free.end",
+      "to": "noob_planwall",
+      "lens": 40,
+      "path": [
+        [
+          "free.end",
+          [
+            -2.0,
+            -2.4,
+            1.75
+          ]
+        ],
+        [
+          "noob_planwall",
+          [
+            -2.0,
+            -2.3,
+            1.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "free.end",
+          [
+            -2.4,
+            0.8,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "planwall",
+      "from": "noob_planwall",
+      "to": "freeze",
+      "lens": 28,
+      "path": [
+        [
+          "noob_planwall",
+          [
+            5.5,
+            -1.5,
+            4.6
+          ]
+        ],
+        [
+          "freeze",
+          [
+            5.4,
+            -1.4,
+            4.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_planwall",
+          [
+            2.0,
+            4.8,
+            5.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "freeze",
+      "from": "freeze",
+      "to": "steve_lag",
+      "lens": 22,
+      "path": [
+        [
+          "freeze",
+          [
+            -4.2,
+            -5.2,
+            1.5
+          ]
+        ],
+        [
+          "steve_lag",
+          [
+            -4.2,
+            -5.0,
+            1.55
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "freeze",
+          [
+            0.8,
+            5.0,
+            4.2
+          ]
+        ]
+      ],
+      "shake": 0.0
+    },
+    {
+      "name": "steve_lag",
+      "from": "steve_lag",
+      "to": "glitch",
+      "lens": 40,
+      "path": [
+        [
+          "steve_lag",
+          [
+            -2.0,
+            -2.4,
+            1.75
+          ]
+        ],
+        [
+          "glitch",
+          [
+            -2.0,
+            -2.35,
+            1.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_lag",
+          [
+            -2.4,
+            0.8,
+            1.6
+          ]
+        ]
+      ],
+      "shake": 0.0
+    },
+    {
+      "name": "glitch",
+      "from": "glitch",
+      "to": "end",
+      "lens": 28,
+      "path": [
+        [
+          "glitch",
+          [
+            2.0,
+            -4.6,
+            5.1
+          ]
+        ],
+        [
+          "end",
+          [
+            2.0,
+            -4.2,
+            5.05
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "glitch",
+          [
+            2.0,
+            1.5,
+            4.85
+          ]
+        ]
+      ],
+      "shake": 0.0
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.25
+    },
+    {
+      "line": "noob",
+      "name": "noob_boss",
+      "text": "BOSS FIGHT!",
+      "direction_text": "[shouting, thrilled] BOSS FIGHT!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "line": "steve",
+      "name": "steve_hide",
+      "text": "That's a dragon. We hide.",
+      "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
+      "pad": 0.1,
+      "tighten": 0.2
+    },
+    {
+      "beat": "tutorial",
+      "dur": 0.3
+    },
+    {
+      "line": "noob",
+      "name": "noob_tut",
+      "text": "Tutorial says jump!",
+      "direction_text": "[excited, already going] Tutorial says jump!",
+      "pad": 0.0
+    },
+    {
+      "line": "steve",
+      "name": "steve_dont",
+      "text": "Don't—",
+      "direction_text": "[sharp, cut off] Don't—",
+      "pad": 0.0,
+      "solo_only": true
+    },
+    {
+      "beat": "jump",
+      "dur": 0.9
+    },
+    {
+      "beat": "kill",
+      "dur": 0.45
+    },
+    {
+      "beat": "respawn",
+      "dur": 0.35
+    },
+    {
+      "line": "noob",
+      "name": "noob_cp",
+      "text": "Checkpoint!",
+      "direction_text": "[cheerful, completely unbothered] Checkpoint!",
+      "pad": 0.15,
+      "solo_only": true
+    },
+    {
+      "line": "steve",
+      "name": "steve_wall",
+      "text": "Plan: wall.",
+      "direction_text": "[dry, decisive] Plan: wall.",
+      "pad": 0.0
+    },
+    {
+      "beat": "build",
+      "dur": 1.0
+    },
+    {
+      "beat": "crash",
+      "dur": 0.7
+    },
+    {
+      "beat": "leap",
+      "dur": 0.8
+    },
+    {
+      "line": "noob",
+      "name": "noob_done",
+      "text": "Tutorial complete!",
+      "direction_text": "[triumphant, riding] Tutorial complete!",
+      "pad": 0.1
+    },
+    {
+      "beat": "dive",
+      "dur": 1.6
+    },
+    {
+      "beat": "free",
+      "dur": 1.2
+    },
+    {
+      "line": "steve",
+      "name": "steve_myplan",
+      "text": "...That was my plan.",
+      "direction_text": "[unimpressed, quiet] ...That was my plan.",
+      "pad": 0.1,
+      "tighten": 0.25
+    },
+    {
+      "line": "noob",
+      "name": "noob_planwall",
+      "text": "Your plan was a wall.",
+      "direction_text": "[cheerfully honest] Your plan was a wall.",
+      "pad": 0.25
+    },
+    {
+      "beat": "freeze",
+      "dur": 1.0
+    },
+    {
+      "line": "noob",
+      "name": "noob_lag",
+      "text": "...Is it lagging?",
+      "direction_text": "[small, unsure] ...Is it lagging?",
+      "pad": 0.2,
+      "tighten": 0.25
+    },
+    {
+      "line": "steve",
+      "name": "steve_lag",
+      "text": "Worlds don't lag.",
+      "direction_text": "[quiet, serious] Worlds don't lag.",
+      "pad": 0.3
+    },
+    {
+      "beat": "glitch",
+      "dur": 1.2
+    },
+    {
+      "beat": "endcard",
+      "dur": 1.5
+    }
+  ]
+}
