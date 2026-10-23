@@ -234,6 +234,7 @@
       "text": "La réalité a été corrigée.",
       "pad": 0.3,
       "direction_text": "[slow, cold, emotionless] La réalité a été corrigée.",
+      "trim": 4.76,
       "tighten": 0.3,
       "solo_only": true,
       "solo_text": "La réalité a été corrigée."
