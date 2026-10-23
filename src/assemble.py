@@ -234,15 +234,19 @@ def tutorial(img, o, t, f, fonts):
     w = max(d.textlength(o["text"], font=big), 360) + 90
     x0 = (W - w) / 2
     alpha = int(255 * k)
-    d.rounded_rectangle((x0 + 8, 28, x0 + w + 8, 228), radius=34, fill=(0, 0, 0, int(90 * k)))
-    d.rounded_rectangle((x0, 20, x0 + w, 220), radius=34, fill=(250, 250, 252, alpha),
+    up = o.get("arrow", "down") == "up"             # pointing at something above the panel
+    top = 300 if up else 20
+    d.rounded_rectangle((x0 + 8, top + 8, x0 + w + 8, top + 208), radius=34, fill=(0, 0, 0, int(90 * k)))
+    d.rounded_rectangle((x0, top, x0 + w, top + 200), radius=34, fill=(250, 250, 252, alpha),
                         outline=(40, 160, 255, alpha), width=6)
-    d.text((W // 2, 72), o.get("title", "TUTORIAL"), font=small, fill=(40, 160, 255, alpha), anchor="mm")
-    d.text((W // 2, 150), o["text"], font=big, fill=(30, 30, 40, alpha), anchor="mm")
+    d.text((W // 2, top + 52), o.get("title", "TUTORIAL"), font=small, fill=(40, 160, 255, alpha), anchor="mm")
+    d.text((W // 2, top + 130), o["text"], font=big, fill=(30, 30, 40, alpha), anchor="mm")
     bob = 26 * abs(math.sin(2 * math.pi * 1.6 * (t - a)))
-    ax, ay = o.get("arrow_x", W // 2), 260 + bob
-    d.polygon([(ax - 26, ay), (ax + 26, ay), (ax + 26, ay + 90), (ax + 62, ay + 90), (ax, ay + 170),
-               (ax - 62, ay + 90), (ax - 26, ay + 90)], fill=(255, 210, 40, alpha), outline=(30, 30, 40, alpha))
+    ax = o.get("arrow_x", W // 2)
+    sgn, ay = (-1, 270 - bob) if up else (1, 260 + bob)
+    d.polygon([(ax - 26, ay), (ax + 26, ay), (ax + 26, ay + 90 * sgn), (ax + 62, ay + 90 * sgn),
+               (ax, ay + 170 * sgn), (ax - 62, ay + 90 * sgn), (ax - 26, ay + 90 * sgn)],
+              fill=(255, 210, 40, alpha), outline=(30, 30, 40, alpha))
     img.paste(layer, (0, o.get("y", 330)), layer)
 
 
