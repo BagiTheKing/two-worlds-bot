@@ -61,6 +61,18 @@ def glyph(digit, h):
         d.rectangle((w - 1 - s, int(h * 0.3), w - 1, int(h * 0.36) + 6), fill=255)
         d.rounded_rectangle((0, h - s, w - 1, h - 1), 10, fill=255)            # the base
         return m
+    if digit == "3":
+        # the 0's rounded right side, open on the left, with a shorter middle
+        # bar (so it can't read as a mirrored E)
+        w = FACE[2] - FACE[0]
+        m = Image.new("L", (w, h), 0)
+        d = ImageDraw.Draw(m)
+        mid = h // 2
+        d.rounded_rectangle((0, 0, w - 1, h - 1), RADIUS * 2, fill=255)
+        d.rounded_rectangle((-200, s + 10, w - 1 - s, mid - s // 2), RADIUS, fill=0)      # upper counter
+        d.rounded_rectangle((-200, mid + s // 2, w - 1 - s, h - 1 - s - 10), RADIUS, fill=0)  # lower counter
+        d.rectangle((int(w * 0.42), mid - s // 2, w - 1 - s // 2, mid + s // 2), fill=255)   # middle bar
+        return m
     if digit in SEGMENTS:
         # the other digits from the lettering's own strokes: straight bars of
         # the 0's thickness, joined, with the 0's rounded outer corners
