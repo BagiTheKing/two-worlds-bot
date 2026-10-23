@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kit import fx, props, worlds                            # noqa: E402
 from kit.actions import Actor, add                           # noqa: E402
 from kit.cameras import shot                                 # noqa: E402
-from kit.rigs import make_noob, make_null, make_steve, make_zombie  # noqa: E402
+from kit.rigs import make_dragon, make_noob, make_null, make_steve, make_zombie  # noqa: E402
 from kit.timeref import resolve                              # noqa: E402
 import scene_poc                                             # noqa: E402
 
@@ -44,7 +44,8 @@ class Ctx:
         return resolve(self.beats, ref, self.end)
 
 
-RIGS = {"steve": make_steve, "noob": make_noob, "null": make_null, "zombie": make_zombie}
+RIGS = {"steve": make_steve, "noob": make_noob, "null": make_null, "zombie": make_zombie,
+        "dragon": make_dragon}
 
 
 def snap_jumps(ob, threshold=0.4):

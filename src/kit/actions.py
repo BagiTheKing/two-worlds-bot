@@ -223,8 +223,79 @@ def pop(c, t, st, actor=None):
     return dict(st, scale=(max(k, 0.001),) * 3), None
 
 
+def _spline(pts, u):
+    """Catmull-Rom through pts, u in 0..1 over the whole run."""
+    n = len(pts) - 1
+    k = min(int(u * n), n - 1)
+    f = u * n - k
+    p0, p1, p2, p3 = pts[max(k - 1, 0)], pts[k], pts[k + 1], pts[min(k + 2, n)]
+    return tuple(0.5 * (2 * b + (-a + c) * f + (2 * a - 5 * b + 4 * c - d) * f * f
+                        + (-a + 3 * b - 3 * c + d) * f ** 3)
+                 for a, b, c, d in zip(p0, p1, p2, p3))
+
+
+def fly(c, t, st, actor=None):
+    """Flight along a smooth curve from where the actor is through `path`
+    (points [x, y, z]), at an even speed. It faces where it is going, noses
+    up or down with the climb and banks into turns."""
+    pts = [st["loc"]] + [tuple(p) for p in c["path"]]
+    t0, t1 = c["t0"], c["t1"]
+    u = travel((t - t0) / (t1 - t0), c.get("ease", 0.0))
+    # arc-length table so the speed stays even between unevenly spaced points
+    key = id(c)
+    if c.get("_key") != key:
+        samples = [_spline(pts, i / 200) for i in range(201)]
+        acc = [0.0]
+        for a, b in zip(samples, samples[1:]):
+            acc.append(acc[-1] + math.dist(a, b))
+        c["_arc"], c["_key"] = [x / (acc[-1] or 1) for x in acc], key
+
+    def at(v):
+        arc = c["_arc"]
+        v = clamp(v)
+        i = next((j for j in range(1, 201) if arc[j] >= v), 200)
+        a = (v - arc[i - 1]) / max(arc[i] - arc[i - 1], 1e-9)
+        return _spline(pts, (i - 1 + a) / 200)
+
+    p, d = at(u), 0.01
+    a, b = at(u - d), at(u + d)
+    dx, dy, dz = b[0] - a[0], b[1] - a[1], b[2] - a[2]
+    yaw = yaw_towards(dx, dy) if abs(dx) + abs(dy) > 1e-6 else st["yaw"]
+    pitch = -math.atan2(dz, math.hypot(dx, dy)) * c.get("pitch", 0.8)
+    a2, b2 = at(u - 3 * d), at(u + 3 * d)
+    turn = (yaw_towards(b2[0] - p[0], b2[1] - p[1]) - yaw_towards(p[0] - a2[0], p[1] - a2[1]))
+    turn = (turn + math.pi) % (2 * math.pi) - math.pi
+    bank = clamp(-turn * c.get("bank", 2.0), -0.7, 0.7)
+    return dict(st, loc=p, yaw=yaw, tilt=(pitch, bank)), None
+
+
+def _turn(v, tilt, yaw):
+    """v rotated like a rig root: X by tilt[0], then Y by tilt[1], then Z by yaw."""
+    x, y, z = v
+    a, b = tilt
+    y, z = y * math.cos(a) - z * math.sin(a), y * math.sin(a) + z * math.cos(a)
+    x, z = x * math.cos(b) + z * math.sin(b), -x * math.sin(b) + z * math.cos(b)
+    x, y = x * math.cos(yaw) - y * math.sin(yaw), x * math.sin(yaw) + y * math.cos(yaw)
+    return (x, y, z)
+
+
+def ride(c, t, st, actor=None):
+    """Sits astride another actor (`on`) at `seat` in its own frame, moving,
+    turning and tilting with it. Arms up: it is having the time of its life."""
+    other = actor.actors[c["on"]].state_at(t)
+    # the seat is where the rider's feet would be: hips (0.8 up) on the back
+    seat = _turn(tuple(c.get("seat", (0, -1.6, 0.25))), other.get("tilt", (0, 0)), other["yaw"])
+    loc = add(other["loc"], seat)
+    k = t - c["t0"]
+    whoop = 0.25 * math.sin(2 * math.pi * 1.8 * k)
+    parts = {"leg_r": (-1.45, 0, 0.35), "leg_l": (-1.45, 0, -0.35),
+             "arm_r": (-2.7 + whoop, 0, 0.3), "arm_l": (-2.7 - whoop, 0, -0.3)}
+    return dict(st, loc=loc, yaw=other["yaw"], tilt=other.get("tilt", (0, 0))), parts
+
+
 LOCOMOTION = {"walk": walk, "run": run, "set": set_, "face": face, "fall": fall,
-              "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce, "pop": pop}
+              "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce, "pop": pop,
+              "fly": fly, "ride": ride}
 def punch(c, t, st, actor=None):
     """One punch: wind-up, strike landing on the timeline's impact, then a
     stinging hand. The fist lands on the first impact inside the clip."""
@@ -312,9 +383,22 @@ def reach(c, t, st, actor=None):
                 "head": (0.1 * k, 0, 0.15 * math.sin(2 * math.pi * 0.7 * t))}
 
 
+def roar(c, t, st, actor=None):
+    """The dragon's roar: head back, jaw wide, a shake at the peak."""
+    k = ss(c["t0"], c["t0"] + 0.18, t) * (1 - ss(c["t1"] - 0.2, c["t1"], t))
+    shake = 0.06 * math.sin(38 * t) * k
+    return st, {"jaw": (0.75 * k, 0, 0), "head": (-0.35 * k + shake, 0, shake),
+                "neck": (-0.25 * k, 0, 0)}
+
+
+def glide(c, t, st, actor=None):
+    """Wings held out, barely beating."""
+    return st, {"flap": (c.get("amp", 0.15), c.get("rate", 0.6), 0)}
+
+
 BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
         "punch": punch, "flurry": flurry, "cheer": cheer, "wave": wave, "swing": swing,
-        "reach": reach, "chop": chop}
+        "reach": reach, "chop": chop, "roar": roar, "glide": glide}
 
 
 # --------------------------------------------------------------- the actor
@@ -338,6 +422,8 @@ class Actor:
         self.lines = [ln for ln in lines if ln["who"] == self.cast and not ln.get("vo")]
         self.actors = actors
         self.idle_amp = spec.get("idle", 0.05)
+        # "freeze": from this moment the actor stops dead, mid-motion (a glitch)
+        self.freeze = resolve(beats, spec["freeze"], length) if spec.get("freeze") is not None else None
         self._cache = {}
 
     @staticmethod
@@ -345,6 +431,8 @@ class Actor:
         return c["do"] in ("hang", "dangle") or c.get("hold", False)
 
     def state_at(self, t):
+        if self.freeze is not None:
+            t = min(t, self.freeze)
         key = round(t, 5)
         if key not in self._cache:
             st = dict(self.start)
@@ -365,9 +453,12 @@ class Actor:
         return (0.0, 0.0, 0.0)
 
     def pose(self, t):
+        if self.freeze is not None:
+            t = min(t, self.freeze)
         st = self.state_at(t)
         idle = self.idle_amp * math.sin(2 * math.pi * 0.6 * t + hash(self.name) % 7)
-        parts = {"arm_r": (idle, 0, 0), "arm_l": (-idle, 0, 0), "head": (0, 0, 0)}
+        parts = dict(self.rig.rest)          # a rig's own resting values (a dragon's wingbeat)
+        parts.update({"arm_r": (idle, 0, 0), "arm_l": (-idle, 0, 0), "head": (0, 0, 0)})
         for c in self.clips:
             hold = self.holds(c)
             if t < c["t0"] - FADE or t > c["t1"] + FADE:
@@ -384,6 +475,6 @@ class Actor:
                 parts[k] = lerp(parts.get(k, (0, 0, 0)), v, w)
         parts["head"] = add(parts["head"], self.talk(t))
         out = {"loc": st["loc"], "yaw": st["yaw"], "tilt": st.get("tilt", (0, 0)),
-               "scale": st.get("scale", (1, 1, 1))}
+               "scale": st.get("scale", (1, 1, 1)), "t": t}
         out.update(parts)
         return out

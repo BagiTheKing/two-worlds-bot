@@ -310,6 +310,39 @@ def zombie_leg():
     return _noise(4, 12, ZOMBIE_PANTS, 8, 35)
 
 
+def dragon_hide():
+    """The dragon's scales: near-black with dusky violet and grey flecks, a
+    few darker scale rows so the big flat sides still read as blocks."""
+    rnd = random.Random(41)
+    img = _noise(16, 16, (30, 28, 36), 6, 41, specks=((58, 50, 70), 0.14))
+    px = img.load()
+    for y in (3, 8, 13):
+        for x in range(16):
+            if rnd.random() < 0.7:
+                px[x, y] = _jitter((20, 18, 26), 4, rnd)
+    return img
+
+
+def dragon_wing():
+    """Wing membrane: dark slate with faint vein lines."""
+    rnd = random.Random(42)
+    img = _noise(16, 16, (52, 48, 62), 5, 42)
+    px = img.load()
+    for x0 in (2, 7, 12):
+        for y in range(16):
+            x = min(15, x0 + y // 6)
+            px[x, y] = _jitter((34, 30, 42), 4, rnd)
+    return img
+
+
+def dragon_eye():
+    """A glowing violet eye with a hot centre."""
+    img = Image.new("RGB", (4, 4), (180, 60, 255))
+    px = img.load()
+    px[1, 1] = px[2, 1] = px[1, 2] = px[2, 2] = (245, 200, 255)
+    return img
+
+
 ALL = {
     "grass_top": grass_top, "grass_side": grass_side, "dirt": dirt,
     "stone": stone, "log_side": log_side, "log_top": log_top,
@@ -321,6 +354,7 @@ ALL = {
     "steve_face_scared": steve_face_scared, "noob_face_scared": noob_face_scared,
     "obsidian": obsidian, "zombie_face": zombie_face, "zombie_shirt": zombie_shirt,
     "zombie_arm": zombie_arm, "zombie_leg": zombie_leg,
+    "dragon_hide": dragon_hide, "dragon_wing": dragon_wing, "dragon_eye": dragon_eye,
 }
 
 
