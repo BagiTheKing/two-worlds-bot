@@ -1,0 +1,142 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['steve_hide', 'noob_tut', 'steve_wall', 'noob_done', 'steve_myplan', 'noob_planwall', 'noob_lag', 'steve_lag'] placed ['steve_hide', 'noob_tut', 'steve_wall', 'noob_done', 'steve_myplan', 'noob_planwall', 'noob_lag', 'steve_lag']
+  steve_hide: words at 0.00-2.36s of the scene
+  noob_tut: words at 3.08-4.08s of the scene
+  steve_wall: words at 4.82-5.86s of the scene
+  noob_done: words at 6.38-7.14s of the scene
+  steve_myplan: words at 8.06-8.80s of the scene
+  noob_planwall: words at 9.44-10.38s of the scene
+  noob_lag: words at 13.54-14.12s of the scene
+  steve_lag: words at 17.30-17.72s of the scene
+  steve_wall: pinned cut 4.52-6.12s
+  solo Noob 'BOSS FIGHT!' take 0: from the cache
+  solo take 0 for 'BOSS FIGHT!': 1.00 ' Boss  fight!'
+  solo Noob 'BOSS FIGHT!' take 1: from the cache
+  solo take 1 for 'BOSS FIGHT!': 1.00 ' Boss  fight'
+  solo Noob 'BOSS FIGHT!' take 2: from the cache
+  solo take 2 for 'BOSS FIGHT!': 1.00 ' Boss  fight'
+  solo Steve 'It used our portal. HIDE!' take 0: from the cache
+  solo take 0 for 'It used our portal. HIDE!': 1.00 ' It  used  our  portal.  Hide.'
+  solo Steve 'It used our portal. HIDE!' take 1: from the cache
+  solo take 1 for 'It used our portal. HIDE!': 1.00 ' It  used  our  Portal  Hide!'
+  solo Steve 'It used our portal. HIDE!' take 2: from the cache
+  solo take 2 for 'It used our portal. HIDE!': 1.00 ' It  used  our  portal.  Hide.'
+  solo Steve "Don't—" take 0: from the cache
+  solo take 0 for "Don't—": 1.00 " Don't"
+  solo Steve "Don't—" take 1: from the cache
+  solo take 1 for "Don't—": 1.00 " Don't"
+  solo Steve "Don't—" take 2: from the cache
+  solo take 2 for "Don't—": 1.00 " Don't"
+  solo Noob 'Checkpoint!' take 0: from the cache
+  solo take 0 for 'Checkpoint!': 1.00 ' Checkpoint.'
+  solo Noob 'Checkpoint!' take 1: from the cache
+  solo take 1 for 'Checkpoint!': 1.00 ' Checkpoint!'
+  solo Noob 'Checkpoint!' take 2: from the cache
+  solo take 2 for 'Checkpoint!': 1.00 ' Checkpoint!'
+  solo Steve 'That was my plan.' take 0: from the cache
+  solo take 0 for 'That was my plan.': 1.00 ' That  was  my  plan?'
+  solo Steve 'That was my plan.' take 1: from the cache
+  solo take 1 for 'That was my plan.': 1.00 ' That  was  my  plan.'
+  solo Steve 'That was my plan.' take 2: from the cache
+  solo take 2 for 'That was my plan.': 1.00 ' That  was  my  plan.'
+{
+ "length": 26.159,
+ "beats": {
+  "open": [
+   0.0,
+   0.25
+  ],
+  "noob_boss": [
+   0.25,
+   1.584
+  ],
+  "steve_hide": [
+   1.684,
+   3.947
+  ],
+  "tutorial": [
+   4.047,
+   4.347
+  ],
+  "noob_tut": [
+   4.347,
+   5.66
+  ],
+  "steve_dont": [
+   5.66,
+   6.304
+  ],
+  "jump": [
+   6.304,
+   7.204
+  ],
+  "kill": [
+   7.204,
+   7.654
+  ],
+  "respawn": [
+   7.654,
+   8.004
+  ],
+  "noob_cp": [
+   8.004,
+   9.007
+  ],
+  "steve_wall": [
+   9.157,
+   10.401
+  ],
+  "build": [
+   10.401,
+   11.401
+  ],
+  "crash": [
+   11.401,
+   12.101
+  ],
+  "leap": [
+   12.101,
+   12.901
+  ],
+  "noob_done": [
+   12.901,
+   13.934
+  ],
+  "dive": [
+   14.034,
+   15.634
+  ],
+  "free": [
+   15.634,
+   16.834
+  ],
+  "steve_myplan": [
+   16.834,
+   18.388
+  ],
+  "noob_planwall": [
+   18.488,
+   19.751
+  ],
+  "freeze": [
+   20.001,
+   21.001
+  ],
+  "noob_lag": [
+   21.001,
+   22.078
+  ],
+  "steve_lag": [
+   22.278,
+   23.159
+  ],
+  "glitch": [
+   23.459,
+   24.659
+  ],
+  "endcard": [
+   24.659,
+   26.159
+  ]
+ }
+}
