@@ -737,9 +737,25 @@ def gemini_lines(ep, cache_dir):
                 sf.write(raw, s, sr)
         names = [n for n, _, _ in scene]
         if len(scene) == 1 and names[0] in own:     # the whole take, acting and all (silence trimmed later)
-            out[names[0]] = (s, sr)
-            heard = " ".join(w for w, _, _ in transcribe(s, sr))     # to catch a direction read aloud
-            print(f"  {names[0]}: its own scene, used whole ({len(s) / sr:.2f}s); heard: {heard!r}")
+            # a few takes (the first is the one above); Whisper keeps the one
+            # that says the words best, so a take that adds speech or reads
+            # its direction aloud loses. "solo_take" picks one by hand.
+            n0, best = names[0], None
+            for k in range(ep.get("own_takes", 1)):
+                if k:
+                    key = _cache_path(cache_dir, "gemini-scene-raw", turns, voices, k) if cache_dir else None
+                    if key and os.path.exists(key):
+                        s, sr = sf.read(key)
+                    else:
+                        s, sr = gemini_speak(turns, voices, notes)
+                        if key:
+                            sf.write(key, s, sr)
+                words = transcribe(s, sr)
+                sc = score_take(_spoken(scene[0][2]), words)
+                print(f"  {n0} take {k} ({len(s) / sr:.2f}s): {sc:.2f} {' '.join(w for w, _, _ in words)[:80]!r}")
+                if best is None or sc > best[0] or k == pick.get(n0):
+                    best = (99 if k == pick.get(n0) else sc, s, sr)
+            out[n0] = (best[1], best[2])
             continue
         if len(scene) == 1 and names[0] in nonverbal:          # a scream: no words to find
             out[names[0]] = (s, sr)

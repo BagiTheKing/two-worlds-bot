@@ -1484,5 +1484,6 @@
   "fit_max": 1.3,
   "tighten_floor": 0.012,
   "gate": -32,
-  "tts_model": "gemini-3.8-flash-tts"
+  "tts_model": "gemini-3.8-flash-tts",
+  "own_takes": 3
 }
