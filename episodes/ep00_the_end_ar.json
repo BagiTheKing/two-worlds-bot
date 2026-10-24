@@ -55,9 +55,9 @@
       "line": "steve",
       "name": "vo_2",
       "vo": true,
-      "text": "عالَمي...",
+      "text": "عالَمي أنا...",
       "pad": 0.2,
-      "direction_text": "[softly, like a storyteller, in the lively, expressive style of a classic Arabic cartoon dub] عالَمي...",
+      "direction_text": "[softly, like a storyteller, in the lively, expressive style of a classic Arabic cartoon dub] عالَمي أنا...",
       "own_scene": true,
       "tighten": 0.3
     },
@@ -195,11 +195,11 @@
     {
       "line": "steve",
       "name": "steve_what",
-      "text": "ما... هذا؟",
+      "text": "ما هذا؟!",
       "emotion": 0.45,
       "pace": 0.35,
       "pad": 0.2,
-      "direction_text": "[whispering, scared, in the lively, expressive style of a classic Arabic cartoon dub] ما... هذا؟",
+      "direction_text": "[quietly, scared, in the lively, expressive style of a classic Arabic cartoon dub] ما هذا؟!",
       "own_scene": true,
       "tighten": 0.3
     },
