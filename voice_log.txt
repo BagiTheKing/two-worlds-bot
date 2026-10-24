@@ -1,0 +1,65 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  vo_2 take 0 (4.85s): -0.07 ' خريب  خريب  ونشدن  عالمي'
+Gemini speech models, in order: gemini-3.8-flash-tts
+gemini-3.8-flash-tts with key 1: daily free quota used up, trying the next key or model
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  vo_2 take 1 (2.25s): 0.62 ' شو  عالمي'
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  vo_2 take 2 (2.01s): 0.52 ' ها  يلمي'
+  vo_3 take 0 (2.37s): 1.00 ' وعالمه'
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  vo_3 take 1 (1.97s): 1.00 ' وعالمه'
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  vo_3 take 2 (2.89s): -0.29 ' ههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههه'
+  vo_4 take 0 (1.73s): 0.69 ' ثم  تصعد  ما؟'
+gemini-3.8-flash-tts with key 2: daily free quota used up, trying the next key or model
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  vo_4 take 1 (1.77s): 0.89 ' ثم  تصادمة'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  vo_4 take 2 (1.93s): 1.00 ' ثم  تصادما'
+  vo_5 take 0 (3.97s): 1.00 ' وفي  يوم  ما  توقف  الواقع'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  vo_5 take 1 (4.93s): 0.83 ' و  في  يوم  ما  توقف  الواقع'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  vo_5 take 2 (3.89s): 1.00 ' وفي  يوم  ما  توقف  الواقع'
+  noob_bridge take 0 (2.89s): 1.00 ' اوه!  الجسر  تحت  الصيانة'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  noob_bridge take 1 (3.17s): 0.93 ' هو  الجسر  تحت  الصيانة'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  noob_bridge take 2 (3.09s): 1.00 ' اوه!  الجسر  تحت  الصيانة'
+  steve_no take 0 (1.45s): 1.00 ' لا'
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 30s
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 60s
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  steve_no take 1 (1.37s): 1.00 ' لا'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  steve_no take 2 (1.61s): 1.00 ' لا'
+  noob_oh take 0 (1.29s): 0.40 ' ها!'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  noob_oh take 1 (1.65s): 1.00 ' اوه'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  noob_oh take 2 (1.49s): 0.36 ' اووووووو'
+  steve_what take 0 (2.53s): -16.50 ' و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و..و'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  steve_what take 1 (4.05s): 0.47 ' مرحبا..  مرحبا..'
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  steve_what take 2 (4.29s): 0.27 ' ما  يصرحه؟  ما  هذا؟'
+  null_1 take 0 (3.45s): 1.00 ' تم  تصحيح  الواقع'
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 30s
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  null_1 take 1 (3.13s): 1.00 ' تم  تصحيح  الواقع'
+gemini-3.8-flash-tts with key 3: daily free quota used up, trying the next key or model
+Traceback (most recent call last):
+  File "/home/runner/work/two-worlds-bot/two-worlds-bot/src/audio.py", line 1366, in <module>
+    tl = build(args.episode, args.out_dir, args.keep_timeline)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/two-worlds-bot/two-worlds-bot/src/audio.py", line 1131, in build
+    pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/two-worlds-bot/two-worlds-bot/src/audio.py", line 750, in gemini_lines
+    s, sr = gemini_speak(turns, voices, notes)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/two-worlds-bot/two-worlds-bot/src/audio.py", line 453, in gemini_speak
+    raise RuntimeError("Gemini speech failed:\n" + "\n".join(errors))
+RuntimeError: Gemini speech failed:
+gemini-3.8-flash-tts key 3: daily quota used up
