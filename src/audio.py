@@ -672,14 +672,21 @@ def gemini_lines(ep, cache_dir):
     cut_style = {}      # lines that ask for their own cut
     pick = {}           # lines that use a chosen take of their solo recording
     borrowed = {}       # lines whose recording comes from another (cached) scene
+    files = {}          # lines taken as they are from a recording in the repo
+    own = set()         # lines recorded as a scene of their own, direction kept, used whole
     for ev in ep["events"]:
         if "line" not in ev:
             continue
         who = ev["line"]
         counts[who] = counts.get(who, 0) + 1
         name = ev.get("name", f"{who}_{counts[who]}")
+        if ev.get("voice_file"):
+            files[name] = ev["voice_file"]
+            continue
         text = ev.get("direction_text") or ev.get("eleven_text") or ev["text"]
         todo.append((name, who, text, ev.get("nonverbal", False)))
+        if ev.get("own_scene"):
+            own.add(name)
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
         if ev.get("solo_take") is not None:         # this take by number, not Whisper's pick
@@ -698,7 +705,8 @@ def gemini_lines(ep, cache_dir):
     scenes, cur = [], []
     for item in todo:
         speakers = {w for _, w, _, _ in cur} | {item[1]}
-        if cur and (item[3] or cur[-1][3] or len(speakers) > 2 or "null" in speakers and len(speakers) > 1):
+        if cur and (item[3] or cur[-1][3] or len(speakers) > 2 or "null" in speakers and len(speakers) > 1
+                    or item[0] in own or cur[-1][0] in own):
             scenes.append(cur)              # screams and Null are voiced on their own
             cur = []
         cur.append(item)
@@ -728,6 +736,10 @@ def gemini_lines(ep, cache_dir):
                 os.makedirs(cache_dir, exist_ok=True)
                 sf.write(raw, s, sr)
         names = [n for n, _, _ in scene]
+        if len(scene) == 1 and names[0] in own:     # the whole take, acting and all (silence trimmed later)
+            out[names[0]] = (s, sr)
+            print(f"  {names[0]}: its own scene, used whole")
+            continue
         if len(scene) == 1 and names[0] in nonverbal:          # a scream: no words to find
             out[names[0]] = (s, sr)
             continue
@@ -764,6 +776,10 @@ def gemini_lines(ep, cache_dir):
     for n, (w, text, nonverbal) in solos.items():
         out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir, takes=ep.get("solo_takes", 3),
                              whole=ep.get("solo_whole", False), pick=pick.get(n))
+    for n, path in files.items():                    # a recording kept as it is
+        clip, sr = sf.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", path))
+        out[n] = (clip.mean(1) if clip.ndim > 1 else clip, sr)
+        print(f"  {n}: from {path}")
     for n, src in borrowed.items():                  # an earlier episode's exact take
         turns = [tuple(t) for t in src["turns"]]
         raw = _cache_path(cache_dir, "gemini-scene-raw", turns, src["voices"])
