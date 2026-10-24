@@ -58,7 +58,8 @@
       "text": "عالَمي...",
       "pad": 0.2,
       "direction_text": "[softly, like a storyteller, in the lively, expressive style of a classic Arabic cartoon dub] عالَمي...",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -67,7 +68,8 @@
       "text": "...وعالَمُهْ.",
       "pad": 0.3,
       "direction_text": "[softly, a little amused, in the lively, expressive style of a classic Arabic cartoon dub] ...وعالَمُهْ.",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -76,7 +78,8 @@
       "text": "ثم تصادَما.",
       "pad": 0.3,
       "direction_text": "[softly, like a storyteller, in the lively, expressive style of a classic Arabic cartoon dub] ثم تصادَما.",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "line": "steve",
@@ -85,7 +88,8 @@
       "text": "وفي يومٍ ما... توقّف الواقعْ.",
       "pad": 0.1,
       "direction_text": "[quietly, ominous, in the lively, expressive style of a classic Arabic cartoon dub] وفي يومٍ ما... توقّف الواقعْ.",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "beat": "freeze",
@@ -132,7 +136,8 @@
       "pace": 0.3,
       "pad": 0.15,
       "direction_text": "[cheerfully, oblivious, in the lively, expressive style of a classic Arabic cartoon dub] أوه! الجسر تحت الصيانة!",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "beat": "bridge_delete",
@@ -165,7 +170,8 @@
       "emotion": 0.3,
       "pad": 1.1,
       "direction_text": "[flatly, in the lively, expressive style of a classic Arabic cartoon dub] لا.",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "line": "noob",
@@ -174,7 +180,8 @@
       "emotion": 0.4,
       "pad": 0.3,
       "direction_text": "[quietly, realizing, in the lively, expressive style of a classic Arabic cartoon dub] ...أوه.",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "beat": "look_down",
@@ -193,7 +200,8 @@
       "pace": 0.35,
       "pad": 0.2,
       "direction_text": "[whispering, scared, in the lively, expressive style of a classic Arabic cartoon dub] ما... هذا؟",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "beat": "null_rise",
@@ -206,7 +214,8 @@
       "text": "تمّ تصحيحُ الواقعْ.",
       "pad": 0.3,
       "direction_text": "[slow, cold, emotionless, like a machine] تمّ تصحيحُ الواقعْ.",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "beat": "null_hand",
@@ -261,7 +270,8 @@
       "text": "واو! أين أنا؟",
       "pad": 0.0,
       "direction_text": "[amazed, a little dazed, in the lively, expressive style of a classic Arabic cartoon dub] واو! أين أنا؟",
-      "own_scene": true
+      "own_scene": true,
+      "tighten": 0.3
     },
     {
       "beat": "forest_end",

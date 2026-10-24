@@ -738,7 +738,8 @@ def gemini_lines(ep, cache_dir):
         names = [n for n, _, _ in scene]
         if len(scene) == 1 and names[0] in own:     # the whole take, acting and all (silence trimmed later)
             out[names[0]] = (s, sr)
-            print(f"  {names[0]}: its own scene, used whole")
+            heard = " ".join(w for w, _, _ in transcribe(s, sr))     # to catch a direction read aloud
+            print(f"  {names[0]}: its own scene, used whole ({len(s) / sr:.2f}s); heard: {heard!r}")
             continue
         if len(scene) == 1 and names[0] in nonverbal:          # a scream: no words to find
             out[names[0]] = (s, sr)
