@@ -1,0 +1,9 @@
+msa_spacetoon #1: Steve = Charon, Noob spelled نوب
+msa_spacetoon #2: Steve = Orus, Noob spelled نُوب
+msa_spacetoon #3: Steve = Algenib, Noob spelled Noob
+egyptian #1: Steve = Charon, Noob spelled نوب
+egyptian #2: Steve = Orus, Noob spelled نُوب
+egyptian #3: Steve = Algenib, Noob spelled Noob
+gulf #1: Steve = Charon, Noob spelled نوب
+gulf #2: Steve = Orus, Noob spelled نُوب
+gulf #3: Steve = Algenib, Noob spelled Noob

@@ -1,0 +1,21 @@
+Gemini speech models, in order: gemini-3.8-flash-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+msa_spacetoon 1 Charon نوب 11.7 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+msa_spacetoon 2 Orus نُوب 10.1 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+msa_spacetoon 3 Algenib Noob 11.1 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+egyptian 1 Charon نوب 10.0 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+egyptian 2 Orus نُوب 9.0 s
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 30s
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 60s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+egyptian 3 Algenib Noob 10.6 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+gulf 1 Charon نوب 10.4 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+gulf 2 Orus نُوب 10.4 s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, per-line parts)
+gulf 3 Algenib Noob 11.3 s
