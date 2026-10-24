@@ -4,6 +4,10 @@ name: Gemini voice audition
 # the WAVs and pairs.txt are pushed to the preview-gemini-audition branch.
 on:
   workflow_dispatch:
+    inputs:
+      script:
+        description: "Audition script"
+        default: "tools/gemini_audition.py"
 
 permissions:
   contents: write
@@ -25,7 +29,7 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p build/gemini_audition
-          python -u tools/gemini_audition.py build/gemini_audition 2>&1 | tee build/gemini_audition/log.txt
+          python -u ${{ inputs.script }} build/gemini_audition 2>&1 | tee build/gemini_audition/log.txt
       - name: Publish (also on failure, with the log)
         if: always()
         run: |
