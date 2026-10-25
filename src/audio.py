@@ -1199,7 +1199,7 @@ def build(episode_path, out_dir, keep=None):
                 audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
             if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
                 audio = audio[:int(ev["trim"] * SR)].copy()
-                f = int(0.25 * SR)
+                f = int(ev.get("trim_fade", 0.25) * SR)
                 audio[-f:] *= np.linspace(1, 0, f)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
