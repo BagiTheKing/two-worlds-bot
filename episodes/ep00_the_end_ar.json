@@ -71,7 +71,7 @@
       "own_scene": true,
       "tighten": 0.3,
       "solo_take": 1,
-      "trim": 1.6,
+      "trim": 1.45,
       "trim_fade": 0.04
     },
     {
@@ -82,8 +82,7 @@
       "pad": 0.3,
       "direction_text": "[softly, like a storyteller, in the lively, expressive style of a classic Arabic cartoon dub] ثم تصادَما.",
       "own_scene": true,
-      "tighten": 0.3,
-      "mute_start": 0.2
+      "tighten": 0.3
     },
     {
       "line": "steve",
