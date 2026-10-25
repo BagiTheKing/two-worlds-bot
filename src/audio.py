@@ -590,7 +590,7 @@ def gate(x, thr_db=-32.0, cut_db=-20.0, min_gap=0.06, sr=SR):
             end_tick = j - i <= 3 and not loud[j:].any()
             # and its mirror: a click or smack alone before the first word,
             # with a clear pause (0.15 s) between it and the speech
-            start_tick = (not loud[:i].any() and j - i <= 5 and not loud[j:min(n, j + 15)].any()
+            start_tick = (not loud[:i].any() and j - i <= 8 and not loud[j:min(n, j + 15)].any()
                           and loud[j:].any())
             if start_tick:
                 bursts.append((0, min(n, j + 1) * win))
