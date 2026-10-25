@@ -69,7 +69,8 @@
       "pad": 0.3,
       "direction_text": "[softly, a little amused, in the lively, expressive style of a classic Arabic cartoon dub] ...وعالَمُهْ.",
       "own_scene": true,
-      "tighten": 0.3
+      "tighten": 0.3,
+      "solo_take": 1
     },
     {
       "line": "steve",
