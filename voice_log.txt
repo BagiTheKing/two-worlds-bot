@@ -1,0 +1,180 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  vo_2 take 0 (5.33s): -0.52 ' صوت  لي  like  a  storyteller  إنه  عالمي  أنا'
+  vo_2 take 1 (1.81s): 0.89 ' حالمي  أنا'
+  vo_2 take 2 (2.01s): 0.59 ' هل  امي  انا؟'
+  vo_3 take 0 (2.37s): 1.00 ' وعالمه'
+  vo_3 take 1 (1.97s): 1.00 ' وعالمه'
+  vo_3 take 2 (2.89s): -0.29 ' ههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههههه'
+  vo_4 take 0 (1.73s): 0.69 ' ثم  تصعد  ما?'
+  vo_4 take 1 (1.77s): 0.89 ' ثم  تصادمة'
+  vo_4 take 2 (1.93s): 1.00 ' ثم  تصادما'
+  vo_5 take 0 (3.97s): 0.93 ' وفي  يوم  ما  توقف  الوقت'
+  vo_5 take 1 (4.93s): 0.83 ' و  في  يوم  ما  توقف  الواقع'
+  vo_5 take 2 (3.89s): 1.00 ' وفي  يوم  ما  توقف  الواقع'
+  noob_bridge take 0 (2.89s): 1.00 ' اوه!  الجسر  تحت  الصيانة'
+  noob_bridge take 1 (3.17s): 0.93 ' هو  الجسر  تحت  الصيانة'
+  noob_bridge take 2 (3.09s): 0.98 ' اهوه!  الجسر  تحت  الصيانة'
+  steve_no take 0 (1.45s): 1.00 ' لا'
+  steve_no take 1 (1.37s): 1.00 ' لا'
+  steve_no take 2 (1.61s): 1.00 ' لا'
+  noob_oh take 0 (1.29s): 0.40 ' ها!'
+  noob_oh take 1 (1.65s): 1.00 ' اوه'
+  noob_oh take 2 (1.49s): 0.36 ' اووووووو'
+  steve_what take 0 (2.57s): 0.80 ' مهذا'
+  steve_what take 1 (2.21s): 0.80 ' ماذا'
+  steve_what take 2 (2.17s): 0.80 ' ماذا؟'
+  null_1 take 0 (3.45s): 1.00 ' تم  تصحيح  الواقع'
+  null_1 take 1 (3.13s): 1.00 ' تم  تصحيح  الواقع'
+  null_1 take 2 (3.85s): 1.00 ' تم  تصحيح  الواقع'
+  noob_where take 0 (3.61s): 0.01 ' ووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووو'
+  noob_where take 1 (3.21s): 0.73 ' Wow  أين  أنا?'
+  noob_where take 2 (3.25s): 0.01 ' ووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووووو'
+  solo Steve 'Aaaaaaaaaaaahhhh!' take 0: from the cache
+  solo Noob 'Aaaaaaaaaaaahhhh!' take 0: from the cache
+  vo_1: from assets/dub/ep00_ar/vo_1.wav
+  steve_run: from assets/dub/ep00_ar/steve_run.wav
+  noob_running: from assets/dub/ep00_ar/noob_running.wav
+  noob_respawn: from assets/dub/ep00_ar/noob_respawn.wav
+  vo_2: sped up x1.10 to fit its 1.65s
+  vo_5: sped up x1.04 to fit its 3.32s
+  noob_bridge: sped up x1.14 to fit its 2.53s
+  noob_oh: sped up x1.30 to fit its 0.82s
+  steve_what: sped up x1.08 to fit its 1.74s
+  noob_where: sped up x1.08 to fit its 2.64s
+{
+ "length": 60.563,
+ "beats": {
+  "open": [
+   0.0,
+   0.4
+  ],
+  "vo_1": [
+   0.4,
+   2.8
+  ],
+  "vo_2": [
+   3.169,
+   4.819
+  ],
+  "vo_3": [
+   4.719,
+   5.819
+  ],
+  "vo_4": [
+   6.21,
+   8.137
+  ],
+  "vo_5": [
+   8.391,
+   11.711
+  ],
+  "freeze": [
+   11.611,
+   13.411
+  ],
+  "erasure": [
+   13.411,
+   15.811
+  ],
+  "steve_run": [
+   15.811,
+   17.335
+  ],
+  "noob_running": [
+   17.243,
+   18.716
+  ],
+  "erasure_b": [
+   18.769,
+   21.369
+  ],
+  "noob_bridge": [
+   21.369,
+   23.901
+  ],
+  "bridge_delete": [
+   23.801,
+   24.501
+  ],
+  "fall": [
+   24.501,
+   24.951
+  ],
+  "grab": [
+   24.951,
+   25.551
+  ],
+  "noob_respawn": [
+   25.551,
+   29.42
+  ],
+  "steve_no": [
+   30.114,
+   31.561
+  ],
+  "noob_oh": [
+   31.714,
+   32.981
+  ],
+  "look_down": [
+   32.436,
+   33.036
+  ],
+  "darken": [
+   33.036,
+   34.036
+  ],
+  "steve_what": [
+   34.036,
+   35.778
+  ],
+  "null_rise": [
+   35.678,
+   38.278
+  ],
+  "null_1": [
+   38.278,
+   44.188
+  ],
+  "null_hand": [
+   44.869,
+   45.769
+  ],
+  "ledge_gone": [
+   45.769,
+   46.119
+  ],
+  "steve_scream": [
+   46.119,
+   48.286
+  ],
+  "noob_scream": [
+   46.119,
+   48.606
+  ],
+  "fall_void": [
+   46.919,
+   48.519
+  ],
+  "black": [
+   48.519,
+   50.519
+  ],
+  "forest": [
+   50.519,
+   52.919
+  ],
+  "noob_where": [
+   52.919,
+   55.563
+  ],
+  "forest_end": [
+   55.463,
+   55.963
+  ],
+  "endcard": [
+   55.963,
+   60.563
+  ]
+ }
+}

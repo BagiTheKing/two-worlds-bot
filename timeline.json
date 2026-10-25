@@ -1,0 +1,437 @@
+{
+ "id": "ep00_the_end_ar",
+ "fps": 24,
+ "length": 60.563,
+ "beats": {
+  "open": [
+   0.0,
+   0.4
+  ],
+  "vo_1": [
+   0.4,
+   2.8
+  ],
+  "vo_2": [
+   3.169,
+   4.819
+  ],
+  "vo_3": [
+   4.719,
+   5.819
+  ],
+  "vo_4": [
+   6.21,
+   8.137
+  ],
+  "vo_5": [
+   8.391,
+   11.711
+  ],
+  "freeze": [
+   11.611,
+   13.411
+  ],
+  "erasure": [
+   13.411,
+   15.811
+  ],
+  "steve_run": [
+   15.811,
+   17.335
+  ],
+  "noob_running": [
+   17.243,
+   18.716
+  ],
+  "erasure_b": [
+   18.769,
+   21.369
+  ],
+  "noob_bridge": [
+   21.369,
+   23.901
+  ],
+  "bridge_delete": [
+   23.801,
+   24.501
+  ],
+  "fall": [
+   24.501,
+   24.951
+  ],
+  "grab": [
+   24.951,
+   25.551
+  ],
+  "noob_respawn": [
+   25.551,
+   29.42
+  ],
+  "steve_no": [
+   30.114,
+   31.561
+  ],
+  "noob_oh": [
+   31.714,
+   32.981
+  ],
+  "look_down": [
+   32.436,
+   33.036
+  ],
+  "darken": [
+   33.036,
+   34.036
+  ],
+  "steve_what": [
+   34.036,
+   35.778
+  ],
+  "null_rise": [
+   35.678,
+   38.278
+  ],
+  "null_1": [
+   38.278,
+   44.188
+  ],
+  "null_hand": [
+   44.869,
+   45.769
+  ],
+  "ledge_gone": [
+   45.769,
+   46.119
+  ],
+  "steve_scream": [
+   46.119,
+   48.286
+  ],
+  "noob_scream": [
+   46.119,
+   48.606
+  ],
+  "fall_void": [
+   46.919,
+   48.519
+  ],
+  "black": [
+   48.519,
+   50.519
+  ],
+  "forest": [
+   50.519,
+   52.919
+  ],
+  "noob_where": [
+   52.919,
+   55.563
+  ],
+  "forest_end": [
+   55.463,
+   55.963
+  ],
+  "endcard": [
+   55.963,
+   60.563
+  ]
+ },
+ "impacts": [],
+ "fx_times": {
+  "erasure": [
+   13.879,
+   14.106,
+   14.513,
+   14.527,
+   14.63,
+   14.718,
+   14.781,
+   14.84,
+   14.953,
+   15.266,
+   15.287,
+   15.403,
+   15.453,
+   15.52,
+   15.573,
+   15.586
+  ],
+  "erasure_b": [
+   19.154,
+   19.166,
+   19.182,
+   19.204,
+   19.659,
+   19.745,
+   19.777,
+   19.991,
+   20.01,
+   20.044,
+   20.1,
+   20.219,
+   20.264,
+   20.344,
+   20.533,
+   20.579,
+   20.819,
+   20.824,
+   20.891,
+   20.987,
+   21.124,
+   21.168
+  ],
+  "bridge_delete": [
+   23.801,
+   23.838,
+   23.876,
+   23.914,
+   23.951,
+   23.989,
+   24.027,
+   24.065,
+   24.102,
+   24.14,
+   24.178,
+   24.215,
+   24.253,
+   24.291
+  ]
+ },
+ "lines": [
+  {
+   "name": "vo_1",
+   "who": "steve",
+   "text": "\u0643\u0627\u0646 \u0647\u0646\u0627\u0643 \u0639\u0627\u0644\u064e\u0645\u0627\u0646.",
+   "vo": true,
+   "caption": true,
+   "start": 0.4,
+   "end": 2.8
+  },
+  {
+   "name": "vo_2",
+   "who": "steve",
+   "text": "\u0639\u0627\u0644\u064e\u0645\u064a \u0623\u0646\u0627...",
+   "vo": true,
+   "caption": true,
+   "start": 3.169,
+   "end": 4.819
+  },
+  {
+   "name": "vo_3",
+   "who": "steve",
+   "text": "...\u0648\u0639\u0627\u0644\u064e\u0645\u064f\u0647\u0652.",
+   "vo": true,
+   "caption": true,
+   "start": 4.719,
+   "end": 5.819
+  },
+  {
+   "name": "vo_4",
+   "who": "steve",
+   "text": "\u062b\u0645 \u062a\u0635\u0627\u062f\u064e\u0645\u0627.",
+   "vo": true,
+   "caption": true,
+   "start": 6.21,
+   "end": 8.137
+  },
+  {
+   "name": "vo_5",
+   "who": "steve",
+   "text": "\u0648\u0641\u064a \u064a\u0648\u0645\u064d \u0645\u0627... \u062a\u0648\u0642\u0651\u0641 \u0627\u0644\u0648\u0627\u0642\u0639\u0652.",
+   "vo": true,
+   "caption": true,
+   "start": 8.391,
+   "end": 11.711
+  },
+  {
+   "name": "steve_run",
+   "who": "steve",
+   "text": "\u0646\u0648\u0628! \u0627\u0647\u0631\u0628!",
+   "vo": false,
+   "caption": true,
+   "start": 15.811,
+   "end": 17.335
+  },
+  {
+   "name": "noob_running",
+   "who": "noob",
+   "text": "\u0623\u0646\u0627 \u0623\u0647\u0631\u0628 \u0641\u0639\u0644\u0627\u064b!",
+   "vo": false,
+   "caption": true,
+   "start": 17.243,
+   "end": 18.716
+  },
+  {
+   "name": "noob_bridge",
+   "who": "noob",
+   "text": "\u0623\u0648\u0647! \u0627\u0644\u062c\u0633\u0631 \u062a\u062d\u062a \u0627\u0644\u0635\u064a\u0627\u0646\u0629!",
+   "vo": false,
+   "caption": true,
+   "start": 21.369,
+   "end": 23.901
+  },
+  {
+   "name": "noob_respawn",
+   "who": "noob",
+   "text": "\u0633\u062a\u064a\u0641... \u0647\u0644 \u0646\u0639\u0648\u062f \u0644\u0644\u062d\u064a\u0627\u0629 \u0625\u0630\u0627 \u0627\u062e\u062a\u0641\u0649 \u0627\u0644\u0639\u0627\u0644\u064e\u0645\u061f",
+   "vo": false,
+   "caption": true,
+   "start": 25.551,
+   "end": 29.42
+  },
+  {
+   "name": "steve_no",
+   "who": "steve",
+   "text": "\u0644\u0627.",
+   "vo": false,
+   "caption": true,
+   "start": 30.114,
+   "end": 31.561
+  },
+  {
+   "name": "noob_oh",
+   "who": "noob",
+   "text": "...\u0623\u0648\u0647.",
+   "vo": false,
+   "caption": true,
+   "start": 31.714,
+   "end": 32.981
+  },
+  {
+   "name": "steve_what",
+   "who": "steve",
+   "text": "\u0645\u0627 \u0647\u0630\u0627\u061f!",
+   "vo": false,
+   "caption": true,
+   "start": 34.036,
+   "end": 35.778
+  },
+  {
+   "name": "null_1",
+   "who": "null",
+   "text": "\u062a\u0645\u0651 \u062a\u0635\u062d\u064a\u062d\u064f \u0627\u0644\u0648\u0627\u0642\u0639\u0652.",
+   "vo": false,
+   "caption": true,
+   "start": 38.278,
+   "end": 44.188
+  },
+  {
+   "name": "steve_scream",
+   "who": "steve",
+   "text": "Aaaaaaah!",
+   "vo": false,
+   "caption": true,
+   "start": 46.119,
+   "end": 48.286
+  },
+  {
+   "name": "noob_scream",
+   "who": "noob",
+   "text": "Aaaaaaaah!",
+   "vo": false,
+   "caption": true,
+   "start": 46.119,
+   "end": 48.606
+  },
+  {
+   "name": "noob_where",
+   "who": "noob",
+   "text": "\u0648\u0627\u0648! \u0623\u064a\u0646 \u0623\u0646\u0627\u061f",
+   "vo": false,
+   "caption": true,
+   "start": 52.919,
+   "end": 55.563
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing; speaks clear Modern Standard Arabic, like a classic dubbed cartoon"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice; speaks clear Modern Standard Arabic, like a classic dubbed cartoon"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict; speaks clear Modern Standard Arabic, like a classic dubbed cartoon"
+  }
+ },
+ "overlays": [
+  {
+   "type": "label",
+   "text": "EPISODE 0",
+   "sub": "THE END",
+   "start": 0.0,
+   "end": 3.169
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: {pct}%",
+   "steps": [
+    "erasure",
+    "erasure_b"
+   ],
+   "count_from": 100,
+   "count_to": 3,
+   "start": 11.611,
+   "end": 48.519
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "SURVIVE THE APOCALYPSE",
+   "sub": "0.1% of players have this",
+   "start": 46.419,
+   "end": 48.519
+  },
+  {
+   "type": "card",
+   "text": "24 HOURS EARLIER",
+   "start": 48.519,
+   "end": 50.519
+  },
+  {
+   "type": "clip",
+   "video": "assets/clips/ep01_opening.mp4",
+   "start": 50.519,
+   "end": 55.963
+  },
+  {
+   "type": "fade_in",
+   "start": 50.519,
+   "end": 51.019
+  },
+  {
+   "type": "endcard",
+   "next_label": "NEXT  \u00b7  EPISODE 1",
+   "next_title": "THE NOOB WHO PUNCHED A TREE",
+   "question": "WHO IS NULL?",
+   "question_sub": "Comment your theory",
+   "start": 55.963,
+   "end": 60.963
+  }
+ ]
+}
