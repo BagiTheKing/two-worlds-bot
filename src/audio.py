@@ -1207,6 +1207,12 @@ def build(episode_path, out_dir, keep=None):
                 audio = audio[:int(ev["trim"] * SR)].copy()
                 f = int(ev.get("trim_fade", 0.25) * SR)
                 audio[-f:] *= np.linspace(1, 0, f)
+            if ev.get("mute_start"):                       # a click before the first word: silenced in place
+                m = int(ev["mute_start"] * SR)
+                f = int(0.01 * SR)
+                audio = audio.copy()
+                audio[:m - f] = 0.0
+                audio[m - f:m] *= np.linspace(0, 1, f)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1

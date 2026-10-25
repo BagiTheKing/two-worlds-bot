@@ -82,7 +82,8 @@
       "pad": 0.3,
       "direction_text": "[softly, like a storyteller, in the lively, expressive style of a classic Arabic cartoon dub] ثم تصادَما.",
       "own_scene": true,
-      "tighten": 0.3
+      "tighten": 0.3,
+      "mute_start": 0.2
     },
     {
       "line": "steve",
