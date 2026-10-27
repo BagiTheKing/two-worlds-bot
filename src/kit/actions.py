@@ -463,6 +463,7 @@ class Actor:
         self.idle_amp = spec.get("idle", 0.05)
         self.seed = zlib.crc32(name.encode())       # the same in every render process
         self.expr = spec.get("expr", "neutral")
+        self.face_mode = spec.get("faces")
         rnd, t, self.blinks = random.Random(self.seed), rnd_start(self.seed), []
         while t < length + 1:                       # a blink every 2.2-4.6 s
             self.blinks.append(t)
@@ -492,11 +493,15 @@ class Actor:
     def face_at(self, t):
         """Which face plate shows at t: the expression of the moment (an "expr"
         clip, else the actor's default), its open-mouth version on alternating
-        moments while the actor speaks, or a blink now and then when silent."""
-        expr = self.expr
+        moments while the actor speaks, or a blink now and then when silent.
+        With "faces": "moments" the character keeps its usual face (None: no
+        plate) except inside its expr clips."""
+        expr = None if self.face_mode == "moments" else self.expr
         for c in self.exprs:
             if c["t0"] <= t < c["t1"]:
                 expr = c["face"]
+        if expr is None:
+            return None
         talking = any(ln["start"] <= t < ln["end"] - 0.04 for ln in self.lines)
         if talking:
             chunk = int(t * 12)                      # the mouth moves in 1/12 s steps

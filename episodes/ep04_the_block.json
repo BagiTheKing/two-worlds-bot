@@ -176,7 +176,7 @@
   "actors": {
     "noob": {
       "rig": "noob",
-      "faces": true,
+      "faces": "moments",
       "at": [
         1.6,
         0,
@@ -204,7 +204,7 @@
     },
     "steve": {
       "rig": "steve",
-      "faces": true,
+      "faces": "moments",
       "at": [
         -2.4,
         0.8,
@@ -224,13 +224,6 @@
     }
   },
   "clips": [
-    {
-      "who": "noob",
-      "do": "expr",
-      "face": "surprised",
-      "from": 0,
-      "to": "steve_touch"
-    },
     {
       "who": "noob",
       "do": "look",
@@ -254,13 +247,6 @@
           0.35
         ]
       }
-    },
-    {
-      "who": "noob",
-      "do": "expr",
-      "face": "happy",
-      "from": "respawn1",
-      "to": "patch_in"
     },
     {
       "who": "noob",
@@ -304,20 +290,6 @@
     },
     {
       "who": "noob",
-      "do": "expr",
-      "face": "surprised",
-      "from": "patch_in",
-      "to": "noob_cube"
-    },
-    {
-      "who": "noob",
-      "do": "expr",
-      "face": "happy",
-      "from": "noob_cube",
-      "to": "turn"
-    },
-    {
-      "who": "noob",
       "do": "face",
       "from": "patch_in",
       "to": "patch_in+0.3",
@@ -325,48 +297,6 @@
         0.3,
         -0.9
       ]
-    },
-    {
-      "who": "noob",
-      "do": "expr",
-      "face": "surprised",
-      "from": "patch_know",
-      "to": "patch_deleted"
-    },
-    {
-      "who": "noob",
-      "do": "expr",
-      "face": "scared",
-      "from": "patch_deleted",
-      "to": "end"
-    },
-    {
-      "who": "steve",
-      "do": "expr",
-      "face": "unimpressed",
-      "from": "steve_touch",
-      "to": "patch_in"
-    },
-    {
-      "who": "steve",
-      "do": "expr",
-      "face": "surprised",
-      "from": "patch_in",
-      "to": "patch_grows"
-    },
-    {
-      "who": "steve",
-      "do": "expr",
-      "face": "unimpressed",
-      "from": "patch_grows",
-      "to": "patch_know"
-    },
-    {
-      "who": "steve",
-      "do": "expr",
-      "face": "scared",
-      "from": "patch_deleted",
-      "to": "end"
     },
     {
       "who": "steve",
@@ -510,6 +440,55 @@
       "from": "respawn1",
       "to": "respawn1+0.01",
       "yaw": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": 0,
+      "to": "steve_touch"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_touched",
+      "to": "noob_touched.end+0.3"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "unimpressed",
+      "from": "steve_grew",
+      "to": "steve_grew.end+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_helping",
+      "to": "noob_helping.end"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "unimpressed",
+      "from": "steve_no",
+      "to": "steve_no.end+0.4"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "noob_doyou",
+      "to": "patch_deleted"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "patch_deleted",
+      "to": "end"
     }
   ],
   "fx": [
