@@ -40,7 +40,21 @@ class Rig:
             ob.keyframe_insert("rotation_euler", frame=frame)
 
 
-def make_steve(tex, name="steve"):
+def face_plates(tex, who, name, head, size, center, smooth=False, **shade):
+    """One thin plate per expression on the front of the head, all hidden but
+    one (build_episode keys which). Marked so actor visibility keys skip them."""
+    plates = {}
+    prefix = f"{who}_face_"
+    for key in sorted(k for k in tex if k.startswith(prefix)):
+        expr = key[len(prefix):]
+        m = material(f"{name}_{key}", tex=tex[key], smooth_tex=smooth, **shade)
+        ob = box(f"{name}_plate_{expr}", size, center, {"default": m}, head)
+        ob["face_plate"] = 1
+        plates[expr] = ob
+    return plates
+
+
+def make_steve(tex, name="steve", faces=False):
     from textures import SKIN, HAIR, SHIRT, PANTS, SHOE
     face = material(f"{name}_face", tex=tex["steve_face"])
     side = material(f"{name}_head_side", tex=tex["steve_head_side"])
@@ -80,7 +94,10 @@ def make_steve(tex, name="steve"):
     for i, (y, z) in enumerate(((0, 0.47), (-0.1, 0.46), (0.1, 0.46), (-0.2, 0.43),
                                 (0.2, 0.43), (-0.28, 0.38), (0.28, 0.38))):
         box(f"{name}_pick_{i}", (0.07, 0.1, 0.08), (0, y, z), {"default": metal}, tool)
-    return Rig(name, root, parts, {})
+    rig = Rig(name, root, parts, {})
+    if faces:          # the pixel face, swappable: just in front of the skull's front
+        rig.faces = face_plates(tex, "steve", name, parts["head"], (0.5, 0.002, 0.5), (0, -0.2512, 0.25))
+    return rig
 
 
 def make_r6(name, mats, s=1.0, bevel=0.035, head_bevel=0.07):
@@ -113,15 +130,19 @@ def make_r6(name, mats, s=1.0, bevel=0.035, head_bevel=0.07):
 
 
 def make_noob(tex, name="noob", shirt=(30, 100, 220), pants=(96, 182, 50),
-              skin=None, s=1.0):
+              skin=None, s=1.0, faces=False):
     from textures import NOOB_YELLOW
     plastic = dict(rough=0.32, spec=0.5, coat=0.35)
     skin = material(f"{name}_skin", srgb(skin or NOOB_YELLOW), **plastic)
     face = material(f"{name}_face", tex=tex["noob_face"], smooth_tex=True, **plastic)
     top = material(f"{name}_shirt", srgb(shirt), **plastic)
     bottom = material(f"{name}_pants", srgb(pants), **plastic)
-    return make_r6(name, {"torso": top, "head": skin, "face": face, "arm_r": skin,
-                          "arm_l": skin, "leg_r": bottom, "leg_l": bottom}, s)
+    rig = make_r6(name, {"torso": top, "head": skin, "face": face, "arm_r": skin,
+                         "arm_l": skin, "leg_r": bottom, "leg_l": bottom}, s)
+    if faces:          # on the flat part of the bevelled head (the textures are cropped to it)
+        rig.faces = face_plates(tex, "noob", name, rig.parts["head"], (0.36 * s, 0.002, 0.30 * s),
+                                (0, -0.2315 * s, 0.24 * s), smooth=True, **plastic)
+    return rig
 
 
 def make_null(tex, name="null", s=9.0):
@@ -265,6 +286,68 @@ def make_dragon(tex, name="dragon", s=1.0):
 
     rig = DragonRig(name, root, parts, {"flap": (1.0, 1.3, 0)})
     rig.s = s
+    return rig
+
+
+class PatchRig(Rig):
+    """Patch, the glitch detector: a small floating cube with one eye. It
+    bobs on its own; pose "scan" (weight, 0, 0) shows its scanning beam,
+    "eye" (weight, 0, 0) turns the eye from cyan to glitching magenta."""
+    CYAN, MAGENTA = (0.15, 0.95, 1.0, 1), (1.0, 0.1, 0.8, 1)
+
+    def key_pose(self, frame, pose):
+        import math
+        t = pose.get("t", (frame - 1) / 24)
+        r = self.root
+        x, y, z = pose.get("loc", (0, 0, 0))
+        r.location = (x, y, z + 0.05 * math.sin(2 * math.pi * 0.7 * t))
+        tx, ty = pose.get("tilt", (0.0, 0.0))
+        r.rotation_euler = (tx + 0.04 * math.sin(2 * math.pi * 0.45 * t), ty, pose.get("yaw", 0.0))
+        r.scale = pose.get("scale", (1, 1, 1))
+        for path in ("location", "rotation_euler", "scale"):
+            r.keyframe_insert(path, frame=frame)
+        scan = pose.get("scan", (0, 0, 0))[0] > 0.5
+        glitch = pose.get("eye", (0, 0, 0))[0] > 0.5 and frame % 3 != 0    # a flickering glitch
+        if getattr(self, "_scan", None) != scan:
+            for ob in self.beam:
+                ob.hide_render = not scan
+                ob.keyframe_insert("hide_render", frame=frame)
+            self._scan = scan
+        if getattr(self, "_glitch", None) != glitch:
+            col = self.MAGENTA if glitch else self.CYAN
+            for sock in self.eye_sockets:
+                sock.default_value = col
+                sock.keyframe_insert("default_value", frame=frame)
+            self._glitch = glitch
+
+
+def make_patch(tex, name="patch", s=1.0):
+    """The glitch detector (arrives in episode 4): a small pale cube, a dark
+    face panel with one round cyan eye, two tiny side fins."""
+    shell = material(f"{name}_shell", srgb((222, 228, 236)), rough=0.3, spec=0.5, coat=0.4)
+    panel = material(f"{name}_panel", srgb((24, 28, 38)), rough=0.25, spec=0.6)
+    eye = material(f"{name}_eye", (0, 0, 0), emission=PatchRig.CYAN[:3], strength=3.5)
+    beam = material(f"{name}_beam", (0, 0, 0), emission=PatchRig.CYAN[:3], strength=2.5)
+    b = beam.node_tree.nodes["Principled BSDF"]
+    b.inputs["Alpha"].default_value = 0.6
+    if hasattr(beam, "surface_render_method"):
+        beam.surface_render_method = "BLENDED"
+    root = empty(name)
+    body = empty(f"{name}_body", (0, 0, 0), root)
+    box(f"{name}_cube", (0.42 * s, 0.42 * s, 0.42 * s), (0, 0, 0), {"default": shell}, body, bevel=0.04 * s)
+    box(f"{name}_face", (0.32 * s, 0.01, 0.26 * s), (0, -0.212 * s, 0.01 * s), {"default": panel}, body)
+    box(f"{name}_eye", (0.13 * s, 0.012, 0.13 * s), (0, -0.219 * s, 0.02 * s), {"default": eye}, body, bevel=0.05 * s)
+    for side in (-1, 1):
+        box(f"{name}_fin_{side}", (0.04 * s, 0.18 * s, 0.12 * s), (0.23 * s * side, 0.02, 0), {"default": shell}, body)
+    # the scanning beam: a thin line of light from the eye, forward and a little down
+    fan = empty(f"{name}_fan", (0, -0.22 * s, 0.02 * s), body)
+    fan.rotation_euler = (-0.35, 0, 0)
+    beams = [box(f"{name}_beam", (0.025, 1.5 * s, 0.025), (0, -0.75 * s, 0), {"default": beam}, fan)]
+    for ob in beams:
+        ob.hide_render = True
+    rig = PatchRig(name, root, {}, {})
+    rig.beam = beams
+    rig.eye_sockets = [eye.node_tree.nodes["Principled BSDF"].inputs["Emission Color"]]
     return rig
 
 

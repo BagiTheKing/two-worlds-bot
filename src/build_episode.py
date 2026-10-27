@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kit import fx, obby, props, worlds                      # noqa: E402
 from kit.actions import Actor, add                           # noqa: E402
 from kit.cameras import shot                                 # noqa: E402
-from kit.rigs import make_dragon, make_noob, make_null, make_steve, make_zombie  # noqa: E402
+from kit.rigs import make_dragon, make_noob, make_null, make_patch, make_steve, make_zombie  # noqa: E402
 from kit.timeref import resolve                              # noqa: E402
 import scene_poc                                             # noqa: E402
 
@@ -45,7 +45,7 @@ class Ctx:
 
 
 RIGS = {"steve": make_steve, "noob": make_noob, "null": make_null, "zombie": make_zombie,
-        "dragon": make_dragon}
+        "dragon": make_dragon, "patch": make_patch}
 
 
 def snap_jumps(ob, threshold=0.4):
@@ -75,7 +75,7 @@ def snap_jumps(ob, threshold=0.4):
 
 def visible(ctx, rig, ranges):
     """Show an actor only inside the given [from, to] time ranges."""
-    obs = [rig.root] + list(rig.root.children_recursive)
+    obs = [o for o in [rig.root] + list(rig.root.children_recursive) if not o.get("face_plate")]
     keys = [(1, True)]
     for a, b in ranges:
         keys += [(ctx.F(ctx.T(a)), False), (ctx.F(ctx.T(b)), True)]
@@ -83,6 +83,23 @@ def visible(ctx, rig, ranges):
         for f, hid in keys:
             ob.hide_render = hid
             ob.keyframe_insert("hide_render", frame=max(1, f))
+
+
+def key_faces(ctx, actor, ranges):
+    """Show one face plate per frame (the actor's face_at), none while the
+    actor itself is hidden; keyed only where something changes."""
+    spans = [(ctx.F(ctx.T(a)), ctx.F(ctx.T(b))) for a, b in ranges] if ranges else None
+    last = {}
+    for f in range(1, ctx.F(ctx.end) + 1):
+        shown = actor.face_at((f - 1) / ctx.fps)
+        if spans is not None and not any(a <= f < b for a, b in spans):
+            shown = None
+        for expr, ob in actor.rig.faces.items():
+            hide = expr != shown
+            if last.get(expr) != hide:
+                ob.hide_render = hide
+                ob.keyframe_insert("hide_render", frame=f)
+                last[expr] = hide
 
 
 def build(episode_path, timeline_path, tex_dir):
@@ -107,6 +124,8 @@ def build(episode_path, timeline_path, tex_dir):
         for part in ("shirt", "pants", "skin"):           # avatars in their own colours
             if part in spec:
                 kw[part] = tuple(spec[part])
+        if spec.get("faces"):                             # faces that act (expressions, blinks, talking)
+            kw["faces"] = True
         rig = RIGS[spec.get("rig", name)](tex, name=name, **kw)
         clips = [dict(c, impacts=tl.get("impacts", [])) if c["do"] in ("punch", "flurry") else c
                  for c in ep.get("clips", []) if c["who"] == name]
@@ -140,7 +159,8 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "backlight":
             fx.backlight(ctx, tuple(e["at"]), tuple(e["dir"]), ctx.T(e["from"]), ctx.T(e["to"]))
         elif k == "fill":
-            fx.fill(ctx, tuple(e["dir"]), ctx.T(e["from"]), ctx.T(e["to"]))
+            fx.fill(ctx, tuple(e["dir"]), ctx.T(e["from"]), ctx.T(e["to"]),
+                    **{k: (tuple(v) if k == "color" else v) for k, v in e.items() if k in ("color", "energy")})
         elif k == "erase_named":
             fx.erase_named(ctx, sets["seam"]["protected"] + sets["seam"]["erasable"],
                            set(e["names"]), ctx.T(e["at"]))
@@ -230,6 +250,9 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "flicker":
             obby.flicker(ctx, actors[e["actor"]].rig, mats["missing"], ctx.T(e["from"]), ctx.T(e["to"]),
                          rate=e.get("rate", 0.45))
+        elif k == "glitch_block":
+            obby.glitch_block(ctx, tex, tuple(e["at"]), e.get("size", 0.8),
+                              [ctx.T(p) for p in e.get("pulses", [])], grow=e.get("grow", 0.25))
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))
@@ -244,6 +267,9 @@ def build(episode_path, timeline_path, tex_dir):
             a.rig.key_pose(f, a.pose(t))
     for a in actors.values():
         snap_jumps(a.rig.root)
+    for name, a in actors.items():
+        if getattr(a.rig, "faces", None):
+            key_faces(ctx, a, ep["actors"][name].get("visible"))
 
     cams = [shot(ctx, s, actors, i) for i, s in enumerate(ep["shots"])]
     sc.camera = cams[0]

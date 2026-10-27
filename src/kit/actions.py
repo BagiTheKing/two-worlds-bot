@@ -19,6 +19,8 @@ Characters face -Y at rest; yaw turns them about Z.
 """
 
 import math
+import random
+import zlib
 
 from kit.timeref import resolve
 
@@ -418,12 +420,27 @@ def glide(c, t, st, actor=None):
     return st, {"flap": (c.get("amp", 0.15), c.get("rate", 0.6), 0)}
 
 
-BODY = {"look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
+def scan(c, t, st, actor=None):
+    """Patch's scanning beam on."""
+    return st, {"scan": (1.0, 0, 0)}
+
+
+def glitch_eye(c, t, st, actor=None):
+    """Patch's eye flickers magenta: it has seen something it shouldn't."""
+    return st, {"eye": (1.0, 0, 0)}
+
+
+BODY = {"scan": scan, "glitch_eye": glitch_eye, "look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
         "punch": punch, "flurry": flurry, "cheer": cheer, "wave": wave, "swing": swing,
         "reach": reach, "chop": chop, "roar": roar, "glide": glide}
 
 
 # --------------------------------------------------------------- the actor
+
+def rnd_start(seed):
+    return 0.6 + (seed % 1000) / 1000 * 1.8
+
+
 
 class Actor:
     def __init__(self, name, rig, spec, clips, beats, length, lines, actors):
@@ -432,18 +449,24 @@ class Actor:
         at = spec.get("at", (0, 0, 0))
         self.start = {"loc": (at[0], at[1], at[2] if len(at) > 2 else 0.0),
                       "yaw": spec.get("yaw", 0.0), "tilt": (0.0, 0.0)}
-        self.clips = []
+        self.clips, self.exprs = [], []
         for c in clips:
             c = dict(c)
             c["t0"] = resolve(beats, c["from"], length)
             c["t1"] = resolve(beats, c.get("to", c["from"]), length)
             if c["do"] == "set":                # on the frame grid, like the camera cuts
                 c["t0"] = c["t1"] = round(c["t0"] * 24) / 24
-            self.clips.append(c)
+            (self.exprs if c["do"] == "expr" else self.clips).append(c)
         self.clips.sort(key=lambda c: c["t0"])
         self.lines = [ln for ln in lines if ln["who"] == self.cast and not ln.get("vo")]
         self.actors = actors
         self.idle_amp = spec.get("idle", 0.05)
+        self.seed = zlib.crc32(name.encode())       # the same in every render process
+        self.expr = spec.get("expr", "neutral")
+        rnd, t, self.blinks = random.Random(self.seed), rnd_start(self.seed), []
+        while t < length + 1:                       # a blink every 2.2-4.6 s
+            self.blinks.append(t)
+            t += rnd.uniform(2.2, 4.6)
         # "freeze": from this moment the actor stops dead, mid-motion (a glitch)
         self.freeze = resolve(beats, spec["freeze"], length) if spec.get("freeze") is not None else None
         self._cache = {}
@@ -466,6 +489,23 @@ class Actor:
             self._cache[key] = st
         return self._cache[key]
 
+    def face_at(self, t):
+        """Which face plate shows at t: the expression of the moment (an "expr"
+        clip, else the actor's default), its open-mouth version on alternating
+        moments while the actor speaks, or a blink now and then when silent."""
+        expr = self.expr
+        for c in self.exprs:
+            if c["t0"] <= t < c["t1"]:
+                expr = c["face"]
+        talking = any(ln["start"] <= t < ln["end"] - 0.04 for ln in self.lines)
+        if talking:
+            chunk = int(t * 12)                      # the mouth moves in 1/12 s steps
+            open_ = random.Random(self.seed + chunk).random() < 0.62
+            return expr + "_talk" if open_ else expr
+        if expr not in ("surprised", "scared") and any(b <= t < b + 0.125 for b in self.blinks):
+            return "blink"
+        return expr
+
     def talk(self, t):
         for ln in self.lines:
             if ln["start"] - 0.05 <= t <= ln["end"]:
@@ -478,7 +518,7 @@ class Actor:
         if self.freeze is not None:
             t = min(t, self.freeze)
         st = self.state_at(t)
-        idle = self.idle_amp * math.sin(2 * math.pi * 0.6 * t + hash(self.name) % 7)
+        idle = self.idle_amp * math.sin(2 * math.pi * 0.6 * t + self.seed % 7)
         parts = dict(self.rig.rest)          # a rig's own resting values (a dragon's wingbeat)
         parts.update({"arm_r": (idle, 0, 0), "arm_l": (-idle, 0, 0), "head": (0, 0, 0)})
         for c in self.clips:

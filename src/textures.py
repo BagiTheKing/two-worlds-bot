@@ -343,6 +343,147 @@ def dragon_eye():
     return img
 
 
+# ------------------------------------------------------------ faces that act
+# Each expression is a whole face, swapped in frame by frame (kit.rigs face
+# plates): "<who>_face_<expression>", and "<expression>_talk" with the mouth
+# open, which alternates with the closed one while the character speaks.
+
+EYE_W, EYE_B, MOUTH, LID = (250, 250, 250), (60, 70, 160), (120, 70, 56), (176, 122, 92)
+
+
+def _steve16(draw):
+    """Steve's face at twice the pixels (each original pixel is 2x2), so
+    lids and brows can move by half a pixel. draw(px) paints the features."""
+    rnd = random.Random(10)
+    img = _noise(8, 8, SKIN, 6, 10)
+    px = img.load()
+    for x in range(8):
+        px[x, 0] = _jitter(HAIR, 6, rnd)
+        px[x, 1] = _jitter(HAIR, 6, rnd) if x in (0, 1, 6, 7) else px[x, 1]
+    px[0, 2] = px[7, 2] = HAIR
+    px[3, 5] = px[4, 5] = (150, 98, 72)                       # the nose
+    img = img.resize((16, 16), Image.NEAREST)
+    draw(img.load())
+    return img
+
+
+def _box(px, x0, y0, x1, y1, c):
+    for x in range(x0, x1):
+        for y in range(y0, y1):
+            px[x, y] = c
+
+
+def _steve_eyes(px, top=8, bottom=10, lid=0):
+    """Eyes in rows top..bottom; `lid` rows of skin-coloured lid from the top."""
+    for x0, (a, b) in ((2, (EYE_W, EYE_B)), (10, (EYE_B, EYE_W))):
+        _box(px, x0, top, x0 + 2, bottom, a)
+        _box(px, x0 + 2, top, x0 + 4, bottom, b)
+        _box(px, x0, top, x0 + 4, top + lid, LID)
+
+
+def _steve_mouth(px, open_=False, shape="line"):
+    if shape == "o":                                   # a small round "oh"
+        _box(px, 6, 12, 10, 15 if open_ else 14, (70, 30, 30))
+    elif open_:
+        _box(px, 4, 12, 12, 14, (70, 30, 30))
+        _box(px, 5, 14, 11, 15, (70, 30, 30))
+    else:
+        _box(px, 4, 12, 12, 13, MOUTH)
+
+
+def steve_faces():
+    def neutral(o):
+        return lambda px: (_steve_eyes(px), _steve_mouth(px, o))
+
+    def unimpressed(o):                                # half lids, flat mouth: "really?"
+        return lambda px: (_steve_eyes(px, lid=1), _box(px, 2, 7, 6, 8, HAIR), _box(px, 10, 7, 14, 8, HAIR),
+                           _steve_mouth(px, o) if o else _box(px, 5, 12, 11, 13, MOUTH))
+
+    def surprised(o):                                  # brows up, tall eyes, "oh"
+        return lambda px: (_box(px, 2, 5, 6, 6, HAIR), _box(px, 10, 5, 14, 6, HAIR),
+                           _steve_eyes(px, top=7, bottom=10), _steve_mouth(px, o, "o"))
+
+    def scared(o):                                     # worried brows, wide eyes, open mouth
+        return lambda px: (_box(px, 2, 6, 4, 7, HAIR), _box(px, 4, 5, 6, 6, HAIR),
+                           _box(px, 12, 6, 14, 7, HAIR), _box(px, 10, 5, 12, 6, HAIR),
+                           _steve_eyes(px, top=7, bottom=10),
+                           _box(px, 4, 12, 12, 14 if o else 13, (70, 30, 30)))
+
+    def blink(px):
+        _box(px, 2, 9, 6, 10, (110, 72, 52))
+        _box(px, 10, 9, 14, 10, (110, 72, 52))
+        _steve_mouth(px)
+
+    out = {"blink": _steve16(blink)}
+    for name, fn in (("neutral", neutral), ("unimpressed", unimpressed), ("surprised", surprised),
+                     ("scared", scared)):
+        out[name] = _steve16(fn(False))
+        out[name + "_talk"] = _steve16(fn(True))
+    return out
+
+
+INK = (20, 20, 20)
+
+
+def _noob(draw):
+    s = 256
+    img = Image.new("RGB", (s, s), NOOB_YELLOW)
+    draw(ImageDraw.Draw(img))
+    return img
+
+
+def noob_faces():
+    def eyes(d, h=26, w=13, y=96):                     # the toy's oval eyes
+        for cx in (91, 165):
+            d.ellipse((cx - w, y - h, cx + w, y + h), fill=INK)
+
+    def smile(d, open_):
+        if open_:
+            d.chord((70, 110, 186, 200), start=0, end=180, fill=(40, 10, 10))
+            d.chord((104, 168, 152, 198), start=0, end=180, fill=(200, 60, 70))
+        else:
+            d.arc((62, 92, 194, 196), start=20, end=160, fill=INK, width=12)
+
+    def happy(d, open_):                               # ^ ^ eyes, big grin
+        for cx in (91, 165):
+            d.arc((cx - 22, 82, cx + 22, 122), start=200, end=340, fill=INK, width=11)
+        if open_:
+            d.chord((62, 104, 194, 214), start=0, end=180, fill=(40, 10, 10))
+            d.chord((96, 170, 160, 212), start=0, end=180, fill=(200, 60, 70))
+        else:
+            d.arc((56, 84, 200, 200), start=15, end=165, fill=INK, width=15)
+
+    def surprised(d, open_):                           # big round eyes with shine, "O"
+        for cx in (91, 165):
+            d.ellipse((cx - 20, 66, cx + 20, 124), fill=INK)
+            d.ellipse((cx - 8, 78, cx + 2, 92), fill=(250, 250, 250))
+        r = 26 if open_ else 18
+        d.ellipse((128 - r, 176 - r, 128 + r, 176 + r), fill=(40, 10, 10))
+
+    def scared(d, open_):
+        for cx in (91, 165):
+            d.ellipse((cx - 20, 72, cx + 20, 128), fill=INK)
+            d.ellipse((cx - 6, 84, cx + 6, 98), fill=(250, 250, 250))
+        d.line((62, 62, 108, 46), fill=INK, width=10)
+        d.line((194, 62, 148, 46), fill=INK, width=10)
+        d.ellipse((100, 150 if open_ else 166, 156, 214), fill=(40, 10, 10))
+
+    def blink(d):
+        for cx in (91, 165):
+            d.arc((cx - 18, 84, cx + 18, 112), start=20, end=160, fill=INK, width=9)
+        smile(d, False)
+
+    out = {"blink": _noob(blink)}
+    for name, fn in (("neutral", lambda d, o: (eyes(d), smile(d, o))), ("happy", happy),
+                     ("surprised", surprised), ("scared", scared)):
+        out[name] = _noob(lambda d, fn=fn: fn(d, False))
+        out[name + "_talk"] = _noob(lambda d, fn=fn: fn(d, True))
+    return out
+
+
+FACE_SETS = {"steve": steve_faces, "noob": noob_faces}
+
+
 ALL = {
     "grass_top": grass_top, "grass_side": grass_side, "dirt": dirt,
     "stone": stone, "log_side": log_side, "log_top": log_top,
@@ -365,6 +506,14 @@ def save_all(out_dir):
         p = os.path.join(out_dir, name + ".png")
         fn().save(p)
         paths[name] = p
+    for who, fn in FACE_SETS.items():
+        for expr, img in fn().items():
+            if who == "noob":          # the flat part of the bevelled head: 72% wide, 68% tall
+                img = img.crop((36, 41, 220, 215))
+            name = f"{who}_face_{expr}"
+            p = os.path.join(out_dir, name + ".png")
+            img.save(p)
+            paths[name] = p
     return paths
 
 

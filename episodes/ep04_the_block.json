@@ -1,0 +1,1345 @@
+{
+  "id": "ep04_the_block",
+  "number": 4,
+  "title": "This Block Shouldn't Exist",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely"
+    }
+  },
+  "music": [
+    {
+      "cue": "theme_soft",
+      "from": 0,
+      "to": "turn",
+      "gain": 0.16
+    },
+    {
+      "cue": "dread",
+      "from": "turn",
+      "to": "end",
+      "gain": 0.24,
+      "hit_at": "patch_deleted",
+      "minimal": true
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "sky",
+      "from": 0,
+      "to": "turn",
+      "gain": 0.05,
+      "fade_in": 0.2
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "glitch",
+      "at": 0.0,
+      "dur": 0.3,
+      "gain": 0.4
+    },
+    {
+      "kind": "whir",
+      "at": 0,
+      "to": "end",
+      "gain": 0.12
+    },
+    {
+      "kind": "burst",
+      "at": "die1",
+      "gain": 0.75
+    },
+    {
+      "kind": "burst",
+      "at": "spree+0.15",
+      "gain": 0.75
+    },
+    {
+      "kind": "burst",
+      "at": "spree+1.05",
+      "gain": 0.75
+    },
+    {
+      "kind": "respawn",
+      "at": "respawn1",
+      "gain": 0.65
+    },
+    {
+      "kind": "respawn",
+      "at": "spree+0.45",
+      "gain": 0.65
+    },
+    {
+      "kind": "respawn",
+      "at": "spree+1.35",
+      "gain": 0.65
+    },
+    {
+      "kind": "thump",
+      "at": "respawn1",
+      "freq": 70,
+      "gain": 0.5
+    },
+    {
+      "kind": "thump",
+      "at": "spree+0.45",
+      "freq": 70,
+      "gain": 0.5
+    },
+    {
+      "kind": "thump",
+      "at": "spree+1.35",
+      "freq": 70,
+      "gain": 0.5
+    },
+    {
+      "kind": "whoosh",
+      "at": "patch_in",
+      "dur": 0.6,
+      "gain": 0.5
+    },
+    {
+      "kind": "jingle",
+      "at": "patch_in.end",
+      "gain": 0.35
+    },
+    {
+      "kind": "glitch",
+      "at": "patch_know",
+      "dur": 0.4,
+      "gain": 0.45
+    },
+    {
+      "kind": "sub_drop",
+      "at": "patch_deleted",
+      "dur": 1.4,
+      "gain": 0.45
+    }
+  ],
+  "overlays": [
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 85%",
+      "alert": true,
+      "from": "patch_deleted+0.3",
+      "to": "endcard"
+    },
+    {
+      "type": "endcard",
+      "over": true,
+      "from": "endcard",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 5",
+      "next_title": "NOOB FOUND CREATIVE MODE",
+      "question": "WHAT DID PATCH REMEMBER?",
+      "question_sub": "Comment your theory",
+      "pace": 0.25
+    }
+  ],
+  "actors": {
+    "noob": {
+      "rig": "noob",
+      "faces": true,
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.3,
+      "visible": [
+        [
+          0,
+          "die1"
+        ],
+        [
+          "respawn1",
+          "spree+0.15"
+        ],
+        [
+          "spree+0.45",
+          "spree+1.05"
+        ],
+        [
+          "spree+1.35",
+          "end"
+        ]
+      ]
+    },
+    "steve": {
+      "rig": "steve",
+      "faces": true,
+      "at": [
+        -2.4,
+        0.8,
+        0
+      ],
+      "yaw": 0.35
+    },
+    "patch": {
+      "rig": "patch",
+      "at": [
+        6,
+        3,
+        7
+      ],
+      "yaw": 0,
+      "s": 1.4
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": 0,
+      "to": "steve_touch"
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": 0,
+      "to": "poke1",
+      "head": [
+        0.15,
+        0,
+        0.2
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "pose",
+      "from": "poke1",
+      "to": "die1",
+      "parts": {
+        "arm_r": [
+          -1.5,
+          0,
+          0.35
+        ]
+      }
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "respawn1",
+      "to": "patch_in"
+    },
+    {
+      "who": "noob",
+      "do": "cheer",
+      "from": "noob_touched",
+      "to": "noob_touched+0.5"
+    },
+    {
+      "who": "noob",
+      "do": "bounce",
+      "from": "noob_again",
+      "to": "spree",
+      "height": 0.3,
+      "rate": 2.4
+    },
+    {
+      "who": "noob",
+      "do": "pose",
+      "from": "spree",
+      "to": "spree+0.15",
+      "parts": {
+        "arm_r": [
+          -1.5,
+          0,
+          0.35
+        ]
+      }
+    },
+    {
+      "who": "noob",
+      "do": "pose",
+      "from": "spree+0.9",
+      "to": "spree+1.05",
+      "parts": {
+        "arm_r": [
+          -1.5,
+          0,
+          0.35
+        ]
+      }
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "patch_in",
+      "to": "noob_cube"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_cube",
+      "to": "turn"
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "patch_in",
+      "to": "patch_in+0.3",
+      "towards": [
+        0.3,
+        -0.9
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "patch_know",
+      "to": "patch_deleted"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "patch_deleted",
+      "to": "end"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "unimpressed",
+      "from": "steve_touch",
+      "to": "patch_in"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "surprised",
+      "from": "patch_in",
+      "to": "patch_grows"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "unimpressed",
+      "from": "patch_grows",
+      "to": "patch_know"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "scared",
+      "from": "patch_deleted",
+      "to": "end"
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "patch_in",
+      "to": "patch_in+0.3",
+      "towards": [
+        0.3,
+        -0.9
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "fly",
+      "from": "patch_in",
+      "to": "patch_in.end",
+      "path": [
+        [
+          2.4,
+          0.8,
+          3.6
+        ],
+        [
+          0.3,
+          -0.9,
+          2.0
+        ]
+      ],
+      "ease": 0.3
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "patch_in.end",
+      "to": "patch_in.end+0.2",
+      "yaw": 0.0
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "scan",
+      "to": "scan+0.3",
+      "towards": [
+        2.45,
+        -0.55
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "scan",
+      "from": "scan",
+      "to": "patch_grows.end"
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "turn",
+      "to": "turn+0.35",
+      "towards": [
+        1.6,
+        0
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "glitch_eye",
+      "from": "patch_know",
+      "to": "end"
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "noob_doyou",
+      "to": "noob_doyou+0.3",
+      "yaw": 0.35
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "respawn1",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "pop",
+      "from": "respawn1",
+      "to": "respawn1+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "spree+0.45",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "pop",
+      "from": "spree+0.45",
+      "to": "spree+0.75"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "spree+1.35",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "pop",
+      "from": "spree+1.35",
+      "to": "spree+1.65"
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "poke1",
+      "to": "poke1+0.15",
+      "towards": [
+        2.45,
+        -0.55
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "respawn1",
+      "to": "respawn1+0.01",
+      "yaw": 0.3
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ],
+        [
+          "patch_deleted",
+          5.0,
+          1.25
+        ],
+        [
+          "patch_deleted+0.4",
+          2.4,
+          0.65
+        ]
+      ]
+    },
+    {
+      "kind": "obby_course",
+      "platforms": [
+        {
+          "name": "noob_pad",
+          "at": [
+            1.6,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "steve_pad",
+          "at": [
+            -2.4,
+            0.8,
+            0
+          ],
+          "size": [
+            3,
+            3.2
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "deco_1",
+          "at": [
+            -7.5,
+            0,
+            -0.8
+          ],
+          "size": [
+            3.5,
+            3.5
+          ],
+          "colour": "purple"
+        },
+        {
+          "name": "deco_2",
+          "at": [
+            7.5,
+            3,
+            -0.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "yellow"
+        },
+        {
+          "name": "deco_3",
+          "at": [
+            9,
+            14,
+            1.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "pink"
+        },
+        {
+          "name": "deco_4",
+          "at": [
+            -10,
+            16,
+            2.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "orange"
+        },
+        {
+          "name": "slider",
+          "at": [
+            -5.8,
+            5.0,
+            0.6
+          ],
+          "size": [
+            2.2,
+            2.2
+          ],
+          "colour": "red",
+          "slide": [
+            1.4,
+            0,
+            0,
+            2.6
+          ]
+        },
+        {
+          "name": "s0",
+          "at": [
+            -3,
+            9,
+            1.5
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "red"
+        },
+        {
+          "name": "s1",
+          "at": [
+            -1,
+            11.5,
+            2.3
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "orange"
+        },
+        {
+          "name": "s2",
+          "at": [
+            1,
+            14,
+            3.1
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "yellow"
+        },
+        {
+          "name": "s3",
+          "at": [
+            2.8,
+            16.5,
+            3.9
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "s4",
+          "at": [
+            4.5,
+            19,
+            4.7
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "blue"
+        }
+      ]
+    },
+    {
+      "kind": "spawn_pad",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "appear": 0
+    },
+    {
+      "kind": "glitch_block",
+      "at": [
+        2.45,
+        -0.55,
+        1.5
+      ],
+      "size": 0.6,
+      "pulses": [
+        "respawn1",
+        "spree+0.45",
+        "spree+1.35"
+      ],
+      "grow": 0.12
+    },
+    {
+      "kind": "fill",
+      "dir": [
+        -0.4,
+        0.9,
+        0.1
+      ],
+      "from": 0,
+      "to": "end",
+      "color": [
+        1.0,
+        0.25,
+        0.85
+      ],
+      "energy": 0.6
+    },
+    {
+      "kind": "burst",
+      "actor": "noob",
+      "at": "die1"
+    },
+    {
+      "kind": "burst",
+      "actor": "noob",
+      "at": "spree+0.15"
+    },
+    {
+      "kind": "burst",
+      "actor": "noob",
+      "at": "spree+1.05"
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "noob",
+      "from": "die1",
+      "to": "die1+3.0",
+      "offset": [
+        0.7,
+        0.5,
+        1.3
+      ]
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "noob",
+      "from": "spree+0.15",
+      "to": "spree+0.15+3.0",
+      "offset": [
+        -0.6,
+        0.6,
+        1.1
+      ]
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "noob",
+      "from": "spree+1.05",
+      "to": "spree+1.05+3.0",
+      "offset": [
+        0.8,
+        0.9,
+        1.5
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "name": "hook",
+      "from": 0,
+      "to": "steve_touch",
+      "lens": 26,
+      "path": [
+        [
+          0,
+          [
+            2.0,
+            -2.05,
+            1.85
+          ]
+        ],
+        [
+          "steve_touch",
+          [
+            2.0,
+            -1.95,
+            1.85
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            2.0,
+            -0.25,
+            1.68
+          ]
+        ]
+      ],
+      "dof": 2.0
+    },
+    {
+      "name": "steve_touch",
+      "from": "steve_touch",
+      "to": "poke1",
+      "lens": 42,
+      "path": [
+        [
+          "steve_touch",
+          [
+            -1.85,
+            -2.0,
+            1.8
+          ]
+        ],
+        [
+          "poke1",
+          [
+            -1.85,
+            -1.95,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_touch",
+          [
+            -2.4,
+            0.8,
+            1.65
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "poke",
+      "from": "poke1",
+      "to": "steve_grew",
+      "lens": 26,
+      "path": [
+        [
+          "poke1",
+          [
+            0.4,
+            -5.6,
+            2.1
+          ]
+        ],
+        [
+          "steve_grew",
+          [
+            0.35,
+            -5.4,
+            2.1
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "poke1",
+          [
+            0.6,
+            0.0,
+            1.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_grew",
+      "from": "steve_grew",
+      "to": "noob_again",
+      "lens": 42,
+      "path": [
+        [
+          "steve_grew",
+          [
+            -1.85,
+            -2.0,
+            1.8
+          ]
+        ],
+        [
+          "noob_again",
+          [
+            -1.85,
+            -1.95,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_grew",
+          [
+            -2.4,
+            0.8,
+            1.65
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "spree",
+      "from": "noob_again",
+      "to": "patch_in",
+      "lens": 26,
+      "path": [
+        [
+          "noob_again",
+          [
+            0.4,
+            -5.6,
+            2.1
+          ]
+        ],
+        [
+          "patch_in",
+          [
+            0.35,
+            -5.4,
+            2.1
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_again",
+          [
+            0.6,
+            0.0,
+            1.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_in",
+      "from": "patch_in",
+      "to": "scan",
+      "lens": 30,
+      "path": [
+        [
+          "patch_in",
+          [
+            0.1,
+            -4.4,
+            1.9
+          ]
+        ],
+        [
+          "scan",
+          [
+            0.1,
+            -4.2,
+            1.95
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_in",
+          [
+            0.0,
+            -0.3,
+            1.7
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "scan",
+      "from": "scan",
+      "to": "noob_helping",
+      "lens": 28,
+      "path": [
+        [
+          "scan",
+          [
+            0.9,
+            -4.6,
+            2.1
+          ]
+        ],
+        [
+          "noob_helping",
+          [
+            0.88,
+            -4.45,
+            2.1
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "scan",
+          [
+            1.4,
+            -0.6,
+            1.75
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "helping",
+      "from": "noob_helping",
+      "to": "steve_no",
+      "lens": 32,
+      "path": [
+        [
+          "noob_helping",
+          [
+            0.9,
+            -2.2,
+            1.85
+          ]
+        ],
+        [
+          "steve_no",
+          [
+            0.92,
+            -2.1,
+            1.85
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_helping",
+          [
+            1.6,
+            0.0,
+            1.75
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_no",
+      "from": "steve_no",
+      "to": "turn",
+      "lens": 42,
+      "path": [
+        [
+          "steve_no",
+          [
+            -1.85,
+            -2.0,
+            1.8
+          ]
+        ],
+        [
+          "turn",
+          [
+            -1.85,
+            -1.95,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_no",
+          [
+            -2.4,
+            0.8,
+            1.65
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_know",
+      "from": "turn",
+      "to": "noob_doyou",
+      "lens": 40,
+      "path": [
+        [
+          "turn",
+          [
+            2.6,
+            0.6,
+            2.5
+          ]
+        ],
+        [
+          "noob_doyou",
+          [
+            2.55,
+            0.5,
+            2.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "turn",
+          [
+            0.3,
+            -0.9,
+            2.05
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_doyou",
+      "from": "noob_doyou",
+      "to": "patch_deleted",
+      "lens": 32,
+      "path": [
+        [
+          "noob_doyou",
+          [
+            0.9,
+            -2.2,
+            1.85
+          ]
+        ],
+        [
+          "patch_deleted",
+          [
+            0.92,
+            -2.1,
+            1.85
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_doyou",
+          [
+            1.6,
+            0.0,
+            1.75
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_deleted",
+      "from": "patch_deleted",
+      "to": "end",
+      "lens": 45,
+      "path": [
+        [
+          "patch_deleted",
+          [
+            0.7,
+            -2.3,
+            2.05
+          ]
+        ],
+        [
+          "end",
+          [
+            0.65,
+            -2.15,
+            2.05
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_deleted",
+          [
+            0.3,
+            -0.9,
+            2.0
+          ]
+        ]
+      ],
+      "shake": 0.0
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.15
+    },
+    {
+      "line": "noob",
+      "name": "noob_secret",
+      "text": "A secret block!",
+      "direction_text": "[amazed, thrilled, whispering loudly] A secret block!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "line": "steve",
+      "name": "steve_touch",
+      "text": "Don't touch it.",
+      "direction_text": "[flat, deadpan] Don't touch it.",
+      "pad": 0.05
+    },
+    {
+      "beat": "poke1",
+      "dur": 0.35
+    },
+    {
+      "beat": "die1",
+      "dur": 0.4
+    },
+    {
+      "beat": "respawn1",
+      "dur": 0.35
+    },
+    {
+      "line": "noob",
+      "name": "noob_touched",
+      "text": "I touched it!",
+      "direction_text": "[proud, cheerful] I touched it!",
+      "pad": 0.05
+    },
+    {
+      "line": "steve",
+      "name": "steve_grew",
+      "text": "...It grew.",
+      "direction_text": "[deadpan, a little worried] ...It grew.",
+      "pad": 0.1
+    },
+    {
+      "line": "noob",
+      "name": "noob_again",
+      "text": "Again!",
+      "direction_text": "[gleeful] Again!",
+      "pad": 0.0
+    },
+    {
+      "beat": "spree",
+      "dur": 1.8
+    },
+    {
+      "beat": "patch_in",
+      "dur": 0.6
+    },
+    {
+      "line": "patch",
+      "name": "patch_stop",
+      "text": "Please stop doing that.",
+      "direction_text": "[calm, quiet, polite] Please stop doing that.",
+      "pad": 0.1
+    },
+    {
+      "line": "noob",
+      "name": "noob_cube",
+      "text": "A talking cube!",
+      "direction_text": "[delighted] A talking cube!",
+      "pad": 0.05
+    },
+    {
+      "beat": "scan",
+      "dur": 0.9
+    },
+    {
+      "line": "patch",
+      "name": "patch_grows",
+      "text": "It grows every time you come back.",
+      "direction_text": "[calm, literal] It grows every time you come back.",
+      "pad": 0.1
+    },
+    {
+      "line": "noob",
+      "name": "noob_helping",
+      "text": "So I'm helping!",
+      "direction_text": "[proud] So I'm helping!",
+      "pad": 0.0
+    },
+    {
+      "line": "steve",
+      "name": "steve_no",
+      "text": "No.",
+      "direction_text": "[flat] No.",
+      "pad": 0.25
+    },
+    {
+      "beat": "turn",
+      "dur": 0.5
+    },
+    {
+      "line": "patch",
+      "name": "patch_know",
+      "text": "Wait. I know you.",
+      "direction_text": "[quiet, startled] Wait. I know you.",
+      "pad": 0.1
+    },
+    {
+      "line": "noob",
+      "name": "noob_doyou",
+      "text": "...You do?",
+      "direction_text": "[small, unsure] ...You do?",
+      "pad": 0.15
+    },
+    {
+      "line": "patch",
+      "name": "patch_deleted",
+      "text": "From a world that got deleted.",
+      "direction_text": "[quiet, ominous] From a world that got deleted.",
+      "pad": 0.4
+    },
+    {
+      "beat": "endcard",
+      "dur": 1.5
+    }
+  ]
+}

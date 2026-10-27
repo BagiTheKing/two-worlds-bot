@@ -200,3 +200,31 @@ def flicker(ctx, rig, mat, t0, t1, seed=8, rate=0.45):
                 o.keyframe_insert("hide_render", frame=f)
                 o.hide_render = not on
                 o.keyframe_insert("hide_render", frame=f + 1)
+
+
+def glitch_block(ctx, tex, at, size, pulses, grow=0.25, name="odd_block"):
+    """The block that shouldn't exist (episode 4): a hovering cube in the
+    missing texture that turns slowly, jitters now and then, and on each
+    pulse (a Noob respawn) flashes, swells and stays a little bigger."""
+    m = material(name, tex=tex["missing"], emit_tex=True, strength=1.2)
+    em = m.node_tree.nodes["Principled BSDF"].inputs["Emission Strength"]
+    ob = box(name, (size, size, size), (0, 0, 0), {"default": m})
+    rnd = random.Random(17)
+    pulses = sorted(pulses)
+    for f in range(1, ctx.F(ctx.end) + 1):
+        t = (f - 1) / ctx.fps
+        done = sum(1 for p in pulses if p <= t)
+        base = 1.0 + grow * done
+        kick = max((math.exp(-(t - p) * 7) * math.sin(min(math.pi, (t - p) * 14)) for p in pulses if p <= t),
+                   default=0.0)
+        s = base + 0.35 * kick
+        jit = 0.04 if rnd.random() < 0.06 else 0.0
+        ob.location = (at[0] + rnd.uniform(-jit, jit), at[1], at[2] + 0.08 * math.sin(2 * math.pi * 0.5 * t))
+        ob.rotation_euler = (0.25 * t, 0.4 * t, 0.15 * t)
+        ob.scale = (s, s, s)
+        ob.keyframe_insert("location", frame=f)
+        ob.keyframe_insert("rotation_euler", frame=f)
+        ob.keyframe_insert("scale", frame=f)
+        em.default_value = 1.2 + 6.0 * max(0.0, kick)
+        em.keyframe_insert("default_value", frame=f)
+    return ob
