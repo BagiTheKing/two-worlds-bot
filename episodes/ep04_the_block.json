@@ -804,7 +804,7 @@
       "actor": "dragon",
       "from": 0,
       "to": "end",
-      "rate": 0.06
+      "rate": 0.012
     }
   ],
   "shots": [
@@ -1238,7 +1238,8 @@
       "text": "It fell off the dragon. Don't touch it.",
       "direction_text": "[flat, deadpan] Don't touch it.",
       "pad": 0.05,
-      "solo_text": "It fell off the dragon. Don't touch it."
+      "solo_text": "It fell off the dragon. Don't touch it.",
+      "solo_take": 0
     },
     {
       "beat": "poke1",
