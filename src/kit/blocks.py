@@ -34,7 +34,7 @@ def image(path, smooth=False):
 
 
 def material(name, color=(0.8, 0.8, 0.8), tex=None, rough=0.9, smooth_tex=False,
-             emission=None, strength=0.0, spec=0.2, coat=0.0, emit_tex=False):
+             emission=None, strength=0.0, spec=0.2, coat=0.0, emit_tex=False, alpha_tex=False):
     m = bpy.data.materials.new(name)
     try:
         m.use_nodes = True
@@ -53,6 +53,10 @@ def material(name, color=(0.8, 0.8, 0.8), tex=None, rough=0.9, smooth_tex=False,
         n.image = image(tex)
         n.interpolation = "Linear" if smooth_tex else "Closest"
         nt.links.new(n.outputs["Color"], b.inputs["Base Color"])
+        if alpha_tex:                              # see-through where the image is
+            nt.links.new(n.outputs["Alpha"], b.inputs["Alpha"])
+            if hasattr(m, "surface_render_method"):
+                m.surface_render_method = "DITHERED"
         if emit_tex:
             nt.links.new(n.outputs["Color"], b.inputs["Emission Color"])
             b.inputs["Emission Strength"].default_value = strength

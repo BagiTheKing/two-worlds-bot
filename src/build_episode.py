@@ -91,7 +91,7 @@ def key_faces(ctx, actor, ranges):
     spans = [(ctx.F(ctx.T(a)), ctx.F(ctx.T(b))) for a, b in ranges] if ranges else None
     last = {}
     for f in range(1, ctx.F(ctx.end) + 1):
-        shown = actor.face_at((f - 1) / ctx.fps)
+        shown = actor.face_at((f - 1) / ctx.fps) or getattr(actor.rig, "rest_face", None)
         if spans is not None and not any(a <= f < b for a, b in spans):
             shown = None
         for expr, ob in actor.rig.faces.items():
@@ -251,8 +251,11 @@ def build(episode_path, timeline_path, tex_dir):
             obby.flicker(ctx, actors[e["actor"]].rig, mats["missing"], ctx.T(e["from"]), ctx.T(e["to"]),
                          rate=e.get("rate", 0.45))
         elif k == "glitch_block":
+            d = e.get("drop")
             obby.glitch_block(ctx, tex, tuple(e["at"]), e.get("size", 0.8),
-                              [ctx.T(p) for p in e.get("pulses", [])], grow=e.get("grow", 0.25))
+                              [ctx.T(p) for p in e.get("pulses", [])], grow=e.get("grow", 0.25),
+                              kick=e.get("kick", 0.35),
+                              drop=(tuple(d["from"]), ctx.T(d["t0"]), ctx.T(d["t1"])) if d else None)
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))

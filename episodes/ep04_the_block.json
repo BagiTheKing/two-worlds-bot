@@ -221,6 +221,17 @@
       ],
       "yaw": 0,
       "s": 1.4
+    },
+    "dragon": {
+      "rig": "dragon",
+      "s": 0.75,
+      "at": [
+        3.0,
+        16,
+        7.5
+      ],
+      "yaw": 0.25,
+      "freeze": 0
     }
   },
   "clips": [
@@ -340,7 +351,7 @@
       "from": "scan",
       "to": "scan+0.3",
       "towards": [
-        2.45,
+        2.85,
         -0.55
       ]
     },
@@ -430,7 +441,7 @@
       "from": "poke1",
       "to": "poke1+0.15",
       "towards": [
-        2.45,
+        2.85,
         -0.55
       ]
     },
@@ -702,17 +713,27 @@
     {
       "kind": "glitch_block",
       "at": [
-        2.45,
+        2.85,
         -0.55,
         1.5
       ],
-      "size": 0.6,
+      "size": 0.55,
       "pulses": [
         "respawn1",
         "spree+0.45",
         "spree+1.35"
       ],
-      "grow": 0.12
+      "grow": 0.12,
+      "kick": 0.2,
+      "drop": {
+        "from": [
+          3.0,
+          15.0,
+          6.7
+        ],
+        "t0": -0.35,
+        "t1": 0.3
+      }
     },
     {
       "kind": "fill",
@@ -777,6 +798,13 @@
         0.9,
         1.5
       ]
+    },
+    {
+      "kind": "flicker",
+      "actor": "dragon",
+      "from": 0,
+      "to": "end",
+      "rate": 0.06
     }
   ],
   "shots": [
@@ -784,22 +812,22 @@
       "name": "hook",
       "from": 0,
       "to": "steve_touch",
-      "lens": 26,
+      "lens": 24,
       "path": [
         [
           0,
           [
-            2.0,
-            -2.05,
-            1.85
+            2.15,
+            -2.1,
+            1.8
           ]
         ],
         [
           "steve_touch",
           [
-            2.0,
-            -1.95,
-            1.85
+            2.15,
+            -2.0,
+            1.8
           ]
         ]
       ],
@@ -807,9 +835,9 @@
         [
           0,
           [
-            2.0,
+            2.2,
             -0.25,
-            1.68
+            1.85
           ]
         ]
       ],
@@ -1207,13 +1235,10 @@
     {
       "line": "steve",
       "name": "steve_touch",
-      "text": "Don't touch it.",
+      "text": "It fell off the dragon. Don't touch it.",
       "direction_text": "[flat, deadpan] Don't touch it.",
       "pad": 0.05,
-      "cut_at": [
-        0.15,
-        1.8
-      ]
+      "solo_text": "It fell off the dragon. Don't touch it."
     },
     {
       "beat": "poke1",

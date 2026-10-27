@@ -40,14 +40,14 @@ class Rig:
             ob.keyframe_insert("rotation_euler", frame=frame)
 
 
-def face_plates(tex, who, name, head, size, center, smooth=False, **shade):
+def face_plates(tex, who, name, head, size, center, smooth=False, alpha=False, **shade):
     """One thin plate per expression on the front of the head, all hidden but
     one (build_episode keys which). Marked so actor visibility keys skip them."""
     plates = {}
     prefix = f"{who}_face_"
     for key in sorted(k for k in tex if k.startswith(prefix)):
         expr = key[len(prefix):]
-        m = material(f"{name}_{key}", tex=tex[key], smooth_tex=smooth, **shade)
+        m = material(f"{name}_{key}", tex=tex[key], smooth_tex=smooth, alpha_tex=alpha, **shade)
         ob = box(f"{name}_plate_{expr}", size, center, {"default": m}, head)
         ob["face_plate"] = 1
         plates[expr] = ob
@@ -134,14 +134,16 @@ def make_noob(tex, name="noob", shirt=(30, 100, 220), pants=(96, 182, 50),
     from textures import NOOB_YELLOW
     plastic = dict(rough=0.32, spec=0.5, coat=0.35)
     skin = material(f"{name}_skin", srgb(skin or NOOB_YELLOW), **plastic)
-    face = material(f"{name}_face", tex=tex["noob_face"], smooth_tex=True, **plastic)
+    # with acting faces, the head is plain and a plate always carries the features
+    face = skin if faces else material(f"{name}_face", tex=tex["noob_face"], smooth_tex=True, **plastic)
     top = material(f"{name}_shirt", srgb(shirt), **plastic)
     bottom = material(f"{name}_pants", srgb(pants), **plastic)
     rig = make_r6(name, {"torso": top, "head": skin, "face": face, "arm_r": skin,
                          "arm_l": skin, "leg_r": bottom, "leg_l": bottom}, s)
     if faces:          # on the flat part of the bevelled head (the textures are cropped to it)
         rig.faces = face_plates(tex, "noob", name, rig.parts["head"], (0.36 * s, 0.002, 0.30 * s),
-                                (0, -0.2315 * s, 0.24 * s), smooth=True, **plastic)
+                                (0, -0.2315 * s, 0.24 * s), smooth=True, alpha=True, **plastic)
+        rig.rest_face = "neutral"              # the plain head needs a face between expressions
     return rig
 
 

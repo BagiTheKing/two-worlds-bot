@@ -426,8 +426,10 @@ INK = (20, 20, 20)
 
 
 def _noob(draw):
+    """Only the features, on a transparent background: the plate shows the
+    head's own plastic around them, so the face looks painted on, not stuck on."""
     s = 256
-    img = Image.new("RGB", (s, s), NOOB_YELLOW)
+    img = Image.new("RGBA", (s, s), (*NOOB_YELLOW, 0))
     draw(ImageDraw.Draw(img))
     return img
 
