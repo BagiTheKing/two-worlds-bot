@@ -316,6 +316,9 @@ class PatchRig(Rig):
         if getattr(self, "_glitch", None) != glitch:
             col = self.MAGENTA if glitch else self.CYAN
             for sock in self.eye_sockets:
+                if frame > 1:                # hold the old colour up to here: no slow blend between keys
+                    sock.default_value = self.CYAN if glitch else self.MAGENTA
+                    sock.keyframe_insert("default_value", frame=frame - 1)
                 sock.default_value = col
                 sock.keyframe_insert("default_value", frame=frame)
             self._glitch = glitch
