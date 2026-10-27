@@ -1209,7 +1209,11 @@
       "name": "steve_touch",
       "text": "Don't touch it.",
       "direction_text": "[flat, deadpan] Don't touch it.",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        0.15,
+        1.8
+      ]
     },
     {
       "beat": "poke1",
@@ -1228,21 +1232,31 @@
       "name": "noob_touched",
       "text": "I touched it!",
       "direction_text": "[proud, cheerful] I touched it!",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        1.9,
+        3.35
+      ]
     },
     {
       "line": "steve",
       "name": "steve_grew",
       "text": "...It grew.",
       "direction_text": "[deadpan, a little worried] ...It grew.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        5.35,
+        7.5
+      ]
     },
     {
       "line": "noob",
       "name": "noob_again",
       "text": "Again!",
       "direction_text": "[gleeful] Again!",
-      "pad": 0.0
+      "pad": 0.0,
+      "solo_text": "Again!",
+      "solo_take": 0
     },
     {
       "beat": "spree",
@@ -1257,14 +1271,22 @@
       "name": "patch_stop",
       "text": "Please stop doing that.",
       "direction_text": "[calm, quiet, polite] Please stop doing that.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        2.45
+      ]
     },
     {
       "line": "noob",
       "name": "noob_cube",
       "text": "A talking cube!",
       "direction_text": "[delighted] A talking cube!",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        2.54,
+        4.26
+      ]
     },
     {
       "beat": "scan",
@@ -1275,21 +1297,33 @@
       "name": "patch_grows",
       "text": "It grows every time you come back.",
       "direction_text": "[calm, literal] It grows every time you come back.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        4.44,
+        7.34
+      ]
     },
     {
       "line": "noob",
       "name": "noob_helping",
       "text": "So I'm helping!",
       "direction_text": "[proud] So I'm helping!",
-      "pad": 0.0
+      "pad": 0.0,
+      "cut_at": [
+        7.48,
+        8.8
+      ]
     },
     {
       "line": "steve",
       "name": "steve_no",
       "text": "No.",
       "direction_text": "[flat] No.",
-      "pad": 0.25
+      "pad": 0.25,
+      "cut_at": [
+        0.0,
+        1.5
+      ]
     },
     {
       "beat": "turn",
@@ -1300,21 +1334,33 @@
       "name": "patch_know",
       "text": "Wait. I know you.",
       "direction_text": "[quiet, startled] Wait. I know you.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        2.52,
+        4.66
+      ]
     },
     {
       "line": "noob",
       "name": "noob_doyou",
       "text": "...You do?",
       "direction_text": "[small, unsure] ...You do?",
-      "pad": 0.15
+      "pad": 0.15,
+      "cut_at": [
+        0.0,
+        1.19
+      ]
     },
     {
       "line": "patch",
       "name": "patch_deleted",
       "text": "From a world that got deleted.",
       "direction_text": "[quiet, ominous] From a world that got deleted.",
-      "pad": 0.4
+      "pad": 0.4,
+      "cut_at": [
+        1.35,
+        3.81
+      ]
     },
     {
       "beat": "endcard",
