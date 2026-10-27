@@ -1,7 +1,9 @@
 # Story bible: Season 1, "The First Glitch"
 
 The writer reads this before every episode. Rules here override anything a
-draft script says.
+draft script says. How to make each episode work (what the numbers and
+reviews have taught us, and the checklist for every cut) is in
+[playbook.md](playbook.md).
 
 ## Premise
 
