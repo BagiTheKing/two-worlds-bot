@@ -1,0 +1,277 @@
+{
+ "id": "ep04_the_block",
+ "fps": 24,
+ "length": 29.577,
+ "beats": {
+  "open": [
+   0.0,
+   0.15
+  ],
+  "noob_secret": [
+   0.15,
+   1.804
+  ],
+  "steve_touch": [
+   1.904,
+   4.357
+  ],
+  "poke1": [
+   4.407,
+   4.757
+  ],
+  "die1": [
+   4.757,
+   5.157
+  ],
+  "respawn1": [
+   5.157,
+   5.507
+  ],
+  "noob_touched": [
+   5.507,
+   6.44
+  ],
+  "steve_grew": [
+   6.49,
+   8.034
+  ],
+  "noob_again": [
+   8.134,
+   9.288
+  ],
+  "spree": [
+   9.288,
+   11.088
+  ],
+  "patch_in": [
+   11.088,
+   11.688
+  ],
+  "patch_stop": [
+   11.688,
+   14.078
+  ],
+  "noob_cube": [
+   14.178,
+   15.693
+  ],
+  "scan": [
+   15.743,
+   16.643
+  ],
+  "patch_grows": [
+   16.643,
+   19.18
+  ],
+  "noob_helping": [
+   19.28,
+   20.204
+  ],
+  "steve_no": [
+   20.204,
+   21.547
+  ],
+  "turn": [
+   21.797,
+   22.297
+  ],
+  "patch_know": [
+   22.297,
+   24.437
+  ],
+  "noob_doyou": [
+   24.537,
+   25.657
+  ],
+  "patch_deleted": [
+   25.807,
+   27.677
+  ],
+  "endcard": [
+   28.077,
+   29.577
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_secret",
+   "who": "noob",
+   "text": "A secret block!",
+   "vo": false,
+   "caption": true,
+   "start": 0.15,
+   "end": 1.804
+  },
+  {
+   "name": "steve_touch",
+   "who": "steve",
+   "text": "It fell off the dragon. Don't touch it.",
+   "vo": false,
+   "caption": true,
+   "start": 1.904,
+   "end": 4.357
+  },
+  {
+   "name": "noob_touched",
+   "who": "noob",
+   "text": "I touched it!",
+   "vo": false,
+   "caption": true,
+   "start": 5.507,
+   "end": 6.44
+  },
+  {
+   "name": "steve_grew",
+   "who": "steve",
+   "text": "...It grew.",
+   "vo": false,
+   "caption": true,
+   "start": 6.49,
+   "end": 8.034
+  },
+  {
+   "name": "noob_again",
+   "who": "noob",
+   "text": "Again!",
+   "vo": false,
+   "caption": true,
+   "start": 8.134,
+   "end": 9.288
+  },
+  {
+   "name": "patch_stop",
+   "who": "patch",
+   "text": "Please stop doing that.",
+   "vo": false,
+   "caption": true,
+   "start": 11.688,
+   "end": 14.078
+  },
+  {
+   "name": "noob_cube",
+   "who": "noob",
+   "text": "A talking cube!",
+   "vo": false,
+   "caption": true,
+   "start": 14.178,
+   "end": 15.693
+  },
+  {
+   "name": "patch_grows",
+   "who": "patch",
+   "text": "It grows every time you come back.",
+   "vo": false,
+   "caption": true,
+   "start": 16.643,
+   "end": 19.18
+  },
+  {
+   "name": "noob_helping",
+   "who": "noob",
+   "text": "So I'm helping!",
+   "vo": false,
+   "caption": true,
+   "start": 19.28,
+   "end": 20.204
+  },
+  {
+   "name": "steve_no",
+   "who": "steve",
+   "text": "No.",
+   "vo": false,
+   "caption": true,
+   "start": 20.204,
+   "end": 21.547
+  },
+  {
+   "name": "patch_know",
+   "who": "patch",
+   "text": "Wait. I know you.",
+   "vo": false,
+   "caption": true,
+   "start": 22.297,
+   "end": 24.437
+  },
+  {
+   "name": "noob_doyou",
+   "who": "noob",
+   "text": "...You do?",
+   "vo": false,
+   "caption": true,
+   "start": 24.537,
+   "end": 25.657
+  },
+  {
+   "name": "patch_deleted",
+   "who": "patch",
+   "text": "From a world that got deleted.",
+   "vo": false,
+   "caption": true,
+   "start": 25.807,
+   "end": 27.677
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 29.977
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 85%",
+   "alert": true,
+   "start": 26.107,
+   "end": 28.077
+  },
+  {
+   "type": "endcard",
+   "over": true,
+   "next_label": "NEXT  \u00b7  EPISODE 5",
+   "next_title": "NOOB FOUND CREATIVE MODE",
+   "question": "WHAT DID PATCH REMEMBER?",
+   "question_sub": "Comment your theory",
+   "pace": 0.25,
+   "start": 28.077,
+   "end": 29.977
+  }
+ ]
+}
