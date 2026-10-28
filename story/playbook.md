@@ -108,9 +108,9 @@ What it means:
 7. Every line sounds like what it says; Steve stays Steve.
 8. 1.5 s end card, last frame loops into the first.
 9. Every line's cut pinned once the voices are approved.
+10. As bright as the original; no backs to the camera.
 11. Every shot checked on its first and last frame with the real timing:
     the action centred, nothing that matters cut off, the same distances.
-10. As bright as the original; no backs to the camera.
 
 ## 5. Experiment log
 
