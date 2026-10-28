@@ -65,6 +65,12 @@ What it means:
 - **Spectacle matters.** Ep3 (the dragon) felt strong and Ep4 (a block and
   a cube) weaker. Each episode needs at least one big visual moment, not
   only dialogue.
+- **Framing: the action is centred and the distances are consistent.** Who
+  or what matters in a moment is fully in frame (a new character's entrance
+  shows them with everyone they are talking to); close-ups all at one
+  chest-up distance, wide shots at one medium distance, each with a slow
+  camera move. A camera aimed at where a prop *used to be* (Ep4's block)
+  cut the action out of frame.
 - **No backs to the camera. Brightness as bright as the original.**
 - **Honesty**: the voices are AI and we say so. Never claim "no AI" about
   anything that used it.
@@ -102,6 +108,8 @@ What it means:
 7. Every line sounds like what it says; Steve stays Steve.
 8. 1.5 s end card, last frame loops into the first.
 9. Every line's cut pinned once the voices are approved.
+11. Every shot checked on its first and last frame with the real timing:
+    the action centred, nothing that matters cut off, the same distances.
 10. As bright as the original; no backs to the camera.
 
 ## 5. Experiment log
