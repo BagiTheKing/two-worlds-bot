@@ -1475,14 +1475,22 @@
       "name": "steve_since",
       "text": "Since when?",
       "direction_text": "[flat, suspicious] Since when?",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        0.0,
+        1.6
+      ]
     },
     {
       "line": "noob",
       "name": "noob_block",
       "text": "Since the block!",
       "direction_text": "[proud] Since the block!",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        1.64,
+        2.96
+      ]
     },
     {
       "beat": "statue",
@@ -1493,21 +1501,33 @@
       "name": "noob_statue",
       "text": "A statue of me!",
       "direction_text": "[delighted] A statue of me!",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        2.96,
+        5.03
+      ]
     },
     {
       "line": "steve",
       "name": "steve_big",
       "text": "Why is it so big?",
       "direction_text": "[deadpan] Why is it so big?",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        5.03,
+        6.81
+      ]
     },
     {
       "line": "noob",
       "name": "noob_see",
       "text": "So everyone can see me!",
       "direction_text": "[proud, beaming] So everyone can see me!",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        6.81,
+        8.24
+      ]
     },
     {
       "beat": "castle",
@@ -1518,7 +1538,11 @@
       "name": "steve_home",
       "text": "Build us a way home.",
       "direction_text": "[dry, practical] Build us a way home.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        8.24,
+        9.53
+      ]
     },
     {
       "beat": "door",
@@ -1529,7 +1553,11 @@
       "name": "noob_close",
       "text": "...Close enough!",
       "direction_text": "[cheerful] ...Close enough!",
-      "pad": 0.15
+      "pad": 0.15,
+      "cut_at": [
+        11.0,
+        12.08
+      ]
     },
     {
       "beat": "duck_gone",
@@ -1540,14 +1568,22 @@
       "name": "noob_duck",
       "text": "Hey! Where's my duck?",
       "direction_text": "[confused, upset] Hey! Where's my duck?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        12.22,
+        14.13
+      ]
     },
     {
       "line": "patch",
       "name": "patch_delete",
       "text": "It's not you. Something is deleting what doesn't belong.",
       "direction_text": "[calm, quiet, serious] It's not you. Something is deleting what doesn't belong.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        4.92
+      ]
     },
     {
       "beat": "wave",
@@ -1566,7 +1602,11 @@
       "name": "steve_us",
       "text": "...That wasn't us.",
       "direction_text": "[quiet, serious] ...That wasn't us.",
-      "pad": 0.4
+      "pad": 0.4,
+      "cut_at": [
+        5.2,
+        6.39
+      ]
     },
     {
       "beat": "gap",
