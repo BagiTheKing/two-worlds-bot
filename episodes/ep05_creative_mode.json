@@ -931,7 +931,17 @@
       "actor": "dragon",
       "from": 0,
       "to": "end",
-      "rate": 0.012
+      "rate": 0.012,
+      "skip": [
+        [
+          "noob_block",
+          "statue"
+        ],
+        [
+          "noob_see",
+          "castle"
+        ]
+      ]
     },
     {
       "kind": "fill",

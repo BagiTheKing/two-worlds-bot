@@ -249,7 +249,8 @@ def build(episode_path, timeline_path, tex_dir):
             obby.cages(ctx, [tuple(actors[a].start["loc"]) for a in e["actors"]], ctx.T(e["free"]))
         elif k == "flicker":
             obby.flicker(ctx, actors[e["actor"]].rig, mats["missing"], ctx.T(e["from"]), ctx.T(e["to"]),
-                         rate=e.get("rate", 0.45))
+                         rate=e.get("rate", 0.45),
+                         skip=[(ctx.T(a), ctx.T(b)) for a, b in e.get("skip", [])])
         elif k == "glitch_block":
             d = e.get("drop")
             obby.glitch_block(ctx, tex, tuple(e["at"]), e.get("size", 0.8),

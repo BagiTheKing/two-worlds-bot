@@ -176,12 +176,14 @@ def cages(ctx, spots, free_at, name="cage"):
                 (0, -2.5, 2.0), n=10, seed=50 + i, life=1.2)
 
 
-def flicker(ctx, rig, mat, t0, t1, seed=8, rate=0.45):
+def flicker(ctx, rig, mat, t0, t1, seed=8, rate=0.45, skip=()):
     """The actor glitches: on random frames between t0 and t1 every part of
-    it is drawn in `mat` (the magenta/black missing texture)."""
+    it is drawn in `mat` (the magenta/black missing texture). No glitch
+    inside the `skip` time ranges (shots where the actor is hidden)."""
     from kit.worlds import flash_copy
     rnd = random.Random(seed)
     frames = [f for f in range(ctx.F(t0), ctx.F(t1)) if rnd.random() < rate]
+    frames = [f for f in frames if not any(ctx.F(a) - 1 <= f <= ctx.F(b) for a, b in skip)]
     for ob in [rig.root] + list(rig.root.children_recursive):
         if ob.type != "MESH":
             continue
