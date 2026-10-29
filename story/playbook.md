@@ -111,6 +111,14 @@ What it means:
   (or by the loudness and punctuation in the log) with `solo_take`.
 - **Keys on material colours blend between keyframes**: key the old value one
   frame before each change (Patch's eye drifted pink over 20 s).
+- **A copied object shares its original's animation** (same action, same
+  slot): show/hide keys on the copy land on the original too. Every
+  missing-texture flash copy needs its own (`own_flash_keys`), or it sits on
+  top of the original all along and wins at random (Ep5's dragon turned pink
+  on the frame it reappeared).
+- **The voice model sometimes reads a direction tag aloud** ("Cheerful." in
+  Steve's voice between two lines). Whisper may not assign it to a line, so
+  check every scene's transcript (`transcribe.yml`) and pin cuts around it.
 - **Out-of-order test stills can show stale face plates** (persistent data);
   real renders are in order and are fine. Judge faces on rendered frames.
 - **Dubs**: the voices only act with a direction; solo takes drop it, so
