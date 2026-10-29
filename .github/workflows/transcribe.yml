@@ -32,7 +32,8 @@ jobs:
         run: |
           mkdir -p /tmp/out
           cd src_files
-          python - ${{ inputs.paths }} > /tmp/out/transcript.txt <<'PY'
+          ls -la . scenes > /tmp/out/files.txt 2>&1 || true
+          python - ${{ inputs.paths }} > /tmp/out/transcript.txt 2>&1 <<'PY'
           import sys
           from faster_whisper import WhisperModel
           m = WhisperModel("${{ inputs.model }}", device="cpu", compute_type="int8")
@@ -43,7 +44,8 @@ jobs:
                   print("  " + " ".join(f"{w.word.strip()}[{w.start:.2f}-{w.end:.2f}]" for w in s.words))
           PY
           cat /tmp/out/transcript.txt
-      - name: Publish
+      - name: Publish (also on failure, with the errors)
+        if: always()
         run: |
           cd /tmp/out && git init -q -b transcripts
           git config user.name "github-actions[bot]"
