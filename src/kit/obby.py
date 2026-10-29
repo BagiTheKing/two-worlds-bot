@@ -323,6 +323,25 @@ def door_swing(ctx, obs, at, t, name="door"):
     return [hinge] + list(hinge.children)
 
 
+def own_flash_keys(twin):
+    """A copied object shares its original's animation: the flash's own
+    show/hide keys would land on the original too (and its show keys on the
+    twin). Give the twin a copy without the visibility channel."""
+    ad = twin.animation_data
+    if not ad or not ad.action:
+        return
+    act = ad.action.copy()
+    slot = ad.action_slot
+    ad.action = act
+    if slot is not None and slot.handle in [s.handle for s in act.slots]:
+        ad.action_slot = next(s for s in act.slots if s.handle == slot.handle)
+    for layer in act.layers:
+        for strip in layer.strips:
+            for cb in strip.channelbags:
+                for fc in [fc for fc in cb.fcurves if fc.data_path == "hide_render"]:
+                    cb.fcurves.remove(fc)
+
+
 def vanish(ctx, obs, t, mat, flash=0.09):
     """Deleted: everything in obs (meshes, or roots whose meshes go too)
     flashes to the missing texture for a moment, then is gone."""
@@ -335,6 +354,7 @@ def vanish(ctx, obs, t, mat, flash=0.09):
     f0, f1 = ctx.F(t), ctx.F(t + flash)
     for o in meshes:
         twin = flash_copy(o, mat)            # shares the mesh, drawn in the missing texture
+        own_flash_keys(twin)
         for fr, hid in ((1, True), (f0, False), (f1, True)):
             twin.hide_render = hid
             twin.keyframe_insert("hide_render", frame=max(1, fr))
@@ -343,10 +363,10 @@ def vanish(ctx, obs, t, mat, flash=0.09):
             o.keyframe_insert("hide_render", frame=fr)
 
 
-def wand(ctx, rig, name="wand"):
-    """The build wand in the Noob's right hand: a short handle with a
-    glowing blue tip, pointing the way his arm points."""
-    hand = rig.parts["arm_r"]
+def wand(ctx, rig, name="wand", arm="arm_r"):
+    """The build wand in the Noob's hand: a short handle with a glowing blue
+    tip, pointing the way his arm points."""
+    hand = rig.parts[arm]
     s = 1.0
     grip = empty(f"{name}_grip", (0, -0.12, -0.78 * s), hand)
     grip.rotation_euler = (1.4, 0, 0)

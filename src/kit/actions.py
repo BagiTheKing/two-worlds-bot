@@ -195,7 +195,7 @@ def raise_arm(c, t, st, actor=None):
     arm = c.get("arm", "arm_r")
     k = ss(c["t0"], c["t0"] + c.get("ease", 0.5), t)
     side = 1 if arm == "arm_r" else -1
-    return st, {arm: (-2.4 * k, 0, 0.25 * side * k)}
+    return st, {arm: (-c.get("angle", 2.4) * k, 0, c.get("out", 0.25) * side * k)}
 
 
 def flail(c, t, st, actor=None):

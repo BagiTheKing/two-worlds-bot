@@ -277,7 +277,7 @@ def build(episode_path, timeline_path, tex_dir):
             obby.selection(ctx, e.get("name", "select"), tuple(e["lo"]), tuple(e["hi"]),
                            ctx.T(e["from"]), ctx.T(e["to"]))
         elif k == "wand":
-            obby.wand(ctx, actors[e["actor"]].rig)
+            obby.wand(ctx, actors[e["actor"]].rig, arm=e.get("arm", "arm_r"))
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))
