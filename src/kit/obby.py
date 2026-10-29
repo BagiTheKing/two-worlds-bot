@@ -190,9 +190,7 @@ def flicker(ctx, rig, mat, t0, t1, seed=8, rate=0.45, skip=()):
         twin = flash_copy(ob, mat)
         twin.parent = ob.parent
         twin.matrix_parent_inverse = ob.matrix_parent_inverse.copy()
-        if ob.animation_data and ob.animation_data.action:
-            twin.animation_data_create()
-            twin.animation_data.action = ob.animation_data.action
+        own_flash_keys(twin)        # its own show/hide keys (a shared action showed it all along)
         for o, base in ((twin, True), (ob, False)):
             o.hide_render = base
             o.keyframe_insert("hide_render", frame=1)
