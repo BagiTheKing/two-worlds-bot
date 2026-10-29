@@ -17,10 +17,11 @@ checklist at the end. Add to it after every episode's stats.
 
 | | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 |
 |---|---|---|---|---|---|
-| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | *pending* |
-| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | |
-| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | |
-| Shorts feed share | | | 94.4% | 95.9% | |
+| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% |
+| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** |
+| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | **1.53k, still climbing** |
+| Shorts feed share | | | 94.4% | 95.9% | 95.3% |
+| New subscribers | | | +1 | +2 | +3 |
 
 What it means:
 
@@ -41,8 +42,17 @@ What it means:
   frame that loops into the first, does not.
 - **Measured audience is 25-44** (signed-in adults), likely kids on parents'
   devices. Keep "not made for kids": the comment questions need comments.
-- **Ep4 tests faces**: a face in frame 1 and expressions on the punchlines.
-  If "stayed" rises well above 40%, every episode gets them.
+- **Frame 1 is not the lever for "stayed to watch".** Five different first
+  frames (a walk, no voice, a dragon, a clean gag, a face) never got it above
+  40%, and it drifted down (37 -> 32 -> 26%) as YouTube tested the videos
+  on wider audiences. Stop optimising it through the first frame.
+- **Watch time and growth are what YouTube rewards here.** Ep4 had the lowest
+  "stayed" but the best retention (72.9%), rewatches (409 engaged views from
+  270 viewers), the most subscribers, and the first view curve that kept
+  climbing after day one. Judge episodes by average %, continued growth and
+  subscribers first, "stayed" second.
+- **Ep4 got the creator's quality fixes** (continuity link, reframing,
+  painted-on faces, a calm background): the episode people watched longest.
 
 ## 2. The creator's eye (quality and consistency)
 
@@ -131,4 +141,4 @@ What it means:
 | Ep2 | Strong first second, no recap, comment question early | Stayed +3 pts, retention +9 pts; cliff at 0:04 |
 | Ep3 | Spectacle hook (dragon), loop ending, 1.5 s end card | Stayed flat; no end-card drop; second push at 32 h |
 | Clean test | Same gag, captions only | Stayed flat (32%); no 0:04 cliff; 119% retention |
-| Ep4 | Face-first hook, faces on key moments, clean screen, Ep3 link | *pending* |
+| Ep4 | Face-first hook, faces on key moments, clean screen, Ep3 link, reframing | Stayed lowest (25.7%) but best retention (72.9%), rewatches, +3 subs, views still climbing at 35 h |
