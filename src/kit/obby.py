@@ -299,12 +299,10 @@ def construct(ctx, name, shape, at, build, scale=1.0, yaw=0.0):
     xs = [c[0] for _, c, _ in parts]
     pts = [(c[0] + sx * s[0] / 2, c[1] + sy * s[1] / 2, c[2] + sz * s[2] / 2)
            for s, c, _ in parts for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+    c, s_ = math.cos(yaw), math.sin(yaw)    # rotated: the box around the rotated corners
+    pts = [(p[0] * c - p[1] * s_, p[0] * s_ + p[1] * c, p[2]) for p in pts]
     lo = tuple(at[i] + min(p[i] for p in pts) * scale - 0.1 for i in range(3))
     hi = tuple(at[i] + max(p[i] for p in pts) * scale + 0.1 for i in range(3))
-    if yaw:                                 # rotated: a box around the rotated footprint
-        r = max(hi[0] - lo[0], hi[1] - lo[1]) / 2
-        lo = (at[0] - r, at[1] - r, lo[2])
-        hi = (at[0] + r, at[1] + r, hi[2])
     del xs
     selection(ctx, name, lo, hi, build[0], build[1] + 0.35)
     return obs + [root]
