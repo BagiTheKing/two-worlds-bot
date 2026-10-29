@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install faster-whisper
+      - run: pip install faster-whisper soundfile numpy
       - name: Transcribe
         run: |
           mkdir -p /tmp/out
@@ -37,8 +37,12 @@ jobs:
           import sys
           from faster_whisper import WhisperModel
           m = WhisperModel("${{ inputs.model }}", device="cpu", compute_type="int8")
+          import numpy as np, soundfile as sf
           for p in sys.argv[1:]:
-              segs, _ = m.transcribe(p, word_timestamps=True, language="en", temperature=0)
+              x, sr = sf.read(p, dtype="float32")
+              x = x.mean(1) if x.ndim > 1 else x
+              x = np.interp(np.linspace(0, len(x) - 1, int(len(x) * 16000 / sr)), np.arange(len(x)), x).astype(np.float32)
+              segs, _ = m.transcribe(x, word_timestamps=True, language="en", temperature=0)
               print(p)
               for s in segs:
                   print("  " + " ".join(f"{w.word.strip()}[{w.start:.2f}-{w.end:.2f}]" for w in s.words))
