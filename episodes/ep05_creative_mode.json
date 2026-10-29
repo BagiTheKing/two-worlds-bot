@@ -229,7 +229,21 @@
         16
       ],
       "yaw": 0.25,
-      "freeze": 0
+      "freeze": 0,
+      "visible": [
+        [
+          0,
+          "noob_block"
+        ],
+        [
+          "statue",
+          "noob_see"
+        ],
+        [
+          "castle",
+          "end"
+        ]
+      ]
     },
     "statue": {
       "rig": "noob",
