@@ -60,6 +60,8 @@ def place(mix, clip, at, gain=1.0):
     i = int(at * SR)
     if i >= len(mix):
         return
+    if i < 0:                       # starts before the video: keep only the part after 0
+        clip, i = clip[-i:], 0
     n = min(len(clip), len(mix) - i)
     mix[i:i + n] += clip[:n] * gain
 
