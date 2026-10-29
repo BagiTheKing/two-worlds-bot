@@ -1,0 +1,14 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scenes/patch_delete.wav
+  It's[0.00-0.50] not[0.50-0.74] you.[0.74-1.16]
+  Something[2.16-2.34] is[2.34-2.64] deleting[2.64-2.96] what[2.96-3.28] doesn't[3.28-3.78] belong.[3.78-4.20]
+  That[5.40-5.62] wasn't[5.62-5.92] us.[5.92-6.14]
+scenes/steve_since.wav
+  Since[0.00-0.62] when?[0.62-1.12]
+  Since[2.04-2.14] the[2.14-2.32] block?[2.32-2.60]
+  A[3.40-3.40] statue[3.40-3.76] of[3.76-4.16] me![4.16-4.58]
+  Why[5.12-5.46] is[5.46-5.60] it[5.60-5.74] so[5.74-5.96] big?[5.96-6.36]
+  So[7.04-7.22] everyone[7.22-7.40] can[7.40-7.64] see[7.64-7.80] me![7.80-8.06]
+  Build[8.36-8.62] us[8.62-8.80] a[8.80-8.92] way[8.92-9.06] home.[9.06-9.28]
+  Cheerful.[10.00-10.58] Close[11.20-11.38] enough.[11.38-11.60]
+  Hey,[12.44-12.82] where's[13.08-13.40] my[13.40-13.50] duck?[13.50-13.82]

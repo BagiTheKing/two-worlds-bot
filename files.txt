@@ -1,0 +1,15 @@
+.:
+total 28
+drwxr-xr-x 4 runner runner 4096 Oct 29 13:01 .
+drwxr-xr-x 3 runner runner 4096 Oct 29 13:01 ..
+drwxr-xr-x 7 runner runner 4096 Oct 29 13:01 .git
+drwxr-xr-x 2 runner runner 4096 Oct 29 13:01 scenes
+-rw-r--r-- 1 runner runner 4190 Oct 29 13:01 timeline.json
+-rw-r--r-- 1 runner runner 2376 Oct 29 13:01 voice_log.txt
+
+scenes:
+total 996
+drwxr-xr-x 2 runner runner   4096 Oct 29 13:01 .
+drwxr-xr-x 4 runner runner   4096 Oct 29 13:01 ..
+-rw-r--r-- 1 runner runner 319122 Oct 29 13:01 patch_delete.wav
+-rw-r--r-- 1 runner runner 689682 Oct 29 13:01 steve_since.wav
