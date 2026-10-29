@@ -1,0 +1,1533 @@
+{
+  "id": "ep05_creative_mode",
+  "number": 5,
+  "title": "Noob Found Creative Mode",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely"
+    }
+  },
+  "music": [
+    {
+      "cue": "theme_soft",
+      "from": 0,
+      "to": "duck_gone",
+      "gain": 0.17
+    },
+    {
+      "cue": "dread",
+      "from": "duck_gone",
+      "to": "noob_no",
+      "gain": 0.2,
+      "minimal": true
+    },
+    {
+      "cue": "dread",
+      "from": "gap",
+      "to": "end",
+      "gain": 0.24,
+      "hit_at": "gap",
+      "minimal": true
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "sky",
+      "from": 0,
+      "to": "noob_no",
+      "gain": 0.05,
+      "fade_in": 0.2
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "place",
+      "from": -0.3,
+      "to": 0.9,
+      "count": 7,
+      "gain": 0.5
+    },
+    {
+      "kind": "jingle",
+      "at": 0.05,
+      "gain": 0.35
+    },
+    {
+      "kind": "place",
+      "from": "statue",
+      "to": "statue+0.6",
+      "count": 5,
+      "gain": 0.5
+    },
+    {
+      "kind": "thump",
+      "at": "statue+0.55",
+      "freq": 55,
+      "gain": 0.6
+    },
+    {
+      "kind": "place",
+      "from": "castle",
+      "to": "castle.end",
+      "count": 14,
+      "gain": 0.45
+    },
+    {
+      "kind": "place",
+      "from": "door",
+      "to": "door+0.45",
+      "count": 3,
+      "gain": 0.5
+    },
+    {
+      "kind": "click",
+      "at": "noob_close-0.1",
+      "gain": 0.6
+    },
+    {
+      "kind": "whoosh",
+      "at": "noob_close",
+      "dur": 0.6,
+      "gain": 0.35
+    },
+    {
+      "kind": "glitch",
+      "at": "duck_gone+0.15",
+      "dur": 0.25,
+      "gain": 0.6
+    },
+    {
+      "kind": "glitch",
+      "at": "wave",
+      "dur": 0.3,
+      "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": "wave+0.45",
+      "dur": 0.3,
+      "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": "wave+0.85",
+      "dur": 0.3,
+      "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": "wave+1.5",
+      "dur": 0.4,
+      "gain": 0.7
+    },
+    {
+      "kind": "sub_drop",
+      "at": "wave+1.5",
+      "dur": 1.6,
+      "gain": 0.5
+    },
+    {
+      "kind": "groan",
+      "at": "wave+1.6",
+      "gain": 0.35,
+      "dur": 1.0
+    }
+  ],
+  "overlays": [
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 71%",
+      "alert": true,
+      "from": "gap",
+      "to": "endcard"
+    },
+    {
+      "type": "endcard",
+      "over": true,
+      "from": "endcard",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 6",
+      "next_title": "THE WORLD STARTED DELETING ITSELF",
+      "question": "WHERE DO DELETED THINGS GO?",
+      "question_sub": "Comment your theory",
+      "pace": 0.25
+    }
+  ],
+  "actors": {
+    "noob": {
+      "rig": "noob",
+      "faces": "moments",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.25
+    },
+    "steve": {
+      "rig": "steve",
+      "faces": "moments",
+      "at": [
+        -2.4,
+        0.8,
+        0
+      ],
+      "yaw": 0.35
+    },
+    "patch": {
+      "rig": "patch",
+      "s": 1.4,
+      "at": [
+        0.3,
+        -0.9,
+        2.0
+      ],
+      "yaw": 0.2
+    },
+    "dragon": {
+      "rig": "dragon",
+      "s": 0.75,
+      "at": [
+        3.0,
+        18,
+        9.5
+      ],
+      "yaw": 0.25,
+      "freeze": 0
+    },
+    "statue": {
+      "rig": "noob",
+      "s": 4.2,
+      "at": [
+        -1.6,
+        9.5,
+        0
+      ],
+      "yaw": 0.2,
+      "shirt": [
+        150,
+        152,
+        160
+      ],
+      "pants": [
+        128,
+        130,
+        138
+      ],
+      "skin": [
+        172,
+        174,
+        180
+      ],
+      "idle": 0,
+      "visible": [
+        [
+          "statue",
+          "end"
+        ]
+      ]
+    },
+    "avatar_0": {
+      "rig": "noob",
+      "shirt": [
+        232,
+        64,
+        64
+      ],
+      "pants": [
+        60,
+        60,
+        70
+      ],
+      "at": [
+        -11.2,
+        10,
+        1.5
+      ],
+      "yaw": -0.22499999999999998
+    },
+    "avatar_1": {
+      "rig": "noob",
+      "shirt": [
+        245,
+        150,
+        40
+      ],
+      "pants": [
+        40,
+        90,
+        200
+      ],
+      "at": [
+        -9.6,
+        10,
+        1.5
+      ],
+      "yaw": -0.075
+    },
+    "avatar_2": {
+      "rig": "noob",
+      "shirt": [
+        150,
+        90,
+        230
+      ],
+      "pants": [
+        96,
+        182,
+        50
+      ],
+      "at": [
+        -8.0,
+        10,
+        1.5
+      ],
+      "yaw": 0.075
+    },
+    "avatar_3": {
+      "rig": "noob",
+      "shirt": [
+        240,
+        100,
+        190
+      ],
+      "pants": [
+        245,
+        210,
+        50
+      ],
+      "at": [
+        -6.6,
+        10,
+        1.5
+      ],
+      "yaw": 0.22499999999999998
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": 0,
+      "to": "steve_since"
+    },
+    {
+      "who": "noob",
+      "do": "raise_arm",
+      "from": 0,
+      "to": "noob_build.end",
+      "arm": "arm_r",
+      "ease": 0.2
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_statue",
+      "to": "noob_statue.end+0.2"
+    },
+    {
+      "who": "noob",
+      "do": "raise_arm",
+      "from": "statue",
+      "to": "statue.end+0.4",
+      "arm": "arm_r",
+      "ease": 0.15
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "unimpressed",
+      "from": "steve_big",
+      "to": "steve_big.end+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "raise_arm",
+      "from": "castle",
+      "to": "castle.end",
+      "arm": "arm_r",
+      "ease": 0.15
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "door",
+      "to": "door+0.25",
+      "towards": [
+        5.2,
+        -1.6
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "raise_arm",
+      "from": "door",
+      "to": "door.end",
+      "arm": "arm_r",
+      "ease": 0.15
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "duck_gone",
+      "to": "duck_gone+0.25",
+      "towards": [
+        2.4,
+        5.2
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "duck_gone+0.3",
+      "to": "noob_duck.end"
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "wave",
+      "to": "wave+0.3",
+      "towards": [
+        -9,
+        10
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "noob_no",
+      "to": "end"
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": "noob_no",
+      "to": "noob_no.end+0.4"
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "wave",
+      "to": "wave+0.3",
+      "towards": [
+        -9,
+        10
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "scared",
+      "from": "steve_us",
+      "to": "end"
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "duck_gone",
+      "to": "duck_gone+0.3",
+      "towards": [
+        2.4,
+        5.2
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "scan",
+      "from": "patch_delete",
+      "to": "patch_delete.end"
+    },
+    {
+      "who": "patch",
+      "do": "glitch_eye",
+      "from": "wave",
+      "to": "gap.end"
+    },
+    {
+      "who": "statue",
+      "do": "pop",
+      "from": "statue",
+      "to": "statue+0.6"
+    },
+    {
+      "who": "statue",
+      "do": "pose",
+      "from": 0,
+      "to": "end",
+      "parts": {
+        "arm_r": [
+          -2.6,
+          0,
+          0.3
+        ],
+        "arm_l": [
+          -2.6,
+          0,
+          -0.3
+        ]
+      },
+      "hold": true
+    },
+    {
+      "who": "avatar_0",
+      "do": "bounce",
+      "from": 0,
+      "to": "wave+1.50",
+      "height": 0.35,
+      "rate": 1.5
+    },
+    {
+      "who": "avatar_0",
+      "do": "fall",
+      "from": "wave+1.55",
+      "to": "wave+2.90",
+      "dest": [
+        -12.399999999999999,
+        10.5,
+        -22
+      ]
+    },
+    {
+      "who": "avatar_1",
+      "do": "bounce",
+      "from": 0,
+      "to": "wave+1.55",
+      "height": 0.35,
+      "rate": 1.7
+    },
+    {
+      "who": "avatar_1",
+      "do": "fall",
+      "from": "wave+1.60",
+      "to": "wave+2.95",
+      "dest": [
+        -10.0,
+        10.5,
+        -22
+      ]
+    },
+    {
+      "who": "avatar_2",
+      "do": "bounce",
+      "from": 0,
+      "to": "wave+1.60",
+      "height": 0.35,
+      "rate": 1.9
+    },
+    {
+      "who": "avatar_2",
+      "do": "fall",
+      "from": "wave+1.65",
+      "to": "wave+3.00",
+      "dest": [
+        -7.6,
+        10.5,
+        -22
+      ]
+    },
+    {
+      "who": "avatar_3",
+      "do": "bounce",
+      "from": 0,
+      "to": "wave+1.65",
+      "height": 0.35,
+      "rate": 2.1
+    },
+    {
+      "who": "avatar_3",
+      "do": "fall",
+      "from": "wave+1.70",
+      "to": "wave+3.05",
+      "dest": [
+        -5.3999999999999995,
+        10.5,
+        -22
+      ]
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ],
+        [
+          "noob_no",
+          5.0,
+          1.25
+        ],
+        [
+          "noob_no+0.5",
+          2.6,
+          0.7
+        ]
+      ]
+    },
+    {
+      "kind": "obby_course",
+      "platforms": [
+        {
+          "name": "noob_pad",
+          "at": [
+            1.6,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "steve_pad",
+          "at": [
+            -2.4,
+            0.8,
+            0
+          ],
+          "size": [
+            3,
+            3.2
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "build_pad",
+          "at": [
+            2.4,
+            5.4,
+            0
+          ],
+          "size": [
+            5,
+            5
+          ],
+          "colour": "white"
+        },
+        {
+          "name": "statue_pad",
+          "at": [
+            -1.6,
+            9.5,
+            0
+          ],
+          "size": [
+            4.5,
+            4.5
+          ],
+          "colour": "grey"
+        },
+        {
+          "name": "castle_pad",
+          "at": [
+            6.0,
+            7.5,
+            0
+          ],
+          "size": [
+            5,
+            4
+          ],
+          "colour": "purple"
+        },
+        {
+          "name": "pizza_pad",
+          "at": [
+            -6.0,
+            7.0,
+            0
+          ],
+          "size": [
+            3.5,
+            3.5
+          ],
+          "colour": "yellow"
+        },
+        {
+          "name": "far_pad",
+          "at": [
+            -9,
+            10,
+            1.5
+          ],
+          "size": [
+            7,
+            3.2
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "step_a",
+          "at": [
+            -4.2,
+            4.0,
+            0.3
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "red"
+        },
+        {
+          "name": "step_b",
+          "at": [
+            -6.5,
+            3.0,
+            0.6
+          ],
+          "size": [
+            2.2,
+            2.2,
+            0.45
+          ],
+          "colour": "orange"
+        },
+        {
+          "name": "deco_1",
+          "at": [
+            9,
+            1,
+            -0.5
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "pink"
+        }
+      ]
+    },
+    {
+      "kind": "spawn_pad",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "appear": 0
+    },
+    {
+      "kind": "wand",
+      "actor": "noob"
+    },
+    {
+      "kind": "construct",
+      "name": "duck",
+      "shape": "duck",
+      "at": [
+        2.4,
+        5.2,
+        0
+      ],
+      "build": [
+        -0.5,
+        0.9
+      ],
+      "scale": 1.15,
+      "yaw": 0.3
+    },
+    {
+      "kind": "select",
+      "name": "statue_sel",
+      "lo": [
+        -4.0,
+        8.0,
+        0
+      ],
+      "hi": [
+        0.8,
+        11.0,
+        9.0
+      ],
+      "from": "statue",
+      "to": "statue.end+0.4"
+    },
+    {
+      "kind": "construct",
+      "name": "castle",
+      "shape": "castle",
+      "at": [
+        6.0,
+        7.5,
+        0
+      ],
+      "build": [
+        "castle",
+        "castle+0.7"
+      ],
+      "scale": 1.0,
+      "yaw": -0.3
+    },
+    {
+      "kind": "construct",
+      "name": "pizza",
+      "shape": "pizza",
+      "at": [
+        -6.0,
+        7.0,
+        0
+      ],
+      "build": [
+        "castle+0.3",
+        "castle.end"
+      ],
+      "scale": 1.0
+    },
+    {
+      "kind": "construct",
+      "name": "door",
+      "shape": "door",
+      "at": [
+        5.2,
+        -1.6,
+        0.4
+      ],
+      "build": [
+        "door",
+        "door+0.45"
+      ],
+      "open": "noob_close-0.1",
+      "yaw": -0.35
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "duck"
+      ],
+      "at": [
+        "duck_gone+0.15"
+      ]
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "statue",
+        "castle",
+        "castle_pad",
+        "pizza",
+        "statue_pad",
+        "step_a",
+        "step_b",
+        "far_pad"
+      ],
+      "at": [
+        "wave",
+        "wave+0.25",
+        "wave+0.45",
+        "wave+0.65",
+        "wave+0.85",
+        "wave+1.05",
+        "wave+1.25",
+        "wave+1.5"
+      ]
+    },
+    {
+      "kind": "flicker",
+      "actor": "dragon",
+      "from": 0,
+      "to": "end",
+      "rate": 0.012
+    },
+    {
+      "kind": "fill",
+      "dir": [
+        -0.4,
+        0.9,
+        0.1
+      ],
+      "from": "wave",
+      "to": "end",
+      "color": [
+        1.0,
+        0.25,
+        0.85
+      ],
+      "energy": 0.5
+    }
+  ],
+  "shots": [
+    {
+      "name": "hook",
+      "from": 0,
+      "to": "steve_since",
+      "lens": 24,
+      "path": [
+        [
+          0,
+          [
+            1.45,
+            -2.7,
+            1.35
+          ]
+        ],
+        [
+          "steve_since",
+          [
+            1.45,
+            -2.5,
+            1.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            2.0,
+            2.5,
+            2.1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_since",
+      "from": "steve_since",
+      "to": "noob_block",
+      "lens": 35,
+      "path": [
+        [
+          "steve_since",
+          [
+            -2.05,
+            -1.55,
+            1.75
+          ]
+        ],
+        [
+          "noob_block",
+          [
+            -2.0,
+            -1.3,
+            1.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_since",
+          [
+            -2.4,
+            0.8,
+            1.55
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_block",
+      "from": "noob_block",
+      "to": "statue",
+      "lens": 35,
+      "path": [
+        [
+          "noob_block",
+          [
+            1.3,
+            -2.3,
+            1.8
+          ]
+        ],
+        [
+          "statue",
+          [
+            1.35,
+            -2.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_block",
+          [
+            1.65,
+            0.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "statue",
+      "from": "statue",
+      "to": "steve_big",
+      "lens": 22,
+      "path": [
+        [
+          "statue",
+          [
+            0.4,
+            -4.6,
+            1.6
+          ]
+        ],
+        [
+          "steve_big",
+          [
+            0.4,
+            -4.3,
+            1.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "statue",
+          [
+            -0.4,
+            5.0,
+            3.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_big",
+      "from": "steve_big",
+      "to": "noob_see",
+      "lens": 35,
+      "path": [
+        [
+          "steve_big",
+          [
+            -2.05,
+            -1.55,
+            1.75
+          ]
+        ],
+        [
+          "noob_see",
+          [
+            -2.0,
+            -1.3,
+            1.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_big",
+          [
+            -2.4,
+            0.8,
+            1.55
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_see",
+      "from": "noob_see",
+      "to": "castle",
+      "lens": 35,
+      "path": [
+        [
+          "noob_see",
+          [
+            1.3,
+            -2.3,
+            1.8
+          ]
+        ],
+        [
+          "castle",
+          [
+            1.35,
+            -2.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_see",
+          [
+            1.65,
+            0.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "castle",
+      "from": "castle",
+      "to": "steve_home",
+      "lens": 20,
+      "path": [
+        [
+          "castle",
+          [
+            0.2,
+            -5.2,
+            2.4
+          ]
+        ],
+        [
+          "steve_home",
+          [
+            0.3,
+            -4.9,
+            2.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "castle",
+          [
+            0.6,
+            6.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_home",
+      "from": "steve_home",
+      "to": "door",
+      "lens": 35,
+      "path": [
+        [
+          "steve_home",
+          [
+            -2.05,
+            -1.55,
+            1.75
+          ]
+        ],
+        [
+          "door",
+          [
+            -2.0,
+            -1.3,
+            1.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_home",
+          [
+            -2.4,
+            0.8,
+            1.55
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "door",
+      "from": "door",
+      "to": "duck_gone",
+      "lens": 26,
+      "path": [
+        [
+          "door",
+          [
+            3.0,
+            -5.0,
+            1.8
+          ]
+        ],
+        [
+          "duck_gone",
+          [
+            3.1,
+            -4.7,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "door",
+          [
+            3.5,
+            -0.9,
+            1.5
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "duck_gone",
+      "from": "duck_gone",
+      "to": "patch_delete",
+      "lens": 24,
+      "path": [
+        [
+          "duck_gone",
+          [
+            1.2,
+            -3.6,
+            1.9
+          ]
+        ],
+        [
+          "patch_delete",
+          [
+            1.25,
+            -3.3,
+            1.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "duck_gone",
+          [
+            2.0,
+            3.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_delete",
+      "from": "patch_delete",
+      "to": "wave",
+      "lens": 22,
+      "path": [
+        [
+          "patch_delete",
+          [
+            1.15,
+            -4.6,
+            2.0
+          ]
+        ],
+        [
+          "wave",
+          [
+            1.15,
+            -4.3,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_delete",
+          [
+            1.2,
+            -0.45,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "wave",
+      "from": "wave",
+      "to": "noob_no",
+      "lens": 26,
+      "path": [
+        [
+          "wave",
+          [
+            1.0,
+            -3.0,
+            3.2
+          ]
+        ],
+        [
+          "noob_no",
+          [
+            0.8,
+            -2.8,
+            3.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "wave",
+          [
+            -6.5,
+            9.5,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_no",
+      "from": "noob_no",
+      "to": "steve_us",
+      "lens": 35,
+      "path": [
+        [
+          "noob_no",
+          [
+            1.3,
+            -2.3,
+            1.8
+          ]
+        ],
+        [
+          "steve_us",
+          [
+            1.35,
+            -2.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_no",
+          [
+            1.65,
+            0.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_us",
+      "from": "steve_us",
+      "to": "gap",
+      "lens": 35,
+      "path": [
+        [
+          "steve_us",
+          [
+            -2.05,
+            -1.55,
+            1.75
+          ]
+        ],
+        [
+          "gap",
+          [
+            -2.0,
+            -1.3,
+            1.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_us",
+          [
+            -2.4,
+            0.8,
+            1.55
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "gap",
+      "from": "gap",
+      "to": "end",
+      "lens": 26,
+      "path": [
+        [
+          "gap",
+          [
+            1.0,
+            -3.0,
+            3.2
+          ]
+        ],
+        [
+          "end",
+          [
+            0.9,
+            -2.6,
+            3.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "gap",
+          [
+            -6.5,
+            9.5,
+            1.4
+          ]
+        ]
+      ],
+      "shake": 0.0
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.2
+    },
+    {
+      "line": "noob",
+      "name": "noob_build",
+      "text": "I can BUILD stuff!",
+      "direction_text": "[thrilled, shouting with joy] I can BUILD stuff!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "line": "steve",
+      "name": "steve_since",
+      "text": "Since when?",
+      "direction_text": "[flat, suspicious] Since when?",
+      "pad": 0.05
+    },
+    {
+      "line": "noob",
+      "name": "noob_block",
+      "text": "Since the block!",
+      "direction_text": "[proud] Since the block!",
+      "pad": 0.1
+    },
+    {
+      "beat": "statue",
+      "dur": 0.6
+    },
+    {
+      "line": "noob",
+      "name": "noob_statue",
+      "text": "A statue of me!",
+      "direction_text": "[delighted] A statue of me!",
+      "pad": 0.05
+    },
+    {
+      "line": "steve",
+      "name": "steve_big",
+      "text": "Why is it so big?",
+      "direction_text": "[deadpan] Why is it so big?",
+      "pad": 0.05
+    },
+    {
+      "line": "noob",
+      "name": "noob_see",
+      "text": "So everyone can see me!",
+      "direction_text": "[proud, beaming] So everyone can see me!",
+      "pad": 0.1
+    },
+    {
+      "beat": "castle",
+      "dur": 1.2
+    },
+    {
+      "line": "steve",
+      "name": "steve_home",
+      "text": "Build us a way home.",
+      "direction_text": "[dry, practical] Build us a way home.",
+      "pad": 0.1
+    },
+    {
+      "beat": "door",
+      "dur": 1.0
+    },
+    {
+      "line": "noob",
+      "name": "noob_close",
+      "text": "...Close enough!",
+      "direction_text": "[cheerful] ...Close enough!",
+      "pad": 0.15
+    },
+    {
+      "beat": "duck_gone",
+      "dur": 0.8
+    },
+    {
+      "line": "noob",
+      "name": "noob_duck",
+      "text": "Hey! Where's my duck?",
+      "direction_text": "[confused, upset] Hey! Where's my duck?",
+      "pad": 0.1
+    },
+    {
+      "line": "patch",
+      "name": "patch_delete",
+      "text": "It's not you. Something is deleting what doesn't belong.",
+      "direction_text": "[calm, quiet, serious] It's not you. Something is deleting what doesn't belong.",
+      "pad": 0.1
+    },
+    {
+      "beat": "wave",
+      "dur": 2.2
+    },
+    {
+      "line": "noob",
+      "name": "noob_no",
+      "text": "NO!",
+      "direction_text": "[scared, shouting] NO!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "line": "steve",
+      "name": "steve_us",
+      "text": "...That wasn't us.",
+      "direction_text": "[quiet, serious] ...That wasn't us.",
+      "pad": 0.4
+    },
+    {
+      "beat": "gap",
+      "dur": 1.2
+    },
+    {
+      "beat": "endcard",
+      "dur": 1.5
+    }
+  ]
+}

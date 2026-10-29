@@ -234,3 +234,124 @@ def glitch_block(ctx, tex, at, size, pulses, grow=0.25, kick=0.35, drop=None, na
         em.default_value = 1.2 + 6.0 * max(0.0, kick)
         em.keyframe_insert("default_value", frame=f)
     return ob
+
+
+# ------------------------------------------------- episode 5: build tools
+
+# the Noob's creations, as boxes: (size, centre, colour) relative to the
+# creation's base point, listed in the order they appear
+DUCK = [((2.4, 3.0, 1.6), (0, 0.2, 0.8), "yellow"), ((2.0, 2.4, 0.5), (0, 0.4, 1.75), "yellow"),
+        ((1.4, 1.4, 1.4), (0, -1.0, 2.4), "yellow"), ((0.9, 0.7, 0.35), (0, -2.0, 2.2), "orange"),
+        ((0.22, 0.05, 0.28), (-0.4, -1.72, 2.65), "black"), ((0.22, 0.05, 0.28), (0.4, -1.72, 2.65), "black"),
+        ((0.5, 0.8, 0.5), (0, 1.9, 1.5), "yellow")]
+CASTLE = [((4.0, 3.0, 1.2), (0, 0, 0.6), "pink"), ((3.2, 2.4, 1.0), (0, 0, 1.7), "blue"),
+          ((1.0, 1.0, 2.6), (-1.6, -1.1, 1.3), "yellow"), ((1.0, 1.0, 2.6), (1.6, -1.1, 1.3), "yellow"),
+          ((1.0, 1.0, 2.6), (-1.6, 1.1, 1.3), "green"), ((1.0, 1.0, 2.6), (1.6, 1.1, 1.3), "green"),
+          ((1.2, 0.2, 1.0), (0, -1.55, 0.5), "red"),
+          ((0.6, 0.6, 0.6), (-1.6, -1.1, 2.9), "red"), ((0.6, 0.6, 0.6), (1.6, -1.1, 2.9), "red")]
+PIZZA = [((2.4, 2.4, 0.3), (0, 0, 0.15 + 0.42 * k), "orange" if k % 2 == 0 else "yellow") for k in range(9)] + \
+        [((0.35, 0.35, 0.06), (x, y, 0.33 + 0.42 * k), "red")
+         for k in range(0, 9, 2) for x, y in ((-0.6, -0.5), (0.5, 0.3), (-0.2, 0.6))]
+DOOR = [((0.25, 0.3, 2.6), (-0.65, 0, 1.3), "white"), ((0.25, 0.3, 2.6), (0.65, 0, 1.3), "white"),
+        ((1.55, 0.3, 0.25), (0, 0, 2.72), "white")]
+SHAPES = {"duck": DUCK, "castle": CASTLE, "pizza": PIZZA, "door": DOOR}
+EXTRA = {"black": (24, 24, 30)}
+
+
+def selection(ctx, name, lo, hi, t0, t1):
+    """The build tools' selection box: thin glowing blue edges around a
+    creation while it is being built."""
+    glow = material(f"{name}_sel", (0, 0, 0), emission=(0.2, 0.6, 1.0), strength=6)
+    g = empty(f"{name}_sel", (0, 0, 0))
+    (x0, y0, z0), (x1, y1, z1) = lo, hi
+    cx, cy, cz = (x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2
+    w, d, h, e = x1 - x0, y1 - y0, z1 - z0, 0.05
+    for x in (x0, x1):
+        for y in (y0, y1):
+            box(f"{name}_sel_z_{x}_{y}", (e, e, h), (x, y, cz), {"default": glow}, g)
+        for z in (z0, z1):
+            box(f"{name}_sel_y_{x}_{z}", (e, d, e), (x, cy, z), {"default": glow}, g)
+    for y in (y0, y1):
+        for z in (z0, z1):
+            box(f"{name}_sel_x_{y}_{z}", (w, e, e), (cx, y, z), {"default": glow}, g)
+    show_between(g, ctx.F(t0), ctx.F(t1))
+    return g
+
+
+def construct(ctx, name, shape, at, build, scale=1.0, yaw=0.0):
+    """A creation built block by block over build=(t0, t1): each part pops in
+    (overshoot, settle) while the selection box glows around it. Returns its
+    objects, for vanish()."""
+    root = empty(f"{name}_root", tuple(at))
+    root.rotation_euler = (0, 0, yaw)
+    root.scale = (scale, scale, scale)
+    parts = SHAPES[shape]
+    times = spread(build[0], build[1], len(parts))
+    obs = []
+    for i, ((size, centre, col), t) in enumerate(zip(parts, times)):
+        rgb = EXTRA.get(col) or COLOURS[col]
+        m = material(f"{name}_{i}", srgb(rgb), **PLASTIC)
+        ob = box(f"{name}_{i}", size, centre, {"default": m}, root, bevel=0.05)
+        ob.scale = (0.001,) * 3
+        _key_scale(ob, ctx, ((build[0] - 1, 0.001), (t, 0.001), (t + 0.08, 1.15), (t + 0.16, 1.0)))
+        obs.append(ob)
+    # selection box around the whole thing, in world space
+    xs = [c[0] for _, c, _ in parts]
+    pts = [(c[0] + sx * s[0] / 2, c[1] + sy * s[1] / 2, c[2] + sz * s[2] / 2)
+           for s, c, _ in parts for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)]
+    lo = tuple(at[i] + min(p[i] for p in pts) * scale - 0.1 for i in range(3))
+    hi = tuple(at[i] + max(p[i] for p in pts) * scale + 0.1 for i in range(3))
+    if yaw:                                 # rotated: a box around the rotated footprint
+        r = max(hi[0] - lo[0], hi[1] - lo[1]) / 2
+        lo = (at[0] - r, at[1] - r, lo[2])
+        hi = (at[0] + r, at[1] + r, hi[2])
+    del xs
+    selection(ctx, name, lo, hi, build[0], build[1] + 0.35)
+    return obs + [root]
+
+
+def door_swing(ctx, obs, at, t, name="door"):
+    """The door in the frame swings open on its hinge at t."""
+    m = material(f"{name}_leaf", srgb((150, 96, 60)), **PLASTIC)
+    hinge = empty(f"{name}_hinge", (at[0] - 0.52, at[1], at[2]))
+    box(f"{name}_leaf", (1.04, 0.12, 2.42), (0.52, 0, 1.21), {"default": m}, hinge, bevel=0.03)
+    box(f"{name}_knob", (0.1, 0.12, 0.1), (0.9, -0.1, 1.2), {"default": material(f"{name}_knob", srgb((240, 200, 60)))}, hinge)
+    _key_scale(hinge, ctx, ((0, 0.001), (t - 0.6, 0.001), (t - 0.5, 1.0)))
+    for tt, a in ((t - 0.01, 0.0), (t + 0.35, -1.9), (t + 0.6, -1.75)):
+        hinge.rotation_euler = (0, 0, a)
+        hinge.keyframe_insert("rotation_euler", frame=ctx.F(tt))
+    return [hinge] + list(hinge.children)
+
+
+def vanish(ctx, obs, t, mat, flash=0.09):
+    """Deleted: everything in obs (meshes, or roots whose meshes go too)
+    flashes to the missing texture for a moment, then is gone."""
+    from kit.worlds import flash_copy
+    meshes = []
+    for ob in obs:
+        for o in [ob] + list(ob.children_recursive):
+            if o.type == "MESH" and o not in meshes and not o.get("is_flash") and not o.get("face_plate"):
+                meshes.append(o)
+    f0, f1 = ctx.F(t), ctx.F(t + flash)
+    for o in meshes:
+        twin = flash_copy(o, mat)            # shares the mesh, drawn in the missing texture
+        for fr, hid in ((1, True), (f0, False), (f1, True)):
+            twin.hide_render = hid
+            twin.keyframe_insert("hide_render", frame=max(1, fr))
+        for fr, hid in ((max(1, f0 - 1), False), (f0, True)):
+            o.hide_render = hid
+            o.keyframe_insert("hide_render", frame=fr)
+
+
+def wand(ctx, rig, name="wand"):
+    """The build wand in the Noob's right hand: a short handle with a
+    glowing blue tip, pointing the way his arm points."""
+    hand = rig.parts["arm_r"]
+    s = 1.0
+    grip = empty(f"{name}_grip", (0, -0.12, -0.78 * s), hand)
+    grip.rotation_euler = (1.4, 0, 0)
+    stick = material(f"{name}_stick", srgb((60, 64, 80)), rough=0.4, spec=0.5)
+    tip = material(f"{name}_tip", (0, 0, 0), emission=(0.2, 0.6, 1.0), strength=7)
+    box(f"{name}_handle", (0.08, 0.08, 0.5), (0, 0, 0.12), {"default": stick}, grip, bevel=0.02)
+    box(f"{name}_tip", (0.16, 0.16, 0.16), (0, 0, 0.42), {"default": tip}, grip, bevel=0.03)
+    return grip

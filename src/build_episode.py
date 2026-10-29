@@ -256,6 +256,28 @@ def build(episode_path, timeline_path, tex_dir):
                               [ctx.T(p) for p in e.get("pulses", [])], grow=e.get("grow", 0.25),
                               kick=e.get("kick", 0.35),
                               drop=(tuple(d["from"]), ctx.T(d["t0"]), ctx.T(d["t1"])) if d else None)
+        elif k == "construct":
+            obs = obby.construct(ctx, e["name"], e["shape"], tuple(e["at"]),
+                                 (ctx.T(e["build"][0]), ctx.T(e["build"][1])), e.get("scale", 1.0), e.get("yaw", 0.0))
+            if e["shape"] == "door" and e.get("open"):
+                obs += obby.door_swing(ctx, obs, tuple(e["at"]), ctx.T(e["open"]), name=e["name"] + "_door")
+            sets.setdefault("made", {})[e["name"]] = obs
+        elif k == "vanish":
+            made = sets.get("made", {})
+            course = sets.get("obby", {})
+            for n_, t_ in zip(e["targets"], e["at"]):
+                if n_ in made:
+                    obs = made[n_]
+                elif n_ in course:
+                    obs = [course[n_]["ob"]]
+                else:
+                    obs = [actors[n_].rig.root]
+                obby.vanish(ctx, obs, ctx.T(t_), mats["missing"])
+        elif k == "select":
+            obby.selection(ctx, e.get("name", "select"), tuple(e["lo"]), tuple(e["hi"]),
+                           ctx.T(e["from"]), ctx.T(e["to"]))
+        elif k == "wand":
+            obby.wand(ctx, actors[e["actor"]].rig)
         elif k == "orbit":
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))
