@@ -1,0 +1,52 @@
+name: Transcribe
+# Word-by-word transcript (with timings) of audio files on a branch, e.g. the
+# scene recordings a render publishes to preview-logs. Results go to the
+# "transcripts" branch.
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch that holds the files"
+        default: "preview-logs"
+      paths:
+        description: "Space-separated audio files on that branch"
+        default: "scenes/*.wav"
+      model:
+        description: "Whisper model"
+        default: "small.en"
+permissions:
+  contents: write
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          path: src_files
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install faster-whisper
+      - name: Transcribe
+        run: |
+          mkdir -p /tmp/out
+          cd src_files
+          python - ${{ inputs.paths }} > /tmp/out/transcript.txt <<'PY'
+          import sys
+          from faster_whisper import WhisperModel
+          m = WhisperModel("${{ inputs.model }}", device="cpu", compute_type="int8")
+          for p in sys.argv[1:]:
+              segs, _ = m.transcribe(p, word_timestamps=True, language="en", temperature=0)
+              print(p)
+              for s in segs:
+                  print("  " + " ".join(f"{w.word.strip()}[{w.start:.2f}-{w.end:.2f}]" for w in s.words))
+          PY
+          cat /tmp/out/transcript.txt
+      - name: Publish
+        run: |
+          cd /tmp/out && git init -q -b transcripts
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A && git commit -q -m "Transcript from run ${{ github.run_id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" transcripts
