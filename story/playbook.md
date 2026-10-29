@@ -75,6 +75,18 @@ What it means:
 - **Honesty**: the voices are AI and we say so. Never claim "no AI" about
   anything that used it.
 
+## 2b. Community
+
+- **Reply to theories without confirming or denying them**; tease the next
+  clue instead. A "no" kills the guessing, a "yes" locks the story into the
+  viewer's version.
+- **Recognise regulars by name** (heart, reply). @youssefakram7493 has
+  commented thoughtfully on Ep2-Ep4 (the Null theory, BTools for the Noob,
+  "merged, not deleted").
+- **When a viewer's idea goes into an episode, credit them** in its
+  description ("Idea by @..."). Ep5 (Noob Found Creative Mode) can use the
+  Noob building with BTools: @youssefakram7493's idea.
+
 ## 3. Production traps
 
 - **Whisper's word timings differ between CI runners.** The same recording
