@@ -352,14 +352,17 @@ def vanish(ctx, obs, t, mat, flash=0.09):
         for o in [ob] + list(ob.children_recursive):
             if o.type == "MESH" and o not in meshes and not o.get("is_flash") and not o.get("face_plate"):
                 meshes.append(o)
-    f0, f1 = ctx.F(t), ctx.F(t + flash)
+    # deleted before the video starts: gone (or mid-flash) on frame 1
+    f0, f1 = max(1, ctx.F(t)), ctx.F(t + flash)
+    twin_keys = [(1, True)] if f1 <= 1 else ([(1, True)] if f0 > 1 else []) + [(f0, False), (f1, True)]
+    orig_keys = [(f0 - 1, False), (f0, True)] if f0 > 1 else [(1, True)]
     for o in meshes:
         twin = flash_copy(o, mat)            # shares the mesh, drawn in the missing texture
         own_flash_keys(twin)
-        for fr, hid in ((1, True), (f0, False), (f1, True)):
+        for fr, hid in twin_keys:
             twin.hide_render = hid
-            twin.keyframe_insert("hide_render", frame=max(1, fr))
-        for fr, hid in ((max(1, f0 - 1), False), (f0, True)):
+            twin.keyframe_insert("hide_render", frame=fr)
+        for fr, hid in orig_keys:
             o.hide_render = hid
             o.keyframe_insert("hide_render", frame=fr)
 
