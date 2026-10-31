@@ -1216,6 +1216,14 @@ def build(episode_path, out_dir, keep=None):
                 audio = null_voice(audio)
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
+            for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
+                i0, i1 = int(b0 * SR), min(len(audio), int(b1 * SR))
+                ramp = min(int(0.03 * SR), (i1 - i0) // 2)
+                g = np.full(i1 - i0, 10 ** (db / 20))
+                g[:ramp] = np.linspace(1, g[0], ramp)
+                g[len(g) - ramp:] = np.linspace(g[0], 1, ramp)
+                audio = audio.copy()
+                audio[i0:i1] *= g
             if ev.get("tighten"):                     # shorter pauses inside the line
                 audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
             if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
