@@ -206,6 +206,23 @@ def raise_arm(c, t, st, actor=None):
     return st, {arm: (-c.get("angle", 2.4) * k, 0, c.get("out", 0.25) * side * k)}
 
 
+def throw_arm(c, t, st, actor=None):
+    """A real overhand throw: the arm winds up over the head and back
+    (0.4 s), snaps forward on the release (t0 + 0.5), follows through, then
+    sinks; the head leans into it and the other arm swings back."""
+    arm = c.get("arm", "arm_r")
+    other = "arm_r" if arm == "arm_l" else "arm_l"
+    t0, rel = c["t0"], c["t0"] + 0.5
+    wind = ss(t0, t0 + 0.4, t)
+    snap = ss(rel - 0.08, rel + 0.06, t)
+    sink = ss(rel + 0.15, c["t1"], t)
+    a = lerp(lerp(0.0, -3.1, wind), -1.1, snap)
+    a = lerp(a, -0.35, sink)
+    lean = 0.18 * snap * (1 - sink) - 0.08 * wind * (1 - snap)
+    return st, {arm: (a, 0, 0), other: (0.5 * wind * (1 - snap) - 0.4 * snap * (1 - sink), 0, 0),
+                "head": (lean, 0, 0)}
+
+
 def flail(c, t, st, actor=None):
     return st, {
         "arm_r": (-2.6 + 0.5 * math.sin(24 * t), 0, 0.4),
@@ -438,7 +455,7 @@ def glitch_eye(c, t, st, actor=None):
     return st, {"eye": (1.0, 0, 0)}
 
 
-BODY = {"scan": scan, "glitch_eye": glitch_eye, "look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
+BODY = {"throw_arm": throw_arm, "scan": scan, "glitch_eye": glitch_eye, "look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
         "punch": punch, "flurry": flurry, "cheer": cheer, "wave": wave, "swing": swing,
         "reach": reach, "chop": chop, "roar": roar, "glide": glide}
 

@@ -1111,15 +1111,15 @@ def void_wind(length):
     return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
 
 
-def null_voice(s):
+def null_voice(s, light=False):
     """Null speaks with the Noob's voice: pitched down, doubled an octave
     lower, bit-crushed, with a reversed reverb swelling into each word."""
     def pitch(x, p):
         return np.interp(np.linspace(0, len(x) - 1, int(len(x) / p)), np.arange(len(x)), x)
-    a = pitch(s, 0.62)
-    b = pitch(s, 0.31)[:len(a)]
+    a = pitch(s, 0.8 if light else 0.62)      # light: the words still clear (an echo of the Noob)
+    b = pitch(s, 0.4 if light else 0.31)[:len(a)]
     b = np.pad(b, (0, len(a) - len(b)))
-    v = a + 0.35 * b
+    v = a + (0.15 if light else 0.35) * b
     v = np.round(v * 48) / 48                          # a light bit crush
     tail = rng.standard_normal(int(0.9 * SR)) * np.exp(-np.arange(int(0.9 * SR)) / (0.25 * SR))
     rev = np.convolve(v[::-1], tail * 0.02)[:len(v)][::-1]
@@ -1213,7 +1213,7 @@ def build(episode_path, out_dir, keep=None):
             if ep.get("gate") is not None:              # breaths and mouth noise down
                 audio = gate(audio, ep["gate"])
             if c.get("fx") == "null":
-                audio = null_voice(audio)
+                audio = null_voice(audio, light=ev.get("null_light", False))
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
             for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)

@@ -91,6 +91,7 @@ jobs:
           cp build/timeline.json /tmp/log/ 2>/dev/null || true
           cp -r build/scenes /tmp/log/ 2>/dev/null || true
           ffmpeg -loglevel error -i build/audio.wav -c:a aac -b:a 128k /tmp/log/audio.m4a 2>/dev/null || true
+          cp build/audio.wav /tmp/log/audio.wav 2>/dev/null || true     # the sound preview, before any frame renders
           cd /tmp/log && git init -q -b preview-logs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
