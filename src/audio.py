@@ -1156,6 +1156,8 @@ def build(episode_path, out_dir, keep=None):
     fx_times = {}
     counts = {}
     for ev in ep["events"]:
+        if ev.get("unused"):         # recorded with its scene (so the scene stays as approved), never placed
+            continue
         if "pause" in ev:
             cursor += ev["pause"]
             continue

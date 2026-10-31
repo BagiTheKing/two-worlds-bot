@@ -1245,6 +1245,14 @@
       "dur": 1.2
     },
     {
+      "line": "patch",
+      "name": "patch_watch",
+      "text": "Someone is watching... you. Should we run, or hide?",
+      "direction_text": "[quiet, serious, turning to the audience] Someone is watching... you. Should we run, or hide?",
+      "pad": 0.3,
+      "unused": true
+    },
+    {
       "beat": "gap",
       "dur": 1.2
     },
