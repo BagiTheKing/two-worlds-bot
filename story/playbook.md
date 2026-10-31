@@ -96,7 +96,27 @@ What it means:
   chest-up distance, wide shots at one medium distance, each with a slow
   camera move. A camera aimed at where a prop *used to be* (Ep4's block)
   cut the action out of frame.
-- **No backs to the camera. Brightness as bright as the original.**
+- **No backs to the camera. Brightness as bright as the original**, for the
+  whole episode: a villain is scary by itself. Ep6's first cut dimmed the
+  sky when Null rose and lost up to 40% of the picture's brightness for most
+  of the episode ("everything looks low").
+- **Music carries the big moments.** A new threat gets its own theme (Null
+  has one since Ep0); silence is a beat, not a stretch. Ep6's first cut ran
+  26 s with no score, through the series' biggest entrance.
+- **Reactions overlap the action.** A line said after a cut and a pause
+  looks like the actor waited for the camera ("...My pickaxe."). Play the
+  reaction over the event (off-screen if needed), and give actions a body:
+  a throw has a wind-up and a follow-through, not just an arm raise.
+- **A payoff needs the reaction shot.** Null copying the Noob's smile only
+  lands when we see the Noob's own smile drop.
+- **Never introduce a new idea in the last seconds.** Patch talking to the
+  viewers ("Someone is watching... you.") had never been set up, so nobody
+  knew who he was talking to. Set a device up an episode ahead.
+- **One premise, a build-up, one twist per episode.** Ep6's first cut tried
+  three attempts, the copy and a vote in 33 s; nothing had time to land.
+- **No jump cuts**: two shots in a row from almost the same angle and size
+  look like a mistake. Keep a medium, moving shot rather than cutting
+  between two wides with tiny characters.
 - **Honesty**: the voices are AI and we say so. Never claim "no AI" about
   anything that used it.
 
@@ -120,6 +140,8 @@ What it means:
   "...It grew." swallowed a 1.6 s murmur). Once an episode's voices are
   approved, pin every line with `cut_at` from the published scene
   (`preview-logs/scenes/`), so re-renders cannot drift.
+- **Removing a line from a scene re-records it too.** Keep the line in the
+  script with `"unused": true`: recorded with its scene, never placed.
 - **Changing one line inside a scene re-records the whole scene** (and every
   other line's delivery). Keep the scene's `direction_text` and give the
   changed line a `solo_text`: only that line is recorded again.
@@ -160,6 +182,11 @@ What it means:
 10. As bright as the original; no backs to the camera.
 11. Every shot checked on its first and last frame with the real timing:
     the action centred, nothing that matters cut off, the same distances.
+12. Brightness measured across the whole episode (no stretch darker than
+    the original), music under every big moment, no jump cuts.
+13. The creator hears the sound-only preview (`preview-logs/audio.wav`,
+    published before frames render) before the cut is final: Claude can
+    check words and levels, not delivery or music.
 
 ## 5. Experiment log
 
