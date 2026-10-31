@@ -273,7 +273,19 @@ def build(episode_path, timeline_path, tex_dir):
                     obs = [course[n_]["ob"]]
                 else:
                     obs = [actors[n_].rig.root]
-                obby.vanish(ctx, obs, ctx.T(t_), mats["missing"])
+                if e.get("spread"):                # deleted piece by piece over `spread` seconds
+                    meshes = [o for ob in obs for o in [ob] + list(ob.children_recursive)
+                              if o.type == "MESH" and not o.get("face_plate") and not o.get("is_flash")]
+                    meshes = list(dict.fromkeys(meshes))
+                    axis, sign = {"x": (0, 1), "-x": (0, -1), "y": (1, 1), "-y": (1, -1),
+                                  "z": (2, 1), "-z": (2, -1)}[e.get("order", "x")]
+                    bpy.context.view_layer.update()
+                    meshes.sort(key=lambda o: sign * o.matrix_world.translation[axis])
+                    for i, m in enumerate(meshes):
+                        obby.vanish(ctx, [m], ctx.T(t_) + e["spread"] * i / max(1, len(meshes) - 1),
+                                    mats["missing"], flash=e.get("flash", 0.09))
+                else:
+                    obby.vanish(ctx, obs, ctx.T(t_), mats["missing"], flash=e.get("flash", 0.09))
         elif k == "select":
             obby.selection(ctx, e.get("name", "select"), tuple(e["lo"]), tuple(e["hi"]),
                            ctx.T(e["from"]), ctx.T(e["to"]))
@@ -283,7 +295,21 @@ def build(episode_path, timeline_path, tex_dir):
             a = actors[e["actor"]]
             off = tuple(e.get("offset", (0, 0, 0)))
             fx.orbit(ctx, lambda t: add(a.state_at(t)["loc"], off), ctx.T(e["from"]),
-                     ctx.T(e["to"]), tex, mats)
+                     ctx.T(e["to"]), tex, mats, n=e.get("n", 30),
+                     radius=tuple(e.get("radius", (9, 17))), size=tuple(e.get("size", (0.6, 1.8))))
+        elif k == "tnt":
+            sets.setdefault("made", {})[e.get("name", "tnt")] = obby.tnt(
+                ctx, tex, tuple(e["at"]), ctx.T(e["place"]), ctx.T(e["lit"]), ctx.T(e["gone"]),
+                name=e.get("name", "tnt"), size=e.get("size", 1.0))
+        elif k == "throw":
+            held = bpy.data.objects[e["held"]]
+            sets.setdefault("made", {})[e["name"]] = obby.throw(
+                ctx, held, tuple(e["from_at"]), tuple(e["to_at"]), ctx.T(e["from"]), ctx.T(e["to"]),
+                height=e.get("height", 1.5), spin=e.get("spin", 9.0), name=e["name"])
+        elif k == "null_smile":
+            a = actors[e["actor"]]
+            obby.null_smile(ctx, tex, a.rig, ep["actors"][e["actor"]].get("s", 9.0), ctx.T(e["at"]),
+                            expr=e.get("expr", "happy"))
 
     sc = bpy.context.scene
     sc.frame_start, sc.frame_end = 1, ctx.F(ctx.end)

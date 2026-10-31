@@ -483,6 +483,39 @@ def noob_faces():
     return out
 
 
+def tnt_side():
+    """Our own explosive block: red planks, a pale band with dark letters."""
+    rnd = random.Random(21)
+    img = _noise(16, 16, (196, 40, 32), 10, 21)
+    px = img.load()
+    for x in (3, 7, 11, 15):                     # darker seams between the sticks
+        for y in range(16):
+            px[x, y] = _jitter((140, 24, 20), 6, rnd)
+    for y in range(5, 11):
+        for x in range(16):
+            px[x, y] = _jitter((232, 228, 220), 5, rnd)
+    T = ["###", ".#.", ".#.", ".#."]
+    N = ["#..#", "##.#", "#.##", "#..#"]
+    x0 = 1
+    for glyph in (T, N, T):
+        for gy, row in enumerate(glyph):
+            for gx, ch in enumerate(row):
+                if ch == "#":
+                    px[x0 + gx, 6 + gy] = (30, 26, 28)
+        x0 += len(glyph[0]) + 1
+    return img
+
+
+def tnt_top():
+    rnd = random.Random(22)
+    img = _noise(16, 16, (196, 40, 32), 10, 22)
+    px = img.load()
+    for y in range(5, 11):
+        for x in range(5, 11):
+            px[x, y] = _jitter((70, 64, 60), 6, rnd)    # the fuse socket
+    return img
+
+
 FACE_SETS = {"steve": steve_faces, "noob": noob_faces}
 
 
@@ -498,6 +531,7 @@ ALL = {
     "obsidian": obsidian, "zombie_face": zombie_face, "zombie_shirt": zombie_shirt,
     "zombie_arm": zombie_arm, "zombie_leg": zombie_leg,
     "dragon_hide": dragon_hide, "dragon_wing": dragon_wing, "dragon_eye": dragon_eye,
+    "tnt_side": tnt_side, "tnt_top": tnt_top,
 }
 
 

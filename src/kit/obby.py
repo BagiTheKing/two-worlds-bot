@@ -254,7 +254,10 @@ PIZZA = [((2.4, 2.4, 0.3), (0, 0, 0.15 + 0.42 * k), "orange" if k % 2 == 0 else 
          for k in range(0, 9, 2) for x, y in ((-0.6, -0.5), (0.5, 0.3), (-0.2, 0.6))]
 DOOR = [((0.25, 0.3, 2.6), (-0.65, 0, 1.3), "white"), ((0.25, 0.3, 2.6), (0.65, 0, 1.3), "white"),
         ((1.55, 0.3, 0.25), (0, 0, 2.72), "white")]
-SHAPES = {"duck": DUCK, "castle": CASTLE, "pizza": PIZZA, "door": DOOR}
+# episode 6: the Noob's wall, 4 x 3 one-unit blocks, built bottom row first
+WALL = [((1.0, 0.6, 1.0), (x - 1.5, 0, z + 0.5), ("red", "blue", "yellow", "green")[(i + z) % 4])
+        for z in range(3) for i, x in enumerate(range(4))]
+SHAPES = {"duck": DUCK, "castle": CASTLE, "pizza": PIZZA, "door": DOOR, "wall": WALL}
 EXTRA = {"black": (24, 24, 30)}
 
 
@@ -373,3 +376,93 @@ def wand(ctx, rig, name="wand", arm="arm_r"):
     box(f"{name}_handle", (0.08, 0.08, 0.5), (0, 0, 0.12), {"default": stick}, grip, bevel=0.02)
     box(f"{name}_tip", (0.16, 0.16, 0.16), (0, 0, 0.42), {"default": tip}, grip, bevel=0.03)
     return grip
+
+
+# ------------------------------------------------- episode 6: against Null
+
+def tnt(ctx, tex, at, t_place, t_lit, t_gone, name="tnt", size=1.0):
+    """Steve's explosive block (our own design): pops in at t_place; from
+    t_lit its fuse sparks and the block blinks white, until t_gone (when it
+    is deleted). Returns the body and fuse, for vanish()."""
+    side = material(f"{name}_side", tex=tex["tnt_side"], rough=0.8)
+    top = material(f"{name}_top", tex=tex["tnt_top"], rough=0.8)
+    root = empty(f"{name}_root", tuple(at))
+    body = box(f"{name}_body", (size,) * 3, (0, 0, size / 2),
+               {"top": top, "bottom": top, "default": side}, root)
+    _key_scale(root, ctx, ((0, 0.001), (t_place, 0.001), (t_place + 0.08, 1.15), (t_place + 0.16, 1.0)))
+    # primed: a white shell on every other fifth of a second
+    shell = box(f"{name}_blink", (size * 1.02,) * 3, (0, 0, size / 2),
+                {"default": material(f"{name}_blink", (1, 1, 1), emission=(1, 1, 1), strength=1.5)}, root)
+    f0, f1 = ctx.F(t_lit), ctx.F(t_gone)
+    shell.hide_render = True
+    shell.keyframe_insert("hide_render", frame=1)
+    for k, f in enumerate(range(f0, f1, 5)):
+        shell.hide_render = k % 2 == 1
+        shell.keyframe_insert("hide_render", frame=f)
+    shell.hide_render = True
+    shell.keyframe_insert("hide_render", frame=f1)
+    # the fuse: a short stub and sparks jumping over it
+    fuse = box(f"{name}_fuse", (0.08, 0.08, 0.22), (0, 0, size + 0.11),
+               {"default": material(f"{name}_fuse", srgb((60, 56, 52)), rough=0.9)}, root)
+    spark = material(f"{name}_spark", (0, 0, 0), emission=(1.0, 0.75, 0.3), strength=12)
+    rnd = random.Random(31)
+    sparks = []
+    for i in range(6):
+        sp = box(f"{name}_spark_{i}", (0.05,) * 3, (0, 0, 0), {"default": spark}, root)
+        show_between(sp, f0, f1)
+        for f in range(f0, f1 + 1, 2):
+            sp.location = (rnd.uniform(-0.15, 0.15), rnd.uniform(-0.15, 0.15), size + 0.22 + rnd.uniform(0, 0.3))
+            sp.keyframe_insert("location", frame=f)
+        sparks.append(sp)
+    return [body, fuse]
+
+
+def throw(ctx, held, a, b, t0, t1, height=1.5, spin=9.0, name="thrown"):
+    """The held tool (an empty with box children, e.g. Steve's pickaxe) leaves
+    the hand at t0 and flies from a to b along an arc, spinning, until t1.
+    The one in the hand is hidden from t0. Returns the flying objects."""
+    fly = empty(f"{name}_root", tuple(a))
+    obs = [fly]
+    for ch in held.children:
+        if ch.type == "MESH":
+            c = ch.copy()
+            bpy.context.scene.collection.objects.link(c)
+            c.parent = fly
+            c.matrix_parent_inverse.identity()
+            c.animation_data_clear()
+            obs.append(c)
+        ch.hide_render = False
+        ch.keyframe_insert("hide_render", frame=1)
+        ch.hide_render = True
+        ch.keyframe_insert("hide_render", frame=ctx.F(t0))
+    fly.hide_render = True
+    for o_ in obs:
+        o_.hide_render = True
+        o_.keyframe_insert("hide_render", frame=1)
+        o_.hide_render = False
+        o_.keyframe_insert("hide_render", frame=ctx.F(t0))
+    for f in range(ctx.F(t0), ctx.F(t1) + 1):
+        u = ((f - 1) / ctx.fps - t0) / (t1 - t0)
+        p = [a[i] + (b[i] - a[i]) * u for i in range(3)]
+        p[2] += 4 * height * u * (1 - u)
+        fly.location = p
+        fly.rotation_euler = (spin * u * (t1 - t0), 0, 0)
+        fly.keyframe_insert("location", frame=f)
+        fly.keyframe_insert("rotation_euler", frame=f)
+    return obs
+
+
+def null_smile(ctx, tex, rig, s, t, expr="happy", name="null_smile"):
+    """Null copies the Noob's face: his smile glowing on the missing-texture
+    face, flickering in over a third of a second, then staying."""
+    m = material(f"{name}_mat", tex=tex[f"noob_face_{expr}"], smooth_tex=True, alpha_tex=True,
+                 emission=(1, 1, 1), strength=4.0)
+    plate = box(name, (0.36 * s, 0.002, 0.30 * s), (0, -0.2315 * s - 0.004 * s, 0.24 * s),
+                {"default": m}, rig.parts["head"])
+    plate["face_plate"] = 1
+    keys = [(1, True), (ctx.F(t), False), (ctx.F(t + 0.08), True), (ctx.F(t + 0.16), False),
+            (ctx.F(t + 0.22), True), (ctx.F(t + 0.3), False)]
+    for f, h in keys:
+        plate.hide_render = h
+        plate.keyframe_insert("hide_render", frame=max(1, f))
+    return plate

@@ -139,6 +139,14 @@ def fall(c, t, st, actor=None):
     return dict(st, loc=loc), (parts if t < t1 else None)
 
 
+def slide(c, t, st, actor=None):
+    """Glides to `to_at` [x, y, z] without walking (Null drifting through the
+    void), easing in and out."""
+    u = ss(c["t0"], c["t1"], t)
+    a, b = st["loc"], tuple(c["to_at"])
+    return dict(st, loc=lerp(a, b, u)), None
+
+
 def rise(c, t, st, actor=None):
     u = ss(c["t0"], c["t1"], t)
     a = st["loc"]
@@ -319,7 +327,7 @@ def leap(c, t, st, actor=None):
 
 LOCOMOTION = {"walk": walk, "run": run, "set": set_, "face": face, "fall": fall,
               "rise": rise, "hang": hang, "dangle": dangle, "bounce": bounce, "pop": pop,
-              "fly": fly, "ride": ride, "leap": leap}
+              "fly": fly, "ride": ride, "leap": leap, "slide": slide}
 def punch(c, t, st, actor=None):
     """One punch: wind-up, strike landing on the timeline's impact, then a
     stinging hand. The fist lands on the first impact inside the clip."""

@@ -1025,6 +1025,18 @@ def sfx_whir(dur):
     return norm(air * (0.35 + 0.65 * np.abs(np.sin(2 * np.pi * 0.8 * x))) * np.minimum(1, x / 0.3), 0.4)
 
 
+def sfx_fuse(dur):
+    """A lit fuse (our own): bright hiss with crackles, cut dead at the end
+    (the TNT is deleted mid-hiss)."""
+    x = t(dur)
+    hiss = band(rng.standard_normal(len(x)), 2500, 9000) * (0.6 + 0.4 * np.sin(2 * np.pi * 13 * x))
+    crack = np.zeros(len(x))
+    for _ in range(int(dur * 14)):
+        i = rng.integers(0, max(1, len(x) - 200))
+        crack[i:i + 120] += rng.uniform(0.4, 1.0) * np.exp(-np.arange(120) / 25) * rng.choice((-1, 1))
+    return norm((hiss + 1.5 * crack) * np.minimum(1, x / 0.05), 0.5)
+
+
 def sfx_snap():
     """A portal slamming shut: a hard hit, a sub drop, a burst of glitch."""
     out = np.zeros(int(1.6 * SR))
@@ -1089,7 +1101,8 @@ SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1
        "pop": lambda e: sfx_pop(), "thump": lambda e: sfx_thump(e.get("freq", 70), 0.45, 0.6),
        "glitch": lambda e: sfx_glitch(e.get("dur", 0.3)), "portal": lambda e: sfx_portal(e.get("dur", 0.9)),
        "whoosh": lambda e: sfx_whoosh(e.get("dur", 0.7)), "break": lambda e: sfx_break(),
-       "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0))}
+       "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
+       "fuse": lambda e: sfx_fuse(e.get("dur", 1.0))}
 
 
 def void_wind(length):

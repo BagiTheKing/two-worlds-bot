@@ -1,0 +1,1280 @@
+{
+  "id": "ep06_deleting_itself",
+  "number": 6,
+  "title": "The World Started Deleting Itself",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely"
+    },
+    "null": {
+      "voice": "am_puck",
+      "speed": 0.92,
+      "pitch": 1.0,
+      "caption": "#FF3BD4",
+      "fx": "null",
+      "emotion": 0.25,
+      "pace": 0.3,
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+    }
+  },
+  "music": [
+    {
+      "cue": "dread",
+      "from": 0,
+      "to": "react",
+      "gain": 0.2,
+      "minimal": true
+    },
+    {
+      "cue": "dread",
+      "from": "gap",
+      "to": "end",
+      "gain": 0.24,
+      "hit_at": "gap",
+      "minimal": true
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "sky",
+      "from": 0,
+      "to": "react",
+      "gain": 0.05,
+      "fade_in": 0.2
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "glitch",
+      "at": -0.2,
+      "dur": 1.8,
+      "gain": 0.55
+    },
+    {
+      "kind": "glitch",
+      "at": 0.75,
+      "dur": 0.25,
+      "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": 1.25,
+      "dur": 0.3,
+      "gain": 0.5
+    },
+    {
+      "kind": "sub_drop",
+      "at": "react",
+      "dur": 1.4,
+      "gain": 0.5
+    },
+    {
+      "kind": "groan",
+      "at": "rise",
+      "dur": 2.4,
+      "gain": 0.45
+    },
+    {
+      "kind": "thump",
+      "at": "rise_end",
+      "freq": 45,
+      "gain": 0.6
+    },
+    {
+      "kind": "whoosh",
+      "at": "throw+0.35",
+      "dur": 0.6,
+      "gain": 0.4
+    },
+    {
+      "kind": "glitch",
+      "at": "pick_gone+0.2",
+      "dur": 0.25,
+      "gain": 0.55
+    },
+    {
+      "kind": "place",
+      "from": "wall",
+      "to": "wall+0.6",
+      "count": 8,
+      "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": "wall_gone+0.1",
+      "dur": 0.6,
+      "gain": 0.5
+    },
+    {
+      "kind": "place",
+      "from": "tnt",
+      "to": "tnt+0.1",
+      "count": 1,
+      "gain": 0.6
+    },
+    {
+      "kind": "fuse",
+      "at": "tnt+0.4",
+      "dur": 1.35,
+      "gain": 0.45
+    },
+    {
+      "kind": "glitch",
+      "at": "tnt_gone+0.35",
+      "dur": 0.2,
+      "gain": 0.6
+    },
+    {
+      "kind": "glitch",
+      "at": "copy",
+      "dur": 0.3,
+      "gain": 0.35
+    }
+  ],
+  "overlays": [
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 52%",
+      "alert": true,
+      "from": "gap",
+      "to": "endcard"
+    },
+    {
+      "type": "endcard",
+      "over": true,
+      "from": "endcard",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 7",
+      "next_title": "PATCH REMEMBERED ANOTHER WORLD",
+      "question": "A: RUN  ·  B: HIDE",
+      "question_sub": "Comment A or B",
+      "pace": 0.25
+    }
+  ],
+  "actors": {
+    "noob": {
+      "rig": "noob",
+      "faces": "moments",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 0.25
+    },
+    "steve": {
+      "rig": "steve",
+      "faces": "moments",
+      "at": [
+        -2.4,
+        0.8,
+        0
+      ],
+      "yaw": 0.35
+    },
+    "patch": {
+      "rig": "patch",
+      "s": 1.4,
+      "at": [
+        0.3,
+        -0.9,
+        2.0
+      ],
+      "yaw": 0.2
+    },
+    "dragon": {
+      "rig": "dragon",
+      "s": 1.0,
+      "at": [
+        6,
+        18,
+        10
+      ],
+      "yaw": 0.25,
+      "freeze": 0
+    },
+    "null": {
+      "rig": "null",
+      "s": 6.5,
+      "at": [
+        0.5,
+        -16,
+        -30
+      ],
+      "yaw": 3.1416,
+      "idle": 0.02
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": 0,
+      "to": "steve_stop.end"
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": 0,
+      "to": "noob_delete.end"
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "react",
+      "to": "rise_end",
+      "head": [
+        -0.3,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "react",
+      "to": "rise_end",
+      "head": [
+        -0.3,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "react",
+      "to": "rise_end"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "surprised",
+      "from": "react+0.2",
+      "to": "rise_end"
+    },
+    {
+      "who": "null",
+      "do": "rise",
+      "from": "rise",
+      "to": "rise_end.end",
+      "z": -4
+    },
+    {
+      "who": "null",
+      "do": "slide",
+      "from": "throw",
+      "to": "tnt_gone.end",
+      "to_at": [
+        0.5,
+        -12,
+        -4
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "raise_arm",
+      "from": "throw",
+      "to": "throw+0.45",
+      "arm": "arm_l",
+      "angle": 2.7,
+      "out": 0.1,
+      "ease": 0.25
+    },
+    {
+      "who": "steve",
+      "do": "raise_arm",
+      "from": "throw+0.45",
+      "to": "pick_gone",
+      "arm": "arm_l",
+      "angle": 1.2,
+      "out": 0.1,
+      "ease": 0.12
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "unimpressed",
+      "from": "steve_pick",
+      "to": "steve_pick.end+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "raise_arm",
+      "from": "wall",
+      "to": "wall_gone",
+      "arm": "arm_l",
+      "angle": 1.75,
+      "out": 0.6,
+      "ease": 0.2
+    },
+    {
+      "who": "null",
+      "do": "raise_arm",
+      "from": "wall_gone",
+      "to": "tnt",
+      "arm": "arm_r",
+      "angle": 1.4,
+      "ease": 0.5
+    },
+    {
+      "who": "steve",
+      "do": "swing",
+      "from": "tnt",
+      "to": "tnt+0.5",
+      "arm": "arm_r",
+      "count": 1
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "noob_boom",
+      "to": "noob_boom.end"
+    },
+    {
+      "who": "patch",
+      "do": "scan",
+      "from": "patch_correct",
+      "to": "patch_correct.end"
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "patch_watch",
+      "to": "patch_watch+0.4",
+      "yaw": 0.0
+    },
+    {
+      "who": "null",
+      "do": "slide",
+      "from": "patch_correct",
+      "to": "face",
+      "to_at": [
+        1.6,
+        -4.4,
+        -10.360000000000001
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "face",
+      "to": "face+0.3",
+      "yaw": 0.0
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_hi",
+      "to": "hold"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "hold",
+      "to": "end"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "scared",
+      "from": "hold",
+      "to": "end"
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ],
+        [
+          "react",
+          5.0,
+          1.25
+        ],
+        [
+          "react+0.6",
+          3.2,
+          0.85
+        ]
+      ]
+    },
+    {
+      "kind": "obby_course",
+      "platforms": [
+        {
+          "name": "noob_pad",
+          "at": [
+            1.6,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "steve_pad",
+          "at": [
+            -2.4,
+            0.8,
+            0
+          ],
+          "size": [
+            3,
+            3.2
+          ],
+          "colour": "green"
+        },
+        {
+          "name": "duck_pad",
+          "at": [
+            4.7,
+            2.0,
+            0
+          ],
+          "size": [
+            2.8,
+            3.4
+          ],
+          "colour": "white"
+        },
+        {
+          "name": "door_pad",
+          "at": [
+            4.6,
+            -2.0,
+            0
+          ],
+          "size": [
+            2.6,
+            1.6
+          ],
+          "colour": "pink"
+        }
+      ]
+    },
+    {
+      "kind": "spawn_pad",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "appear": 0
+    },
+    {
+      "kind": "wand",
+      "actor": "noob",
+      "arm": "arm_l"
+    },
+    {
+      "kind": "construct",
+      "name": "door",
+      "shape": "door",
+      "at": [
+        4.6,
+        -2.0,
+        0
+      ],
+      "build": [
+        -3.0,
+        -2.6
+      ],
+      "open": -1.5,
+      "yaw": -0.6
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "dragon"
+      ],
+      "at": [
+        "-0.25"
+      ],
+      "spread": 1.7,
+      "order": "-x",
+      "flash": 0.2
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "duck_pad",
+        "door",
+        "door_pad"
+      ],
+      "at": [
+        "0.75",
+        "1.25",
+        "1.35"
+      ]
+    },
+    {
+      "kind": "orbit",
+      "actor": "null",
+      "offset": [
+        0,
+        0,
+        7.8
+      ],
+      "from": "rise",
+      "to": "patch_correct",
+      "n": 22,
+      "radius": [
+        5,
+        9
+      ],
+      "size": [
+        0.5,
+        1.2
+      ]
+    },
+    {
+      "kind": "throw",
+      "name": "pick",
+      "held": "steve_pickaxe",
+      "from_at": [
+        -1.9,
+        0.5,
+        2.3
+      ],
+      "to_at": [
+        0.5,
+        -12,
+        6.5
+      ],
+      "from": "throw+0.4",
+      "to": "pick_gone+0.9",
+      "height": 1.2
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "pick"
+      ],
+      "at": [
+        "pick_gone+0.2"
+      ],
+      "flash": 0.12
+    },
+    {
+      "kind": "construct",
+      "name": "wall",
+      "shape": "wall",
+      "at": [
+        -0.4,
+        -3.3,
+        0
+      ],
+      "build": [
+        "wall",
+        "wall+0.6"
+      ],
+      "scale": 1.0
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "wall"
+      ],
+      "at": [
+        "wall_gone+0.1"
+      ],
+      "spread": 0.55,
+      "order": "-z",
+      "flash": 0.12
+    },
+    {
+      "kind": "tnt",
+      "name": "tnt",
+      "at": [
+        -1.5,
+        -0.35,
+        0
+      ],
+      "place": "tnt+0.05",
+      "lit": "tnt+0.4",
+      "gone": "tnt_gone+0.35"
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "tnt"
+      ],
+      "at": [
+        "tnt_gone+0.35"
+      ],
+      "flash": 0.12
+    },
+    {
+      "kind": "null_smile",
+      "actor": "null",
+      "at": "copy"
+    },
+    {
+      "kind": "fill",
+      "dir": [
+        -0.4,
+        0.9,
+        0.1
+      ],
+      "from": "react",
+      "to": "end",
+      "color": [
+        1.0,
+        0.25,
+        0.85
+      ],
+      "energy": 0.5
+    }
+  ],
+  "shots": [
+    {
+      "name": "hook",
+      "from": 0,
+      "to": "steve_stop",
+      "lens": 18,
+      "path": [
+        [
+          0,
+          [
+            0.6,
+            -4.6,
+            1.3
+          ]
+        ],
+        [
+          "steve_stop",
+          [
+            0.7,
+            -4.2,
+            1.35
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            3.4,
+            6.0,
+            4.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_stop",
+      "from": "steve_stop",
+      "to": "react",
+      "lens": 22,
+      "path": [
+        [
+          "steve_stop",
+          [
+            -0.4,
+            -5.2,
+            1.6
+          ]
+        ],
+        [
+          "react",
+          [
+            -0.1,
+            -4.7,
+            1.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_stop",
+          [
+            -0.4,
+            0.4,
+            1.35
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "react",
+      "from": "react",
+      "to": "rise",
+      "lens": 20,
+      "path": [
+        [
+          "react",
+          [
+            0.0,
+            -6.0,
+            0.8
+          ]
+        ],
+        [
+          "rise",
+          [
+            0.0,
+            -5.4,
+            0.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "react",
+          [
+            -0.2,
+            0.0,
+            1.7
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "rise",
+      "from": "rise",
+      "to": "throw",
+      "lens": 18,
+      "path": [
+        [
+          "rise",
+          [
+            2.0,
+            -2.2,
+            0.9
+          ]
+        ],
+        [
+          "throw",
+          [
+            1.9,
+            -2.5,
+            1.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "rise",
+          [
+            2.0,
+            -16,
+            -1.0
+          ]
+        ],
+        [
+          "rise_end.end",
+          [
+            2.0,
+            -16,
+            5.5
+          ]
+        ]
+      ],
+      "shake": 0.0
+    },
+    {
+      "name": "throw",
+      "from": "throw",
+      "to": "pick_gone",
+      "lens": 26,
+      "path": [
+        [
+          "throw",
+          [
+            -1.8,
+            -3.4,
+            1.7
+          ]
+        ],
+        [
+          "pick_gone",
+          [
+            -1.8,
+            -3.1,
+            1.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "throw",
+          [
+            -2.3,
+            0.8,
+            1.5
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "pick_gone",
+      "from": "pick_gone",
+      "to": "steve_pick",
+      "lens": 20,
+      "path": [
+        [
+          "pick_gone",
+          [
+            -4.5,
+            2.5,
+            2.4
+          ]
+        ],
+        [
+          "steve_pick",
+          [
+            -4.4,
+            2.2,
+            2.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "pick_gone",
+          [
+            -0.5,
+            -9.0,
+            4.5
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_pick",
+      "from": "steve_pick",
+      "to": "wall",
+      "lens": 26,
+      "path": [
+        [
+          "steve_pick",
+          [
+            -1.8,
+            -3.4,
+            1.7
+          ]
+        ],
+        [
+          "wall",
+          [
+            -1.8,
+            -3.15,
+            1.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_pick",
+          [
+            -2.3,
+            0.8,
+            1.5
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "wall",
+      "from": "wall",
+      "to": "tnt",
+      "lens": 22,
+      "path": [
+        [
+          "wall",
+          [
+            3.6,
+            -7.4,
+            1.8
+          ]
+        ],
+        [
+          "tnt",
+          [
+            3.5,
+            -7.0,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "wall",
+          [
+            0.6,
+            -1.8,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "tnt",
+      "from": "tnt",
+      "to": "patch_correct",
+      "lens": 24,
+      "path": [
+        [
+          "tnt",
+          [
+            -0.6,
+            -4.4,
+            1.3
+          ]
+        ],
+        [
+          "patch_correct",
+          [
+            -0.6,
+            -4.1,
+            1.35
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "tnt",
+          [
+            -1.2,
+            0.2,
+            0.9
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_correct",
+      "from": "patch_correct",
+      "to": "face",
+      "lens": 28,
+      "path": [
+        [
+          "patch_correct",
+          [
+            4.2,
+            -2.2,
+            2.3
+          ]
+        ],
+        [
+          "face",
+          [
+            4.0,
+            -2.1,
+            2.3
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_correct",
+          [
+            0.3,
+            -1.6,
+            2.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "face",
+      "from": "face",
+      "to": "patch_watch",
+      "lens": 26,
+      "path": [
+        [
+          "face",
+          [
+            5.0,
+            -1.0,
+            1.9
+          ]
+        ],
+        [
+          "patch_watch",
+          [
+            4.8,
+            -1.2,
+            1.85
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "face",
+          [
+            1.6,
+            -2.3,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_watch",
+      "from": "patch_watch",
+      "to": "gap",
+      "lens": 30,
+      "path": [
+        [
+          "patch_watch",
+          [
+            0.35,
+            -2.55,
+            2.05
+          ]
+        ],
+        [
+          "gap",
+          [
+            0.33,
+            -2.45,
+            2.05
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_watch",
+          [
+            0.3,
+            -0.9,
+            2.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "gap",
+      "from": "gap",
+      "to": "end",
+      "lens": 20,
+      "path": [
+        [
+          "gap",
+          [
+            6.5,
+            -6.5,
+            3.2
+          ]
+        ],
+        [
+          "end",
+          [
+            6.2,
+            -6.2,
+            3.1
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "gap",
+          [
+            0.6,
+            -2.0,
+            1.5
+          ]
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.2
+    },
+    {
+      "line": "noob",
+      "name": "noob_delete",
+      "text": "The world is DELETING itself!",
+      "direction_text": "[panicked, shouting] The world is DELETING itself!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "line": "steve",
+      "name": "steve_stop",
+      "text": "Then we stop it.",
+      "direction_text": "[calm, flat, determined] Then we stop it.",
+      "pad": 0.1
+    },
+    {
+      "beat": "react",
+      "dur": 0.9
+    },
+    {
+      "beat": "rise",
+      "dur": 1.4
+    },
+    {
+      "line": "patch",
+      "name": "patch_ohno",
+      "text": "Oh no.",
+      "direction_text": "[quiet, small, polite] Oh no.",
+      "pad": 0.1
+    },
+    {
+      "beat": "rise_end",
+      "dur": 0.9
+    },
+    {
+      "beat": "throw",
+      "dur": 0.9
+    },
+    {
+      "beat": "pick_gone",
+      "dur": 0.9
+    },
+    {
+      "line": "steve",
+      "name": "steve_pick",
+      "text": "...My pickaxe.",
+      "direction_text": "[flat, deadpan, a little hurt] ...My pickaxe.",
+      "pad": 0.15
+    },
+    {
+      "beat": "wall",
+      "dur": 0.5
+    },
+    {
+      "line": "noob",
+      "name": "noob_wall",
+      "text": "Wall!",
+      "direction_text": "[proud, quick] Wall!",
+      "pad": 0.1
+    },
+    {
+      "beat": "wall_gone",
+      "dur": 0.9
+    },
+    {
+      "line": "noob",
+      "name": "noob_nowall",
+      "text": "...No wall.",
+      "direction_text": "[deflated] ...No wall.",
+      "pad": 0.15
+    },
+    {
+      "beat": "tnt",
+      "dur": 0.8
+    },
+    {
+      "beat": "tnt_gone",
+      "dur": 0.9
+    },
+    {
+      "line": "noob",
+      "name": "noob_boom",
+      "text": "It deleted the BOOM!",
+      "direction_text": "[outraged, comic] It deleted the BOOM!",
+      "pad": 0.15
+    },
+    {
+      "line": "patch",
+      "name": "patch_correct",
+      "text": "It's not attacking. It's correcting.",
+      "direction_text": "[calm, quiet, serious] It's not attacking. It's correcting.",
+      "pad": 0.15
+    },
+    {
+      "beat": "face",
+      "dur": 0.6
+    },
+    {
+      "line": "noob",
+      "name": "noob_hi",
+      "text": "...Hi?",
+      "direction_text": "[tiny, nervous, a forced smile] ...Hi?",
+      "pad": 0.1
+    },
+    {
+      "beat": "copy",
+      "dur": 0.5
+    },
+    {
+      "line": "null",
+      "name": "null_hi",
+      "text": "...Hi?",
+      "direction_text": "[slow, flat, copying] ...Hi?",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "beat": "hold",
+      "dur": 0.5
+    },
+    {
+      "line": "patch",
+      "name": "patch_watch",
+      "text": "Someone is watching... you. Should we run, or hide?",
+      "direction_text": "[quiet, serious, turning to the audience] Someone is watching... you. Should we run, or hide?",
+      "pad": 0.3
+    },
+    {
+      "beat": "gap",
+      "dur": 1.2
+    },
+    {
+      "beat": "endcard",
+      "dur": 1.5
+    }
+  ]
+}
