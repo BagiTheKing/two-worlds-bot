@@ -15,13 +15,13 @@ checklist at the end. Add to it after every episode's stats.
 
 ## 1. Measured
 
-| | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 |
-|---|---|---|---|---|---|
-| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% |
-| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** |
-| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | **1.53k, still climbing** |
-| Shorts feed share | | | 94.4% | 95.9% | 95.3% |
-| New subscribers | | | +1 | +2 | +3 |
+| | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 | Ep5 (38 h) |
+|---|---|---|---|---|---|---|
+| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% | **51.8%** |
+| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** | 0:21 (70.7%) |
+| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | 1.53k, still climbing | **2.44k, still climbing** |
+| Shorts feed share | | | 94.4% | 95.9% | 95.3% | 94.2% (search 4.7%) |
+| New subscribers | | | +1 | +2 | +3 | +3 |
 
 What it means:
 
@@ -42,15 +42,30 @@ What it means:
   frame that loops into the first, does not.
 - **Measured audience is 25-44** (signed-in adults), likely kids on parents'
   devices. Keep "not made for kids": the comment questions need comments.
-- **Frame 1 is not the lever for "stayed to watch".** Five different first
-  frames (a walk, no voice, a dragon, a clean gag, a face) never got it above
-  40%, and it drifted down (37 -> 32 -> 26%) as YouTube tested the videos
-  on wider audiences. Stop optimising it through the first frame.
+- **A still first frame is not the lever for "stayed to watch"; an action
+  already happening is.** Five different first frames (a walk, no voice, a
+  dragon, a clean gag, a face) never got it above 40%. Ep5 got 51.8%: from
+  the very first frame something was being built (a duck popping in, block by
+  block, with sound), the first line came at 0.2 s and was a premise a
+  stranger gets ("I can BUILD stuff!"), and the title named a game idea
+  everyone knows (creative mode, which also brought 4.7% from search). One
+  episode can't say which of the three did it; keep all three. (Measured at
+  38 h; earlier episodes drifted down a few points after that.)
+- **The 0:04-0:08 drop is back in Ep5**: the audience fell from 114% to 72%
+  between 0:04 and 0:08, then only slowly. That stretch was two static
+  close-ups with insider lines ("Since when?" / "Since the block!": only
+  Ep4 viewers know which block), then the statue. Either the action
+  stopping or the reference to a past episode loses the strangers (94%).
+  Both point the same way: no static talking heads and no lines that need
+  an earlier episode before 0:08; carry the link to the last episode in the
+  picture (the frozen dragon did), not in the dialogue.
 - **Watch time and growth are what YouTube rewards here.** Ep4 had the lowest
   "stayed" but the best retention (72.9%), rewatches (409 engaged views from
   270 viewers), the most subscribers, and the first view curve that kept
   climbing after day one. Judge episodes by average %, continued growth and
   subscribers first, "stayed" second.
+- **Rewatching keeps growing**: Ep5 had 1.2k engaged views from 576 viewers
+  (2.1 each; Ep4 1.5).
 - **Ep4 got the creator's quality fixes** (continuity link, reframing,
   painted-on faces, a calm background): the episode people watched longest.
 
@@ -95,7 +110,8 @@ What it means:
   "merged, not deleted").
 - **When a viewer's idea goes into an episode, credit them** in its
   description ("Idea by @..."). Ep5 (Noob Found Creative Mode) can use the
-  Noob building with BTools: @youssefakram7493's idea.
+  Noob building with BTools: @youssefakram7493's idea. He thanked us for
+  the credit and came back with a new theory the same day: crediting works.
 
 ## 3. Production traps
 
@@ -129,8 +145,11 @@ What it means:
 
 ## 4. Checklist for every cut
 
-1. Frame 1: a face or a big moment, readable with zero context.
-2. The link to the previous episode is clear within the first ~3 s.
+1. Frame 1: an action already happening (with sound) and, within the first
+   second, a one-line premise a stranger understands.
+2. The link to the previous episode is clear within the first ~3 s, shown
+   in the picture; until 0:08 no line needs an earlier episode and no
+   static talking heads (testing from Ep6).
 3. At most one extra element on screen besides captions and the watermark.
 4. A big visual moment somewhere in the middle.
 5. Faces change only on the key moments, and look painted on.
@@ -150,3 +169,4 @@ What it means:
 | Ep3 | Spectacle hook (dragon), loop ending, 1.5 s end card | Stayed flat; no end-card drop; second push at 32 h |
 | Clean test | Same gag, captions only | Stayed flat (32%); no 0:04 cliff; 119% retention |
 | Ep4 | Face-first hook, faces on key moments, clean screen, Ep3 link, reframing | Stayed lowest (25.7%) but best retention (72.9%), rewatches, +3 subs, views still climbing at 35 h |
+| Ep5 | Action from frame 1 (a build popping in), premise line at 0.2 s, "creative mode" title, viewer's idea credited, big erase-wave spectacle | **Stayed 51.8% (best by 12 pts)**, retention 70.7%, 2.44k views at 38 h (best), +3 subs; drop at 0:04-0:08 during close-ups with an insider line |
