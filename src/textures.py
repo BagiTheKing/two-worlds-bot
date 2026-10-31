@@ -491,11 +491,11 @@ def tnt_side():
     for x in (3, 7, 11, 15):                     # darker seams between the sticks
         for y in range(16):
             px[x, y] = _jitter((140, 24, 20), 6, rnd)
-    for y in range(5, 11):
+    for y in range(5, 12):
         for x in range(16):
             px[x, y] = _jitter((232, 228, 220), 5, rnd)
-    T = ["###", ".#.", ".#.", ".#."]
-    N = ["#..#", "##.#", "#.##", "#..#"]
+    T = ["###", ".#.", ".#.", ".#.", ".#."]
+    N = ["#...#", "##..#", "#.#.#", "#..##", "#...#"]
     x0 = 1
     for glyph in (T, N, T):
         for gy, row in enumerate(glyph):
