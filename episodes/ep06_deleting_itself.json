@@ -1188,7 +1188,11 @@
       "name": "steve_stop",
       "text": "Then we stop it.",
       "direction_text": "[calm, flat, determined] Then we stop it.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        1.55
+      ]
     },
     {
       "beat": "react",
@@ -1203,7 +1207,11 @@
       "name": "patch_ohno",
       "text": "Oh no.",
       "direction_text": "[quiet, small, polite] Oh no.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        1.72,
+        3.19
+      ]
     },
     {
       "beat": "rise_end",
@@ -1222,7 +1230,11 @@
       "name": "steve_pick",
       "text": "...My pickaxe.",
       "direction_text": "[flat, deadpan, a little hurt] ...My pickaxe.",
-      "pad": 0.15
+      "pad": 0.15,
+      "cut_at": [
+        3.46,
+        4.88
+      ]
     },
     {
       "beat": "wall",
@@ -1233,7 +1245,11 @@
       "name": "noob_wall",
       "text": "Wall!",
       "direction_text": "[proud, quick] Wall!",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        0.84
+      ]
     },
     {
       "beat": "wall_gone",
@@ -1244,7 +1260,11 @@
       "name": "noob_nowall",
       "text": "...No wall.",
       "direction_text": "[deflated] ...No wall.",
-      "pad": 0.15
+      "pad": 0.15,
+      "cut_at": [
+        1.66,
+        2.91
+      ]
     },
     {
       "beat": "tnt",
@@ -1259,14 +1279,22 @@
       "name": "noob_boom",
       "text": "It deleted the BOOM!",
       "direction_text": "[outraged, comic] It deleted the BOOM!",
-      "pad": 0.15
+      "pad": 0.15,
+      "cut_at": [
+        3.02,
+        4.84
+      ]
     },
     {
       "line": "patch",
       "name": "patch_correct",
       "text": "It's not attacking. It's correcting.",
       "direction_text": "[calm, quiet, serious] It's not attacking. It's correcting.",
-      "pad": 0.15
+      "pad": 0.15,
+      "cut_at": [
+        4.9,
+        8.43
+      ]
     },
     {
       "beat": "face",
@@ -1277,7 +1305,11 @@
       "name": "noob_hi",
       "text": "...Hi?",
       "direction_text": "[tiny, nervous, a forced smile] ...Hi?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        8.64,
+        9.94
+      ]
     },
     {
       "beat": "copy",
@@ -1300,7 +1332,12 @@
       "name": "patch_watch",
       "text": "Someone is watching... you. Should we run, or hide?",
       "direction_text": "[quiet, serious, turning to the audience] Someone is watching... you. Should we run, or hide?",
-      "pad": 0.3
+      "pad": 0.3,
+      "cut_at": [
+        10.88,
+        18.22
+      ],
+      "tighten": 0.45
     },
     {
       "beat": "gap",
@@ -1310,5 +1347,6 @@
       "beat": "endcard",
       "dur": 1.5
     }
-  ]
+  ],
+  "tighten_floor": 0.008
 }
