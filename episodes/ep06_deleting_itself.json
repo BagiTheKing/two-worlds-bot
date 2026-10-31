@@ -1348,5 +1348,5 @@
       "dur": 1.5
     }
   ],
-  "tighten_floor": 0.008
+  "tighten_floor": 0.02
 }
