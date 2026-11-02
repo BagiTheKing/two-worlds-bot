@@ -15,13 +15,13 @@ checklist at the end. Add to it after every episode's stats.
 
 ## 1. Measured
 
-| | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 | Ep5 (38 h) |
-|---|---|---|---|---|---|---|
-| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% | **51.8%** |
-| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** | 0:21 (70.7%) |
-| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | 1.53k, still climbing | **2.44k, still climbing** |
-| Shorts feed share | | | 94.4% | 95.9% | 95.3% | 94.2% (search 4.7%) |
-| New subscribers | | | +1 | +2 | +3 | +3 |
+| | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 | Ep5 (38 h) | Ep6 (28 h, final) |
+|---|---|---|---|---|---|---|---|
+| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% | **51.8%** | 44.1% |
+| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** | 0:21 (70.7%) | **0:30 (102.2%)** |
+| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | 1.53k, still climbing | **2.44k, still climbing** | 1.27k, flat after 3 h |
+| Shorts feed share | | | 94.4% | 95.9% | 95.3% | 94.2% (search 4.7%) | 94.7% (search 3.4%) |
+| New subscribers | | | +1 | +2 | +3 | +3 | **+5** |
 
 What it means:
 
@@ -64,6 +64,19 @@ What it means:
   270 viewers), the most subscribers, and the first view curve that kept
   climbing after day one. Judge episodes by average %, continued growth and
   subscribers first, "stayed" second.
+- **Reach is decided in the first test audience, by the first frame.**
+  Ep6 was the best-watched episode (102% average, the middle of the curve
+  almost flat, +5 subscribers) but YouTube stopped pushing it after 3 hours:
+  swipe-away rose from 48% to 56%. Its first frame was a dark dragon far
+  away with a small Noob: readable only with Ep3-5 in mind. Ep5's was a big
+  bright duck popping in right next to the Noob. The link to the last
+  episode must be in the first frame *and* readable to a stranger.
+- **A dark end card is where people leave.** Ep6 lost half its remaining
+  audience the moment the card appeared (about 80% -> 40%); Ep5 hardly any.
+  Put "next" and the question over the last story shot instead, and let the
+  last frame flow into the first so the video loops.
+- **The 0:04-0:08 drop shrank** (Ep6 lost 26% there, Ep5 37%) with one
+  moving shot and Null rising instead of talking heads.
 - **Rewatching keeps growing**: Ep5 had 1.2k engaged views from 576 viewers
   (2.1 each; Ep4 1.5).
 - **Ep4 got the creator's quality fixes** (continuity link, reframing,
@@ -167,8 +180,9 @@ What it means:
 
 ## 4. Checklist for every cut
 
-1. Frame 1: an action already happening (with sound) and, within the first
-   second, a one-line premise a stranger understands.
+1. Frame 1: an action already happening (with sound), bright and close to a
+   character's face, readable with zero context; within the first second, a
+   one-line premise a stranger understands.
 2. The link to the previous episode is clear within the first ~3 s, shown
    in the picture; until 0:08 no line needs an earlier episode and no
    static talking heads (testing from Ep6).
@@ -177,7 +191,8 @@ What it means:
 5. Faces change only on the key moments, and look painted on.
 6. Nothing touching that shouldn't, no glitches that aren't the story.
 7. Every line sounds like what it says; Steve stays Steve.
-8. 1.5 s end card, last frame loops into the first.
+8. No dark end card: "next" and the question over the last story shot,
+   and the last frame flows into the first.
 9. Every line's cut pinned once the voices are approved.
 10. As bright as the original; no backs to the camera.
 11. Every shot checked on its first and last frame with the real timing:
@@ -196,4 +211,5 @@ What it means:
 | Ep3 | Spectacle hook (dragon), loop ending, 1.5 s end card | Stayed flat; no end-card drop; second push at 32 h |
 | Clean test | Same gag, captions only | Stayed flat (32%); no 0:04 cliff; 119% retention |
 | Ep4 | Face-first hook, faces on key moments, clean screen, Ep3 link, reframing | Stayed lowest (25.7%) but best retention (72.9%), rewatches, +3 subs, views still climbing at 35 h |
+| Ep6 (v2, after the creator's review) | Null's rise at 0:04-0:08, music under it, one moving group shot, reactions over the action, no vote, dark end card | Best retention ever (102%), +5 subs, stayed 44.1%; views flat after 3 h (swipe-away 56%); half the viewers left at the end card |
 | Ep5 | Action from frame 1 (a build popping in), premise line at 0.2 s, "creative mode" title, viewer's idea credited, big erase-wave spectacle | **Stayed 51.8% (best by 12 pts)**, retention 70.7%, 2.44k views at 38 h (best), +3 subs; drop at 0:04-0:08 during close-ups with an insider line |
