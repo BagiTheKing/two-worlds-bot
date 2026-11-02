@@ -1532,7 +1532,11 @@
       "name": "patch_back",
       "text": "Hold still. I'm taking us back.",
       "direction_text": "[calm, quiet, sudden] Hold still. I'm taking us back.",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        0.0,
+        2.7
+      ]
     },
     {
       "beat": "eye",
@@ -1547,7 +1551,11 @@
       "name": "noob_me",
       "text": "Hey, that's me!",
       "direction_text": "[delighted, surprised] Hey, that's me!",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        3.02,
+        4.49
+      ]
     },
     {
       "beat": "replay",
@@ -1558,14 +1566,22 @@
       "name": "steve_what",
       "text": "What are those?",
       "direction_text": "[quiet, wary] What are those?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        2.5,
+        3.93
+      ]
     },
     {
       "line": "patch",
       "name": "patch_behind",
       "text": "Every time you respawn, something stays behind.",
       "direction_text": "[calm, quiet, serious] Every time you respawn, something stays behind.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        7.08,
+        10.63
+      ]
     },
     {
       "beat": "down",
@@ -1576,7 +1592,11 @@
       "name": "noob_where",
       "text": "...Where does it go?",
       "direction_text": "[quiet, uneasy] ...Where does it go?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.1,
+        1.64
+      ]
     },
     {
       "beat": "forest",
@@ -1587,14 +1607,22 @@
       "name": "noob_us",
       "text": "That's... us?",
       "direction_text": "[stunned, quiet] That's... us?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        1.8,
+        4.3
+      ]
     },
     {
       "line": "patch",
       "name": "patch_last",
       "text": "Last time.",
       "direction_text": "[quiet, flat] Last time.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        4.5,
+        5.71
+      ]
     },
     {
       "beat": "pull",
@@ -1605,7 +1633,11 @@
       "name": "steve_times",
       "text": "How many times have we done this?",
       "direction_text": "[calm voice finally cracking, shaken, quiet] How many times have we done this?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        2.97
+      ]
     },
     {
       "beat": "crowd",
@@ -1616,7 +1648,11 @@
       "name": "patch_count",
       "text": "...I stopped counting.",
       "direction_text": "[quiet, tired, glitching] ...I stopped counting.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        3.08,
+        5.16
+      ]
     },
     {
       "beat": "back",
