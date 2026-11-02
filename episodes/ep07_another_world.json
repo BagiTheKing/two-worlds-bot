@@ -590,6 +590,17 @@
       "from": "patch_back",
       "to": "patch_back+0.45",
       "yaw": 1.471
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "noob_deleted",
+      "to": "noob_deleted.end+0.5",
+      "head": [
+        0.12,
+        0,
+        0
+      ]
     }
   ],
   "fx": [
@@ -1665,8 +1676,17 @@
       "dur": 0.4
     },
     {
+      "line": "noob",
+      "name": "noob_deleted",
+      "text": "I don't want to be deleted.",
+      "direction_text": "[scared, trembling, quiet, almost crying] I don't want to be deleted.",
+      "pad": 0.35,
+      "own_scene": true
+    },
+    {
       "beat": "end",
       "dur": 2.4
     }
-  ]
+  ],
+  "own_takes": 3
 }
