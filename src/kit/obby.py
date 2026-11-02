@@ -542,12 +542,12 @@ def memory_dome(ctx, center, radius, show, name="memory_sky"):
     nt.links.new(sep.outputs["Z"], norm.inputs["Value"])
     ramp = nt.nodes.new("ShaderNodeValToRGB")
     els = ramp.color_ramp.elements
-    els[0].position, els[0].color = 0.30, (0.004, 0.012, 0.035, 1)
-    els[1].position, els[1].color = 0.80, (0.01, 0.05, 0.12, 1)
+    els[0].position, els[0].color = 0.30, (0.03, 0.12, 0.2, 1)
+    els[1].position, els[1].color = 0.80, (0.05, 0.24, 0.38, 1)
     e = els.new(0.49)
-    e.color = (0.03, 0.28, 0.36, 1)
+    e.color = (0.14, 0.62, 0.72, 1)
     e = els.new(0.56)
-    e.color = (0.02, 0.13, 0.22, 1)
+    e.color = (0.07, 0.36, 0.5, 1)
     nt.links.new(norm.outputs["Result"], ramp.inputs["Fac"])
     stars = nt.nodes.new("ShaderNodeTexNoise")
     stars.inputs["Scale"].default_value = 0.9 * radius
@@ -562,7 +562,7 @@ def memory_dome(ctx, center, radius, show, name="memory_sky"):
     nt.links.new(ramp.outputs["Color"], mix.inputs["A"])
     mix.inputs["B"].default_value = (0.7, 0.95, 1.0, 1)
     em = nt.nodes.new("ShaderNodeEmission")
-    em.inputs["Strength"].default_value = 1.6
+    em.inputs["Strength"].default_value = 2.0
     nt.links.new(mix.outputs["Result"], em.inputs["Color"])
     nt.links.new(em.outputs["Emission"], nt.nodes["Material Output"].inputs["Surface"])
     ob.data.materials.append(m)
