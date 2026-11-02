@@ -1681,7 +1681,9 @@
       "text": "I don't want to be deleted.",
       "direction_text": "[scared, trembling, quiet, almost crying] I don't want to be deleted.",
       "pad": 0.35,
-      "own_scene": true
+      "own_scene": true,
+      "trim": 2.5,
+      "trim_fade": 0.1
     },
     {
       "beat": "end",
