@@ -602,7 +602,7 @@ def holo_tree(ctx, at, mat, show, h=3.0, name="holo_tree"):
     return obs
 
 
-def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio"):
+def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio", gap=4.5, stagger=False):
     """A past Steve, Noob and Patch facing a Null, as one hologram: a single
     remembered moment. Returns the roots."""
     from kit.rigs import make_noob, make_null, make_patch, make_steve
@@ -617,11 +617,13 @@ def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio"):
         show_between(r, ctx.F(show[0]), ctx.F(show[1]))
         return r
 
-    roots = [place(make_steve(tex, name=f"{name}_steve"), -1.3, 0.3, 0, yaw),
-             place(make_noob(tex, name=f"{name}_noob"), 1.1, 0.0, 0, yaw),
-             place(make_patch(tex, name=f"{name}_patch", s=1.2), 0.0, -0.4, 1.9, yaw)]
+    # stagger: one behind the other, so a side view shows all three
+    st, nb, pt = (((-0.4, 1.9), (0.3, 0.0), (-0.1, 0.95)) if stagger else ((-1.3, 0.3), (1.1, 0.0), (0.0, -0.4)))
+    roots = [place(make_steve(tex, name=f"{name}_steve"), *st, 0, yaw),
+             place(make_noob(tex, name=f"{name}_noob"), *nb, 0, yaw),
+             place(make_patch(tex, name=f"{name}_patch", s=1.2), *pt, 1.9, yaw)]
     nul = make_null(tex, name=f"{name}_null", s=null_s)
-    roots.append(place(nul, 0.0, -4.5 - null_s * 0.3, -null_s * 0.9, yaw + math.pi))
+    roots.append(place(nul, 0.0, -gap - null_s * 0.3, -null_s * 0.9, yaw + math.pi))
     holo_ify(nul.root, null_mat)
     return roots
 

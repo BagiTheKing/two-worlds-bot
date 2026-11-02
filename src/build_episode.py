@@ -327,7 +327,8 @@ def build(episode_path, timeline_path, tex_dir):
             cells = e.get("cells", [e["at"]])
             for i, at in enumerate(cells):
                 obby.holo_trio(ctx, tex, tuple(at), e.get("yaw", 0.0), plat, nm, show,
-                               null_s=e.get("null_s", 3.0), name=f"trio_{i}")
+                               null_s=e.get("null_s", 3.0), name=f"trio_{i}", gap=e.get("gap", 4.5),
+                               stagger=e.get("stagger", False))
                 if e.get("pads", True):
                     obby.holo_box(ctx, f"trio_pad_{i}", (4.2, 3.4, 0.5), tuple(at), plat, show)
         elif k == "tnt":
