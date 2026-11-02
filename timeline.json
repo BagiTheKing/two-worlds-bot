@@ -1,0 +1,322 @@
+{
+ "id": "ep07_another_world",
+ "fps": 24,
+ "length": 33.081,
+ "beats": {
+  "open": [
+   0.0,
+   0.2
+  ],
+  "noob_copy": [
+   0.2,
+   2.084
+  ],
+  "patch_back": [
+   2.184,
+   4.544
+  ],
+  "eye": [
+   4.594,
+   5.294
+  ],
+  "memory": [
+   5.294,
+   5.894
+  ],
+  "noob_me": [
+   5.894,
+   7.079
+  ],
+  "replay": [
+   7.179,
+   9.179
+  ],
+  "steve_what": [
+   9.179,
+   10.225
+  ],
+  "patch_behind": [
+   10.325,
+   13.603
+  ],
+  "down": [
+   13.703,
+   15.103
+  ],
+  "noob_where": [
+   15.103,
+   16.172
+  ],
+  "forest": [
+   16.272,
+   17.572
+  ],
+  "noob_us": [
+   17.572,
+   19.546
+  ],
+  "patch_last": [
+   19.646,
+   20.889
+  ],
+  "pull": [
+   20.989,
+   21.489
+  ],
+  "steve_times": [
+   21.489,
+   24.321
+  ],
+  "crowd": [
+   24.421,
+   25.421
+  ],
+  "patch_count": [
+   25.421,
+   27.331
+  ],
+  "back": [
+   27.431,
+   27.831
+  ],
+  "noob_deleted": [
+   27.831,
+   30.331
+  ],
+  "end": [
+   30.681,
+   33.081
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_copy",
+   "who": "noob",
+   "text": "It's COPYING me!",
+   "vo": false,
+   "caption": true,
+   "start": 0.2,
+   "end": 2.084
+  },
+  {
+   "name": "patch_back",
+   "who": "patch",
+   "text": "Hold still. I'm taking us back.",
+   "vo": false,
+   "caption": true,
+   "start": 2.184,
+   "end": 4.544
+  },
+  {
+   "name": "noob_me",
+   "who": "noob",
+   "text": "Hey, that's me!",
+   "vo": false,
+   "caption": true,
+   "start": 5.894,
+   "end": 7.079
+  },
+  {
+   "name": "steve_what",
+   "who": "steve",
+   "text": "What are those?",
+   "vo": false,
+   "caption": true,
+   "start": 9.179,
+   "end": 10.225
+  },
+  {
+   "name": "patch_behind",
+   "who": "patch",
+   "text": "Every time you respawn, something stays behind.",
+   "vo": false,
+   "caption": true,
+   "start": 10.325,
+   "end": 13.603
+  },
+  {
+   "name": "noob_where",
+   "who": "noob",
+   "text": "...Where does it go?",
+   "vo": false,
+   "caption": true,
+   "start": 15.103,
+   "end": 16.172
+  },
+  {
+   "name": "noob_us",
+   "who": "noob",
+   "text": "That's... us?",
+   "vo": false,
+   "caption": true,
+   "start": 17.572,
+   "end": 19.546
+  },
+  {
+   "name": "patch_last",
+   "who": "patch",
+   "text": "From last time.",
+   "vo": false,
+   "caption": true,
+   "start": 19.646,
+   "end": 20.889
+  },
+  {
+   "name": "steve_times",
+   "who": "steve",
+   "text": "How many times have we done this?",
+   "vo": false,
+   "caption": true,
+   "start": 21.489,
+   "end": 24.321
+  },
+  {
+   "name": "patch_count",
+   "who": "patch",
+   "text": "...I stopped counting.",
+   "vo": false,
+   "caption": true,
+   "start": 25.421,
+   "end": 27.331
+  },
+  {
+   "name": "noob_deleted",
+   "who": "noob",
+   "text": "I don't want to be deleted.",
+   "vo": false,
+   "caption": true,
+   "start": 27.831,
+   "end": 30.331
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 33.481
+  },
+  {
+   "type": "warp",
+   "grow": 4.344,
+   "full": 5.144,
+   "at": [
+    [
+     2.6,
+     0.679,
+     0.498
+    ],
+    [
+     5.0,
+     0.7,
+     0.494
+    ]
+   ],
+   "start": 2.684,
+   "end": 5.294
+  },
+  {
+   "type": "flash",
+   "color": [
+    235,
+    252,
+    255
+   ],
+   "strength": 1.0,
+   "start": 5.294,
+   "end": 5.744
+  },
+  {
+   "type": "memory",
+   "start": 5.294,
+   "end": 27.431
+  },
+  {
+   "type": "flash",
+   "color": [
+    200,
+    250,
+    255
+   ],
+   "strength": 0.8,
+   "start": 16.272,
+   "end": 16.572
+  },
+  {
+   "type": "flash",
+   "color": [
+    120,
+    240,
+    255
+   ],
+   "strength": 0.9,
+   "start": 27.431,
+   "end": 27.781
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 30%",
+   "alert": true,
+   "start": 27.731,
+   "end": 33.481
+  },
+  {
+   "type": "endnote",
+   "next_label": "NEXT  \u00b7  EPISODE 8",
+   "next_title": "STEVE WAS HIDING SOMETHING",
+   "question": "HOW MANY TIMES?",
+   "question_sub": "Comment your guess",
+   "start": 31.181,
+   "end": 33.481
+  }
+ ]
+}
