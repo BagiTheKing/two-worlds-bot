@@ -1625,10 +1625,10 @@
     {
       "line": "patch",
       "name": "patch_last",
-      "text": "Yes. Right before it deleted us.",
+      "text": "From last time.",
       "direction_text": "[quiet, flat] Last time.",
       "pad": 0.1,
-      "solo_text": "Yes. Right before it deleted us."
+      "solo_text": "From last time."
     },
     {
       "beat": "pull",
