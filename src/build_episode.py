@@ -232,7 +232,8 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "dark_cube":
             t = ctx.T(e["from"])
             props.dark_cube(ctx, tex, add(actors[e["actor"]].state_at(t)["loc"], tuple(e.get("offset", (0, 0, 1.2)))),
-                            t, ctx.T(e["to"]), drift=tuple(e.get("drift", (0.32, 0.22, 0.5))))
+                            t, ctx.T(e["to"]), drift=tuple(e.get("drift", (0.32, 0.22, 0.5))),
+                            size=e.get("size", 0.17), glow=e.get("glow", 0.4))
         elif k == "void_room":
             props.void_room(ctx, tex, tuple(e["frame"]), (ctx.T(e["show"][0]), ctx.T(e["show"][1])),
                             tuple(e["null_at"]))
@@ -310,8 +311,15 @@ def build(episode_path, timeline_path, tex_dir):
             sets["holo"] = plat
             for pl in e.get("platforms", []):
                 obby.holo_box(ctx, pl["name"], tuple(pl["size"]), tuple(pl["at"]), plat, show)
+            later = (ctx.T(e["later"]), show[1]) if e.get("later") else show     # shown from a later beat
+            for i, fl in enumerate(e.get("floors", [])):
+                obby.holo_grid(ctx, tuple(fl["center"]), fl["size"], fl.get("step", 2), fl.get("z", 0), line,
+                               later, name=f"memory_floor_{i}")
             for at in e.get("trees", []):
-                obby.holo_tree(ctx, tuple(at), plat, show)
+                obby.holo_tree(ctx, tuple(at), plat, later)
+            for gl in e.get("glows", []):
+                obby.glow_light(ctx, tuple(gl["at"]), tuple(gl["color"]), gl["power"],
+                                (ctx.T(gl["show"][0]), ctx.T(gl["show"][1])), radius=gl.get("radius", 1.0))
         elif k == "holo_trio":
             show = (ctx.T(e["show"][0]), ctx.T(e["show"][1]))
             plat = sets.get("holo") or obby.holo_material("memory_plat")

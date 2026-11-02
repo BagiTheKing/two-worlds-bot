@@ -296,8 +296,11 @@ def memory(img, o, t, f, fonts):
         return
     a = np.asarray(img, dtype=np.float32) / 255.0
     lum = a @ np.array([0.3, 0.59, 0.11], np.float32)
-    tint = np.stack([lum * 0.62, lum * 1.0, lum * 1.08], -1) * 1.12 + np.array([0.02, 0.06, 0.08], np.float32)
-    g = a * (1 - 0.62 * k) + tint * (0.62 * k)
+    tint = np.stack([lum * 0.62, lum * 1.0, lum * 1.08], -1) * 1.1 + np.array([0.01, 0.04, 0.05], np.float32)
+    # strong magenta (Null, Patch's glitching eye) keeps its colour
+    keep = np.clip(((a[..., 0] + a[..., 2]) / 2 - a[..., 1]) * 3.0, 0, 1)[..., None]
+    amt = 0.5 * k * (1 - keep)
+    g = a * (1 - amt) + tint * amt
     sh = int(round(4 * k))                                     # colour fringe, strongest at the sides
     if sh:
         r = np.roll(g[..., 0], sh, axis=1)

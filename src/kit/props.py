@@ -329,10 +329,10 @@ def burst(ctx, at, t, parts=NOOB_PARTS, seed=5, name="burst"):
         _key_scale(ob, ctx, ((t + 0.8, 1.0), (t + 1.0, 0.001)))
 
 
-def dark_cube(ctx, tex, start, t0, t1, drift=(0.32, 0.22, 0.5), name="dark_cube"):
-    """Never comment on it, never put it in frame centre."""
-    m = material(name, tex=tex["null"], rough=0.8, emit_tex=True, strength=0.4)
-    ob = box(name, (0.17, 0.17, 0.17), (0, 0, 0), {"default": m})
+def dark_cube(ctx, tex, start, t0, t1, drift=(0.32, 0.22, 0.5), name="dark_cube", size=0.17, glow=0.4):
+    """Never comment on it, never put it in frame centre (until episode 7)."""
+    m = material(name, tex=tex["null"], rough=0.8, emit_tex=True, strength=glow)
+    ob = box(name, (size, size, size), (0, 0, 0), {"default": m})
     show_between(ob, ctx.F(t0), ctx.F(t1))
     for f in range(ctx.F(t0), ctx.F(t1) + 1):
         u = (f - 1) / ctx.fps - t0

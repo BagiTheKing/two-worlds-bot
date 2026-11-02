@@ -473,7 +473,7 @@ def null_smile(ctx, tex, rig, s, t, expr="happy", name="null_smile"):
 
 # ------------------------------------------------- episode 7: Patch's memory
 
-def holo_material(name, rgb=(0.25, 0.95, 1.0), strength=2.2, alpha=0.38):
+def holo_material(name, rgb=(0.25, 0.95, 1.0), strength=1.5, alpha=0.12):
     """A hologram: see-through, glowing, brighter where a surface turns away
     from the camera (its edges), so shapes read as outlines of light."""
     m = bpy.data.materials.new(name)
@@ -492,7 +492,7 @@ def holo_material(name, rgb=(0.25, 0.95, 1.0), strength=2.2, alpha=0.38):
     nt.links.new(em.outputs["Result"], b.inputs["Emission Strength"])
     al = nt.nodes.new("ShaderNodeMapRange")
     al.inputs["To Min"].default_value = alpha
-    al.inputs["To Max"].default_value = min(1.0, alpha + 0.5)
+    al.inputs["To Max"].default_value = min(1.0, alpha + 0.6)
     nt.links.new(lw.outputs["Facing"], al.inputs["Value"])
     nt.links.new(al.outputs["Result"], b.inputs["Alpha"])
     if hasattr(m, "surface_render_method"):
@@ -624,3 +624,16 @@ def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio"):
     roots.append(place(nul, 0.0, -4.5 - null_s * 0.3, -null_s * 0.9, yaw + math.pi))
     holo_ify(nul.root, null_mat)
     return roots
+
+
+def glow_light(ctx, at, rgb, power, show, radius=1.0, name="glow"):
+    """A coloured point light (e.g. the magenta glow inside the dark mass)."""
+    ld = bpy.data.lights.new(name, "POINT")
+    ld.color = tuple(rgb)
+    ld.energy = power
+    ld.shadow_soft_size = radius
+    ob = bpy.data.objects.new(name, ld)
+    bpy.context.scene.collection.objects.link(ob)
+    ob.location = tuple(at)
+    show_between(ob, ctx.F(show[0]), ctx.F(show[1]))
+    return ob
