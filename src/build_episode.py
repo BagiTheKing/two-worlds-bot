@@ -130,6 +130,8 @@ def build(episode_path, timeline_path, tex_dir):
         clips = [dict(c, impacts=tl.get("impacts", [])) if c["do"] in ("punch", "flurry") else c
                  for c in ep.get("clips", []) if c["who"] == name]
         actors[name] = Actor(name, rig, spec, clips, ctx.beats, ctx.end, tl["lines"], actors)
+        if spec.get("holo"):                              # a remembered figure: a hologram
+            obby.holo_ify(rig.root, obby.holo_material(f"{name}_holo", tuple(spec["holo"])))
         if spec.get("visible"):
             visible(ctx, rig, spec["visible"])
 
@@ -230,7 +232,7 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "dark_cube":
             t = ctx.T(e["from"])
             props.dark_cube(ctx, tex, add(actors[e["actor"]].state_at(t)["loc"], tuple(e.get("offset", (0, 0, 1.2)))),
-                            t, ctx.T(e["to"]))
+                            t, ctx.T(e["to"]), drift=tuple(e.get("drift", (0.32, 0.22, 0.5))))
         elif k == "void_room":
             props.void_room(ctx, tex, tuple(e["frame"]), (ctx.T(e["show"][0]), ctx.T(e["show"][1])),
                             tuple(e["null_at"]))
@@ -296,7 +298,30 @@ def build(episode_path, timeline_path, tex_dir):
             off = tuple(e.get("offset", (0, 0, 0)))
             fx.orbit(ctx, lambda t: add(a.state_at(t)["loc"], off), ctx.T(e["from"]),
                      ctx.T(e["to"]), tex, mats, n=e.get("n", 30),
-                     radius=tuple(e.get("radius", (9, 17))), size=tuple(e.get("size", (0.6, 1.8))))
+                     radius=tuple(e.get("radius", (9, 17))), size=tuple(e.get("size", (0.6, 1.8))),
+                     only=e.get("mats"))
+        elif k == "memory":
+            show = (ctx.T(e["show"][0]), ctx.T(e["show"][1]))
+            obby.memory_dome(ctx, tuple(e["center"]), e.get("radius", 90), show)
+            line = obby.holo_material("memory_line", tuple(e.get("color", (0.25, 0.95, 1.0))), strength=1.6, alpha=0.6)
+            g = e.get("grid", {})
+            obby.holo_grid(ctx, tuple(e["center"]), g.get("size", 120), g.get("step", 3), g.get("z", -8), line, show)
+            plat = obby.holo_material("memory_plat", tuple(e.get("color", (0.25, 0.95, 1.0))))
+            sets["holo"] = plat
+            for pl in e.get("platforms", []):
+                obby.holo_box(ctx, pl["name"], tuple(pl["size"]), tuple(pl["at"]), plat, show)
+            for at in e.get("trees", []):
+                obby.holo_tree(ctx, tuple(at), plat, show)
+        elif k == "holo_trio":
+            show = (ctx.T(e["show"][0]), ctx.T(e["show"][1]))
+            plat = sets.get("holo") or obby.holo_material("memory_plat")
+            nm = obby.holo_material("memory_null", tuple(e.get("null_color", (1.0, 0.2, 0.85))))
+            cells = e.get("cells", [e["at"]])
+            for i, at in enumerate(cells):
+                obby.holo_trio(ctx, tex, tuple(at), e.get("yaw", 0.0), plat, nm, show,
+                               null_s=e.get("null_s", 3.0), name=f"trio_{i}")
+                if e.get("pads", True):
+                    obby.holo_box(ctx, f"trio_pad_{i}", (4.2, 3.4, 0.5), tuple(at), plat, show)
         elif k == "tnt":
             sets.setdefault("made", {})[e.get("name", "tnt")] = obby.tnt(
                 ctx, tex, tuple(e["at"]), ctx.T(e["place"]), ctx.T(e["lit"]), ctx.T(e["gone"]),

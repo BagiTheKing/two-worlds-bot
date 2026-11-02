@@ -469,3 +469,158 @@ def null_smile(ctx, tex, rig, s, t, expr="happy", name="null_smile"):
         plate.hide_render = h
         plate.keyframe_insert("hide_render", frame=max(1, f))
     return plate
+
+
+# ------------------------------------------------- episode 7: Patch's memory
+
+def holo_material(name, rgb=(0.25, 0.95, 1.0), strength=2.2, alpha=0.38):
+    """A hologram: see-through, glowing, brighter where a surface turns away
+    from the camera (its edges), so shapes read as outlines of light."""
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    b = nt.nodes["Principled BSDF"]
+    b.inputs["Base Color"].default_value = (*rgb, 1)
+    b.inputs["Roughness"].default_value = 0.4
+    b.inputs["Emission Color"].default_value = (*rgb, 1)
+    lw = nt.nodes.new("ShaderNodeLayerWeight")
+    lw.inputs["Blend"].default_value = 0.35
+    em = nt.nodes.new("ShaderNodeMapRange")
+    em.inputs["To Min"].default_value = strength * 0.45
+    em.inputs["To Max"].default_value = strength * 2.2
+    nt.links.new(lw.outputs["Facing"], em.inputs["Value"])
+    nt.links.new(em.outputs["Result"], b.inputs["Emission Strength"])
+    al = nt.nodes.new("ShaderNodeMapRange")
+    al.inputs["To Min"].default_value = alpha
+    al.inputs["To Max"].default_value = min(1.0, alpha + 0.5)
+    nt.links.new(lw.outputs["Facing"], al.inputs["Value"])
+    nt.links.new(al.outputs["Result"], b.inputs["Alpha"])
+    if hasattr(m, "surface_render_method"):
+        m.surface_render_method = "DITHERED"
+    return m
+
+
+def holo_ify(root, mat):
+    """Every mesh under root drawn as a hologram (face plates hidden)."""
+    for o in [root] + list(root.children_recursive):
+        if o.type != "MESH":
+            continue
+        if o.get("face_plate"):
+            o.hide_render = True
+            continue
+        for slot in o.material_slots:
+            slot.link = "OBJECT"
+            slot.material = mat
+
+
+def _camera_only(ob):
+    """Seen by the camera, invisible to light (the sun and sky still reach in)."""
+    for attr in ("visible_diffuse", "visible_glossy", "visible_transmission",
+                 "visible_volume_scatter", "visible_shadow"):
+        if hasattr(ob, attr):
+            setattr(ob, attr, False)
+
+
+def memory_dome(ctx, center, radius, show, name="memory_sky"):
+    """The sky of a memory: a huge sphere, deep navy below, glowing teal at the
+    horizon, dark blue above, with faint stars. Camera-only, shown in `show`."""
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=radius, location=tuple(center))
+    ob = bpy.context.active_object
+    ob.name = name
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    for n in list(nt.nodes):
+        if n.type != "OUTPUT_MATERIAL":
+            nt.nodes.remove(n)
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(tc.outputs["Object"], sep.inputs["Vector"])
+    norm = nt.nodes.new("ShaderNodeMapRange")
+    norm.inputs["From Min"].default_value = -radius
+    norm.inputs["From Max"].default_value = radius
+    nt.links.new(sep.outputs["Z"], norm.inputs["Value"])
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    els = ramp.color_ramp.elements
+    els[0].position, els[0].color = 0.30, (0.004, 0.012, 0.035, 1)
+    els[1].position, els[1].color = 0.80, (0.01, 0.05, 0.12, 1)
+    e = els.new(0.49)
+    e.color = (0.03, 0.28, 0.36, 1)
+    e = els.new(0.56)
+    e.color = (0.02, 0.13, 0.22, 1)
+    nt.links.new(norm.outputs["Result"], ramp.inputs["Fac"])
+    stars = nt.nodes.new("ShaderNodeTexNoise")
+    stars.inputs["Scale"].default_value = 0.9 * radius
+    nt.links.new(tc.outputs["Object"], stars.inputs["Vector"])
+    cut = nt.nodes.new("ShaderNodeMapRange")
+    cut.inputs["From Min"].default_value = 0.72
+    cut.inputs["From Max"].default_value = 0.78
+    nt.links.new(stars.outputs["Fac"], cut.inputs["Value"])
+    mix = nt.nodes.new("ShaderNodeMix")
+    mix.data_type = "RGBA"
+    nt.links.new(cut.outputs["Result"], mix.inputs["Factor"])
+    nt.links.new(ramp.outputs["Color"], mix.inputs["A"])
+    mix.inputs["B"].default_value = (0.7, 0.95, 1.0, 1)
+    em = nt.nodes.new("ShaderNodeEmission")
+    em.inputs["Strength"].default_value = 1.6
+    nt.links.new(mix.outputs["Result"], em.inputs["Color"])
+    nt.links.new(em.outputs["Emission"], nt.nodes["Material Output"].inputs["Surface"])
+    ob.data.materials.append(m)
+    _camera_only(ob)
+    show_between(ob, ctx.F(show[0]), ctx.F(show[1]))
+    return ob
+
+
+def holo_grid(ctx, center, size, step, z, mat, show, name="memory_grid"):
+    """A floor of light lines far below the platforms: the memory's ground."""
+    g = empty(name, (center[0], center[1], z))
+    n = int(size / step)
+    for i in range(-n // 2, n // 2 + 1):
+        box(f"{name}_x{i}", (size, 0.04, 0.04), (0, i * step, 0), {"default": mat}, g)
+        box(f"{name}_y{i}", (0.04, size, 0.04), (i * step, 0, 0), {"default": mat}, g)
+    for o in g.children:
+        _camera_only(o)
+    show_between(g, ctx.F(show[0]), ctx.F(show[1]))
+    return g
+
+
+def holo_box(ctx, name, size, at, mat, show, top=True):
+    """A hologram platform (its top at `at`'s z) or any glowing block."""
+    sx, sy, sz = size if len(size) == 3 else (*size, 0.6)
+    ob = box(name, (sx, sy, sz), (at[0], at[1], at[2] - sz / 2 if top else at[2]), {"default": mat})
+    show_between(ob, ctx.F(show[0]), ctx.F(show[1]))
+    return ob
+
+
+def holo_tree(ctx, at, mat, show, h=3.0, name="holo_tree"):
+    x, y, z = at
+    obs = [box(f"{name}_trunk", (0.5, 0.5, h), (x, y, z + h / 2), {"default": mat})]
+    for dx, dy, dz, s in ((0, 0, h + 0.6, 2.2), (0.7, 0.3, h, 1.4), (-0.6, -0.4, h + 0.2, 1.3), (0.1, -0.7, h + 1.3, 1.2)):
+        obs.append(box(f"{name}_leaf", (s, s, s), (x + dx, y + dy, z + dz), {"default": mat}))
+    for o in obs:
+        show_between(o, ctx.F(show[0]), ctx.F(show[1]))
+    return obs
+
+
+def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio"):
+    """A past Steve, Noob and Patch facing a Null, as one hologram: a single
+    remembered moment. Returns the roots."""
+    from kit.rigs import make_noob, make_null, make_patch, make_steve
+    x, y, z = at
+    c, s = math.cos(yaw), math.sin(yaw)
+
+    def place(rig, dx, dy, dz, face):
+        r = rig.root
+        r.location = (x + dx * c - dy * s, y + dx * s + dy * c, z + dz)
+        r.rotation_euler = (0, 0, face)
+        holo_ify(r, mat)
+        show_between(r, ctx.F(show[0]), ctx.F(show[1]))
+        return r
+
+    roots = [place(make_steve(tex, name=f"{name}_steve"), -1.3, 0.3, 0, yaw),
+             place(make_noob(tex, name=f"{name}_noob"), 1.1, 0.0, 0, yaw),
+             place(make_patch(tex, name=f"{name}_patch", s=1.2), 0.0, -0.4, 1.9, yaw)]
+    nul = make_null(tex, name=f"{name}_null", s=null_s)
+    roots.append(place(nul, 0.0, -4.5 - null_s * 0.3, -null_s * 0.9, yaw + math.pi))
+    holo_ify(nul.root, null_mat)
+    return roots

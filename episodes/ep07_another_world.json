@@ -1,0 +1,1616 @@
+{
+  "id": "ep07_another_world",
+  "number": 7,
+  "title": "Patch Remembered Another World",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely"
+    },
+    "null": {
+      "voice": "am_puck",
+      "speed": 0.92,
+      "pitch": 1.0,
+      "caption": "#FF3BD4",
+      "fx": "null",
+      "emotion": 0.25,
+      "pace": 0.3,
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+    }
+  },
+  "music": [
+    {
+      "cue": "null",
+      "from": 0,
+      "to": "eye",
+      "gain": 0.26
+    },
+    {
+      "cue": "memory",
+      "from": "memory",
+      "to": "back",
+      "gain": 0.32,
+      "hit_at": "pull"
+    },
+    {
+      "cue": "null",
+      "from": "back",
+      "to": "end",
+      "gain": 0.26
+    }
+  ],
+  "ambience": [],
+  "sfx": [
+    {
+      "kind": "glitch",
+      "at": -0.2,
+      "dur": 0.5,
+      "gain": 0.35
+    },
+    {
+      "kind": "rewind",
+      "at": "eye",
+      "dur": 1.0,
+      "gain": 0.6
+    },
+    {
+      "kind": "whoosh",
+      "at": "forest",
+      "dur": 0.7,
+      "gain": 0.45
+    },
+    {
+      "kind": "sub_drop",
+      "at": "down",
+      "dur": 1.6,
+      "gain": 0.45
+    },
+    {
+      "kind": "rewind",
+      "at": "patch_count.end",
+      "dur": 0.6,
+      "gain": 0.5
+    },
+    {
+      "kind": "respawn",
+      "at": "memory+0.15",
+      "gain": 0.35
+    },
+    {
+      "kind": "respawn",
+      "at": "memory+1.45",
+      "gain": 0.35
+    },
+    {
+      "kind": "respawn",
+      "at": "memory+2.75",
+      "gain": 0.35
+    }
+  ],
+  "overlays": [
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "memory",
+      "from": "memory",
+      "to": "back"
+    },
+    {
+      "type": "flash",
+      "from": "eye+0.25",
+      "to": "memory+0.15",
+      "color": [
+        120,
+        240,
+        255
+      ],
+      "strength": 0.95
+    },
+    {
+      "type": "flash",
+      "from": "forest",
+      "to": "forest+0.3",
+      "color": [
+        200,
+        250,
+        255
+      ],
+      "strength": 0.8
+    },
+    {
+      "type": "flash",
+      "from": "back",
+      "to": "back+0.35",
+      "color": [
+        120,
+        240,
+        255
+      ],
+      "strength": 0.9
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 30%",
+      "alert": true,
+      "from": "back+0.3",
+      "to": "end"
+    },
+    {
+      "type": "endnote",
+      "from": "end+0.5",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 8",
+      "next_title": "STEVE WAS HIDING SOMETHING",
+      "question": "HOW MANY TIMES?",
+      "question_sub": "Comment your guess"
+    }
+  ],
+  "actors": {
+    "noob": {
+      "rig": "noob",
+      "faces": "moments",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 1.0
+    },
+    "steve": {
+      "rig": "steve",
+      "faces": "moments",
+      "at": [
+        -2.4,
+        0.8,
+        0
+      ],
+      "yaw": 0.35
+    },
+    "patch": {
+      "rig": "patch",
+      "s": 1.4,
+      "at": [
+        0.3,
+        -0.9,
+        2.4
+      ],
+      "yaw": 0.6
+    },
+    "null": {
+      "rig": "null",
+      "s": 6.5,
+      "at": [
+        1.6,
+        -4.4,
+        -10.360000000000001
+      ],
+      "yaw": 3.1416,
+      "idle": 0.02
+    },
+    "ghost": {
+      "rig": "noob",
+      "at": [
+        304.6,
+        1.2,
+        0
+      ],
+      "yaw": 3.1416,
+      "holo": [
+        0.3,
+        0.95,
+        1.0
+      ],
+      "visible": [
+        [
+          "memory",
+          "down"
+        ]
+      ]
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": 0,
+      "to": "patch_back.end"
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": 0,
+      "to": "noob_copy.end"
+    },
+    {
+      "who": "patch",
+      "do": "scan",
+      "from": "patch_back+0.4",
+      "to": "memory"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "memory",
+      "to": "memory+0.01",
+      "at": [
+        301.6,
+        0,
+        0
+      ],
+      "yaw": 1.2
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "memory",
+      "to": "memory+0.01",
+      "at": [
+        297.6,
+        0.8,
+        0
+      ],
+      "yaw": 0.9
+    },
+    {
+      "who": "patch",
+      "do": "set",
+      "from": "memory",
+      "to": "memory+0.01",
+      "at": [
+        300.3,
+        -0.9,
+        2.4
+      ],
+      "yaw": 0.9
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_me",
+      "to": "noob_me.end+0.4"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "surprised",
+      "from": "steve_what",
+      "to": "steve_what.end+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "noob_where",
+      "to": "noob_where.end+0.3"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "forest",
+      "to": "forest+0.01",
+      "at": [
+        302.0,
+        65.2,
+        0
+      ],
+      "yaw": 0.0
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "forest",
+      "to": "forest+0.01",
+      "at": [
+        298.0,
+        65.0,
+        0
+      ],
+      "yaw": 0.0
+    },
+    {
+      "who": "patch",
+      "do": "set",
+      "from": "forest",
+      "to": "forest+0.01",
+      "at": [
+        300.0,
+        64.4,
+        2.6
+      ],
+      "yaw": 0.0
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "noob_us",
+      "to": "patch_last.end"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "scared",
+      "from": "steve_times",
+      "to": "crowd.end"
+    },
+    {
+      "who": "patch",
+      "do": "glitch_eye",
+      "from": "patch_count",
+      "to": "patch_count.end"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "back",
+      "to": "back+0.01",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "yaw": 1.0
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "back",
+      "to": "back+0.01",
+      "at": [
+        -2.4,
+        0.8,
+        0
+      ],
+      "yaw": 0.35
+    },
+    {
+      "who": "patch",
+      "do": "set",
+      "from": "back",
+      "to": "back+0.01",
+      "at": [
+        0.3,
+        -0.9,
+        2.4
+      ],
+      "yaw": 0.6
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "back",
+      "to": "end"
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": "back",
+      "to": "end"
+    },
+    {
+      "who": "ghost",
+      "do": "set",
+      "from": "memory+0.15",
+      "to": "memory+0.15+0.01",
+      "at": [
+        304.6,
+        1.2,
+        0
+      ],
+      "yaw": 3.1416
+    },
+    {
+      "who": "ghost",
+      "do": "pop",
+      "from": "memory+0.15",
+      "to": "memory+0.15+0.25"
+    },
+    {
+      "who": "ghost",
+      "do": "walk",
+      "from": "memory+0.15+0.25",
+      "to": "memory+0.15+0.8",
+      "dest": [
+        304.6,
+        5.3,
+        0
+      ]
+    },
+    {
+      "who": "ghost",
+      "do": "fall",
+      "from": "memory+0.15+0.8",
+      "to": "memory+0.15+1.3",
+      "dest": [
+        304.6,
+        6.699999999999999,
+        -14
+      ]
+    },
+    {
+      "who": "ghost",
+      "do": "set",
+      "from": "memory+1.45",
+      "to": "memory+1.45+0.01",
+      "at": [
+        304.6,
+        1.2,
+        0
+      ],
+      "yaw": 3.1416
+    },
+    {
+      "who": "ghost",
+      "do": "pop",
+      "from": "memory+1.45",
+      "to": "memory+1.45+0.25"
+    },
+    {
+      "who": "ghost",
+      "do": "walk",
+      "from": "memory+1.45+0.25",
+      "to": "memory+1.45+0.8",
+      "dest": [
+        304.6,
+        5.3,
+        0
+      ]
+    },
+    {
+      "who": "ghost",
+      "do": "fall",
+      "from": "memory+1.45+0.8",
+      "to": "memory+1.45+1.3",
+      "dest": [
+        304.6,
+        6.699999999999999,
+        -14
+      ]
+    },
+    {
+      "who": "ghost",
+      "do": "set",
+      "from": "memory+2.75",
+      "to": "memory+2.75+0.01",
+      "at": [
+        304.6,
+        1.2,
+        0
+      ],
+      "yaw": 3.1416
+    },
+    {
+      "who": "ghost",
+      "do": "pop",
+      "from": "memory+2.75",
+      "to": "memory+2.75+0.25"
+    },
+    {
+      "who": "ghost",
+      "do": "walk",
+      "from": "memory+2.75+0.25",
+      "to": "memory+2.75+0.8",
+      "dest": [
+        304.6,
+        5.3,
+        0
+      ]
+    },
+    {
+      "who": "ghost",
+      "do": "fall",
+      "from": "memory+2.75+0.8",
+      "to": "memory+2.75+1.3",
+      "dest": [
+        304.6,
+        6.699999999999999,
+        -14
+      ]
+    },
+    {
+      "who": "ghost",
+      "do": "set",
+      "from": "down",
+      "to": "down+0.01",
+      "at": [
+        304.6,
+        8.3,
+        -22
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "face",
+      "from": "end+1.7",
+      "to": "end+1.95",
+      "yaw": 1.409
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ]
+      ]
+    },
+    {
+      "kind": "obby_course",
+      "platforms": [
+        {
+          "name": "noob_pad",
+          "at": [
+            1.6,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "steve_pad",
+          "at": [
+            -2.4,
+            0.8,
+            0
+          ],
+          "size": [
+            3,
+            3.2
+          ],
+          "colour": "green"
+        }
+      ]
+    },
+    {
+      "kind": "spawn_pad",
+      "at": [
+        1.6,
+        0,
+        0
+      ],
+      "appear": -2
+    },
+    {
+      "kind": "wand",
+      "actor": "noob",
+      "arm": "arm_l"
+    },
+    {
+      "kind": "null_smile",
+      "actor": "null",
+      "at": -1.0
+    },
+    {
+      "kind": "memory",
+      "center": [
+        300,
+        40,
+        0
+      ],
+      "radius": 130,
+      "show": [
+        "memory",
+        "back"
+      ],
+      "grid": {
+        "z": -9,
+        "size": 240,
+        "step": 3
+      },
+      "platforms": [
+        {
+          "name": "m_noob",
+          "at": [
+            301.6,
+            0,
+            0
+          ],
+          "size": [
+            3,
+            3,
+            0.6
+          ]
+        },
+        {
+          "name": "m_steve",
+          "at": [
+            297.6,
+            0.8,
+            0
+          ],
+          "size": [
+            3,
+            3.2,
+            0.6
+          ]
+        },
+        {
+          "name": "m_ghost",
+          "at": [
+            304.6,
+            3.0,
+            0
+          ],
+          "size": [
+            2.2,
+            4.8,
+            0.6
+          ]
+        },
+        {
+          "name": "m_deco1",
+          "at": [
+            292.5,
+            2,
+            -0.8
+          ],
+          "size": [
+            3.5,
+            3.5,
+            0.6
+          ]
+        },
+        {
+          "name": "m_deco2",
+          "at": [
+            308.5,
+            6,
+            -0.5
+          ],
+          "size": [
+            3,
+            3,
+            0.6
+          ]
+        },
+        {
+          "name": "m_deco3",
+          "at": [
+            296,
+            9,
+            1.0
+          ],
+          "size": [
+            3,
+            3,
+            0.6
+          ]
+        },
+        {
+          "name": "f_ground",
+          "at": [
+            300,
+            60,
+            0
+          ],
+          "size": [
+            22,
+            16,
+            0.6
+          ]
+        }
+      ],
+      "trees": [
+        [
+          294,
+          63,
+          0
+        ],
+        [
+          306.5,
+          64,
+          0
+        ],
+        [
+          293,
+          56.5,
+          0
+        ],
+        [
+          305.5,
+          56,
+          0
+        ],
+        [
+          295.5,
+          68,
+          0
+        ],
+        [
+          307,
+          69,
+          0
+        ],
+        [
+          291,
+          61,
+          0
+        ],
+        [
+          309,
+          59,
+          0
+        ],
+        [
+          298,
+          53,
+          0
+        ],
+        [
+          303,
+          52,
+          0
+        ]
+      ]
+    },
+    {
+      "kind": "holo_trio",
+      "at": [
+        299.0,
+        60.6,
+        0
+      ],
+      "cells": [
+        [
+          299.0,
+          60.6,
+          0
+        ]
+      ],
+      "yaw": 1.5707963267948966,
+      "null_s": 3.0,
+      "pads": false,
+      "show": [
+        "memory",
+        "back"
+      ]
+    },
+    {
+      "kind": "holo_trio",
+      "at": [
+        261,
+        38,
+        0
+      ],
+      "cells": [
+        [
+          261,
+          38,
+          0
+        ],
+        [
+          261,
+          49,
+          0
+        ],
+        [
+          261,
+          60,
+          0
+        ],
+        [
+          261,
+          71,
+          0
+        ],
+        [
+          261,
+          82,
+          0
+        ],
+        [
+          261,
+          93,
+          0
+        ],
+        [
+          261,
+          104,
+          0
+        ],
+        [
+          274,
+          38,
+          0
+        ],
+        [
+          274,
+          49,
+          0
+        ],
+        [
+          274,
+          60,
+          0
+        ],
+        [
+          274,
+          71,
+          0
+        ],
+        [
+          274,
+          82,
+          0
+        ],
+        [
+          274,
+          93,
+          0
+        ],
+        [
+          274,
+          104,
+          0
+        ],
+        [
+          287,
+          38,
+          0
+        ],
+        [
+          287,
+          49,
+          0
+        ],
+        [
+          287,
+          60,
+          0
+        ],
+        [
+          287,
+          71,
+          0
+        ],
+        [
+          287,
+          82,
+          0
+        ],
+        [
+          287,
+          93,
+          0
+        ],
+        [
+          287,
+          104,
+          0
+        ],
+        [
+          300,
+          38,
+          0
+        ],
+        [
+          300,
+          49,
+          0
+        ],
+        [
+          300,
+          82,
+          0
+        ],
+        [
+          300,
+          93,
+          0
+        ],
+        [
+          300,
+          104,
+          0
+        ],
+        [
+          313,
+          38,
+          0
+        ],
+        [
+          313,
+          49,
+          0
+        ],
+        [
+          313,
+          60,
+          0
+        ],
+        [
+          313,
+          71,
+          0
+        ],
+        [
+          313,
+          82,
+          0
+        ],
+        [
+          313,
+          93,
+          0
+        ],
+        [
+          313,
+          104,
+          0
+        ],
+        [
+          326,
+          38,
+          0
+        ],
+        [
+          326,
+          49,
+          0
+        ],
+        [
+          326,
+          60,
+          0
+        ],
+        [
+          326,
+          71,
+          0
+        ],
+        [
+          326,
+          82,
+          0
+        ],
+        [
+          326,
+          93,
+          0
+        ],
+        [
+          326,
+          104,
+          0
+        ],
+        [
+          339,
+          38,
+          0
+        ],
+        [
+          339,
+          49,
+          0
+        ],
+        [
+          339,
+          60,
+          0
+        ],
+        [
+          339,
+          71,
+          0
+        ],
+        [
+          339,
+          82,
+          0
+        ],
+        [
+          339,
+          93,
+          0
+        ],
+        [
+          339,
+          104,
+          0
+        ]
+      ],
+      "yaw": 1.5707963267948966,
+      "null_s": 3.0,
+      "pads": true,
+      "show": [
+        "memory",
+        "back"
+      ]
+    },
+    {
+      "kind": "orbit",
+      "actor": "ghost",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "from": "down",
+      "to": "forest",
+      "n": 46,
+      "radius": [
+        0.8,
+        4.5
+      ],
+      "size": [
+        0.18,
+        0.55
+      ],
+      "mats": [
+        "null"
+      ]
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "ghost",
+      "from": "memory+0.15+0.95",
+      "to": "forest",
+      "offset": [
+        0.3,
+        0.2,
+        0.9
+      ],
+      "drift": [
+        0.05,
+        0.25,
+        -1.6
+      ]
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "ghost",
+      "from": "memory+1.45+0.95",
+      "to": "forest",
+      "offset": [
+        0.3,
+        0.2,
+        0.9
+      ],
+      "drift": [
+        0.05,
+        0.25,
+        -1.6
+      ]
+    },
+    {
+      "kind": "dark_cube",
+      "actor": "ghost",
+      "from": "memory+2.75+0.95",
+      "to": "forest",
+      "offset": [
+        0.3,
+        0.2,
+        0.9
+      ],
+      "drift": [
+        0.05,
+        0.25,
+        -1.6
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "name": "hook",
+      "from": 0,
+      "to": "memory",
+      "lens": 20,
+      "path": [
+        [
+          0,
+          [
+            4.6,
+            -1.6,
+            2.0
+          ]
+        ],
+        [
+          "memory",
+          [
+            4.5,
+            -1.55,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            1.8,
+            -1.3,
+            1.85
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "memory",
+      "from": "memory",
+      "to": "steve_what",
+      "lens": 22,
+      "path": [
+        [
+          "memory",
+          [
+            306.2,
+            -5.6,
+            2.3
+          ]
+        ],
+        [
+          "steve_what",
+          [
+            305.8,
+            -5.0,
+            2.3
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "memory",
+          [
+            302.4,
+            2.2,
+            1.2
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_what",
+      "from": "steve_what",
+      "to": "patch_behind",
+      "lens": 32,
+      "path": [
+        [
+          "steve_what",
+          [
+            299.0,
+            -2.6,
+            1.8
+          ]
+        ],
+        [
+          "patch_behind",
+          [
+            298.95,
+            -2.4,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_what",
+          [
+            297.6,
+            0.8,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "patch_behind",
+      "from": "patch_behind",
+      "to": "down",
+      "lens": 22,
+      "path": [
+        [
+          "patch_behind",
+          [
+            308.0,
+            0.5,
+            1.2
+          ]
+        ],
+        [
+          "down",
+          [
+            307.6,
+            0.8,
+            1.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_behind",
+          [
+            303.6,
+            5.0,
+            -1.0
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "down",
+      "from": "down",
+      "to": "forest",
+      "lens": 24,
+      "path": [
+        [
+          "down",
+          [
+            307.0,
+            2.5,
+            1.8
+          ]
+        ],
+        [
+          "forest",
+          [
+            306.8,
+            3.0,
+            0.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "down",
+          [
+            304.6,
+            5.5,
+            -1.0
+          ]
+        ],
+        [
+          "noob_where",
+          [
+            304.6,
+            8.0,
+            -20.0
+          ]
+        ]
+      ],
+      "shake": 0.0
+    },
+    {
+      "name": "forest",
+      "from": "forest",
+      "to": "noob_us",
+      "lens": 22,
+      "path": [
+        [
+          "forest",
+          [
+            301.0,
+            50,
+            2.8
+          ]
+        ],
+        [
+          "noob_us",
+          [
+            300.9,
+            50.8,
+            2.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "forest",
+          [
+            300.0,
+            61.5,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_us",
+      "from": "noob_us",
+      "to": "pull",
+      "lens": 32,
+      "path": [
+        [
+          "noob_us",
+          [
+            302.3,
+            62.9,
+            1.8
+          ]
+        ],
+        [
+          "pull",
+          [
+            302.28,
+            63.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_us",
+          [
+            302.0,
+            65.2,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "pull",
+      "from": "pull",
+      "to": "patch_count",
+      "lens": 22,
+      "path": [
+        [
+          "pull",
+          [
+            301.0,
+            50,
+            2.8
+          ]
+        ],
+        [
+          "patch_count",
+          [
+            302.0,
+            20,
+            26.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "pull",
+          [
+            300,
+            61.5,
+            1.4
+          ]
+        ],
+        [
+          "crowd",
+          [
+            300,
+            82,
+            0
+          ]
+        ]
+      ],
+      "shake": 0.0
+    },
+    {
+      "name": "patch_count",
+      "from": "patch_count",
+      "to": "back",
+      "lens": 30,
+      "path": [
+        [
+          "patch_count",
+          [
+            300.3,
+            61.9,
+            2.7
+          ]
+        ],
+        [
+          "back",
+          [
+            300.28,
+            62.0,
+            2.7
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_count",
+          [
+            300.0,
+            64.4,
+            2.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "back",
+      "from": "back",
+      "to": "end",
+      "lens": 20,
+      "path": [
+        [
+          "back",
+          [
+            4.6,
+            -1.6,
+            2.0
+          ]
+        ],
+        [
+          "end",
+          [
+            4.5,
+            -1.55,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "back",
+          [
+            1.8,
+            -1.3,
+            1.85
+          ]
+        ]
+      ]
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.2
+    },
+    {
+      "line": "noob",
+      "name": "noob_copy",
+      "text": "It's COPYING me!",
+      "direction_text": "[panicked, shouting] It's COPYING me!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "line": "patch",
+      "name": "patch_back",
+      "text": "Hold still. I'm taking us back.",
+      "direction_text": "[calm, quiet, sudden] Hold still. I'm taking us back.",
+      "pad": 0.05
+    },
+    {
+      "beat": "eye",
+      "dur": 0.7
+    },
+    {
+      "beat": "memory",
+      "dur": 0.6
+    },
+    {
+      "line": "noob",
+      "name": "noob_me",
+      "text": "Hey, that's me!",
+      "direction_text": "[delighted, surprised] Hey, that's me!",
+      "pad": 0.1
+    },
+    {
+      "beat": "replay",
+      "dur": 2.0
+    },
+    {
+      "line": "steve",
+      "name": "steve_what",
+      "text": "What are those?",
+      "direction_text": "[quiet, wary] What are those?",
+      "pad": 0.1
+    },
+    {
+      "line": "patch",
+      "name": "patch_behind",
+      "text": "Every time you respawn, something stays behind.",
+      "direction_text": "[calm, quiet, serious] Every time you respawn, something stays behind.",
+      "pad": 0.1
+    },
+    {
+      "beat": "down",
+      "dur": 1.4
+    },
+    {
+      "line": "noob",
+      "name": "noob_where",
+      "text": "...Where does it go?",
+      "direction_text": "[quiet, uneasy] ...Where does it go?",
+      "pad": 0.1
+    },
+    {
+      "beat": "forest",
+      "dur": 1.3
+    },
+    {
+      "line": "noob",
+      "name": "noob_us",
+      "text": "That's... us?",
+      "direction_text": "[stunned, quiet] That's... us?",
+      "pad": 0.1
+    },
+    {
+      "line": "patch",
+      "name": "patch_last",
+      "text": "Last time.",
+      "direction_text": "[quiet, flat] Last time.",
+      "pad": 0.1
+    },
+    {
+      "beat": "pull",
+      "dur": 0.5
+    },
+    {
+      "line": "steve",
+      "name": "steve_times",
+      "text": "How many times have we done this?",
+      "direction_text": "[calm voice finally cracking, shaken, quiet] How many times have we done this?",
+      "pad": 0.1
+    },
+    {
+      "beat": "crowd",
+      "dur": 1.0
+    },
+    {
+      "line": "patch",
+      "name": "patch_count",
+      "text": "...I stopped counting.",
+      "direction_text": "[quiet, tired, glitching] ...I stopped counting.",
+      "pad": 0.1
+    },
+    {
+      "beat": "back",
+      "dur": 0.4
+    },
+    {
+      "beat": "end",
+      "dur": 2.4
+    }
+  ]
+}

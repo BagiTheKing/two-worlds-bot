@@ -280,14 +280,58 @@ def timer(img, o, t, f, fonts):
 
 
 def flash(img, o, t, f, fonts):
-    """A white impact flash, fading out."""
+    """An impact flash (white, or o["color"]), fading out."""
     k = 1 - (t - o["start"]) / max(1e-6, o["end"] - o["start"])
-    img.paste(Image.blend(img, Image.new("RGB", img.size, (255, 255, 255)), max(0.0, min(1.0, k)) * o.get("strength", 0.85)))
+    col = tuple(o.get("color", (255, 255, 255)))
+    img.paste(Image.blend(img, Image.new("RGB", img.size, col), max(0.0, min(1.0, k)) * o.get("strength", 0.85)))
 
 
-DRAW = {"watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+def memory(img, o, t, f, fonts):
+    """The past, as Patch remembers it: colours pulled toward cyan and lifted
+    (never darker), faint scanlines, a colour fringe that grows toward the
+    edges, and a slow, gentle flicker. Eases in and out over 0.3 s."""
+    import numpy as np
+    k = min(1.0, (t - o["start"]) / 0.3, (o["end"] - t) / 0.3)
+    if k <= 0:
+        return
+    a = np.asarray(img, dtype=np.float32) / 255.0
+    lum = a @ np.array([0.3, 0.59, 0.11], np.float32)
+    tint = np.stack([lum * 0.62, lum * 1.0, lum * 1.08], -1) * 1.12 + np.array([0.02, 0.06, 0.08], np.float32)
+    g = a * (1 - 0.62 * k) + tint * (0.62 * k)
+    sh = int(round(4 * k))                                     # colour fringe, strongest at the sides
+    if sh:
+        r = np.roll(g[..., 0], sh, axis=1)
+        b = np.roll(g[..., 2], -sh, axis=1)
+        w = (np.abs(np.linspace(-1, 1, g.shape[1], dtype=np.float32)) ** 1.5)[None, :]
+        g[..., 0] = g[..., 0] * (1 - w) + r * w
+        g[..., 2] = g[..., 2] * (1 - w) + b * w
+    g[::4] *= 1 - 0.10 * k                                   # scanlines
+    g *= 1 + 0.025 * k * math.sin(f * 0.9) + 0.015 * k * math.sin(f * 2.3)
+    img.paste(Image.fromarray((np.clip(g, 0, 1) * 255).astype(np.uint8)))
+
+
+def endnote(img, o, t, f, fonts):
+    """The ending without a card: the last shot keeps playing, a soft shade
+    rises at the bottom with what's next and the question."""
+    k = min(1.0, (t - o["start"]) / 0.3)
+    shade = Image.new("L", (1, 560))
+    for y in range(560):
+        shade.putpixel((0, y), int(185 * k * (y / 560) ** 1.4))
+    shade = shade.resize((W, 560))
+    img.paste((4, 3, 8), (0, H - 560), shade)
+    d = ImageDraw.Draw(img)
+    y0 = H - 470
+    d.text((W // 2, y0), o["next_label"], font=fonts["small"], fill=(255, 210, 63), anchor="mm")
+    d.text((W // 2, y0 + 62), o["next_title"], font=fitted(o["next_title"], 54, W - 120),
+           fill=(255, 255, 255), anchor="mm", stroke_width=4, stroke_fill=(0, 0, 0))
+    d.text((W // 2, y0 + 170), o["question"], font=fitted(o["question"], 84, W - 120),
+           fill=(255, 59, 212), anchor="mm", stroke_width=6, stroke_fill=(0, 0, 0))
+    d.text((W // 2, y0 + 250), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
+
+
+DRAW = {"memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
-FULL = ("card", "fade_in", "endcard")
+FULL = ("memory", "card", "fade_in", "endcard")
 
 
 def read_clip(path):

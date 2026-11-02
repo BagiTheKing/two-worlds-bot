@@ -1037,6 +1037,16 @@ def sfx_fuse(dur):
     return norm((hiss + 1.5 * crack) * np.minimum(1, x / 0.05), 0.5)
 
 
+def sfx_rewind(dur):
+    """Into the past: a tape spun backwards, rising, then a soft whoosh of air."""
+    x = t(dur)
+    f = 180 + 2600 * (x / dur) ** 2
+    chirp = np.sign(np.sin(2 * np.pi * np.cumsum(f * (1 + 0.3 * np.sin(2 * np.pi * 23 * x))) / SR))
+    chirp = band(chirp, 300, 6000) * 0.35
+    air = band(rng.standard_normal(len(x)), 800, 9000) * (x / dur) ** 1.5
+    return norm((chirp + air) * np.minimum(1, x / 0.08) * np.minimum(1, (dur - x) / 0.05 + 0.001), 0.6)
+
+
 def sfx_snap():
     """A portal slamming shut: a hard hit, a sub drop, a burst of glitch."""
     out = np.zeros(int(1.6 * SR))
@@ -1102,7 +1112,7 @@ SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1
        "glitch": lambda e: sfx_glitch(e.get("dur", 0.3)), "portal": lambda e: sfx_portal(e.get("dur", 0.9)),
        "whoosh": lambda e: sfx_whoosh(e.get("dur", 0.7)), "break": lambda e: sfx_break(),
        "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
-       "fuse": lambda e: sfx_fuse(e.get("dur", 1.0))}
+       "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0))}
 
 
 def void_wind(length):

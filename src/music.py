@@ -254,7 +254,64 @@ def dread(sec, seed=0, hit_at=None, minimal=False):
     return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
 
 
-CUES = {"theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
+def music_box(m, sec=1.6):
+    """A music-box tine: bright, bell-like, ringing out."""
+    t = _t(sec)
+    f = hz(m)
+    x = np.sin(2 * np.pi * f * t) + 0.35 * np.sin(2 * np.pi * 2.76 * f * t) * np.exp(-t * 6) \
+        + 0.15 * np.sin(2 * np.pi * 5.4 * f * t) * np.exp(-t * 10)
+    return x * env(len(t), 0.002, 0.55, 0.0, 0.05) * 0.4
+
+
+def choir(chord, sec):
+    """Soft "aah" voices: stacked sines with a slow vibrato and a long swell."""
+    t = _t(sec)
+    out = np.zeros(len(t))
+    for i, m in enumerate(chord):
+        for det in (-0.06, 0.05):
+            vib = 1 + 0.006 * np.sin(2 * np.pi * (4.6 + 0.3 * i) * t + i)
+            ph = 2 * np.pi * np.cumsum(hz(m + det) * vib) / SR
+            out += np.sin(ph) + 0.3 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph)
+    out = lowpass(out, 2600) / (len(chord) * 2)
+    return out * env(len(t), min(1.2, sec / 2), 10, 1.0, min(1.0, sec / 3))
+
+
+def memory(sec, seed=0, hit_at=None):
+    """Patch's memory: the series motif on a music box, slow and far away,
+    over a warm pad, everything slightly warped like an old tape, with a
+    reversed swell pulling us in. hit_at: the moment the past opens up
+    (a low hit, voices rising, the motif an octave up)."""
+    out = np.zeros(int((sec + 4) * SR))
+    x = _t(sec + 4)
+    swell = reverb(np.concatenate([music_box(D + 24, 0.8), np.zeros(int(1.2 * SR))]), 1.6, 0.9, seed)[::-1]
+    place(out, swell[-int(1.0 * SR):], 0.0, 0.8)            # the reversed shimmer that pulls us in
+    chords = [[D - 12, D - 5, D + 2, D + 3], [D - 14, D - 7, D + 2], [D - 17, D - 10, D - 5, D + 4], [D - 7, D + 0, D + 7]]
+    bar = BEAT * 4 * 1.25
+    k = 0
+    while k * bar < sec:
+        place(out, pad(chords[k % 4], bar + 1.0), 0.6 + k * bar, 0.42)
+        k += 1
+    step = BEAT * 1.25
+    i = 0
+    at = 0.9
+    while at < sec - 0.5:
+        if hit_at is None or not (hit_at - 0.6 < at < hit_at + 0.5):
+            up = 12 if hit_at is not None and at > hit_at else 0
+            place(out, music_box(D + 24 + up + (MOTIF + [0, -2])[i % 8], 1.8), at, 0.55)
+        i += 1
+        at += step * (1.5 if i % 8 == 6 else 1.0)
+    if hit_at is not None:
+        place(out, braam(3.2, D - 29), hit_at, 0.85)
+        place(out, kick(), hit_at, 0.8)
+        place(out, choir([D - 5, D + 0, D + 3, D + 7], max(1.0, sec - hit_at + 0.5)), hit_at, 0.75)
+    # tape wobble: the whole cue drifts slightly in pitch
+    wob = 0.0035 * np.sin(2 * np.pi * 0.45 * x) + 0.0015 * np.sin(2 * np.pi * 1.7 * x)
+    idx = np.clip(np.arange(len(out)) + wob * SR * 0.6, 0, len(out) - 1)   # a varying delay = a pitch wobble
+    out = np.interp(idx, np.arange(len(out)), out)
+    return reverb(out, 3.4, 0.5, seed)[:int(sec * SR)]
+
+
+CUES = {"memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
         "dread": dread}
 
 

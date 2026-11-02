@@ -238,12 +238,15 @@ def obby_run(ctx, platforms, avatars, t0, t1, flash_mat, hop=0.42):
 
 # --------------------------------------------------------------------- Null
 
-def orbit(ctx, center_of, t0, t1, tex, mats, n=30, seed=9, radius=(9, 17), size=(0.6, 1.8)):
-    """Broken blocks orbiting a moving centre (Null's chest)."""
+def orbit(ctx, center_of, t0, t1, tex, mats, n=30, seed=9, radius=(9, 17), size=(0.6, 1.8), only=None):
+    """Broken blocks orbiting a moving centre (Null's chest). only: the
+    block materials to use (e.g. ["null"] for a swarm of dark cubes)."""
     rnd = random.Random(seed)
     choices = [mats["grass_side"], mats["dirt"], mats["null"], mats["log_side"], mats["planks"]] + \
         [material(f"orbit_plastic_{k}", srgb(c), rough=0.3, coat=0.3)
          for k, c in enumerate(((232, 64, 64), (60, 150, 240), (245, 210, 50)))]
+    if only:
+        choices = [mats[k] for k in only]
     for i in range(n):
         s = rnd.uniform(*size)
         ob = box(f"orbit_{i}", (s, s, s), (0, 0, 0), {"default": rnd.choice(choices)})
