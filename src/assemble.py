@@ -15,7 +15,7 @@ import random
 import subprocess
 import sys
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFont
 
 W, H = 1080, 1920
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -299,7 +299,7 @@ def memory(img, o, t, f, fonts):
     tint = np.stack([lum * 0.62, lum * 1.0, lum * 1.08], -1) * 1.15 + np.array([0.03, 0.07, 0.08], np.float32)
     # strong magenta (Null, Patch's glitching eye) keeps its colour
     keep = np.clip(((a[..., 0] + a[..., 2]) / 2 - a[..., 1]) * 3.0, 0, 1)[..., None]
-    amt = 0.5 * k * (1 - keep)
+    amt = 0.4 * k * (1 - keep)
     g = a * (1 - amt) + tint * amt
     sh = int(round(4 * k))                                     # colour fringe, strongest at the sides
     if sh:
@@ -311,6 +311,64 @@ def memory(img, o, t, f, fonts):
     g[::4] *= 1 - 0.10 * k                                   # scanlines
     g *= 1 + 0.025 * k * math.sin(f * 0.9) + 0.015 * k * math.sin(f * 2.3)
     img.paste(Image.fromarray((np.clip(g, 0, 1) * 255).astype(np.uint8)))
+
+
+def warp(img, o, t, f, fonts):
+    """Patch takes them back: the beam from his eye, end-on, grows from a
+    glowing point (colour cycling cyan, white, magenta) into a burst with
+    rings and rushing streaks that swallows the whole screen, then white.
+    o["at"]: [[time, x, y], ...] the eye on screen (fractions), o["grow"]:
+    when the burst starts, o["full"]: when it covers everything."""
+    from PIL import ImageFilter
+    pts = o["at"]
+    if t <= pts[0][0]:
+        x, y = pts[0][1:]
+    elif t >= pts[-1][0]:
+        x, y = pts[-1][1:]
+    else:
+        for (t0, x0, y0), (t1, x1, y1) in zip(pts, pts[1:]):
+            if t0 <= t <= t1:
+                u = (t - t0) / max(1e-6, t1 - t0)
+                x, y = x0 + (x1 - x0) * u, y0 + (y1 - y0) * u
+                break
+    cx, cy = x * W, y * H
+    g0, g1 = o["grow"], o["full"]
+    cols = [(0, 230, 255), (255, 255, 255), (255, 40, 210), (0, 230, 255)]
+    ph = (t - o["start"]) * 3.2
+    c0, c1 = cols[int(ph) % 4], cols[(int(ph) + 1) % 4]
+    u = ph - int(ph)
+    col = tuple(int(a + (b - a) * u) for a, b in zip(c0, c1))
+    layer = Image.new("RGB", (W, H), (0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    if t < g0:                                       # the charge: a pulsing core and rings
+        k = (t - o["start"]) / max(1e-6, g0 - o["start"])
+        r = 18 + 50 * k + 8 * math.sin(t * 40)
+        for i in range(3):
+            rr = r * (1.6 + i * 0.9) + 30 * ((t * 3 + i * 0.33) % 1.0)
+            d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), outline=col, width=max(2, int(6 * k)))
+        d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=col)
+        layer = layer.filter(ImageFilter.GaussianBlur(10 + 10 * k))
+        d = ImageDraw.Draw(layer)
+        d.ellipse((cx - r * 0.45, cy - r * 0.45, cx + r * 0.45, cy + r * 0.45), fill=(255, 255, 255))
+        img.paste(ImageChops.add(img, layer))
+        return
+    k = min(1.0, (t - g0) / max(1e-6, g1 - g0))         # the burst
+    R = 60 + (math.hypot(W, H) * 1.05) * (k ** 1.6)
+    rnd = random.Random(int(t * 1000))
+    for i in range(48):                              # warp streaks rushing outward
+        a = rnd.uniform(0, 2 * math.pi)
+        r0 = R * rnd.uniform(0.3, 0.9)
+        r1 = r0 + 200 + 900 * k
+        d.line((cx + math.cos(a) * r0, cy + math.sin(a) * r0, cx + math.cos(a) * r1, cy + math.sin(a) * r1),
+               fill=rnd.choice(((255, 255, 255), col, (120, 240, 255))), width=rnd.randint(3, 9))
+    for i in range(4):                               # rings riding the front
+        rr = R * (0.55 + 0.15 * i)
+        d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), outline=cols[i % 3], width=int(10 + 30 * k))
+    d.ellipse((cx - R * 0.5, cy - R * 0.5, cx + R * 0.5, cy + R * 0.5), fill=col)
+    layer = layer.filter(ImageFilter.GaussianBlur(6 + 14 * k))
+    img.paste(ImageChops.add(img, layer))
+    if k > 0.6:                                      # into white
+        img.paste(Image.blend(img, Image.new("RGB", (W, H), (235, 252, 255)), min(1.0, (k - 0.6) / 0.4)))
 
 
 def endnote(img, o, t, f, fonts):
@@ -332,7 +390,7 @@ def endnote(img, o, t, f, fonts):
     d.text((W // 2, y0 + 250), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
 
 
-DRAW = {"memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+DRAW = {"warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
 FULL = ("memory", "card", "fade_in", "endcard")
 

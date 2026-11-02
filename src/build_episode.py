@@ -130,6 +130,8 @@ def build(episode_path, timeline_path, tex_dir):
         clips = [dict(c, impacts=tl.get("impacts", [])) if c["do"] in ("punch", "flurry") else c
                  for c in ep.get("clips", []) if c["who"] == name]
         actors[name] = Actor(name, rig, spec, clips, ctx.beats, ctx.end, tl["lines"], actors)
+        if spec.get("holo_tint"):                         # a remembered figure in its own colours
+            obby.holo_tint(rig.root)
         if spec.get("holo"):                              # a remembered figure: a hologram
             obby.holo_ify(rig.root, obby.holo_material(f"{name}_holo", tuple(spec["holo"])))
         if spec.get("visible"):
@@ -320,6 +322,11 @@ def build(episode_path, timeline_path, tex_dir):
             for gl in e.get("glows", []):
                 obby.glow_light(ctx, tuple(gl["at"]), tuple(gl["color"]), gl["power"],
                                 (ctx.T(gl["show"][0]), ctx.T(gl["show"][1])), radius=gl.get("radius", 1.0))
+        elif k == "left_behind":
+            for i, (at, t0) in enumerate(zip(e["at"], e["from"])):
+                obby.left_behind(ctx, tex, tuple(at), ctx.T(t0), ctx.T(e["sink"]) + 0.15 * i,
+                                 ctx.T(e["arrive"]) + 0.15 * i, tuple(e["target"]), ctx.T(e["to"]),
+                                 size=e.get("size", 0.34), glow=e.get("glow", 1.2), name=f"left_behind_{i}")
         elif k == "holo_trio":
             show = (ctx.T(e["show"][0]), ctx.T(e["show"][1]))
             plat = sets.get("holo") or obby.holo_material("memory_plat")
@@ -328,7 +335,7 @@ def build(episode_path, timeline_path, tex_dir):
             for i, at in enumerate(cells):
                 obby.holo_trio(ctx, tex, tuple(at), e.get("yaw", 0.0), plat, nm, show,
                                null_s=e.get("null_s", 3.0), name=f"trio_{i}", gap=e.get("gap", 4.5),
-                               stagger=e.get("stagger", False))
+                               stagger=e.get("stagger", False), tint=e.get("tint", False))
                 if e.get("pads", True):
                     obby.holo_box(ctx, f"trio_pad_{i}", (4.2, 3.4, 0.5), tuple(at), plat, show)
         elif k == "tnt":

@@ -1047,6 +1047,23 @@ def sfx_rewind(dur):
     return norm((chirp + air) * np.minimum(1, x / 0.08) * np.minimum(1, (dur - x) / 0.05 + 0.001), 0.6)
 
 
+def sfx_charge(dur):
+    """Patch's eye charging: a whine rising in pitch, a tremolo speeding up,
+    air rushing in underneath, ending on a deep hit and a burst of air."""
+    x = t(dur)
+    u = x / dur
+    f = 160 * (1 + 11 * u ** 1.8)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    whine = (np.sin(ph) + 0.4 * np.sin(2.01 * ph) + 0.2 * np.sign(np.sin(0.5 * ph))) * (0.25 + 0.75 * u ** 1.5)
+    trem = 0.6 + 0.4 * np.sin(2 * np.pi * np.cumsum(4 + 26 * u ** 2) / SR)
+    air = band(rng.standard_normal(len(x)), 400, 7000) * u ** 2 * 0.8
+    out = (whine * trem * 0.5 + air)
+    hit = np.zeros(int(1.4 * SR))
+    place(hit, sfx_thump(42, 0.6, 1.0), 0.0, 1.0)
+    place(hit, sfx_whoosh(1.0), 0.0, 0.8)
+    return norm(np.concatenate([out, hit]), 0.9)
+
+
 def sfx_snap():
     """A portal slamming shut: a hard hit, a sub drop, a burst of glitch."""
     out = np.zeros(int(1.6 * SR))
@@ -1112,7 +1129,8 @@ SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1
        "glitch": lambda e: sfx_glitch(e.get("dur", 0.3)), "portal": lambda e: sfx_portal(e.get("dur", 0.9)),
        "whoosh": lambda e: sfx_whoosh(e.get("dur", 0.7)), "break": lambda e: sfx_break(),
        "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
-       "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0))}
+       "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
+       "charge": lambda e: sfx_charge(e.get("dur", 1.8))}
 
 
 def void_wind(length):
@@ -1393,6 +1411,9 @@ def build(episode_path, out_dir, keep=None):
         to = o.pop("to")
         # "end" means the last frame: the video runs 0.4 s past the last beat
         o["end"] = round(length + 0.4 if to == "end" else R(to), 3)
+        for key in ("grow", "full"):                 # extra moments an overlay keys on
+            if key in o:
+                o[key] = round(R(o[key]), 3)
         overlays.append(o)
     timeline = {"id": ep["id"], "fps": 24, "length": round(length, 3),
                 "beats": {k: [round(a, 3), round(b, 3)] for k, (a, b) in beats.items()},

@@ -602,7 +602,7 @@ def holo_tree(ctx, at, mat, show, h=3.0, name="holo_tree"):
     return obs
 
 
-def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio", gap=4.5, stagger=False):
+def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio", gap=4.5, stagger=False, tint=False):
     """A past Steve, Noob and Patch facing a Null, as one hologram: a single
     remembered moment. Returns the roots."""
     from kit.rigs import make_noob, make_null, make_patch, make_steve
@@ -613,7 +613,10 @@ def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio", g
         r = rig.root
         r.location = (x + dx * c - dy * s, y + dx * s + dy * c, z + dz)
         r.rotation_euler = (0, 0, face)
-        holo_ify(r, mat)
+        if tint:
+            holo_tint(r)
+        else:
+            holo_ify(r, mat)
         show_between(r, ctx.F(show[0]), ctx.F(show[1]))
         return r
 
@@ -624,7 +627,8 @@ def holo_trio(ctx, tex, at, yaw, mat, null_mat, show, null_s=3.0, name="trio", g
              place(make_patch(tex, name=f"{name}_patch", s=1.2), *pt, 1.9, yaw)]
     nul = make_null(tex, name=f"{name}_null", s=null_s)
     roots.append(place(nul, 0.0, -gap - null_s * 0.3, -null_s * 0.9, yaw + math.pi))
-    holo_ify(nul.root, null_mat)
+    if not tint:
+        holo_ify(nul.root, null_mat)
     return roots
 
 
@@ -638,4 +642,63 @@ def glow_light(ctx, at, rgb, power, show, radius=1.0, name="glow"):
     bpy.context.scene.collection.objects.link(ob)
     ob.location = tuple(at)
     show_between(ob, ctx.F(show[0]), ctx.F(show[1]))
+    return ob
+
+
+def holo_tint(root, edge=(0.3, 0.95, 1.0), alpha=0.42, glow=1.6):
+    """A remembered figure in its own colours: every material copied and made
+    see-through, with a soft glowing edge, so it reads as the same character,
+    only a memory of it."""
+    done = {}
+    for o in [root] + list(root.children_recursive):
+        if o.type != "MESH" or o.get("is_flash"):
+            continue
+        for slot in o.material_slots:
+            m0 = slot.material
+            if m0 is None:
+                continue
+            if m0.name not in done:
+                m = m0.copy()
+                m.name = m0.name + "_mem"
+                nt = m.node_tree
+                b = next((n for n in nt.nodes if n.type == "BSDF_PRINCIPLED"), None)
+                if b is not None:
+                    lw = nt.nodes.new("ShaderNodeLayerWeight")
+                    lw.inputs["Blend"].default_value = 0.3
+                    al = nt.nodes.new("ShaderNodeMapRange")
+                    al.inputs["To Min"].default_value = alpha
+                    al.inputs["To Max"].default_value = min(1.0, alpha + 0.4)
+                    nt.links.new(lw.outputs["Facing"], al.inputs["Value"])
+                    if not b.inputs["Alpha"].is_linked:
+                        nt.links.new(al.outputs["Result"], b.inputs["Alpha"])
+                    if not b.inputs["Emission Color"].is_linked:
+                        b.inputs["Emission Color"].default_value = (*edge, 1)
+                        em = nt.nodes.new("ShaderNodeMapRange")
+                        em.inputs["To Min"].default_value = 0.0
+                        em.inputs["To Max"].default_value = glow
+                        nt.links.new(lw.outputs["Facing"], em.inputs["Value"])
+                        nt.links.new(em.outputs["Result"], b.inputs["Emission Strength"])
+                    if hasattr(m, "surface_render_method"):
+                        m.surface_render_method = "DITHERED"
+                done[m0.name] = m
+            slot.link = "OBJECT"
+            slot.material = done[m0.name]
+
+
+def left_behind(ctx, tex, at, t0, t_sink, t_arrive, target, t_end, size=0.34, glow=1.2, name="left_behind"):
+    """What stays behind when the Noob respawns: a dark cube that hangs where
+    he fell (bobbing, turning), then sinks to `target` (t_sink to t_arrive)
+    and joins what waits there."""
+    m = material(name, tex=tex["null"], rough=0.8, emit_tex=True, strength=glow)
+    ob = box(name, (size,) * 3, (0, 0, 0), {"default": m})
+    show_between(ob, ctx.F(t0), ctx.F(t_end))
+    for f in range(ctx.F(t0), ctx.F(t_end) + 1):
+        t = (f - 1) / ctx.fps
+        u = ss(t_sink, t_arrive, t)
+        p = [at[i] + (target[i] - at[i]) * u for i in range(3)]
+        p[2] += 0.08 * math.sin(2.6 * (t - t0)) * (1 - u)
+        ob.location = p
+        ob.rotation_euler = (0.6 * (t - t0), 0.9 * (t - t0), 0.3 * (t - t0))
+        ob.keyframe_insert("location", frame=f)
+        ob.keyframe_insert("rotation_euler", frame=f)
     return ob
