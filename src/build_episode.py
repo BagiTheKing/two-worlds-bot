@@ -335,9 +335,11 @@ def build(episode_path, timeline_path, tex_dir):
         elif k == "hide":                         # objects gone for the whole episode (and their children)
             for nm in e["names"]:
                 ob = bpy.data.objects.get(nm)
-                for o_ in ([ob] + list(ob.children_recursive)) if ob else []:
-                    o_.hide_render = True
-                    o_.keyframe_insert("hide_render", frame=1)
+                for o_ in reversed(([ob] + list(ob.children_recursive)) if ob else []):
+                    bpy.data.objects.remove(o_, do_unlink=True)
+        elif k == "glow":                         # a coloured point light for a while
+            obby.glow_light(ctx, tuple(e["at"]), tuple(e["color"]), e["power"],
+                            (ctx.T(e["from"]), ctx.T(e["to"])), radius=e.get("radius", 1.0))
         elif k == "leaf_wall":
             obby.leaf_wall(ctx, tex, e["x0"], e["y"], e.get("z0", 0), e["w"], e["h"],
                            ctx.T(e["from"]), ctx.T(e["to"]), bush=[tuple(b) for b in e.get("bush", [])])
