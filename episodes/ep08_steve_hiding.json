@@ -321,7 +321,7 @@
       "visible": [
         [
           "reveal-0.3",
-          "end"
+          99
         ]
       ]
     },
@@ -338,7 +338,7 @@
       "visible": [
         [
           0,
-          "noob_scream"
+          "land"
         ]
       ]
     }
@@ -378,8 +378,8 @@
       "from": "back",
       "to": "back+0.01",
       "at": [
-        7.6,
-        4.87,
+        7.3,
+        4.9,
         0
       ],
       "yaw": -1.41
@@ -449,8 +449,8 @@
       "from": "bump",
       "to": "bump+0.45",
       "dest": [
-        5.75,
-        5.09
+        6.0,
+        5.0
       ]
     },
     {
@@ -459,7 +459,7 @@
       "from": "steve_same",
       "to": "bumped.end",
       "arm": "arm_r",
-      "angle": 1.55,
+      "angle": 1.3,
       "out": 0.05,
       "ease": 0.25
     },
@@ -469,7 +469,7 @@
       "from": "steve_same",
       "to": "bumped.end",
       "arm": "arm_l",
-      "angle": 1.55,
+      "angle": 1.3,
       "out": 0.05,
       "ease": 0.25
     },
@@ -584,103 +584,48 @@
       "who": "noob",
       "do": "fall",
       "from": "drop+0.3",
-      "to": "steve_scream",
+      "to": "land",
       "dest": [
         202.2,
         0.4,
-        46
+        30
       ]
     },
     {
       "who": "steve",
       "do": "fall",
       "from": "drop+0.32",
-      "to": "steve_scream",
+      "to": "land",
       "dest": [
         198.0,
         1.0,
-        46
+        30
       ]
     },
     {
       "who": "patch",
       "do": "fall",
       "from": "drop+0.34",
-      "to": "steve_scream",
+      "to": "land",
       "dest": [
         200.6,
         -0.6,
-        48
+        32
       ]
     },
     {
       "who": "noob",
-      "do": "set",
-      "from": "steve_scream",
-      "to": "steve_scream+0.01",
-      "at": [
-        101.0,
-        0,
-        80
-      ],
-      "yaw": 0.3
+      "do": "face",
+      "from": "bump+0.45",
+      "to": "bump+0.7",
+      "yaw": 0.7
     },
     {
       "who": "steve",
-      "do": "set",
-      "from": "steve_scream",
-      "to": "steve_scream+0.01",
-      "at": [
-        98.8,
-        0.6,
-        81.2
-      ],
-      "yaw": 0.6
-    },
-    {
-      "who": "patch",
-      "do": "set",
-      "from": "steve_scream",
-      "to": "steve_scream+0.01",
-      "at": [
-        100.2,
-        -0.6,
-        83.0
-      ],
-      "yaw": 0.4
-    },
-    {
-      "who": "noob",
-      "do": "slide",
-      "from": "steve_scream+0.02",
-      "to": "land",
-      "to_at": [
-        101.4,
-        0.2,
-        74
-      ]
-    },
-    {
-      "who": "steve",
-      "do": "slide",
-      "from": "steve_scream+0.02",
-      "to": "land",
-      "to_at": [
-        99.0,
-        0.8,
-        75.2
-      ]
-    },
-    {
-      "who": "patch",
-      "do": "slide",
-      "from": "steve_scream+0.02",
-      "to": "land",
-      "to_at": [
-        100.4,
-        -0.4,
-        77.0
-      ]
+      "do": "face",
+      "from": "steve_same",
+      "to": "steve_same+0.25",
+      "yaw": -0.9
     },
     {
       "who": "noob",
@@ -1224,7 +1169,7 @@
     {
       "name": "ep7_end",
       "from": 0,
-      "to": "steve_scream",
+      "to": "land",
       "lens": 24,
       "path": [
         [
@@ -1236,7 +1181,7 @@
           ]
         ],
         [
-          "steve_scream",
+          "land",
           [
             209.3,
             -1.75,
@@ -1254,49 +1199,6 @@
           ]
         ]
       ]
-    },
-    {
-      "name": "sky",
-      "from": "steve_scream",
-      "to": "land",
-      "lens": 22,
-      "path": [
-        [
-          "steve_scream",
-          [
-            106.5,
-            -6.0,
-            82.5
-          ]
-        ],
-        [
-          "land",
-          [
-            106.5,
-            -6.0,
-            76.5
-          ]
-        ]
-      ],
-      "look": [
-        [
-          "steve_scream",
-          [
-            100,
-            0.2,
-            81.0
-          ]
-        ],
-        [
-          "land",
-          [
-            100.2,
-            0.2,
-            75.0
-          ]
-        ]
-      ],
-      "shake": 0.03
     },
     {
       "name": "hook",
@@ -1404,22 +1306,22 @@
       "name": "noob_fault",
       "from": "back",
       "to": "steve_cost",
-      "lens": 32,
+      "lens": 26,
       "path": [
         [
           "back",
           [
-            7.0,
-            4.0,
-            1.8
+            7.2,
+            3.6,
+            1.85
           ]
         ],
         [
           "steve_cost",
           [
-            6.95,
-            4.05,
-            1.8
+            7.1,
+            3.7,
+            1.85
           ]
         ]
       ],
@@ -1429,7 +1331,7 @@
           [
             5.2,
             4.6,
-            1.6
+            1.5
           ]
         ]
       ]
@@ -1461,8 +1363,8 @@
         [
           "steve_cost",
           [
-            7.6,
-            5.0,
+            7.3,
+            4.9,
             1.6
           ]
         ]
@@ -1472,21 +1374,21 @@
       "name": "think",
       "from": "think",
       "to": "bump",
-      "lens": 32,
+      "lens": 26,
       "path": [
         [
           "think",
           [
-            7.0,
-            4.0,
+            7.2,
+            3.6,
             1.8
           ]
         ],
         [
           "bump",
           [
-            6.95,
-            4.05,
+            7.1,
+            3.7,
             1.8
           ]
         ]
@@ -1511,17 +1413,17 @@
         [
           "bump",
           [
-            6.68,
-            1.7,
-            1.65
+            6.65,
+            1.6,
+            1.9
           ]
         ],
         [
           "ignite",
           [
-            6.68,
-            2.5,
-            1.6
+            6.65,
+            2.4,
+            1.85
           ]
         ]
       ],
@@ -1529,9 +1431,9 @@
         [
           "bump",
           [
-            6.7,
+            6.65,
             5.0,
-            1.55
+            1.5
           ]
         ]
       ]
@@ -1619,7 +1521,9 @@
       "nonverbal": true,
       "fx": "falling",
       "pad": 0.0,
-      "solo_text": "Aaaaaaaaaaaahhhh!"
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "trim": 1.0,
+      "trim_fade": 0.3
     },
     {
       "line": "noob",
@@ -1630,7 +1534,9 @@
       "fx": "falling",
       "together": true,
       "pad": 0.0,
-      "solo_text": "Aaaaaaaaaaaahhhh!"
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "trim": 1.0,
+      "trim_fade": 0.3
     },
     {
       "beat": "land",

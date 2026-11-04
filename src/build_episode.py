@@ -365,8 +365,9 @@ def build(episode_path, timeline_path, tex_dir):
                 height=e.get("height", 1.5), spin=e.get("spin", 9.0), name=e["name"])
         elif k == "null_smile":
             a = actors[e["actor"]]
+            vis = ep["actors"][e["actor"]].get("visible")   # the smile goes with the body
             obby.null_smile(ctx, tex, a.rig, ep["actors"][e["actor"]].get("s", 9.0), ctx.T(e["at"]),
-                            expr=e.get("expr", "happy"))
+                            expr=e.get("expr", "happy"), until=ctx.T(vis[-1][1]) if vis else None)
 
     sc = bpy.context.scene
     sc.frame_start, sc.frame_end = 1, ctx.F(ctx.end)

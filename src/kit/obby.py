@@ -455,9 +455,10 @@ def throw(ctx, held, a, b, t0, t1, height=1.5, spin=9.0, name="thrown"):
     return obs
 
 
-def null_smile(ctx, tex, rig, s, t, expr="happy", name="null_smile"):
+def null_smile(ctx, tex, rig, s, t, expr="happy", name="null_smile", until=None):
     """Null copies the Noob's face: his smile glowing on the missing-texture
-    face, flickering in over a third of a second, then staying."""
+    face, flickering in over a third of a second, then staying (until
+    `until`, when the body goes)."""
     m = material(f"{name}_mat", tex=tex[f"noob_face_{expr}"], smooth_tex=True, alpha_tex=True,
                  emission=(1, 1, 1), strength=4.0)
     plate = box(name, (0.36 * s, 0.002, 0.30 * s), (0, -0.2315 * s - 0.004 * s, 0.24 * s),
@@ -465,6 +466,8 @@ def null_smile(ctx, tex, rig, s, t, expr="happy", name="null_smile"):
     plate["face_plate"] = 1
     keys = [(1, True), (ctx.F(t), False), (ctx.F(t + 0.08), True), (ctx.F(t + 0.16), False),
             (ctx.F(t + 0.22), True), (ctx.F(t + 0.3), False)]
+    if until is not None:
+        keys.append((ctx.F(until), True))
     for f, h in keys:
         plate.hide_render = h
         plate.keyframe_insert("hide_render", frame=max(1, f))
