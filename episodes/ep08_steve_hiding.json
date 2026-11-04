@@ -652,7 +652,7 @@
     {
       "who": "noob",
       "do": "slide",
-      "from": "steve_scream",
+      "from": "steve_scream+0.02",
       "to": "land",
       "to_at": [
         101.4,
@@ -663,7 +663,7 @@
     {
       "who": "steve",
       "do": "slide",
-      "from": "steve_scream",
+      "from": "steve_scream+0.02",
       "to": "land",
       "to_at": [
         99.0,
@@ -674,7 +674,7 @@
     {
       "who": "patch",
       "do": "slide",
-      "from": "steve_scream",
+      "from": "steve_scream+0.02",
       "to": "land",
       "to_at": [
         100.4,
@@ -733,7 +733,7 @@
     {
       "who": "noob",
       "do": "fall",
-      "from": "land",
+      "from": "land+0.02",
       "to": "land+0.42",
       "dest": [
         4.4,
@@ -744,7 +744,7 @@
     {
       "who": "steve",
       "do": "fall",
-      "from": "land",
+      "from": "land+0.02",
       "to": "land+0.45",
       "dest": [
         8.0,
@@ -755,7 +755,7 @@
     {
       "who": "patch",
       "do": "slide",
-      "from": "land",
+      "from": "land+0.02",
       "to": "land+0.7",
       "to_at": [
         4.6,
