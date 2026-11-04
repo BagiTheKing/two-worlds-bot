@@ -51,8 +51,14 @@
   },
   "music": [
     {
-      "cue": "theme_soft",
+      "cue": "null",
       "from": 0,
+      "to": "land",
+      "gain": 0.26
+    },
+    {
+      "cue": "theme_soft",
+      "from": "land",
       "to": "flash",
       "gain": 0.17
     },
@@ -66,7 +72,15 @@
       "cue": "theme_soft",
       "from": "back",
       "to": "ignite",
-      "gain": 0.17
+      "gain": 0.17,
+      "swell": [
+        {
+          "from": "bumped",
+          "to": "ignite",
+          "gain": 1.8,
+          "ramp": 0.3
+        }
+      ]
     },
     {
       "cue": "null",
@@ -95,21 +109,6 @@
     }
   ],
   "sfx": [
-    {
-      "kind": "break",
-      "at": -0.4,
-      "gain": 0.4
-    },
-    {
-      "kind": "break",
-      "at": 0.1,
-      "gain": 0.4
-    },
-    {
-      "kind": "break",
-      "at": 0.6,
-      "gain": 0.4
-    },
     {
       "kind": "whoosh",
       "at": "flash+0.1",
@@ -145,6 +144,39 @@
       "at": "reveal-0.3",
       "dur": 1.6,
       "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": "drop+0.25",
+      "dur": 0.3,
+      "gain": 0.6
+    },
+    {
+      "kind": "whoosh",
+      "at": "noob_scream",
+      "dur": 1.2,
+      "gain": 0.5
+    },
+    {
+      "kind": "thump",
+      "at": "land+0.42",
+      "freq": 55,
+      "gain": 0.8
+    },
+    {
+      "kind": "break",
+      "at": "land+0.45",
+      "gain": 0.5
+    },
+    {
+      "kind": "break",
+      "at": "land+0.9",
+      "gain": 0.4
+    },
+    {
+      "kind": "break",
+      "at": "noob_portal",
+      "gain": 0.4
     }
   ],
   "overlays": [
@@ -192,10 +224,11 @@
       "type": "endnote",
       "from": "reveal+1.4",
       "to": "end",
-      "next_label": "NEXT  ·  EPISODE 9",
-      "next_title": "THE TRUTH",
+      "next_label": "NEXT",
+      "next_title": "THE END",
       "question": "WHAT DID STEVE SEE ON THE OTHER SIDE?",
-      "question_sub": "Comment your theory"
+      "question_sub": "Comment your theory",
+      "highlight": true
     }
   ],
   "actors": {
@@ -203,11 +236,11 @@
       "rig": "noob",
       "faces": "moments",
       "at": [
-        4.4,
-        4.5,
-        0
+        201.6,
+        0,
+        60
       ],
-      "yaw": 0.6,
+      "yaw": 1.0,
       "visible": [
         [
           0,
@@ -223,11 +256,11 @@
       "rig": "steve",
       "faces": "moments",
       "at": [
-        8.0,
-        5.7,
-        0
+        197.6,
+        0.8,
+        60
       ],
-      "yaw": -1.95,
+      "yaw": 0.35,
       "visible": [
         [
           0,
@@ -243,11 +276,11 @@
       "rig": "patch",
       "s": 1.4,
       "at": [
-        4.6,
-        4.0,
-        3.9
+        200.3,
+        -0.9,
+        62.4
       ],
-      "yaw": 0.3,
+      "yaw": 0.6,
       "visible": [
         [
           0,
@@ -291,30 +324,26 @@
           "end"
         ]
       ]
+    },
+    "null_old": {
+      "rig": "null",
+      "s": 6.5,
+      "at": [
+        201.6,
+        -4.4,
+        49.64
+      ],
+      "yaw": 1.98,
+      "idle": 0.02,
+      "visible": [
+        [
+          0,
+          "noob_scream"
+        ]
+      ]
     }
   },
   "clips": [
-    {
-      "who": "noob",
-      "do": "expr",
-      "face": "surprised",
-      "from": 0,
-      "to": "steve_first.end"
-    },
-    {
-      "who": "noob",
-      "do": "shock",
-      "from": 0,
-      "to": "noob_portal.end"
-    },
-    {
-      "who": "steve",
-      "do": "swing",
-      "from": -0.6,
-      "to": 1.0,
-      "arm": "arm_r",
-      "count": 4
-    },
     {
       "who": "patch",
       "do": "scan",
@@ -350,7 +379,7 @@
       "to": "back+0.01",
       "at": [
         7.6,
-        5.0,
+        4.87,
         0
       ],
       "yaw": -1.41
@@ -421,7 +450,7 @@
       "to": "bump+0.45",
       "dest": [
         5.75,
-        4.7
+        5.09
       ]
     },
     {
@@ -543,6 +572,224 @@
         6.0,
         7.5
       ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": 0,
+      "to": "land"
+    },
+    {
+      "who": "noob",
+      "do": "fall",
+      "from": "drop+0.3",
+      "to": "noob_scream",
+      "dest": [
+        202.2,
+        0.4,
+        46
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "fall",
+      "from": "drop+0.32",
+      "to": "noob_scream",
+      "dest": [
+        198.0,
+        1.0,
+        46
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "fall",
+      "from": "drop+0.34",
+      "to": "noob_scream",
+      "dest": [
+        200.6,
+        -0.6,
+        48
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "noob_scream",
+      "to": "noob_scream+0.01",
+      "at": [
+        101.0,
+        0,
+        80
+      ],
+      "yaw": 0.3
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "noob_scream",
+      "to": "noob_scream+0.01",
+      "at": [
+        98.8,
+        0.6,
+        81.2
+      ],
+      "yaw": 0.6
+    },
+    {
+      "who": "patch",
+      "do": "set",
+      "from": "noob_scream",
+      "to": "noob_scream+0.01",
+      "at": [
+        100.2,
+        -0.6,
+        83.0
+      ],
+      "yaw": 0.4
+    },
+    {
+      "who": "noob",
+      "do": "slide",
+      "from": "noob_scream",
+      "to": "land",
+      "to_at": [
+        101.4,
+        0.2,
+        74
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "slide",
+      "from": "noob_scream",
+      "to": "land",
+      "to_at": [
+        99.0,
+        0.8,
+        75.2
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "slide",
+      "from": "noob_scream",
+      "to": "land",
+      "to_at": [
+        100.4,
+        -0.4,
+        77.0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "flail",
+      "from": "drop+0.3",
+      "to": "land"
+    },
+    {
+      "who": "steve",
+      "do": "flail",
+      "from": "drop+0.3",
+      "to": "land"
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "land",
+      "to": "land+0.01",
+      "at": [
+        4.4,
+        4.5,
+        9.0
+      ],
+      "yaw": 0.6
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "land",
+      "to": "land+0.01",
+      "at": [
+        8.0,
+        5.7,
+        9.5
+      ],
+      "yaw": -1.95
+    },
+    {
+      "who": "patch",
+      "do": "set",
+      "from": "land",
+      "to": "land+0.01",
+      "at": [
+        4.6,
+        4.0,
+        12.0
+      ],
+      "yaw": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "fall",
+      "from": "land",
+      "to": "land+0.42",
+      "dest": [
+        4.4,
+        4.5,
+        0
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "fall",
+      "from": "land",
+      "to": "land+0.45",
+      "dest": [
+        8.0,
+        5.7,
+        0
+      ]
+    },
+    {
+      "who": "patch",
+      "do": "slide",
+      "from": "land",
+      "to": "land+0.7",
+      "to_at": [
+        4.6,
+        4.0,
+        3.9
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": "land+0.4",
+      "to": "steve_first.end"
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": "noob_portal",
+      "to": "noob_portal.end"
+    },
+    {
+      "who": "steve",
+      "do": "swing",
+      "from": "land+0.5",
+      "to": "noob_portal.end",
+      "arm": "arm_r",
+      "count": 4
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "smile",
+      "from": "steve_same",
+      "to": "bumped.end+0.3"
     }
   ],
   "fx": [
@@ -575,8 +822,8 @@
       "y": 6.0,
       "w": 4,
       "h": 5,
-      "from": -0.6,
-      "to": 1.1,
+      "from": "land+0.4",
+      "to": "noob_portal.end",
       "bush": [
         [
           3.5,
@@ -918,17 +1165,147 @@
       "from": "reveal-0.4",
       "to": "end",
       "radius": 2.0
+    },
+    {
+      "kind": "obby_course",
+      "platforms": [
+        {
+          "name": "e7_noob_pad",
+          "at": [
+            201.6,
+            0,
+            60
+          ],
+          "size": [
+            3,
+            3
+          ],
+          "colour": "blue"
+        },
+        {
+          "name": "e7_steve_pad",
+          "at": [
+            197.6,
+            0.8,
+            60
+          ],
+          "size": [
+            3,
+            3.2
+          ],
+          "colour": "green"
+        }
+      ]
+    },
+    {
+      "kind": "vanish",
+      "targets": [
+        "e7_noob_pad",
+        "e7_steve_pad"
+      ],
+      "at": [
+        "drop+0.25",
+        "drop+0.3"
+      ],
+      "flash": 0.12
+    },
+    {
+      "kind": "null_smile",
+      "actor": "null_old",
+      "at": -1.0
+    },
+    {
+      "kind": "wand",
+      "actor": "noob",
+      "arm": "arm_l"
     }
   ],
   "shots": [
     {
-      "name": "hook",
+      "name": "ep7_end",
       "from": 0,
+      "to": "noob_scream",
+      "lens": 24,
+      "path": [
+        [
+          0,
+          [
+            209.5,
+            -1.8,
+            62.1
+          ]
+        ],
+        [
+          "noob_scream",
+          [
+            209.3,
+            -1.75,
+            61.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            201.6,
+            -2.1,
+            62.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "sky",
+      "from": "noob_scream",
+      "to": "land",
+      "lens": 22,
+      "path": [
+        [
+          "noob_scream",
+          [
+            106.5,
+            -6.0,
+            82.5
+          ]
+        ],
+        [
+          "land",
+          [
+            106.5,
+            -6.0,
+            76.5
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "noob_scream",
+          [
+            100,
+            0.2,
+            81.0
+          ]
+        ],
+        [
+          "land",
+          [
+            100.2,
+            0.2,
+            75.0
+          ]
+        ]
+      ],
+      "shake": 0.03
+    },
+    {
+      "name": "hook",
+      "from": "land",
       "to": "flash",
       "lens": 22,
       "path": [
         [
-          0,
+          "land",
           [
             5.6,
             -0.8,
@@ -946,7 +1323,7 @@
       ],
       "look": [
         [
-          0,
+          "land",
           [
             5.9,
             5.6,
@@ -1129,21 +1506,21 @@
       "name": "bump",
       "from": "bump",
       "to": "ignite",
-      "lens": 28,
+      "lens": 20,
       "path": [
         [
           "bump",
           [
-            6.5,
-            -0.4,
-            1.6
+            6.68,
+            1.7,
+            1.65
           ]
         ],
         [
           "ignite",
           [
-            6.5,
-            0.0,
+            6.68,
+            2.5,
             1.6
           ]
         ]
@@ -1152,9 +1529,9 @@
         [
           "bump",
           [
-            6.6,
-            4.8,
-            1.4
+            6.7,
+            5.0,
+            1.55
           ]
         ]
       ]
@@ -1231,8 +1608,21 @@
   ],
   "events": [
     {
-      "beat": "open",
-      "dur": 0.2
+      "beat": "drop",
+      "dur": 0.8
+    },
+    {
+      "line": "noob",
+      "name": "noob_scream",
+      "text": "WAAAAH!",
+      "direction_text": "[falling, screaming] WAAAAH!",
+      "nonverbal": true,
+      "solo_only": true,
+      "pad": 0.0
+    },
+    {
+      "beat": "land",
+      "dur": 0.9
     },
     {
       "line": "noob",

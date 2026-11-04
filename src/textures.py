@@ -409,6 +409,17 @@ def steve_faces():
                            _steve_eyes(px, top=7, bottom=10),
                            _box(px, 4, 12, 12, 14 if o else 13, (70, 30, 30)))
 
+    def smile(o):                                      # a small, warm smile: soft lids, corners up
+        def f(px):
+            _steve_eyes(px, lid=1)
+            if o:
+                _box(px, 5, 13, 11, 15, (70, 30, 30))
+            else:
+                _box(px, 5, 13, 11, 14, MOUTH)
+            _box(px, 4, 12, 5, 13, MOUTH)
+            _box(px, 11, 12, 12, 13, MOUTH)
+        return f
+
     def blink(px):
         _box(px, 2, 9, 6, 10, (110, 72, 52))
         _box(px, 10, 9, 14, 10, (110, 72, 52))
@@ -416,7 +427,7 @@ def steve_faces():
 
     out = {"blink": _steve16(blink)}
     for name, fn in (("neutral", neutral), ("unimpressed", unimpressed), ("surprised", surprised),
-                     ("scared", scared)):
+                     ("scared", scared), ("smile", smile)):
         out[name] = _steve16(fn(False))
         out[name + "_talk"] = _steve16(fn(True))
     return out

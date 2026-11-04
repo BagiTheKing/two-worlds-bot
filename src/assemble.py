@@ -383,11 +383,19 @@ def endnote(img, o, t, f, fonts):
     d = ImageDraw.Draw(img)
     y0 = H - 470
     d.text((W // 2, y0), o["next_label"], font=fonts["small"], fill=(255, 210, 63), anchor="mm")
-    d.text((W // 2, y0 + 62), o["next_title"], font=fitted(o["next_title"], 54, W - 120),
-           fill=(255, 255, 255), anchor="mm", stroke_width=4, stroke_fill=(0, 0, 0))
-    d.text((W // 2, y0 + 170), o["question"], font=fitted(o["question"], 84, W - 120),
+    if o.get("highlight"):                       # the title big, in the series' cyan/magenta glitch
+        fnt = fitted(o["next_title"], 120, W - 120)
+        g = random.Random(f).choice((0, 0, 0, 5, -5))
+        for dx, col in ((-6 + g, (0, 230, 255)), (6 + g, (255, 0, 200))):
+            d.text((W // 2 + dx, y0 + 85), o["next_title"], font=fnt, fill=col, anchor="mm")
+        d.text((W // 2 + g, y0 + 85), o["next_title"], font=fnt, fill=(255, 255, 255), anchor="mm")
+    else:
+        d.text((W // 2, y0 + 62), o["next_title"], font=fitted(o["next_title"], 54, W - 120),
+               fill=(255, 255, 255), anchor="mm", stroke_width=4, stroke_fill=(0, 0, 0))
+    dq = 40 if o.get("highlight") else 0
+    d.text((W // 2, y0 + 170 + dq), o["question"], font=fitted(o["question"], 84, W - 120),
            fill=(255, 59, 212), anchor="mm", stroke_width=6, stroke_fill=(0, 0, 0))
-    d.text((W // 2, y0 + 250), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
+    d.text((W // 2, y0 + 250 + dq), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
 
 
 DRAW = {"warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
