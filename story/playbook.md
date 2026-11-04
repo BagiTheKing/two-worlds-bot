@@ -15,13 +15,13 @@ checklist at the end. Add to it after every episode's stats.
 
 ## 1. Measured
 
-| | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 | Ep5 (38 h) | Ep6 (28 h, final) |
-|---|---|---|---|---|---|---|---|
-| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% | **51.8%** | 44.1% |
-| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** | 0:21 (70.7%) | **0:30 (102.2%)** |
-| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | 1.53k, still climbing | **2.44k, still climbing** | 1.27k, flat after 3 h |
-| Shorts feed share | | | 94.4% | 95.9% | 95.3% | 94.2% (search 4.7%) | 94.7% (search 3.4%) |
-| New subscribers | | | +1 | +2 | +3 | +3 | **+5** |
+| | Ep1 | Ep2 | Ep3 | Clean test (Ep3 gag, 9 s) | Ep4 | Ep5 (38 h) | Ep6 (28 h, final) | Ep7 (40 h) |
+|---|---|---|---|---|---|---|---|---|
+| Stayed to watch | 36.7% | 39.7% | 37.7% | 32.0% | 25.7% | **51.8%** | 44.1% | 37.7% |
+| Avg. view duration | 0:18 (58.6%) | 0:20 (67.7%) | 0:17 (64.4%) | 0:11 (119%) | **0:22 (72.9%)** | 0:21 (70.7%) | **0:30 (102.2%)** | 0:23 (68.3%) |
+| Views (~2 days) | 1.2k | ~0.5k engaged | 1.37k | 1.35k | 1.53k, still climbing | **2.44k, still climbing** | 1.27k, flat after 3 h | 1.2k, flat after ~10 h |
+| Shorts feed share | | | 94.4% | 95.9% | 95.3% | 94.2% (search 4.7%) | 94.7% (search 3.4%) | 97.0% (search 2.5%) |
+| New subscribers | | | +1 | +2 | +3 | +3 | **+5** | +1 |
 
 What it means:
 
@@ -71,6 +71,20 @@ What it means:
   away with a small Noob: readable only with Ep3-5 in mind. Ep5's was a big
   bright duck popping in right next to the Noob. The link to the last
   episode must be in the first frame *and* readable to a stranger.
+- **The title's promise must be the first frame.** Ep5 ("Noob Found
+  Creative Mode") opened on the Noob building: title and frame 1 said the
+  same thing, and it is the only episode YouTube kept pushing. Ep6 ("TNT
+  vs...") opened on a dragon being deleted (the TNT came at 0:14); Ep7
+  ("...What Happens When You Respawn") opened on Null's face from Ep6 (the
+  respawns came at 0:05). Both stalled near 1.2k. A stranger who clicked
+  for the title's promise and sees something else swipes.
+- **Serial lore costs reach.** 95-97% of viewers are strangers. The more
+  an episode depends on earlier ones (Ep6-7: Null, Patch's memory), the
+  lower "stayed to watch"; the loyal viewers love it, the feed does not.
+- **About 1.2-1.5k views is the first test audience** YouTube gives each new
+  Short here; only a better swipe rate than comparable Shorts unlocks more
+  (Ep5). Every Short so far sits at 26-52% "stayed"; strong Shorts hold
+  well over 60%.
 - **A dark end card is where people leave.** Ep6 lost half its remaining
   audience the moment the card appeared (about 80% -> 40%); Ep5 hardly any.
   Put "next" and the question over the last story shot instead, and let the
@@ -212,4 +226,5 @@ What it means:
 | Clean test | Same gag, captions only | Stayed flat (32%); no 0:04 cliff; 119% retention |
 | Ep4 | Face-first hook, faces on key moments, clean screen, Ep3 link, reframing | Stayed lowest (25.7%) but best retention (72.9%), rewatches, +3 subs, views still climbing at 35 h |
 | Ep6 (v2, after the creator's review) | Null's rise at 0:04-0:08, music under it, one moving group shot, reactions over the action, no vote, dark end card | Best retention ever (102%), +5 subs, stayed 44.1%; views flat after 3 h (swipe-away 56%); half the viewers left at the end card |
+| Ep7 | Warp into a bright cyan memory at 0:03-0:05, colour holograms, loop ending, no dark card | Stayed 37.7%, retention 68.3%, 1.2k views (flat), +1 sub; the 0:04-0:08 drop back to Ep5's size (about 118% -> 77%), starting with the white-out; title promise (respawn) not in frame 1 |
 | Ep5 | Action from frame 1 (a build popping in), premise line at 0.2 s, "creative mode" title, viewer's idea credited, big erase-wave spectacle | **Stayed 51.8% (best by 12 pts)**, retention 70.7%, 2.44k views at 38 h (best), +3 subs; drop at 0:04-0:08 during close-ups with an insider line |
