@@ -409,15 +409,12 @@ def steve_faces():
                            _steve_eyes(px, top=7, bottom=10),
                            _box(px, 4, 12, 12, 14 if o else 13, (70, 30, 30)))
 
-    def smile(o):                                      # a small, warm smile: soft lids, corners up
-        def f(px):
-            _steve_eyes(px, lid=1)
-            if o:
-                _box(px, 5, 13, 11, 15, (70, 30, 30))
-            else:
-                _box(px, 5, 13, 11, 14, MOUTH)
-            _box(px, 4, 12, 5, 13, MOUTH)
-            _box(px, 11, 12, 12, 13, MOUTH)
+    def smile(o):                                      # a small, warm smile: open eyes, a soft "u"
+        def f(px):                                     # (half lids made it read as smug)
+            _steve_eyes(px)
+            _box(px, 6, 13, 10, 15 if o else 14, (70, 30, 30) if o else MOUTH)
+            _box(px, 4, 12, 6, 13, MOUTH)
+            _box(px, 10, 12, 12, 13, MOUTH)
         return f
 
     def blink(px):

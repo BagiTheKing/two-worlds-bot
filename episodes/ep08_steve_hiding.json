@@ -1684,13 +1684,10 @@
     {
       "line": "steve",
       "name": "steve_cost",
-      "text": "I wanted to see the other side. I didn't know what it would cost.",
+      "text": "I wanted to see the other side. Your side. I didn't know what it would cost.",
       "direction_text": "[quiet, honest, heavy] I wanted to see the other side. I didn't know what it would cost.",
       "pad": 0.1,
-      "cut_at": [
-        4.0,
-        8.41
-      ]
+      "solo_text": "I wanted to see the other side. Your side. I didn't know what it would cost."
     },
     {
       "beat": "think",
