@@ -1,0 +1,301 @@
+{
+ "id": "ep08_steve_hiding",
+ "fps": 24,
+ "length": 33.903,
+ "beats": {
+  "drop": [
+   0.0,
+   0.8
+  ],
+  "steve_scream": [
+   0.8,
+   1.8
+  ],
+  "noob_scream": [
+   0.8,
+   1.8
+  ],
+  "land": [
+   1.8,
+   2.7
+  ],
+  "noob_portal": [
+   2.7,
+   4.284
+  ],
+  "flash": [
+   4.384,
+   4.784
+  ],
+  "past": [
+   4.784,
+   5.184
+  ],
+  "steve_first": [
+   5.184,
+   8.608
+  ],
+  "patch_started": [
+   8.708,
+   9.879
+  ],
+  "past2": [
+   9.979,
+   10.679
+  ],
+  "back": [
+   10.679,
+   10.979
+  ],
+  "noob_fault": [
+   10.979,
+   14.453
+  ],
+  "steve_cost": [
+   14.553,
+   19.716
+  ],
+  "think": [
+   19.816,
+   20.616
+  ],
+  "noob_blocks": [
+   20.616,
+   23.011
+  ],
+  "bump": [
+   23.111,
+   23.611
+  ],
+  "steve_same": [
+   23.611,
+   24.789
+  ],
+  "noob_kinda": [
+   24.839,
+   26.017
+  ],
+  "bumped": [
+   26.067,
+   26.767
+  ],
+  "ignite": [
+   26.767,
+   27.867
+  ],
+  "patch_didnt": [
+   27.867,
+   29.803
+  ],
+  "reveal": [
+   29.903,
+   32.303
+  ],
+  "end": [
+   32.303,
+   33.903
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_scream",
+   "who": "steve",
+   "text": "Aaaaaaah!",
+   "vo": false,
+   "caption": true,
+   "start": 0.8,
+   "end": 1.8
+  },
+  {
+   "name": "noob_scream",
+   "who": "noob",
+   "text": "Aaaaaaaah!",
+   "vo": false,
+   "caption": true,
+   "start": 0.8,
+   "end": 1.8
+  },
+  {
+   "name": "noob_portal",
+   "who": "noob",
+   "text": "You had a PORTAL?!",
+   "vo": false,
+   "caption": true,
+   "start": 2.7,
+   "end": 4.284
+  },
+  {
+   "name": "steve_first",
+   "who": "steve",
+   "text": "I built the first one. Before I met you.",
+   "vo": false,
+   "caption": true,
+   "start": 5.184,
+   "end": 8.608
+  },
+  {
+   "name": "patch_started",
+   "who": "patch",
+   "text": "That's where it started.",
+   "vo": false,
+   "caption": true,
+   "start": 8.708,
+   "end": 9.879
+  },
+  {
+   "name": "noob_fault",
+   "who": "noob",
+   "text": "So all of this... is YOUR fault?",
+   "vo": false,
+   "caption": true,
+   "start": 10.979,
+   "end": 14.453
+  },
+  {
+   "name": "steve_cost",
+   "who": "steve",
+   "text": "I wanted to see the other side. Your side. I didn't know what it would cost.",
+   "vo": false,
+   "caption": true,
+   "start": 14.553,
+   "end": 19.716
+  },
+  {
+   "name": "noob_blocks",
+   "who": "noob",
+   "text": "...I touch weird blocks all the time.",
+   "vo": false,
+   "caption": true,
+   "start": 20.616,
+   "end": 23.011
+  },
+  {
+   "name": "steve_same",
+   "who": "steve",
+   "text": "That's not the same.",
+   "vo": false,
+   "caption": true,
+   "start": 23.611,
+   "end": 24.789
+  },
+  {
+   "name": "noob_kinda",
+   "who": "noob",
+   "text": "Kinda is.",
+   "vo": false,
+   "caption": true,
+   "start": 24.839,
+   "end": 26.017
+  },
+  {
+   "name": "patch_didnt",
+   "who": "patch",
+   "text": "...I didn't do that.",
+   "vo": false,
+   "caption": true,
+   "start": 27.867,
+   "end": 29.803
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 34.303
+  },
+  {
+   "type": "memory",
+   "start": 4.634,
+   "end": 10.679
+  },
+  {
+   "type": "flash",
+   "color": [
+    200,
+    250,
+    255
+   ],
+   "strength": 0.95,
+   "start": 4.634,
+   "end": 4.984
+  },
+  {
+   "type": "flash",
+   "color": [
+    200,
+    250,
+    255
+   ],
+   "strength": 0.8,
+   "start": 10.679,
+   "end": 10.979
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 12%",
+   "alert": true,
+   "start": 29.903,
+   "end": 34.303
+  },
+  {
+   "type": "endnote",
+   "next_label": "NEXT",
+   "next_title": "THE END",
+   "question": "WHAT DID STEVE SEE ON THE OTHER SIDE?",
+   "question_sub": "Comment your theory",
+   "highlight": true,
+   "start": 31.303,
+   "end": 34.303
+  }
+ ]
+}
