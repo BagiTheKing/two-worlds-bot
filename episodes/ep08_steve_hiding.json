@@ -1255,14 +1255,22 @@
       "name": "steve_first",
       "text": "I built the first one. Before I met you.",
       "direction_text": "[quiet, guilty, not looking at him] I built the first one. Before I met you.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        5.9,
+        9.96
+      ]
     },
     {
       "line": "patch",
       "name": "patch_started",
       "text": "That's where it started.",
       "direction_text": "[quiet, calm] That's where it started.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        10.24,
+        11.68
+      ]
     },
     {
       "beat": "past2",
@@ -1277,14 +1285,22 @@
       "name": "noob_fault",
       "text": "So all of this... is YOUR fault?",
       "direction_text": "[hurt, quiet then rising] So all of this... is YOUR fault?",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        3.75
+      ]
     },
     {
       "line": "steve",
       "name": "steve_cost",
       "text": "I wanted to see the other side. I didn't know what it would cost.",
       "direction_text": "[quiet, honest, heavy] I wanted to see the other side. I didn't know what it would cost.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        4.0,
+        8.41
+      ]
     },
     {
       "beat": "think",
@@ -1295,7 +1311,11 @@
       "name": "noob_blocks",
       "text": "...I touch weird blocks all the time.",
       "direction_text": "[small, sheepish, forgiving] ...I touch weird blocks all the time.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        8.58,
+        11.33
+      ]
     },
     {
       "beat": "bump",
@@ -1306,14 +1326,22 @@
       "name": "steve_same",
       "text": "That's not the same.",
       "direction_text": "[dry, a small smile] That's not the same.",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        11.4,
+        12.96
+      ]
     },
     {
       "line": "noob",
       "name": "noob_kinda",
       "text": "Kinda is.",
       "direction_text": "[warm, cheeky] Kinda is.",
-      "pad": 0.05
+      "pad": 0.05,
+      "cut_at": [
+        13.04,
+        14.5
+      ]
     },
     {
       "beat": "bumped",
@@ -1328,7 +1356,11 @@
       "name": "patch_didnt",
       "text": "...I didn't do that.",
       "direction_text": "[quiet, alarmed] ...I didn't do that.",
-      "pad": 0.1
+      "pad": 0.1,
+      "cut_at": [
+        0.1,
+        2.23
+      ]
     },
     {
       "beat": "reveal",
