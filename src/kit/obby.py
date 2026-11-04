@@ -702,3 +702,30 @@ def left_behind(ctx, tex, at, t0, t_sink, t_arrive, target, t_end, size=0.34, gl
         ob.keyframe_insert("location", frame=f)
         ob.keyframe_insert("rotation_euler", frame=f)
     return ob
+
+
+# ------------------------------------------------- episode 8: the hidden portal
+
+def leaf_wall(ctx, tex, x0, y, z0, w, h, t0, t1, bush=(), name="leaf_wall"):
+    """Leaves hiding a portal: a w x h wall of leaf blocks in front of it
+    (the x-z plane at y), pulled away one by one between t0 and t1, each
+    tipping toward the camera and dropping as it shrinks. bush: extra leaf
+    blocks [(x, y, z), ...] that stay (the portal is tucked into the trees)."""
+    leaves = material(f"{name}_leaves", tex=tex["leaves"], rough=0.9)
+    rnd = random.Random(17)
+    cells = [(i, j) for j in range(h) for i in range(w)]
+    rnd.shuffle(cells)
+    times = spread(t0, t1, len(cells))
+    for k, ((i, j), t) in enumerate(zip(cells, times)):
+        ob = box(f"{name}_{k}", (1, 1, 1), (0, 0, 0), {"default": leaves})
+        home = (x0 + i + 0.5, y + 0.5, z0 + j + 0.5)
+        for f in sorted({1, ctx.F(t), ctx.F(t + 0.12), ctx.F(t + 0.3), ctx.F(t + 0.45)}):
+            u = max(0.0, (f - 1) / ctx.fps - t)
+            ob.location = (home[0], home[1] - 0.9 * u, home[2] - 3.0 * u * u)
+            ob.rotation_euler = (1.4 * u, 0, 0.5 * u * (1 if i % 2 else -1))
+            s_ = max(0.001, 1 - u / 0.45)
+            ob.scale = (s_, s_, s_)
+            for path in ("location", "rotation_euler", "scale"):
+                ob.keyframe_insert(path, frame=max(1, f))
+    for k, at in enumerate(bush):
+        box(f"{name}_bush_{k}", (1, 1, 1), tuple(at), {"default": leaves})

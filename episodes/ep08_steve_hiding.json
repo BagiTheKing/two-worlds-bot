@@ -1,0 +1,1239 @@
+{
+  "id": "ep08_steve_hiding",
+  "number": 8,
+  "title": "Steve Was Hiding Something",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely"
+    },
+    "null": {
+      "voice": "am_puck",
+      "speed": 0.92,
+      "pitch": 1.0,
+      "caption": "#FF3BD4",
+      "fx": "null",
+      "emotion": 0.25,
+      "pace": 0.3,
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+    }
+  },
+  "music": [
+    {
+      "cue": "theme_soft",
+      "from": 0,
+      "to": "flash",
+      "gain": 0.17
+    },
+    {
+      "cue": "memory",
+      "from": "flash+0.25",
+      "to": "back",
+      "gain": 0.3
+    },
+    {
+      "cue": "theme_soft",
+      "from": "back",
+      "to": "ignite",
+      "gain": 0.17
+    },
+    {
+      "cue": "null",
+      "from": "patch_didnt",
+      "to": "end",
+      "gain": 0.28
+    }
+  ],
+  "sets": [
+    {
+      "kind": "forest_valley",
+      "origin": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "meadow",
+      "from": 0,
+      "to": "ignite",
+      "gain": 0.05,
+      "fade_in": 0.2
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "break",
+      "at": -0.4,
+      "gain": 0.4
+    },
+    {
+      "kind": "break",
+      "at": 0.1,
+      "gain": 0.4
+    },
+    {
+      "kind": "break",
+      "at": 0.6,
+      "gain": 0.4
+    },
+    {
+      "kind": "whoosh",
+      "at": "flash+0.1",
+      "dur": 0.6,
+      "gain": 0.45
+    },
+    {
+      "kind": "portal",
+      "at": "past+0.3",
+      "dur": 0.9,
+      "gain": 0.5
+    },
+    {
+      "kind": "glitch",
+      "at": "past+0.6",
+      "dur": 1.4,
+      "gain": 0.35
+    },
+    {
+      "kind": "thump",
+      "at": "bumped+0.15",
+      "freq": 90,
+      "gain": 0.45
+    },
+    {
+      "kind": "portal",
+      "at": "ignite+0.1",
+      "dur": 1.0,
+      "gain": 0.7
+    },
+    {
+      "kind": "sub_drop",
+      "at": "reveal-0.3",
+      "dur": 1.6,
+      "gain": 0.5
+    }
+  ],
+  "overlays": [
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "memory",
+      "from": "flash+0.25",
+      "to": "back"
+    },
+    {
+      "type": "flash",
+      "from": "flash+0.25",
+      "to": "flash+0.6",
+      "color": [
+        200,
+        250,
+        255
+      ],
+      "strength": 0.95
+    },
+    {
+      "type": "flash",
+      "from": "back",
+      "to": "back+0.3",
+      "color": [
+        200,
+        250,
+        255
+      ],
+      "strength": 0.8
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 12%",
+      "alert": true,
+      "from": "reveal",
+      "to": "end"
+    },
+    {
+      "type": "endnote",
+      "from": "reveal+1.4",
+      "to": "end",
+      "next_label": "NEXT  ·  EPISODE 9",
+      "next_title": "THE TRUTH",
+      "question": "WHAT DID STEVE SEE ON THE OTHER SIDE?",
+      "question_sub": "Comment your theory"
+    }
+  ],
+  "actors": {
+    "noob": {
+      "rig": "noob",
+      "faces": "moments",
+      "at": [
+        3.6,
+        4.4,
+        0
+      ],
+      "yaw": 0.6,
+      "visible": [
+        [
+          0,
+          "flash+0.25"
+        ],
+        [
+          "back",
+          "end"
+        ]
+      ]
+    },
+    "steve": {
+      "rig": "steve",
+      "faces": "moments",
+      "at": [
+        8.9,
+        5.6,
+        0
+      ],
+      "yaw": -1.8,
+      "visible": [
+        [
+          0,
+          "flash+0.25"
+        ],
+        [
+          "back",
+          "end"
+        ]
+      ]
+    },
+    "patch": {
+      "rig": "patch",
+      "s": 1.4,
+      "at": [
+        5.0,
+        4.2,
+        2.7
+      ],
+      "yaw": 0.3,
+      "visible": [
+        [
+          0,
+          "flash+0.25"
+        ],
+        [
+          "back",
+          "end"
+        ]
+      ]
+    },
+    "past_steve": {
+      "rig": "steve",
+      "at": [
+        8.4,
+        6.7,
+        0
+      ],
+      "yaw": -1.57,
+      "holo_tint": true,
+      "visible": [
+        [
+          "flash+0.25",
+          "back"
+        ]
+      ]
+    },
+    "null": {
+      "rig": "null",
+      "s": 1.3,
+      "at": [
+        6.0,
+        12.2,
+        0.3
+      ],
+      "yaw": 0.0,
+      "idle": 0.02,
+      "visible": [
+        [
+          "reveal-0.3",
+          "end"
+        ]
+      ]
+    }
+  },
+  "clips": [
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "surprised",
+      "from": 0,
+      "to": "steve_first.end"
+    },
+    {
+      "who": "noob",
+      "do": "shock",
+      "from": 0,
+      "to": "noob_portal.end"
+    },
+    {
+      "who": "steve",
+      "do": "swing",
+      "from": -0.6,
+      "to": 1.0,
+      "arm": "arm_r",
+      "count": 4
+    },
+    {
+      "who": "patch",
+      "do": "scan",
+      "from": "flash",
+      "to": "flash+0.3"
+    },
+    {
+      "who": "past_steve",
+      "do": "raise_arm",
+      "from": "past",
+      "to": "past2",
+      "arm": "arm_r",
+      "angle": 1.6,
+      "out": 0.2,
+      "ease": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "back",
+      "to": "back+0.01",
+      "at": [
+        5.2,
+        4.6,
+        0
+      ],
+      "yaw": 1.74
+    },
+    {
+      "who": "steve",
+      "do": "set",
+      "from": "back",
+      "to": "back+0.01",
+      "at": [
+        7.6,
+        5.0,
+        0
+      ],
+      "yaw": -1.41
+    },
+    {
+      "who": "patch",
+      "do": "set",
+      "from": "back",
+      "to": "back+0.01",
+      "at": [
+        6.4,
+        4.0,
+        2.9
+      ],
+      "yaw": 0.0
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "noob_fault",
+      "to": "noob_fault.end+0.3"
+    },
+    {
+      "who": "steve",
+      "do": "look",
+      "from": "steve_cost",
+      "to": "think",
+      "head": [
+        0.18,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "think",
+      "to": "noob_blocks.end",
+      "head": [
+        0.35,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "pose",
+      "from": "think",
+      "to": "noob_blocks.end",
+      "parts": {
+        "arm_r": [
+          -0.9,
+          0,
+          0.1
+        ],
+        "arm_l": [
+          -0.9,
+          0,
+          -0.1
+        ]
+      }
+    },
+    {
+      "who": "noob",
+      "do": "walk",
+      "from": "bump",
+      "to": "bump+0.45",
+      "dest": [
+        5.75,
+        4.7
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "raise_arm",
+      "from": "steve_same",
+      "to": "bumped.end",
+      "arm": "arm_r",
+      "angle": 1.55,
+      "out": 0.05,
+      "ease": 0.25
+    },
+    {
+      "who": "steve",
+      "do": "raise_arm",
+      "from": "steve_same",
+      "to": "bumped.end",
+      "arm": "arm_l",
+      "angle": 1.55,
+      "out": 0.05,
+      "ease": 0.25
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "happy",
+      "from": "noob_kinda",
+      "to": "bumped.end"
+    },
+    {
+      "who": "noob",
+      "do": "face",
+      "from": "ignite",
+      "to": "ignite+0.35",
+      "towards": [
+        6.0,
+        7.5
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "ignite",
+      "to": "ignite+0.35",
+      "towards": [
+        6.0,
+        7.5
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "expr",
+      "face": "scared",
+      "from": "ignite",
+      "to": "end"
+    },
+    {
+      "who": "steve",
+      "do": "expr",
+      "face": "surprised",
+      "from": "ignite+0.2",
+      "to": "end"
+    },
+    {
+      "who": "patch",
+      "do": "glitch_eye",
+      "from": "patch_didnt",
+      "to": "end"
+    },
+    {
+      "who": "null",
+      "do": "slide",
+      "from": "reveal",
+      "to": "end",
+      "to_at": [
+        6.0,
+        9.6,
+        0.3
+      ]
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.3,
+        0.75,
+        -0.6
+      ],
+      "keys": [
+        [
+          0,
+          5.0,
+          1.25
+        ]
+      ]
+    },
+    {
+      "kind": "hide",
+      "names": [
+        "steve_pickaxe",
+        "past_steve_pickaxe"
+      ]
+    },
+    {
+      "kind": "leaf_wall",
+      "x0": 4,
+      "y": 6.0,
+      "w": 4,
+      "h": 5,
+      "from": -0.6,
+      "to": 1.1,
+      "bush": [
+        [
+          3.5,
+          7.5,
+          0.5
+        ],
+        [
+          3.5,
+          7.5,
+          1.5
+        ],
+        [
+          3.5,
+          7.5,
+          2.5
+        ],
+        [
+          3.5,
+          7.5,
+          3.5
+        ],
+        [
+          3.5,
+          7.5,
+          4.5
+        ],
+        [
+          8.5,
+          7.5,
+          0.5
+        ],
+        [
+          8.5,
+          7.5,
+          1.5
+        ],
+        [
+          8.5,
+          7.5,
+          2.5
+        ],
+        [
+          8.5,
+          7.5,
+          3.5
+        ],
+        [
+          8.5,
+          7.5,
+          4.5
+        ],
+        [
+          3.5,
+          7.5,
+          5.5
+        ],
+        [
+          4.5,
+          7.5,
+          5.5
+        ],
+        [
+          5.5,
+          7.5,
+          5.5
+        ],
+        [
+          6.5,
+          7.5,
+          5.5
+        ],
+        [
+          7.5,
+          7.5,
+          5.5
+        ],
+        [
+          8.5,
+          7.5,
+          5.5
+        ],
+        [
+          3.5,
+          8.5,
+          0.5
+        ],
+        [
+          3.5,
+          8.5,
+          1.5
+        ],
+        [
+          3.5,
+          8.5,
+          2.5
+        ],
+        [
+          3.5,
+          8.5,
+          3.5
+        ],
+        [
+          8.5,
+          8.5,
+          0.5
+        ],
+        [
+          8.5,
+          8.5,
+          1.5
+        ],
+        [
+          8.5,
+          8.5,
+          2.5
+        ],
+        [
+          8.5,
+          8.5,
+          3.5
+        ]
+      ]
+    },
+    {
+      "kind": "portal_machine",
+      "origin": [
+        4,
+        7,
+        0
+      ],
+      "w": 4,
+      "h": 5,
+      "open": "ignite+0.1",
+      "dark": "reveal-0.4",
+      "reveal": "reveal-0.3",
+      "see": 0.3,
+      "behind": {
+        "show": [
+          "reveal-0.4",
+          "end"
+        ],
+        "depth": 5.5
+      }
+    },
+    {
+      "kind": "portal_machine",
+      "origin": [
+        4,
+        7,
+        0
+      ],
+      "w": 4,
+      "h": 5,
+      "open": "past+0.3",
+      "snap": "back",
+      "frame": false
+    },
+    {
+      "kind": "left_behind",
+      "at": [
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ],
+        [
+          6.0,
+          7.0,
+          2.5
+        ]
+      ],
+      "from": [
+        "past+0.50",
+        "past+0.72",
+        "past+0.94",
+        "past+1.16",
+        "past+1.38",
+        "past+1.60",
+        "past+1.82",
+        "past+2.04"
+      ],
+      "sink": "past+0.5",
+      "arrive": "past2.end",
+      "stagger": 0.22,
+      "targets": [
+        [
+          3.5,
+          1,
+          -3
+        ],
+        [
+          8.2,
+          0,
+          -4
+        ],
+        [
+          4.8,
+          -1,
+          -6
+        ],
+        [
+          7.0,
+          0.5,
+          -2
+        ],
+        [
+          3,
+          2,
+          -5
+        ],
+        [
+          9,
+          1.5,
+          -7
+        ],
+        [
+          6,
+          -2,
+          -4
+        ],
+        [
+          4.2,
+          -0.5,
+          -8
+        ]
+      ],
+      "to": "back",
+      "size": 0.32,
+      "glow": 1.3
+    },
+    {
+      "kind": "null_smile",
+      "actor": "null",
+      "at": "reveal-0.3"
+    },
+    {
+      "kind": "fill",
+      "dir": [
+        0.0,
+        -1.0,
+        0.2
+      ],
+      "from": "ignite",
+      "to": "end",
+      "color": [
+        1.0,
+        0.3,
+        0.9
+      ],
+      "energy": 0.6
+    }
+  ],
+  "shots": [
+    {
+      "name": "hook",
+      "from": 0,
+      "to": "flash",
+      "lens": 22,
+      "path": [
+        [
+          0,
+          [
+            5.6,
+            -1.6,
+            2.0
+          ]
+        ],
+        [
+          "flash",
+          [
+            5.7,
+            -0.9,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            6.0,
+            6.0,
+            2.1
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "flash",
+      "from": "flash",
+      "to": "past",
+      "lens": 32,
+      "path": [
+        [
+          "flash",
+          [
+            5.6,
+            2.3,
+            2.75
+          ]
+        ],
+        [
+          "past",
+          [
+            5.55,
+            2.45,
+            2.75
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "flash",
+          [
+            5.0,
+            4.2,
+            2.7
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "past",
+      "from": "past",
+      "to": "back",
+      "lens": 24,
+      "path": [
+        [
+          "past",
+          [
+            6.2,
+            0.8,
+            2.0
+          ]
+        ],
+        [
+          "back",
+          [
+            6.15,
+            1.4,
+            2.05
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "past",
+          [
+            6.2,
+            7.0,
+            2.3
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "noob_fault",
+      "from": "back",
+      "to": "steve_cost",
+      "lens": 32,
+      "path": [
+        [
+          "back",
+          [
+            7.0,
+            4.0,
+            1.8
+          ]
+        ],
+        [
+          "steve_cost",
+          [
+            6.95,
+            4.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "back",
+          [
+            5.2,
+            4.6,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "steve_cost",
+      "from": "steve_cost",
+      "to": "think",
+      "lens": 32,
+      "path": [
+        [
+          "steve_cost",
+          [
+            5.8,
+            4.0,
+            1.8
+          ]
+        ],
+        [
+          "think",
+          [
+            5.85,
+            4.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_cost",
+          [
+            7.6,
+            5.0,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "think",
+      "from": "think",
+      "to": "bump",
+      "lens": 32,
+      "path": [
+        [
+          "think",
+          [
+            7.0,
+            4.0,
+            1.8
+          ]
+        ],
+        [
+          "bump",
+          [
+            6.95,
+            4.05,
+            1.8
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "think",
+          [
+            5.2,
+            4.6,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "bump",
+      "from": "bump",
+      "to": "ignite",
+      "lens": 30,
+      "path": [
+        [
+          "bump",
+          [
+            6.6,
+            0.8,
+            1.6
+          ]
+        ],
+        [
+          "ignite",
+          [
+            6.6,
+            1.2,
+            1.6
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "bump",
+          [
+            6.6,
+            4.8,
+            1.4
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "ignite",
+      "from": "ignite",
+      "to": "patch_didnt",
+      "lens": 24,
+      "path": [
+        [
+          "ignite",
+          [
+            6.0,
+            6.7,
+            1.9
+          ]
+        ],
+        [
+          "patch_didnt",
+          [
+            6.0,
+            6.6,
+            1.9
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "ignite",
+          [
+            6.4,
+            4.6,
+            1.6
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "reveal",
+      "from": "patch_didnt",
+      "to": "end",
+      "lens": 24,
+      "path": [
+        [
+          "patch_didnt",
+          [
+            6.0,
+            4.7,
+            1.1
+          ]
+        ],
+        [
+          "end",
+          [
+            6.0,
+            5.2,
+            1.2
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "patch_didnt",
+          [
+            6.0,
+            7.6,
+            2.4
+          ]
+        ]
+      ],
+      "shake": 0.0
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.2
+    },
+    {
+      "line": "noob",
+      "name": "noob_portal",
+      "text": "You had a PORTAL?!",
+      "direction_text": "[shocked, shouting] You had a PORTAL?!",
+      "pad": 0.1,
+      "solo_only": true
+    },
+    {
+      "beat": "flash",
+      "dur": 0.4
+    },
+    {
+      "beat": "past",
+      "dur": 0.4
+    },
+    {
+      "line": "steve",
+      "name": "steve_first",
+      "text": "I built the first one. Before I met you.",
+      "direction_text": "[quiet, guilty, not looking at him] I built the first one. Before I met you.",
+      "pad": 0.1
+    },
+    {
+      "line": "patch",
+      "name": "patch_started",
+      "text": "That's where it started.",
+      "direction_text": "[quiet, calm] That's where it started.",
+      "pad": 0.1
+    },
+    {
+      "beat": "past2",
+      "dur": 0.7
+    },
+    {
+      "beat": "back",
+      "dur": 0.3
+    },
+    {
+      "line": "noob",
+      "name": "noob_fault",
+      "text": "So all of this... is YOUR fault?",
+      "direction_text": "[hurt, quiet then rising] So all of this... is YOUR fault?",
+      "pad": 0.1
+    },
+    {
+      "line": "steve",
+      "name": "steve_cost",
+      "text": "I wanted to see the other side. I didn't know what it would cost.",
+      "direction_text": "[quiet, honest, heavy] I wanted to see the other side. I didn't know what it would cost.",
+      "pad": 0.1
+    },
+    {
+      "beat": "think",
+      "dur": 0.8
+    },
+    {
+      "line": "noob",
+      "name": "noob_blocks",
+      "text": "...I touch weird blocks all the time.",
+      "direction_text": "[small, sheepish, forgiving] ...I touch weird blocks all the time.",
+      "pad": 0.1
+    },
+    {
+      "beat": "bump",
+      "dur": 0.5
+    },
+    {
+      "line": "steve",
+      "name": "steve_same",
+      "text": "That's not the same.",
+      "direction_text": "[dry, a small smile] That's not the same.",
+      "pad": 0.05
+    },
+    {
+      "line": "noob",
+      "name": "noob_kinda",
+      "text": "Kinda is.",
+      "direction_text": "[warm, cheeky] Kinda is.",
+      "pad": 0.05
+    },
+    {
+      "beat": "bumped",
+      "dur": 0.7
+    },
+    {
+      "beat": "ignite",
+      "dur": 1.1
+    },
+    {
+      "line": "patch",
+      "name": "patch_didnt",
+      "text": "...I didn't do that.",
+      "direction_text": "[quiet, alarmed] ...I didn't do that.",
+      "pad": 0.1
+    },
+    {
+      "beat": "reveal",
+      "dur": 2.4
+    },
+    {
+      "beat": "end",
+      "dur": 1.6
+    }
+  ]
+}

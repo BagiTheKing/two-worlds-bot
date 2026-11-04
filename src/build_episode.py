@@ -196,13 +196,17 @@ def build(episode_path, timeline_path, tex_dir):
             t.hide_render = True
             t.keyframe_insert("hide_render", frame=1)
         elif k == "portal_machine":
-            props.portal_machine(ctx, tex, tuple(e["origin"]), e.get("w", 5), e.get("h", 6),
+            made_portal = props.portal_machine(ctx, tex, tuple(e["origin"]), e.get("w", 5), e.get("h", 6),
                                  build=(ctx.T(e["build"][0]), ctx.T(e["build"][1])) if e.get("build") else None,
                                  open_at=ctx.T(e["open"]) if e.get("open") else None,
                                  dark_at=ctx.T(e["dark"]) if e.get("dark") else None,
                                  snap_at=ctx.T(e["snap"]) if e.get("snap") else None,
                                  flicker=(ctx.T(e["flicker"][0]), ctx.T(e["flicker"][1])) if e.get("flicker") else None,
                                  see=e.get("see", 1.0), reveal=ctx.T(e["reveal"]) if e.get("reveal") else None)
+            if e.get("frame") is False:          # only the surface (a second, remembered opening)
+                for b in made_portal["blocks"]:
+                    b.hide_render = True
+                    b.keyframe_insert("hide_render", frame=1)
             if e.get("behind"):                  # what stands on the other side
                 b = e["behind"]
                 props.room_behind(ctx, tex, tuple(e["origin"]), (ctx.T(b["show"][0]), ctx.T(b["show"][1])),
@@ -324,9 +328,19 @@ def build(episode_path, timeline_path, tex_dir):
                                 (ctx.T(gl["show"][0]), ctx.T(gl["show"][1])), radius=gl.get("radius", 1.0))
         elif k == "left_behind":
             for i, (at, t0) in enumerate(zip(e["at"], e["from"])):
-                obby.left_behind(ctx, tex, tuple(at), ctx.T(t0), ctx.T(e["sink"]) + 0.15 * i,
-                                 ctx.T(e["arrive"]) + 0.15 * i, tuple(e["target"]), ctx.T(e["to"]),
+                tg = e["targets"][i] if e.get("targets") else e["target"]
+                obby.left_behind(ctx, tex, tuple(at), ctx.T(t0), ctx.T(e["sink"]) + e.get("stagger", 0.15) * i,
+                                 ctx.T(e["arrive"]) + e.get("stagger", 0.15) * i, tuple(tg), ctx.T(e["to"]),
                                  size=e.get("size", 0.34), glow=e.get("glow", 1.2), name=f"left_behind_{i}")
+        elif k == "hide":                         # objects gone for the whole episode (and their children)
+            for nm in e["names"]:
+                ob = bpy.data.objects.get(nm)
+                for o_ in ([ob] + list(ob.children_recursive)) if ob else []:
+                    o_.hide_render = True
+                    o_.keyframe_insert("hide_render", frame=1)
+        elif k == "leaf_wall":
+            obby.leaf_wall(ctx, tex, e["x0"], e["y"], e.get("z0", 0), e["w"], e["h"],
+                           ctx.T(e["from"]), ctx.T(e["to"]), bush=[tuple(b) for b in e.get("bush", [])])
         elif k == "holo_trio":
             show = (ctx.T(e["show"][0]), ctx.T(e["show"][1]))
             plat = sets.get("holo") or obby.holo_material("memory_plat")
