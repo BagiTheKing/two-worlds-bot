@@ -1687,7 +1687,8 @@
       "text": "I wanted to see the other side. Your side. I didn't know what it would cost.",
       "direction_text": "[quiet, honest, heavy] I wanted to see the other side. I didn't know what it would cost.",
       "pad": 0.1,
-      "solo_text": "I wanted to see the other side. Your side. I didn't know what it would cost."
+      "solo_text": "I wanted to see the other side. Your side. I didn't know what it would cost.",
+      "tighten": 0.5
     },
     {
       "beat": "think",
