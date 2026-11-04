@@ -52,6 +52,9 @@ Inside the story, the viewers are the answer to "who is measuring reality?":
 reality holds where someone is watching, and Null erases what nobody
 observes. Patch is the only character who notices them.
 
+- **Season 1 has no vote after all** (the audience is still small; a tiny
+  count would hurt more than help). Patch's glance at the camera (Ep7)
+  stays a mystery for the finale. Season 2 can bring the choices back.
 - **Three choices per season**: episodes 4, 6 and 8. Each is one A/B
   question asked in-world (Patch looks into the camera: "Someone is
   watching... you. Left door or right?"). Viewers answer by commenting A or B.
@@ -83,4 +86,5 @@ cartoonish. Every Short must work for a viewer who has seen nothing else.
 | 6 | The World Started Deleting Itself | Null appears; nothing works against it | Null copies the Noob, smile included | 52% |
 | 7 | Patch Remembered Another World | Patch replays the past: dark cubes drifting from every respawn | "How many times have we done this?" | 30% |
 | 8 | Steve Was Hiding Something | Steve built the first portal; the Noob feels betrayed, then understands | The original portal switches itself on | 12% |
-| 9 | The First Portal Was a Trap | The cold open catches up; they win by doing what Null can't predict, saving one fragment | Null speaks: "You weren't supposed to survive." | 3% → ? |
+| 9 | The Truth (recap) | The Noob and Steve talk over moments from every episode, joke, and play with the viewers' theories without confirming any; Null comes last and they run | A teaser for the finale | 12% |
+| 10 | The First Portal Was a Trap | The cold open catches up; they win by doing what Null can't predict, saving one fragment | Null speaks: "You weren't supposed to survive." | 3% → ? |
