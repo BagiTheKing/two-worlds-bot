@@ -1,0 +1,6 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scenes/steve_wow.wav
+  Flat.[0.00-0.68]
+  Deadpan.[1.68-2.14]
+  Completely[3.16-3.76] unimpressed.[3.76-4.42]
+  Wow.[6.08-6.46]

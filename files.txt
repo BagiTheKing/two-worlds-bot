@@ -1,0 +1,15 @@
+.:
+total 2324
+drwxr-xr-x 4 runner runner    4096 Nov  5 22:26 .
+drwxr-xr-x 3 runner runner    4096 Nov  5 22:26 ..
+drwxr-xr-x 7 runner runner    4096 Nov  5 22:26 .git
+-rw-r--r-- 1 runner runner 2354644 Nov  5 22:26 audio.wav
+drwxr-xr-x 2 runner runner    4096 Nov  5 22:26 scenes
+-rw-r--r-- 1 runner runner    2258 Nov  5 22:26 timeline.json
+-rw-r--r-- 1 runner runner     914 Nov  5 22:26 voice_log.txt
+
+scenes:
+total 344
+drwxr-xr-x 2 runner runner   4096 Nov  5 22:26 .
+drwxr-xr-x 4 runner runner   4096 Nov  5 22:26 ..
+-rw-r--r-- 1 runner runner 342160 Nov  5 22:26 steve_wow.wav
