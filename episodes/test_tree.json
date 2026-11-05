@@ -794,7 +794,11 @@
       "name": "steve_wow",
       "text": "...Wow.",
       "direction_text": "[flat, deadpan, completely unimpressed] ...Wow.",
-      "pad": 0.35
+      "pad": 0.35,
+      "cut_at": [
+        5.7,
+        6.95
+      ]
     },
     {
       "beat": "look",
