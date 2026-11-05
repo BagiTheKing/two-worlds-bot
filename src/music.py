@@ -315,9 +315,9 @@ CUES = {"memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null
         "dread": dread}
 
 
-def render(cue, sec, seed=0, **kw):
+def render(cue, sec, seed=0, hard_end=False, **kw):
     x = CUES[cue](sec, seed, **kw)
-    fade = int(min(0.4, sec / 4) * SR)
+    fade = int((0.012 if hard_end else min(0.4, sec / 4)) * SR)   # hard_end: cut dead (a gag's silence)
     x[:int(0.02 * SR)] *= np.linspace(0, 1, int(0.02 * SR))
     if fade:
         x[-fade:] *= np.linspace(1, 0, fade)

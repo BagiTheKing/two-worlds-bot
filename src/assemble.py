@@ -371,6 +371,60 @@ def warp(img, o, t, f, fonts):
         img.paste(Image.blend(img, Image.new("RGB", (W, H), (235, 252, 255)), min(1.0, (k - 0.6) / 0.4)))
 
 
+def grade(img, o, t, f, fonts):
+    """The look of the reference animations: richer colour, a soft glow
+    around everything bright, warm light, and (with o["sun"] = [x, y] on
+    screen, fractions) rays streaming from the sun through the trees.
+    Worked on a quarter-size copy, so it is quick."""
+    import numpy as np
+    from PIL import ImageFilter
+    sat = o.get("saturation", 1.22)
+    a = np.asarray(img, dtype=np.float32) / 255.0
+    lum = a @ np.array([0.3, 0.59, 0.11], np.float32)
+    a = lum[..., None] + (a - lum[..., None]) * sat                       # richer colour
+    a = a * np.array(o.get("tint", (1.03, 1.0, 0.95)), np.float32)        # warm light
+    small = Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).resize((W // 4, H // 4), Image.BILINEAR)
+    s_ = np.asarray(small, dtype=np.float32) / 255.0
+    bright = np.clip((s_ - o.get("threshold", 0.72)) / 0.28, 0, 1) * s_
+    glow = np.asarray(Image.fromarray((bright * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(9)),
+                      dtype=np.float32) / 255.0
+    add = glow * o.get("glow", 0.55)
+    if o.get("sun"):                                                      # rays: the bright parts, smeared from the sun
+        sx, sy = o["sun"][0] * (W // 4), o["sun"][1] * (H // 4)
+        src = Image.fromarray((bright * 255).astype(np.uint8))
+        acc = np.zeros_like(bright)
+        steps = 14
+        for k in range(1, steps + 1):
+            z = 1 + 0.045 * k
+            w2, h2 = int(src.width * z), int(src.height * z)
+            big = src.resize((w2, h2), Image.BILINEAR)
+            ox, oy = int(sx * z - sx), int(sy * z - sy)
+            acc += np.asarray(big.crop((ox, oy, ox + src.width, oy + src.height)), dtype=np.float32) / 255.0 * (1 - k / (steps + 1))
+        add = add + acc / steps * o.get("rays", 0.9) * np.array((1.0, 0.92, 0.75), np.float32)
+    up = np.asarray(Image.fromarray((np.clip(add, 0, 1) * 255).astype(np.uint8)).resize((W, H), Image.BILINEAR),
+                    dtype=np.float32) / 255.0
+    a = 1 - (1 - np.clip(a, 0, 1)) * (1 - up)                             # screen blend: light adds, never burns
+    img.paste(Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)))
+
+
+def chat(img, o, t, f, fonts):
+    """The game's chat, bottom left: messages pop in and fade after 4 s.
+    o["lines"]: [{"at": seconds, "text": ..., "color": [r, g, b]}]."""
+    d = ImageDraw.Draw(img, "RGBA")
+    shown = [m for m in o["lines"] if m["at"] <= t < m["at"] + 4.0]
+    y = o.get("y", 1430)
+    for m in reversed(shown):
+        age = t - m["at"]
+        k = min(1.0, (4.0 - age) / 0.6)
+        fnt = fonts["mono"]
+        w = int(d.textlength(m["text"], font=fnt)) + 28
+        d.rectangle((24, y - 34, 24 + w, y + 30), fill=(0, 0, 0, int(120 * k)))
+        col = tuple(m.get("color", (255, 255, 255)))
+        d.text((40 + 3, y + 3), m["text"], font=fnt, fill=(40, 40, 40, int(255 * k)), anchor="lm")
+        d.text((40, y), m["text"], font=fnt, fill=(*col, int(255 * k)), anchor="lm")
+        y -= 70
+
+
 def endnote(img, o, t, f, fonts):
     """The ending without a card: the last shot keeps playing, a soft shade
     rises at the bottom with what's next and the question."""
@@ -398,9 +452,9 @@ def endnote(img, o, t, f, fonts):
     d.text((W // 2, y0 + 250 + dq), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
 
 
-DRAW = {"warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+DRAW = {"grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
-FULL = ("memory", "card", "fade_in", "endcard")
+FULL = ("grade", "memory", "card", "fade_in", "endcard")
 
 
 def read_clip(path):

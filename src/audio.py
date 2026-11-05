@@ -1064,6 +1064,21 @@ def sfx_charge(dur):
     return norm(np.concatenate([out, hit]), 0.9)
 
 
+def sfx_creak(dur=1.0):
+    """A big tree creaking before it goes: slow, rough, rising wood groans
+    (pulses of a low tone through a resonance), then a crack."""
+    x = t(dur)
+    f = 70 + 40 * (x / dur) + 12 * np.sin(2 * np.pi * 1.3 * x)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    pulses = (np.sin(2 * np.pi * np.cumsum(9 + 14 * x / dur) / SR) > 0.2).astype(float)
+    tone = (np.sign(np.sin(ph)) * 0.5 + np.sin(2 * ph) * 0.5) * pulses
+    out = band(tone, 120, 1600) * (0.3 + 0.7 * x / dur)
+    crack = np.zeros(len(x))
+    i = int(len(x) * 0.92)
+    crack[i:i + 2400] = band(rng.standard_normal(2400), 1200, 7000)[:len(crack) - i] * np.exp(-np.arange(min(2400, len(crack) - i)) / 400)
+    return norm(out + 1.6 * crack, 0.8)
+
+
 def sfx_snap():
     """A portal slamming shut: a hard hit, a sub drop, a burst of glitch."""
     out = np.zeros(int(1.6 * SR))
@@ -1130,7 +1145,8 @@ SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1
        "whoosh": lambda e: sfx_whoosh(e.get("dur", 0.7)), "break": lambda e: sfx_break(),
        "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
        "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
-       "charge": lambda e: sfx_charge(e.get("dur", 1.8))}
+       "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
+       "punch": lambda e: sfx_punch_wood()}
 
 
 def void_wind(length):
@@ -1383,6 +1399,8 @@ def build(episode_path, out_dir, keep=None):
         kw = {"hit_at": R(m["hit_at"]) - m0} if m.get("hit_at") else {}
         if m.get("minimal"):
             kw["minimal"] = True
+        if m.get("hard_end"):
+            kw["hard_end"] = True
         x = music.render(m["cue"], m1 - m0, seed=k, **kw)
         for sw in m.get("swell", []):           # louder while nobody speaks, eased in and out
             s0, s1 = int((R(sw["from"]) - m0) * SR), int((R(sw["to"]) - m0) * SR)
@@ -1414,6 +1432,8 @@ def build(episode_path, out_dir, keep=None):
         for key in ("grow", "full"):                 # extra moments an overlay keys on
             if key in o:
                 o[key] = round(R(o[key]), 3)
+        if o.get("type") == "chat":                   # each message at its own moment
+            o["lines"] = [dict(m, at=round(R(m["at"]), 3)) for m in o["lines"]]
         overlays.append(o)
     timeline = {"id": ep["id"], "fps": 24, "length": round(length, 3),
                 "beats": {k: [round(a, 3), round(b, 3)] for k, (a, b) in beats.items()},

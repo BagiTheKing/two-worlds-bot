@@ -223,6 +223,26 @@ def throw_arm(c, t, st, actor=None):
                 "head": (lean, 0, 0)}
 
 
+def act(c, t, st, actor=None):
+    """Face acting on a rig with moving face parts: any of gaze [x, z],
+    brow [raise, frown], lid, wide, mouth (see rigs.ActingFace), eased in over
+    `ease` seconds from the rig's resting face (slow looks, a slow frown)."""
+    rest = actor.rig.rest if actor is not None else {}
+    k = ss(c["t0"], c["t0"] + c.get("ease", 0.12), t)
+    out = {}
+    for key in ("gaze", "brow"):
+        if key in c:
+            a = rest.get(key, (0, 0, 0))
+            out[key] = (a[0] + (c[key][0] - a[0]) * k, a[1] + (c[key][1] - a[1]) * k, 0)
+    for key in ("lid", "wide"):
+        if key in c:
+            a = rest.get(key, (0, 0, 0))[0]
+            out[key] = (a + (c[key] - a) * k, 0, 0)
+    if "mouth" in c:
+        out["mouth"] = (float(c["mouth"]), 0, 0)
+    return st, out
+
+
 def flail(c, t, st, actor=None):
     return st, {
         "arm_r": (-2.6 + 0.5 * math.sin(24 * t), 0, 0.4),
@@ -455,7 +475,7 @@ def glitch_eye(c, t, st, actor=None):
     return st, {"eye": (1.0, 0, 0)}
 
 
-BODY = {"throw_arm": throw_arm, "scan": scan, "glitch_eye": glitch_eye, "look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
+BODY = {"act": act, "throw_arm": throw_arm, "scan": scan, "glitch_eye": glitch_eye, "look": look, "pose": pose, "shock": shock, "raise_arm": raise_arm, "flail": flail,
         "punch": punch, "flurry": flurry, "cheer": cheer, "wave": wave, "swing": swing,
         "reach": reach, "chop": chop, "roar": roar, "glide": glide}
 
@@ -569,4 +589,8 @@ class Actor:
         out = {"loc": st["loc"], "yaw": st["yaw"], "tilt": st.get("tilt", (0, 0)),
                "scale": st.get("scale", (1, 1, 1)), "t": t}
         out.update(parts)
+        out["talking"] = any(ln["start"] <= t < ln["end"] - 0.04 for ln in self.lines)
+        if "mouth" in self.rig.rest:              # a shape code: the current clip's, never a blend
+            shapes = [c["mouth"] for c in self.clips if c["do"] == "act" and "mouth" in c and c["t0"] <= t <= c["t1"]]
+            out["mouth"] = (float(shapes[-1]), 0, 0) if shapes else self.rig.rest["mouth"]
         return out

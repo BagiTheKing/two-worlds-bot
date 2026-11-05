@@ -59,6 +59,7 @@ def shot(ctx, spec, actors, index):
     follow = actors.get(spec.get("look_actor")) if spec.get("look_actor") else None
     off = tuple(spec.get("look_offset", (0, 0, 1.2)))
     shake = spec.get("shake", 0.012)
+    jolts = [(resolve(beats, j[0], length), j[1]) for j in spec.get("jolts", [])]   # impacts: a hard shake that dies away
     seed = index * 1.7
     for f in range(ctx.F(t0) - 1, ctx.F(t1) + 2):
         t = (f - 1) / ctx.fps
@@ -66,6 +67,10 @@ def shot(ctx, spec, actors, index):
         n = (shake * math.sin(2 * math.pi * 0.7 * t + seed),
              shake * math.sin(2 * math.pi * 0.53 * t + 2 + seed),
              shake * math.sin(2 * math.pi * 0.61 * t + 4 + seed))
+        for tj, amp in jolts:
+            if t >= tj:
+                d = amp * math.exp(-(t - tj) * 7.0)
+                n = add(n, (d * math.sin(61 * (t - tj)), d * 0.5 * math.sin(47 * (t - tj) + 1), d * math.sin(53 * (t - tj) + 2)))
         cam.location = add(p, n)
         cam.keyframe_insert("location", frame=f)
         if follow is not None:

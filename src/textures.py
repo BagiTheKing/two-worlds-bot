@@ -526,6 +526,56 @@ def tnt_top():
     return img
 
 
+# ------------------------------------------------- faces that act (moving parts)
+
+def steve_face_base():
+    """Steve's face without eyes or mouth: those are separate parts on the
+    head now (eyes that look and blink, brows, a mouth that talks)."""
+    return _steve16(lambda px: None)
+
+
+def _oval(w, h, fill, size=64):
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse(((size - w) // 2, (size - h) // 2, (size + w) // 2, (size + h) // 2), fill=fill)
+    return img
+
+
+def noob_eye():
+    """One of the toy's oval eyes, with a small shine (a separate part, so it
+    can look around and blink)."""
+    img = _oval(26, 52, (*INK, 255))
+    ImageDraw.Draw(img).ellipse((27, 16, 33, 26), fill=(250, 250, 250, 255))
+    return img
+
+
+def noob_mouth_smile():
+    img = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
+    ImageDraw.Draw(img).arc((62, -40, 194, 64), start=20, end=160, fill=(*INK, 255), width=12)
+    return img
+
+
+def noob_mouth_o():
+    img = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
+    ImageDraw.Draw(img).ellipse((106, 10, 150, 58), fill=(40, 10, 10, 255))
+    return img
+
+
+def _crack(stage):
+    """The block-breaking cracks, stage 1-3, dark lines on transparent."""
+    rnd = random.Random(30 + stage)
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    for _ in range(4 + 7 * stage):
+        x, y = rnd.randrange(16), rnd.randrange(16)
+        for _ in range(2 + stage):
+            if 0 <= x < 16 and 0 <= y < 16:
+                px[x, y] = (20, 16, 12, 230)
+            x += rnd.choice((-1, 0, 1))
+            y += rnd.choice((-1, 0, 1))
+    return img
+
+
 FACE_SETS = {"steve": steve_faces, "noob": noob_faces}
 
 
@@ -542,6 +592,9 @@ ALL = {
     "zombie_arm": zombie_arm, "zombie_leg": zombie_leg,
     "dragon_hide": dragon_hide, "dragon_wing": dragon_wing, "dragon_eye": dragon_eye,
     "tnt_side": tnt_side, "tnt_top": tnt_top,
+    "steve_face_base": steve_face_base, "noob_eye": noob_eye,
+    "noob_mouth_smile": noob_mouth_smile, "noob_mouth_o": noob_mouth_o,
+    "crack_1": lambda: _crack(1), "crack_2": lambda: _crack(2), "crack_3": lambda: _crack(3),
 }
 
 

@@ -1,0 +1,804 @@
+{
+  "id": "test_tree",
+  "number": 0,
+  "title": "Test: the tree gag",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely"
+    },
+    "null": {
+      "voice": "am_puck",
+      "speed": 0.92,
+      "pitch": 1.0,
+      "caption": "#FF3BD4",
+      "fx": "null",
+      "emotion": 0.25,
+      "pace": 0.3,
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+    }
+  },
+  "music": [
+    {
+      "cue": "theme_full",
+      "from": 0,
+      "to": "punch+0.18",
+      "gain": 0.3,
+      "hard_end": true
+    },
+    {
+      "cue": "theme_soft",
+      "from": "look+0.2",
+      "to": "end",
+      "gain": 0.14
+    }
+  ],
+  "sets": [
+    {
+      "kind": "forest_valley",
+      "origin": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "meadow",
+      "from": 0,
+      "to": "end",
+      "gain": 0.09,
+      "fade_in": 0.2
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "punch",
+      "at": "steve_punch+0.3",
+      "gain": 0.7
+    },
+    {
+      "kind": "punch",
+      "at": "steve_punch+0.62",
+      "gain": 0.7
+    },
+    {
+      "kind": "punch",
+      "at": "steve_punch+0.94",
+      "gain": 0.7
+    },
+    {
+      "kind": "punch",
+      "at": "steve_punch+1.26",
+      "gain": 0.7
+    },
+    {
+      "kind": "break",
+      "at": "steve_punch+1.26",
+      "gain": 0.6
+    },
+    {
+      "kind": "pop",
+      "at": "pickup+0.25",
+      "gain": 0.5
+    },
+    {
+      "kind": "whoosh",
+      "at": "noob_steps+0.6",
+      "dur": 0.35,
+      "gain": 0.3
+    },
+    {
+      "kind": "punch",
+      "at": "punch+0.18",
+      "gain": 0.45
+    },
+    {
+      "kind": "creak",
+      "at": "creak",
+      "dur": 1.1,
+      "gain": 0.8
+    },
+    {
+      "kind": "whoosh",
+      "at": "fall",
+      "dur": 0.6,
+      "gain": 0.55
+    },
+    {
+      "kind": "thump",
+      "at": "fall.end",
+      "freq": 45,
+      "gain": 1.0
+    },
+    {
+      "kind": "break",
+      "at": "fall.end+0.02",
+      "gain": 0.7
+    },
+    {
+      "kind": "respawn",
+      "at": "respawn",
+      "gain": 0.5
+    },
+    {
+      "kind": "jingle",
+      "at": "look+0.9",
+      "gain": 0.25
+    }
+  ],
+  "overlays": [
+    {
+      "type": "grade",
+      "from": 0,
+      "to": "end",
+      "sun": [
+        0.92,
+        0.02
+      ],
+      "saturation": 1.22,
+      "glow": 0.5,
+      "rays": 0.8
+    },
+    {
+      "type": "watermark",
+      "text": "@GLITCHBOUND2469",
+      "from": 0,
+      "to": "end"
+    },
+    {
+      "type": "chat",
+      "from": "fall.end+0.3",
+      "to": "end",
+      "lines": [
+        {
+          "at": "fall.end+0.3",
+          "text": "Noob was squashed by a tree"
+        }
+      ]
+    }
+  ],
+  "actors": {
+    "steve": {
+      "rig": "steve",
+      "eyes": true,
+      "at": [
+        0.35,
+        0.4,
+        0
+      ],
+      "yaw": 1.5707963267948966
+    },
+    "noob": {
+      "rig": "noob",
+      "faces": "parts",
+      "at": [
+        2.5,
+        3.6,
+        0
+      ],
+      "yaw": 1.5707963267948966,
+      "visible": [
+        [
+          0,
+          "fall.end+0.02"
+        ],
+        [
+          "respawn",
+          "end"
+        ]
+      ]
+    }
+  },
+  "clips": [
+    {
+      "who": "steve",
+      "do": "act",
+      "from": 0,
+      "to": "pickup",
+      "brow": [
+        0,
+        0.6
+      ],
+      "gaze": [
+        0.3,
+        0.1
+      ],
+      "ease": 0.2
+    },
+    {
+      "who": "steve",
+      "do": "swing",
+      "from": "steve_punch",
+      "to": "steve_punch.end",
+      "arm": "arm_r",
+      "times": [
+        "steve_punch+0.25",
+        "steve_punch+0.57",
+        "steve_punch+0.89",
+        "steve_punch+1.21"
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "pickup+0.3",
+      "to": "pickup+0.7",
+      "towards": [
+        2.5,
+        3.6
+      ]
+    },
+    {
+      "who": "steve",
+      "do": "act",
+      "from": "pickup+0.3",
+      "to": "respawn",
+      "gaze": [
+        0.0,
+        0.0
+      ],
+      "brow": [
+        0.3,
+        0
+      ],
+      "ease": 0.3
+    },
+    {
+      "who": "noob",
+      "do": "act",
+      "from": "noob_steps",
+      "to": "punch.end",
+      "gaze": [
+        0.4,
+        0.0
+      ],
+      "mouth": 3,
+      "ease": 0.2
+    },
+    {
+      "who": "noob",
+      "do": "cheer",
+      "from": "noob_steps",
+      "to": "noob_steps+0.6"
+    },
+    {
+      "who": "noob",
+      "do": "punch",
+      "from": "noob_steps+0.6",
+      "to": "hold+0.6",
+      "arm": "arm_r"
+    },
+    {
+      "who": "noob",
+      "do": "act",
+      "from": "hold+0.5",
+      "to": "creak+0.3",
+      "gaze": [
+        0.0,
+        1.0
+      ],
+      "mouth": 0,
+      "ease": 1.0
+    },
+    {
+      "who": "noob",
+      "do": "look",
+      "from": "hold+0.5",
+      "to": "creak.end",
+      "head": [
+        -0.25,
+        0,
+        0
+      ]
+    },
+    {
+      "who": "noob",
+      "do": "act",
+      "from": "creak+0.3",
+      "to": "fall.end",
+      "gaze": [
+        0.0,
+        1.0
+      ],
+      "wide": 1.0,
+      "mouth": 2,
+      "ease": 0.15
+    },
+    {
+      "who": "noob",
+      "do": "set",
+      "from": "respawn",
+      "to": "respawn+0.01",
+      "at": [
+        -0.75,
+        1.3,
+        0
+      ],
+      "yaw": 0.25
+    },
+    {
+      "who": "noob",
+      "do": "pop",
+      "from": "respawn",
+      "to": "respawn+0.35"
+    },
+    {
+      "who": "noob",
+      "do": "act",
+      "from": "respawn",
+      "to": "end",
+      "gaze": [
+        0.0,
+        0.0
+      ],
+      "mouth": 3,
+      "ease": 0.1
+    },
+    {
+      "who": "noob",
+      "do": "wave",
+      "from": "respawn+0.4",
+      "to": "steve_wow.end",
+      "arm": "arm_r"
+    },
+    {
+      "who": "steve",
+      "do": "face",
+      "from": "respawn+0.1",
+      "to": "respawn+0.6",
+      "yaw": -0.35
+    },
+    {
+      "who": "steve",
+      "do": "act",
+      "from": "respawn+0.1",
+      "to": "look",
+      "gaze": [
+        -0.9,
+        0.0
+      ],
+      "brow": [
+        0,
+        0
+      ],
+      "lid": 0.35,
+      "ease": 0.4
+    },
+    {
+      "who": "steve",
+      "do": "act",
+      "from": "look",
+      "to": "end",
+      "gaze": [
+        0.25,
+        0.0
+      ],
+      "lid": 0.4,
+      "brow": [
+        0.4,
+        0
+      ],
+      "ease": 0.5
+    }
+  ],
+  "fx": [
+    {
+      "kind": "sky",
+      "below": "sky",
+      "sun_dir": [
+        0.55,
+        0.6,
+        -0.5
+      ],
+      "keys": [
+        [
+          0,
+          6.0,
+          1.4
+        ]
+      ]
+    },
+    {
+      "kind": "hide",
+      "names": [
+        "stump",
+        "target",
+        "upper_tree",
+        "steve_pickaxe"
+      ]
+    },
+    {
+      "kind": "tree",
+      "at": [
+        1.4,
+        0.4
+      ],
+      "height": 5,
+      "gap": 1,
+      "seed": 42,
+      "name": "steve_tree"
+    },
+    {
+      "kind": "punch_block",
+      "at": [
+        1.4,
+        0.4,
+        1.5
+      ],
+      "hits": [
+        "steve_punch+0.3",
+        "steve_punch+0.62",
+        "steve_punch+0.94",
+        "steve_punch+1.26"
+      ],
+      "item_to": [
+        0.75,
+        0.15,
+        0.95
+      ],
+      "item_at": "pickup+0.25",
+      "name": "log"
+    },
+    {
+      "kind": "falling_tree",
+      "at": [
+        3.1,
+        3.6
+      ],
+      "yaw": -1.5707963267948966,
+      "creak": "creak",
+      "fall": "fall",
+      "hit": "fall.end",
+      "height": 6,
+      "seed": 11,
+      "name": "noob_tree"
+    },
+    {
+      "kind": "motes",
+      "center": [
+        1.5,
+        2.5,
+        0.3
+      ],
+      "size": [
+        9,
+        8,
+        3.2
+      ],
+      "n": 90
+    },
+    {
+      "kind": "haze",
+      "layers": [
+        [
+          9,
+          0.07
+        ],
+        [
+          14,
+          0.11
+        ],
+        [
+          20,
+          0.16
+        ],
+        [
+          30,
+          0.22
+        ]
+      ],
+      "x": [
+        -40,
+        40
+      ],
+      "z": [
+        -2,
+        30
+      ]
+    }
+  ],
+  "shots": [
+    {
+      "name": "steve_punch",
+      "from": 0,
+      "to": "pickup.end",
+      "lens": 26,
+      "path": [
+        [
+          0,
+          [
+            1.05,
+            -2.3,
+            1.05
+          ]
+        ],
+        [
+          "pickup.end",
+          [
+            0.95,
+            -1.8,
+            1.15
+          ]
+        ]
+      ],
+      "look": [
+        [
+          0,
+          [
+            0.85,
+            0.4,
+            1.5
+          ]
+        ]
+      ],
+      "dof": 2.4
+    },
+    {
+      "name": "noob_steps",
+      "from": "pickup.end",
+      "to": "punch+0.18",
+      "lens": 26,
+      "path": [
+        [
+          "pickup.end",
+          [
+            3.35,
+            1.9,
+            1.35
+          ]
+        ],
+        [
+          "punch+0.18",
+          [
+            3.3,
+            2.15,
+            1.4
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "pickup.end",
+          [
+            2.7,
+            3.6,
+            1.55
+          ]
+        ]
+      ],
+      "dof": 2.4
+    },
+    {
+      "name": "hold",
+      "from": "punch+0.18",
+      "to": "creak",
+      "lens": 38,
+      "path": [
+        [
+          "punch+0.18",
+          [
+            3.25,
+            2.55,
+            1.7
+          ]
+        ],
+        [
+          "creak",
+          [
+            3.22,
+            2.68,
+            1.72
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "punch+0.18",
+          [
+            2.72,
+            3.6,
+            1.68
+          ]
+        ]
+      ],
+      "dof": 1.8
+    },
+    {
+      "name": "fall",
+      "from": "creak",
+      "to": "respawn",
+      "lens": 20,
+      "path": [
+        [
+          "creak",
+          [
+            -0.4,
+            -3.6,
+            2.0
+          ]
+        ],
+        [
+          "respawn",
+          [
+            -0.3,
+            -3.3,
+            2.0
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "creak",
+          [
+            1.6,
+            3.4,
+            2.3
+          ]
+        ]
+      ],
+      "dof": 5.6,
+      "jolts": [
+        [
+          "fall.end",
+          0.12
+        ]
+      ]
+    },
+    {
+      "name": "respawn",
+      "from": "respawn",
+      "to": "steve_wow",
+      "lens": 28,
+      "path": [
+        [
+          "respawn",
+          [
+            -0.15,
+            -2.6,
+            1.55
+          ]
+        ],
+        [
+          "steve_wow",
+          [
+            -0.15,
+            -2.35,
+            1.55
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "respawn",
+          [
+            -0.15,
+            0.9,
+            1.5
+          ]
+        ]
+      ],
+      "dof": 3.2
+    },
+    {
+      "name": "wow",
+      "from": "steve_wow",
+      "to": "end",
+      "lens": 42,
+      "path": [
+        [
+          "steve_wow",
+          [
+            0.05,
+            -1.25,
+            1.78
+          ]
+        ],
+        [
+          "end",
+          [
+            0.06,
+            -1.12,
+            1.78
+          ]
+        ]
+      ],
+      "look": [
+        [
+          "steve_wow",
+          [
+            0.3,
+            0.4,
+            1.75
+          ]
+        ]
+      ],
+      "dof": 1.8
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.3
+    },
+    {
+      "beat": "steve_punch",
+      "dur": 1.4
+    },
+    {
+      "beat": "pickup",
+      "dur": 0.8
+    },
+    {
+      "beat": "noob_steps",
+      "dur": 1.0
+    },
+    {
+      "beat": "punch",
+      "dur": 0.45
+    },
+    {
+      "beat": "hold",
+      "dur": 1.75
+    },
+    {
+      "beat": "creak",
+      "dur": 0.8
+    },
+    {
+      "beat": "fall",
+      "dur": 0.55
+    },
+    {
+      "beat": "squashed",
+      "dur": 1.3
+    },
+    {
+      "beat": "respawn",
+      "dur": 0.9
+    },
+    {
+      "line": "steve",
+      "name": "steve_wow",
+      "text": "...Wow.",
+      "direction_text": "[flat, deadpan, completely unimpressed] ...Wow.",
+      "pad": 0.35
+    },
+    {
+      "beat": "look",
+      "dur": 1.6
+    }
+  ]
+}

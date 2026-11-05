@@ -54,9 +54,128 @@ def face_plates(tex, who, name, head, size, center, smooth=False, alpha=False, *
     return plates
 
 
-def make_steve(tex, name="steve", faces=False):
+class ActingFace:
+    """Faces that act with moving parts (eyes that look and blink, brows,
+    a talking mouth) instead of swapped pictures. Pose keys:
+      "gaze" (x, z, 0): where the pupils look, -1..1 each way
+      "brow" (raise, frown, 0): brows up (texels) / tilted inward (+ = angry)
+      "lid" (close, 0, 0): 0 open .. 1 shut (blinks come on their own)
+      "wide" (amount, 0, 0): eyes opened wider (surprise)
+      "mouth" (shape, 0, 0): 0 line, 1 small "o", 2 open, 3 smile, 4 frown
+      "talking": set by the actor while it speaks (the mouth opens and closes)"""
+    BLINK_EVERY, BLINK_FOR = 3.3, 0.11
+
+    def key_face(self, frame, pose):
+        import math
+        t = pose.get("t", (frame - 1) / 24)
+        gx, gz, _ = pose.get("gaze", (0, 0, 0))
+        raise_, frown, _ = pose.get("brow", (0, 0, 0))
+        wide = pose.get("wide", (0, 0, 0))[0]
+        lid = pose.get("lid", (0, 0, 0))[0]
+        if (t + self.blink_phase) % self.BLINK_EVERY < self.BLINK_FOR:      # a blink now and then
+            lid = 1.0
+        f = self.face
+        for side, eye in f["eyes"].items():
+            eye["pupil"].location = (eye["px"] + gx * f["gx"], eye["pupil"].location[1], eye["pz"] + gz * f["gz"])
+            eye["pupil"].keyframe_insert("location", frame=frame)
+            eye["white"].scale = (1, 1, 1 + 0.5 * wide)
+            eye["white"].keyframe_insert("scale", frame=frame)
+            eye["lid"].scale = (1, 1, max(0.001, lid))
+            eye["lid"].keyframe_insert("scale", frame=frame)
+            if f.get("blink_squash"):                    # the toy's oval eye squashes shut
+                eye["white"].scale = (1, 1, max(0.08, (1 - lid) * (1 + 0.3 * wide)))
+                eye["white"].keyframe_insert("scale", frame=frame)
+            br = eye.get("brow")
+            if br is not None:
+                br.location = (br.location[0], br.location[1], eye["bz"] + (raise_ + 0.6 * wide) * f["u"])
+                br.rotation_euler = (0, side * 0.35 * frown, 0)
+                br.keyframe_insert("location", frame=frame)
+                br.keyframe_insert("rotation_euler", frame=frame)
+        shape = int(round(pose.get("mouth", (0, 0, 0))[0]))
+        if pose.get("talking"):                      # open and shut in 1/12 s steps while speaking
+            chunk = int(t * 12)
+            if (chunk * 7919 + 13) % 100 < 62:
+                shape = 2 if shape in (0, 2, 3) else 1
+        if getattr(self, "_mouth", None) != shape:
+            for k, obs in f["mouths"].items():
+                for ob in obs:
+                    ob.hide_render = k != shape
+                    ob.keyframe_insert("hide_render", frame=frame)
+            self._mouth = shape
+
+
+class SteveRig(ActingFace, Rig):
+    def key_pose(self, frame, pose):
+        Rig.key_pose(self, frame, pose)
+        self.key_face(frame, pose)
+
+
+def _steve_face_parts(tex, name, head):
+    """Eyes, brows and mouth as their own blocks on Steve's face, in his
+    pixels (a texel is 1/16 of the head)."""
+    from textures import HAIR, LID, MOUTH
+    u = 0.5 / 16
+    white = material(f"{name}_eye_white", srgb((248, 248, 250)), rough=0.5)
+    pupil = material(f"{name}_pupil", srgb((32, 36, 70)), rough=0.4, spec=0.5)
+    lidm = material(f"{name}_lid", srgb(LID))
+    brow = material(f"{name}_brow", srgb(tuple(int(c * 0.8) for c in HAIR)))
+    mouth_m = material(f"{name}_mouth", srgb(MOUTH))
+    dark = material(f"{name}_mouth_in", srgb((70, 30, 30)))
+    y = -0.2512
+    ez = 0.5 - 9 * u
+    eyes = {}
+    for side in (-1, 1):
+        x = side * 4 * u
+        w = box(f"{name}_white_{side}", (4 * u, 0.003, 2.4 * u), (0, 0, 0), {"default": white}, head)
+        w.location = (x, y, ez)
+        p = box(f"{name}_pupil_{side}", (1.8 * u, 0.003, 1.8 * u), (0, 0, 0), {"default": pupil}, head)
+        p.location = (x, y - 0.0015, ez)
+        lid_pivot = empty(f"{name}_lid_{side}", (x, y - 0.003, ez + 1.25 * u), head)
+        box(f"{name}_lidbox_{side}", (4.3 * u, 0.003, 2.6 * u), (0, 0, -1.3 * u), {"default": lidm}, lid_pivot)
+        b = box(f"{name}_brow_{side}", (4.4 * u, 0.004, 0.9 * u), (0, 0, 0), {"default": brow}, head)
+        bz = ez + 2.1 * u
+        b.location = (x, y - 0.0035, bz)
+        eyes[side] = {"white": w, "pupil": p, "lid": lid_pivot, "brow": b, "px": x, "pz": ez, "bz": bz}
+    mz = 0.5 - 12.5 * u
+
+    def m(tag, size, at, mat):
+        ob = box(f"{name}_mouth_{tag}", (size[0] * u, 0.003, size[1] * u), (0, 0, 0), {"default": mat}, head)
+        ob.location = (at[0] * u, y, mz + at[1] * u)
+        return ob
+    mouths = {0: [m("line", (7, 1), (0, 0), mouth_m)],
+              1: [m("o", (2.4, 2.2), (0, -0.4), dark)],
+              2: [m("open", (6, 2.2), (0, -0.5), dark)],
+              3: [m("smile", (4, 1), (0, -0.5), mouth_m), m("smile_l", (1, 1), (-2.5, 0.5), mouth_m),
+                  m("smile_r", (1, 1), (2.5, 0.5), mouth_m)],
+              4: [m("frown", (4, 1), (0, 0.5), mouth_m), m("frown_l", (1, 1), (-2.5, -0.5), mouth_m),
+                  m("frown_r", (1, 1), (2.5, -0.5), mouth_m)]}
+    for k, obs in mouths.items():
+        for ob in obs:
+            ob.hide_render = k != 0
+            ob.keyframe_insert("hide_render", frame=1)
+    for o in [w for e in eyes.values() for w in (e["white"], e["pupil"], e["brow"])] + \
+            [c for e in eyes.values() for c in e["lid"].children] + [o for v in mouths.values() for o in v]:
+        o["face_plate"] = 1
+    return {"eyes": eyes, "mouths": mouths, "u": u, "gx": 1.05 * u, "gz": 0.3 * u}
+
+
+def _steve_hair(tex, name, head):
+    """Hair as blocks: a cap a little wider than the head and a ragged fringe
+    over the forehead, so it reads as hair, not a painted band."""
+    hair = material(f"{name}_hair3d", tex=tex["hair"])
+    box(f"{name}_hair_cap", (0.54, 0.54, 0.07), (0, 0.005, 0.525), {"default": hair}, head)
+    box(f"{name}_fringe", (0.54, 0.06, 0.085), (0, -0.265, 0.455), {"default": hair}, head)
+    for i, (x, w, h) in enumerate(((-0.215, 0.11, 0.07), (-0.095, 0.08, 0.045), (0.03, 0.1, 0.06),
+                                   (0.165, 0.07, 0.04), (0.235, 0.07, 0.09))):
+        box(f"{name}_strand_{i}", (w, 0.05, h), (x, -0.262, 0.413 - h / 2 + 0.005), {"default": hair}, head)
+    for side in (-1, 1):
+        box(f"{name}_sidehair_{side}", (0.03, 0.4, 0.16), (side * 0.262, 0.04, 0.42), {"default": hair}, head)
+        box(f"{name}_back_{side}", (0.27, 0.05, 0.22), (side * 0.135, 0.262, 0.39), {"default": hair}, head)
+
+
+def make_steve(tex, name="steve", faces=False, eyes=False):
     from textures import SKIN, HAIR, SHIRT, PANTS, SHOE
-    face = material(f"{name}_face", tex=tex["steve_face"])
+    face = material(f"{name}_face", tex=tex["steve_face_base" if eyes else "steve_face"])
     side = material(f"{name}_head_side", tex=tex["steve_head_side"])
     hair = material(f"{name}_hair", tex=tex["hair"])
     skin = material(f"{name}_skin", srgb(SKIN))
@@ -94,6 +213,13 @@ def make_steve(tex, name="steve", faces=False):
     for i, (y, z) in enumerate(((0, 0.47), (-0.1, 0.46), (0.1, 0.46), (-0.2, 0.43),
                                 (0.2, 0.43), (-0.28, 0.38), (0.28, 0.38))):
         box(f"{name}_pick_{i}", (0.07, 0.1, 0.08), (0, y, z), {"default": metal}, tool)
+    if eyes:           # a face that acts: moving eyes, brows and mouth, and hair as blocks
+        rig = SteveRig(name, root, parts, {"gaze": (0, 0, 0), "brow": (0, 0, 0), "lid": (0, 0, 0),
+                                           "wide": (0, 0, 0), "mouth": (0, 0, 0)})
+        rig.face = _steve_face_parts(tex, name, parts["head"])
+        rig.blink_phase = (sum(map(ord, name)) % 17) / 5.0
+        _steve_hair(tex, name, parts["head"])
+        return rig
     rig = Rig(name, root, parts, {})
     if faces:          # the pixel face, swappable: just in front of the skull's front
         rig.faces = face_plates(tex, "steve", name, parts["head"], (0.5, 0.002, 0.5), (0, -0.2512, 0.25))
@@ -140,11 +266,53 @@ def make_noob(tex, name="noob", shirt=(30, 100, 220), pants=(96, 182, 50),
     bottom = material(f"{name}_pants", srgb(pants), **plastic)
     rig = make_r6(name, {"torso": top, "head": skin, "face": face, "arm_r": skin,
                          "arm_l": skin, "leg_r": bottom, "leg_l": bottom}, s)
+    if faces == "parts":   # eyes that look around and blink, and a mouth: parts, not pictures
+        rig = NoobRig(rig.name, rig.root, rig.parts, {"gaze": (0, 0, 0), "brow": (0, 0, 0), "lid": (0, 0, 0),
+                                                      "wide": (0, 0, 0), "mouth": (3, 0, 0)})
+        rig.face = _noob_face_parts(tex, name, rig.parts["head"], s, plastic)
+        rig.blink_phase = (sum(map(ord, name)) % 13) / 4.0
+        return rig
     if faces:          # on the flat part of the bevelled head (the textures are cropped to it)
         rig.faces = face_plates(tex, "noob", name, rig.parts["head"], (0.36 * s, 0.002, 0.30 * s),
                                 (0, -0.2315 * s, 0.24 * s), smooth=True, alpha=True, **plastic)
         rig.rest_face = "neutral"              # the plain head needs a face between expressions
     return rig
+
+
+class NoobRig(ActingFace, Rig):
+    def key_pose(self, frame, pose):
+        Rig.key_pose(self, frame, pose)
+        self.key_face(frame, pose)
+
+
+def _noob_face_parts(tex, name, head, s, plastic):
+    """The toy's oval eyes and its mouth as separate see-through plates on the
+    flat front of the head (sizes from the face picture: 1 px = 0.36 s / 184)."""
+    px = 0.36 * s / 184
+    y = -0.2315 * s
+    eye_m = material(f"{name}_eye", tex=tex["noob_eye"], smooth_tex=True, alpha_tex=True, **plastic)
+    eyes = {}
+    for side in (-1, 1):
+        x, z = side * 37 * px, 0.24 * s + 32 * px
+        w = box(f"{name}_eye_{side}", (64 * px, 0.002, 64 * px), (0, 0, 0), {"default": eye_m}, head)
+        w.location = (x, y - 0.001, z)
+        # the oval is its own lid: a blink squashes it (white and pupil are the same plate)
+        eyes[side] = {"white": w, "pupil": w, "lid": empty(f"{name}_nolid_{side}", (0, 0, 0), head),
+                      "px": x, "pz": z}
+    mouths = {}
+    for k, key in ((3, "noob_mouth_smile"), (2, "noob_mouth_o"), (1, "noob_mouth_o"), (0, "noob_mouth_smile"),
+                   (4, "noob_mouth_o")):
+        mm = material(f"{name}_{key}_{k}", tex=tex[key], smooth_tex=True, alpha_tex=True, **plastic)
+        ob = box(f"{name}_mouth_{k}", (256 * px, 0.002, 128 * px), (0, 0, 0), {"default": mm}, head)
+        ob.location = (0, y - 0.002, 0.24 * s - 68 * px)
+        ob.hide_render = k != 3
+        ob.keyframe_insert("hide_render", frame=1)
+        mouths[k] = [ob]
+    for e in eyes.values():
+        e["white"]["face_plate"] = 1
+    for v in mouths.values():
+        v[0]["face_plate"] = 1
+    return {"eyes": eyes, "mouths": mouths, "u": px, "gx": 9 * px, "gz": 9 * px, "blink_squash": True}
 
 
 def make_null(tex, name="null", s=9.0):

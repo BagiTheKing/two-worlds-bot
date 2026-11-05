@@ -75,7 +75,8 @@ def snap_jumps(ob, threshold=0.4):
 
 def visible(ctx, rig, ranges):
     """Show an actor only inside the given [from, to] time ranges."""
-    obs = [o for o in [rig.root] + list(rig.root.children_recursive) if not o.get("face_plate")]
+    swapped = getattr(rig, "faces", None)       # swapped face pictures are keyed by key_faces; acting parts hide here
+    obs = [o for o in [rig.root] + list(rig.root.children_recursive) if not (swapped and o.get("face_plate"))]
     keys = [(1, True)]
     for a, b in ranges:
         keys += [(ctx.F(ctx.T(a)), False), (ctx.F(ctx.T(b)), True)]
@@ -125,7 +126,9 @@ def build(episode_path, timeline_path, tex_dir):
             if part in spec:
                 kw[part] = tuple(spec[part])
         if spec.get("faces"):                             # faces that act (expressions, blinks, talking)
-            kw["faces"] = True
+            kw["faces"] = "parts" if spec["faces"] == "parts" else True
+        if spec.get("eyes"):                              # Steve's moving eyes, brows, mouth and block hair
+            kw["eyes"] = True
         rig = RIGS[spec.get("rig", name)](tex, name=name, **kw)
         clips = [dict(c, impacts=tl.get("impacts", [])) if c["do"] in ("punch", "flurry") else c
                  for c in ep.get("clips", []) if c["who"] == name]
@@ -332,6 +335,26 @@ def build(episode_path, timeline_path, tex_dir):
                 obby.left_behind(ctx, tex, tuple(at), ctx.T(t0), ctx.T(e["sink"]) + e.get("stagger", 0.15) * i,
                                  ctx.T(e["arrive"]) + e.get("stagger", 0.15) * i, tuple(tg), ctx.T(e["to"]),
                                  size=e.get("size", 0.34), glow=e.get("glow", 1.2), name=f"left_behind_{i}")
+        elif k == "punch_block":
+            from kit import gags
+            gags.punch_block(ctx, tex, tuple(e["at"]), [ctx.T(h) for h in e["hits"]], tuple(e["item_to"]),
+                             ctx.T(e["item_at"]), name=e.get("name", "punched"))
+        elif k == "tree":
+            from kit import gags
+            gags.tree(ctx, tex, e["at"][0], e["at"][1], e.get("height", 5), gap=e.get("gap"),
+                      seed=e.get("seed", 42), name=e.get("name", "tree"))
+        elif k == "falling_tree":
+            from kit import gags
+            gags.falling_tree(ctx, tex, e["at"][0], e["at"][1], e.get("yaw", 0.0), ctx.T(e["creak"]),
+                              ctx.T(e["fall"]), ctx.T(e["hit"]), height=e.get("height", 5),
+                              seed=e.get("seed", 7), name=e.get("name", "falling_tree"))
+        elif k == "motes":
+            from kit import gags
+            gags.motes(ctx, tuple(e["center"]), tuple(e["size"]), n=e.get("n", 70))
+        elif k == "haze":
+            from kit import gags
+            gags.haze(ctx, [tuple(l) for l in e["layers"]], e["x"][0], e["x"][1], e["z"][0], e["z"][1],
+                      color=tuple(e.get("color", (0.78, 0.86, 1.0))))
         elif k == "hide":                         # objects gone for the whole episode (and their children)
             for nm in e["names"]:
                 ob = bpy.data.objects.get(nm)
