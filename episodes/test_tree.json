@@ -241,15 +241,10 @@
     {
       "who": "steve",
       "do": "swing",
-      "from": "steve_punch",
-      "to": "steve_punch.end",
+      "from": "steve_punch+0.25",
+      "to": "steve_punch+1.21",
       "arm": "arm_r",
-      "times": [
-        "steve_punch+0.25",
-        "steve_punch+0.57",
-        "steve_punch+0.89",
-        "steve_punch+1.21"
-      ]
+      "count": 4
     },
     {
       "who": "steve",
