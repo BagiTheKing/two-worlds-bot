@@ -160,6 +160,31 @@ What it means:
   Noob building with BTools: @youssefakram7493's idea. He thanked us for
   the credit and came back with a new theory the same day: crediting works.
 
+## 2c. The quality bar (studied frame by frame: Benly Animations)
+
+Two reference videos, every frame at 4 fps plus the soundtrack: the
+animated Minecraft movie trailer (8.8M views) and "Steve tries to
+SPEEDRUN" (no dialogue at all). What separates them from us:
+
+- **The picture tells the story, not the dialogue.** The trailer has about
+  10 short lines in 78 s; the speedrun has none. Our episodes have 10-15
+  lines in 30 s: radio plays with pictures.
+- **Faces act with the eyes**: white eyes with pupils that dart, look and
+  widen; brows as separate strips that tilt; mouths that change shape.
+  Steve has 3D blocks of hair over his forehead. Our faces swap flat pictures.
+- **Light**: bright sun, saturated colour, soft glow, a shallow focus on
+  every close-up (the background blurred), floating motes in the air, a
+  colour mood per place (golden forest, cold cave, red Nether, purple End).
+- **Camera**: low, close, dynamic angles, first-person shots, cuts every
+  1-2 s in action, heavy motion blur on fast moves, block-break debris.
+- **The game's own language**: "Steve joined the game", death messages, a
+  speedrun timer. A gamer reads it in an instant.
+- **Comedy**: the music drops out for the joke, a deadpan hold on a face
+  for a beat (the pink sheep, the llama after the stampede), one sound or
+  one short line. Silence is the punchline.
+- **Sound**: the speedrun is music wall to wall at one level, every action
+  on a hit; the trailer cuts its music exactly at the gags.
+
 ## 3. Production traps
 
 - **Whisper's word timings differ between CI runners.** The same recording
