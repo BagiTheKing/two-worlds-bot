@@ -1,0 +1,58 @@
+Gemini speech models, in order: gemini-3.8-flash-tts, gemini-3.1-flash-tts-preview, gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.8-flash-lite-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['steve_wow'] placed ['steve_wow']
+  steve_wow: words at 5.98-6.34s of the scene
+{
+ "length": 11.764,
+ "beats": {
+  "open": [
+   0.0,
+   0.3
+  ],
+  "steve_punch": [
+   0.3,
+   1.7
+  ],
+  "pickup": [
+   1.7,
+   2.5
+  ],
+  "noob_steps": [
+   2.5,
+   3.5
+  ],
+  "punch": [
+   3.5,
+   3.95
+  ],
+  "hold": [
+   3.95,
+   5.7
+  ],
+  "creak": [
+   5.7,
+   6.5
+  ],
+  "fall": [
+   6.5,
+   7.05
+  ],
+  "squashed": [
+   7.05,
+   8.35
+  ],
+  "respawn": [
+   8.35,
+   9.25
+  ],
+  "steve_wow": [
+   9.25,
+   9.814
+  ],
+  "look": [
+   10.164,
+   11.764
+  ]
+ }
+}
