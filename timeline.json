@@ -1,0 +1,148 @@
+{
+ "id": "test_tree",
+ "fps": 24,
+ "length": 11.764,
+ "beats": {
+  "open": [
+   0.0,
+   0.3
+  ],
+  "steve_punch": [
+   0.3,
+   1.7
+  ],
+  "pickup": [
+   1.7,
+   2.5
+  ],
+  "noob_steps": [
+   2.5,
+   3.5
+  ],
+  "punch": [
+   3.5,
+   3.95
+  ],
+  "hold": [
+   3.95,
+   5.7
+  ],
+  "creak": [
+   5.7,
+   6.5
+  ],
+  "fall": [
+   6.5,
+   7.05
+  ],
+  "squashed": [
+   7.05,
+   8.35
+  ],
+  "respawn": [
+   8.35,
+   9.25
+  ],
+  "steve_wow": [
+   9.25,
+   9.814
+  ],
+  "look": [
+   10.164,
+   11.764
+  ]
+ },
+ "impacts": [
+  3.68
+ ],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_wow",
+   "who": "steve",
+   "text": "...Wow.",
+   "vo": false,
+   "caption": true,
+   "start": 9.25,
+   "end": 9.814
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "grade",
+   "sun": [
+    0.92,
+    0.02
+   ],
+   "saturation": 1.22,
+   "glow": 0.5,
+   "rays": 0.8,
+   "start": 0.0,
+   "end": 12.164
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 12.164
+  },
+  {
+   "type": "chat",
+   "lines": [
+    {
+     "at": 7.35,
+     "text": "Noob was squashed by a tree"
+    }
+   ],
+   "start": 7.35,
+   "end": 12.164
+  }
+ ]
+}
