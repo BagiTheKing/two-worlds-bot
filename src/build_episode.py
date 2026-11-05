@@ -396,8 +396,12 @@ def build(episode_path, timeline_path, tex_dir):
     sc.frame_start, sc.frame_end = 1, ctx.F(ctx.end)
     for f in range(1, sc.frame_end + 1):
         t = (f - 1) / ctx.fps
-        for a in actors.values():
-            a.rig.key_pose(f, a.pose(t))
+        for name, a in actors.items():
+            p = a.pose(t)
+            vis = ep["actors"][name].get("visible")
+            if vis:                                   # what visible() keyed, for faces that key their own parts
+                p["shown"] = any(ctx.F(ctx.T(v0)) <= f < ctx.F(ctx.T(v1)) for v0, v1 in vis)
+            a.rig.key_pose(f, p)
     for a in actors.values():
         snap_jumps(a.rig.root)
     for name, a in actors.items():

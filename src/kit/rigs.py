@@ -96,12 +96,13 @@ class ActingFace:
             chunk = int(t * 12)
             if (chunk * 7919 + 13) % 100 < 62:
                 shape = 2 if shape in (0, 2, 3) else 1
-        if getattr(self, "_mouth", None) != shape:
+        shown = pose.get("shown", True)                  # the actor's own visibility (a hidden actor shows no mouth)
+        if getattr(self, "_mouth", None) != (shape, shown):
             for k, obs in f["mouths"].items():
                 for ob in obs:
-                    ob.hide_render = k != shape
+                    ob.hide_render = k != shape or not shown
                     ob.keyframe_insert("hide_render", frame=frame)
-            self._mouth = shape
+            self._mouth = (shape, shown)
 
 
 class SteveRig(ActingFace, Rig):
@@ -290,7 +291,8 @@ def _noob_face_parts(tex, name, head, s, plastic):
     flat front of the head (sizes from the face picture: 1 px = 0.36 s / 184)."""
     px = 0.36 * s / 184
     y = -0.2315 * s
-    eye_m = material(f"{name}_eye", tex=tex["noob_eye"], smooth_tex=True, alpha_tex=True, **plastic)
+    eye_m = material(f"{name}_eye", tex=tex["noob_eye"], smooth_tex=True, alpha_tex=True,
+                     rough=0.7, spec=0.05)        # matte: glossy black eyes mirrored the sky and looked grey
     eyes = {}
     for side in (-1, 1):
         x, z = side * 37 * px, 0.24 * s + 32 * px
@@ -302,7 +304,7 @@ def _noob_face_parts(tex, name, head, s, plastic):
     mouths = {}
     for k, key in ((3, "noob_mouth_smile"), (2, "noob_mouth_o"), (1, "noob_mouth_o"), (0, "noob_mouth_smile"),
                    (4, "noob_mouth_o")):
-        mm = material(f"{name}_{key}_{k}", tex=tex[key], smooth_tex=True, alpha_tex=True, **plastic)
+        mm = material(f"{name}_{key}_{k}", tex=tex[key], smooth_tex=True, alpha_tex=True, rough=0.7, spec=0.05)
         ob = box(f"{name}_mouth_{k}", (256 * px, 0.002, 128 * px), (0, 0, 0), {"default": mm}, head)
         ob.location = (0, y - 0.002, 0.24 * s - 68 * px)
         ob.hide_render = k != 3
@@ -312,7 +314,7 @@ def _noob_face_parts(tex, name, head, s, plastic):
         e["white"]["face_plate"] = 1
     for v in mouths.values():
         v[0]["face_plate"] = 1
-    return {"eyes": eyes, "mouths": mouths, "u": px, "gx": 9 * px, "gz": 9 * px, "blink_squash": True}
+    return {"eyes": eyes, "mouths": mouths, "u": px, "gx": 14 * px, "gz": 22 * px, "blink_squash": True}
 
 
 def make_null(tex, name="null", s=9.0):
