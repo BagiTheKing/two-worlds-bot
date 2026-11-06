@@ -154,6 +154,47 @@ def _eye(X, Y, e, inner_dir, base):
     return mix(shut, out, LIDLINE)
 
 
+NOOB_EYES = {"eR": 2.8, "eL": 5.2}
+NOOB_EYE_DEFAULTS = {"cx": 0.0, "cy": 4.5, "w": 0.95, "h": 1.65, "open": 1.0,
+                     "to": 0.0, "tm": 0.0, "ti": 0.0, "bo": 0.0, "bm": 0.0, "bi": 0.0,
+                     "px": 0.0, "py": 0.0, "ps": 1.0}
+NOOB_MOUTH = {"m_cy": 2.45, "m_w": 1.85, "m_arch": -0.36, "m_k": 1.25}
+NOOB_EYE = (0.012, 0.01, 0.01)
+
+
+def _eye_noob(X, Y, e, inner_dir, base):
+    """The Noob's eye, Roblox style: a glossy black oval with a white shine;
+    lids (his yellow skin) can cut it from the top and the bottom along the same
+    three-point curves as Steve's (outer, middle, inner), so it can squint, glare,
+    look sad or happy; gaze moves the whole oval a little."""
+    P = {k: prop(f"{e}_{k}") for k in NOOB_EYE_DEFAULTS}
+    cx = P["cx"] + NOOB_EYES[e] + P["px"] * 0.28
+    cy = P["cy"] + P["py"] * 0.22
+    rx = P["w"] * 0.5
+    ry = P["h"] * 0.5
+    dx = (X - cx) / rx
+    dy = (Y - cy) / ry
+    oval = lt(dx * dx + dy * dy, 1.0)
+    s = dx * inner_dir                                  # -1 outer .. +1 inner
+    top = cy - ry + 2 * ry * P["open"] + lerp3(s, P["to"], P["tm"], P["ti"]) * P["open"]
+    bot = cy - ry + lerp3(s, P["bo"], P["bm"], P["bi"]) * P["open"]
+    inside = oval * gt(top, Y) * gt(Y, bot)
+    col = mix(clamp01((top - Y) / 0.25), (0.06, 0.05, 0.05), NOOB_EYE)
+    # the shine: a white oval up and toward the outside of the frame, and a small dot under it
+    hx = (X - (cx + rx * 0.32)) / (0.16 * P["ps"])
+    hy = (Y - (cy + ry * 0.45)) / (0.22 * P["ps"])
+    shine = lt(hx * hx + hy * hy, 1.0)
+    h2x = (X - (cx - rx * 0.25)) / (0.07 * P["ps"])
+    h2y = (Y - (cy - ry * 0.35)) / (0.07 * P["ps"])
+    shine = mx(shine, lt(h2x * h2x + h2y * h2y, 1.0))
+    col = mix(shine, col, (0.95, 0.95, 0.95))
+    GLOW.append(inside * shine)
+    out = mix(inside, base, col)
+    # closed: a thin dark curve
+    shut = lt(P["open"], 0.12) * lt(ab(dx), 0.95) * lt(ab(Y - (cy - ry * 0.35) - 0.12 * (1 - dx * dx)), 0.06)
+    return mix(shut, out, (0.03, 0.025, 0.02))
+
+
 def _mouth(X, Y):
     """The reference's mouth: an opening cut into the face, built from arcs.
     m_w width; m_o how open (px at the centre); m_arch bends the whole mouth
@@ -197,7 +238,7 @@ def _mouth(X, Y):
     return inside, rim, col
 
 
-def face_material(skin_image, name="steve_face"):
+def face_material(skin_image, name="steve_face", style="steve"):
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     nt = m.node_tree
@@ -215,10 +256,11 @@ def face_material(skin_image, name="steve_face"):
     tex.interpolation = "Closest"
     nt.links.new(uv.outputs["UV"], tex.inputs["Vector"])
     col = N(tex.outputs["Color"])
-    col = _eye(X, Y, "eR", 1.0, col)
-    col = _eye(X, Y, "eL", -1.0, col)
+    eye = _eye_noob if style == "noob" else _eye
+    col = eye(X, Y, "eR", 1.0, col)
+    col = eye(X, Y, "eL", -1.0, col)
     m_in, m_rim, m_col = _mouth(X, Y)
-    col = mix(m_rim * 0.35, col, (0.2, 0.09, 0.06))
+    col = mix(m_rim * 0.35, col, (0.36, 0.26, 0.03) if style == "noob" else (0.2, 0.09, 0.06))
     col = mix(m_in, col, m_col)
     nt.links.new(col.s, bsdf.inputs["Base Color"])
     glow = GLOW[0]
@@ -227,6 +269,9 @@ def face_material(skin_image, name="steve_face"):
     GLOW.clear()
     nt.links.new(mix(glow, (0, 0, 0), (1.0, 0.96, 1.0)).s, bsdf.inputs["Emission Color"])
     bsdf.inputs["Emission Strength"].default_value = 0.22
+    if style == "noob":                               # smooth plastic; the eyes and mouth glossier still
+        bsdf.inputs["Roughness"].default_value = 0.32
+        bsdf.inputs["Specular IOR Level"].default_value = 0.5
     return m
 
 

@@ -419,6 +419,16 @@ _lat = bpy.data.objects["Head"]
 FACE = build_faceplate(arm, bpy.data.images.load(make_face_skin(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_faceskin.png"))), lattice=_lat)
 BROWS = build_brows(arm, lattice=_lat)
 _expr = _json.loads(os.environ.get("EXPR", "{}"))
+if os.environ.get("NOOB"):                           # the Noob beside him: {"x", "y", "yaw", "head", "pose", "face"}
+    from noob import build_noob, pose_noob  # noqa: E402
+    from faceplate import NOOB_EYES as _NE  # noqa: E402
+    _nb = _json.loads(os.environ["NOOB"])
+    _ncol = bpy.data.collections.new("noob")
+    sc.collection.children.link(_ncol)
+    NOOB = build_noob(_ncol, head=_nb.get("head", "classic"), height=_nb.get("height", 2.0))
+    NOOB.root.location = (_nb.get("x", 1.6), _nb.get("y", 0.3), 0)
+    pose_noob(NOOB, {**_nb.get("pose", {}), "root_yaw": _nb.get("pose", {}).get("root_yaw", 0) + _nb.get("yaw", 0)})
+    set_face(NOOB.face, _nb.get("face", {}))
 if os.environ.get("PROPS"):                          # held props, e.g. [{"item": "iron_pickaxe", "side": "sl"}]
     from props import sprite_item, block_item, hold  # noqa: E402
     for _pr in _json.loads(os.environ["PROPS"]):
@@ -490,6 +500,10 @@ def char_light(name, loc, power, color, aim=(0, 0, 1.55), cone=26, size=0.25):
 if os.environ.get("CHAR_LIGHT", "1") == "1":
     char_light("edge_cool", (-1.6, 2.6, 2.3), float(os.environ.get("EDGE_W", "900")), (0.72, 0.92, 1.0))
     char_light("edge_warm", (1.2, 2.4, 3.4), float(os.environ.get("EDGE_W2", "700")), (1.0, 0.8, 0.55), aim=(0, 0, 1.8))
+    if os.environ.get("NOOB"):                         # the same edge light on the Noob
+        _nx, _ny = NOOB.root.location.x, NOOB.root.location.y
+        char_light("noob_edge_cool", (_nx - 1.6, _ny + 2.6, 2.3), 700, (0.72, 0.92, 1.0), aim=(_nx, _ny, 1.4))
+        char_light("noob_edge_warm", (_nx + 1.2, _ny + 2.4, 3.4), 550, (1.0, 0.8, 0.55), aim=(_nx, _ny, 1.7))
     for m in bpy.data.materials:                     # skin: a little soft warmth where light enters
         if (m.name.startswith("Skin") or m.name.startswith("steve_face")) and m.node_tree:
             b = m.node_tree.nodes.get("Principled BSDF")
@@ -532,6 +546,7 @@ sc.view_settings.exposure = float(os.environ.get("EXPOSURE", "-0.25"))
 
 SHOT = {
     "close": dict(loc=(0.3, -2.05, 1.45), at=(0.0, 0.0, 1.58), lens=42, focus=None, fstop=0.9),
+    "two": dict(loc=(0.55, -6.4, 1.35), at=(0.65, 0.1, 1.35), lens=34, focus=None, fstop=2.4),
     "medium": dict(loc=(0.55, -3.1, 1.55), at=(-0.15, 0.0, 1.62), lens=40, focus=None, fstop=1.4),
     "full": dict(loc=(-0.3, -4.3, 0.8), at=(0.0, 0.0, 1.25), lens=32, focus=None, fstop=2.4),
     "wide": dict(loc=(0.4, -7.0, 1.1), at=(0.0, 0.0, 1.5), lens=28, focus=None, fstop=2.0),
