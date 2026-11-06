@@ -11,6 +11,7 @@ and checked side by side.
 | `brows.py` | 3D brows with shape keys: raise, tilt, arch, curl and squeeze. |
 | `skin_face.py` | The painted 8x8 face (pink skin, cheeks, nose, beard rows) and the body palette (cyan shirt, violet trousers, dark collar V, pixel shading). |
 | `pose.py`, `poses_lib.json` | Posing in plain terms (body turn, hips, chest, head, arms, elbows, feet) and 19 named poses. |
+| `props.py` | Items from their 16x16 sprites, built as 3D pixel slabs one pixel thick. They are held in the fist (`hold`, with `GRIPS` presets: hanging, raised, swing), as held blocks, or as dropped items that float and turn. |
 | `lips.py` | A simple lip sync: one mouth shape per frame from the voice (loudness and hiss). |
 | `face_lab.py` | A studio sheet: renders many face or pose variants side by side. |
 | `look.py` | The test world: a meadow, a forest hill, blocky clouds, sun and edge lights, the Standard view transform. Shots: `close`, `full`, `wide`. |

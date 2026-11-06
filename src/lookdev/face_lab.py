@@ -140,6 +140,26 @@ for i, v in enumerate(VAR):
     if "pose" in v:
         from pose import pose as _pose
         _pose(arm, v["pose"])
+    held = []
+    if v.get("props"):
+        from props import sprite_item, block_item, hold
+        ITEMS = A + "/mcprep/resourcepacks/mcprep_default/assets/minecraft/textures/item"
+        BLOCKS = A + "/mcprep/resourcepacks/mcprep_default/assets/minecraft/textures/block/"
+        for pr in v["props"]:
+            if "item" in pr:
+                ob_ = sprite_item(pr["item"], ITEMS, px=pr.get("px", 0.072))
+                hold(arm, ob_, pr.get("side", "sl"), up=pr.get("up", 25), roll=pr.get("roll", 0), reach=pr.get("reach", 0),
+                     face=pr.get("face", 50))
+            else:
+                bm_ = bpy.data.materials.new("blk")
+                bm_.use_nodes = True
+                t_ = bm_.node_tree.nodes.new("ShaderNodeTexImage")
+                t_.image = bpy.data.images.load(BLOCKS + pr["block"] + ".png", check_existing=True)
+                t_.interpolation = "Closest"
+                bm_.node_tree.links.new(t_.outputs["Color"], bm_.node_tree.nodes["Principled BSDF"].inputs["Base Color"])
+                ob_ = block_item({"default": bm_}, size=pr.get("size", 0.32))
+                hold(arm, ob_, pr.get("side", "sr"), kind="block")
+            held.append(ob_)
     view = v.get("view", "front")
     az = {"front": 0, "q": -28, "mouth": 0, "lower": 0, "body": 0, "body_q": -35, "body_side": -90}[view]
     a = math.radians(az)
@@ -163,6 +183,8 @@ for i, v in enumerate(VAR):
     p = os.path.join(HERE, f"_lab_{i}.png")
     sc.render.filepath = p
     bpy.ops.render.render(write_still=True)
+    for ob_ in held:
+        bpy.data.objects.remove(ob_, do_unlink=True)
     tiles.append((p, v.get("label", str(i))))
 
 if os.environ.get("FRAMES_DIR"):                    # an animation: keep the frames, no sheet

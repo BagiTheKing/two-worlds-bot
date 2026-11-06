@@ -419,6 +419,16 @@ _lat = bpy.data.objects["Head"]
 FACE = build_faceplate(arm, bpy.data.images.load(make_face_skin(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_faceskin.png"))), lattice=_lat)
 BROWS = build_brows(arm, lattice=_lat)
 _expr = _json.loads(os.environ.get("EXPR", "{}"))
+if os.environ.get("PROPS"):                          # held props, e.g. [{"item": "iron_pickaxe", "side": "sl"}]
+    from props import sprite_item, block_item, hold  # noqa: E402
+    for _pr in _json.loads(os.environ["PROPS"]):
+        if "item" in _pr:
+            _ob = sprite_item(_pr["item"], A + "/mcprep/resourcepacks/mcprep_default/assets/minecraft/textures/item",
+                              px=_pr.get("px", 0.072))
+            hold(arm, _ob, _pr.get("side", "sl"), up=_pr.get("up", 25), face=_pr.get("face", 50), reach=_pr.get("reach", 0))
+        else:
+            _m = mat("held_" + _pr["block"], img(_pr["block"]))
+            hold(arm, block_item({"default": _m}, size=_pr.get("size", 0.32)), _pr.get("side", "sr"), kind="block")
 if os.environ.get("POSE"):                           # a body pose (see pose.py), by name or as JSON
     from pose import pose as _pose  # noqa: E402
     _p = os.environ["POSE"]
@@ -522,6 +532,7 @@ sc.view_settings.exposure = float(os.environ.get("EXPOSURE", "-0.25"))
 
 SHOT = {
     "close": dict(loc=(0.3, -2.05, 1.45), at=(0.0, 0.0, 1.58), lens=42, focus=None, fstop=0.9),
+    "medium": dict(loc=(0.55, -3.1, 1.55), at=(-0.15, 0.0, 1.62), lens=40, focus=None, fstop=1.4),
     "full": dict(loc=(-0.3, -4.3, 0.8), at=(0.0, 0.0, 1.25), lens=32, focus=None, fstop=2.4),
     "wide": dict(loc=(0.4, -7.0, 1.1), at=(0.0, 0.0, 1.5), lens=28, focus=None, fstop=2.0),
 }
