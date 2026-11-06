@@ -425,7 +425,7 @@ if os.environ.get("NOOB"):                           # the Noob beside him: {"x"
     _nb = _json.loads(os.environ["NOOB"])
     _ncol = bpy.data.collections.new("noob")
     sc.collection.children.link(_ncol)
-    NOOB = build_noob(_ncol, head=_nb.get("head", "classic"), height=_nb.get("height", 2.0))
+    NOOB = build_noob(_ncol, head=_nb.get("head", "classic"), height=_nb.get("height", 2.0), finish=_nb.get("finish", "plastic"))
     NOOB.root.location = (_nb.get("x", 1.6), _nb.get("y", 0.3), 0)
     pose_noob(NOOB, {**_nb.get("pose", {}), "root_yaw": _nb.get("pose", {}).get("root_yaw", 0) + _nb.get("yaw", 0)})
     set_face(NOOB.face, _nb.get("face", {}))

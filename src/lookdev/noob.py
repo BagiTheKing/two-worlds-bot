@@ -28,16 +28,80 @@ def _lin(c):
     return tuple(((v / 255 + 0.055) / 1.055) ** 2.4 if v / 255 > 0.04045 else v / 255 / 12.92 for v in c)
 
 
-def plastic(name, rgb):
+FINISH = {                   # (pixel amplitude, patch amplitude, top-to-bottom shade, roughness, coat)
+    "plastic": (0.0, 0.0, 0.0, 0.32, 0.15),        # plain Roblox smooth plastic
+    "pixel_soft": (0.08, 0.06, 0.14, 0.42, 0.08),   # a light pixel pattern under the plastic shine
+    "pixel": (0.15, 0.10, 0.24, 0.62, 0.0),         # a Minecraft "Noob skin": pixel shading like Steve's
+}
+PX_PER_STUD = 6.0            # the same pixel size as Steve's skin, at the same height
+
+
+def plastic(name, rgb, finish="plastic", zc=0.0, half=1.0):
+    """The Noob's material. With a pixel finish, the surface is cut into skin
+    pixels (as big as Steve's) of slightly varied shade, in hand-drawn-looking
+    patches, lighter at the top of each part and darker toward its bottom."""
+    amp, patch, shade, rough, coat = FINISH[finish]
     m = bpy.data.materials.new(name)
     m.use_nodes = True
-    b = m.node_tree.nodes["Principled BSDF"]
+    nt = m.node_tree
+    b = nt.nodes["Principled BSDF"]
     b.inputs["Base Color"].default_value = (*_lin(rgb), 1)
-    b.inputs["Roughness"].default_value = 0.32                 # Roblox smooth plastic
-    b.inputs["Specular IOR Level"].default_value = 0.5
+    b.inputs["Roughness"].default_value = rough
+    b.inputs["Specular IOR Level"].default_value = 0.5 if finish == "plastic" else 0.3
     if "Coat Weight" in b.inputs:
-        b.inputs["Coat Weight"].default_value = 0.15
+        b.inputs["Coat Weight"].default_value = coat
         b.inputs["Coat Roughness"].default_value = 0.2
+    if amp == 0:
+        return m
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+
+    def cells(scale, seed):
+        sc_ = nt.nodes.new("ShaderNodeVectorMath")
+        sc_.operation = "SCALE"
+        sc_.inputs["Scale"].default_value = scale
+        nt.links.new(tc.outputs["Object"], sc_.inputs[0])
+        fl = nt.nodes.new("ShaderNodeVectorMath")
+        fl.operation = "FLOOR"
+        nt.links.new(sc_.outputs[0], fl.inputs[0])
+        off = nt.nodes.new("ShaderNodeVectorMath")
+        off.operation = "ADD"
+        off.inputs[1].default_value = (seed, seed * 1.7, seed * 2.3)
+        nt.links.new(fl.outputs[0], off.inputs[0])
+        wn = nt.nodes.new("ShaderNodeTexWhiteNoise")
+        wn.noise_dimensions = "3D"
+        nt.links.new(off.outputs[0], wn.inputs["Vector"])
+        return wn.outputs["Value"]
+
+    def lin(x, a, c):                                  # a*x + c
+        mm = nt.nodes.new("ShaderNodeMath")
+        mm.operation = "MULTIPLY_ADD"
+        nt.links.new(x, mm.inputs[0])
+        mm.inputs[1].default_value = a
+        mm.inputs[2].default_value = c
+        return mm.outputs[0]
+
+    def mul(x, y):
+        mm = nt.nodes.new("ShaderNodeMath")
+        mm.operation = "MULTIPLY"
+        nt.links.new(x, mm.inputs[0])
+        nt.links.new(y, mm.inputs[1])
+        return mm.outputs[0]
+
+    k = mul(lin(cells(PX_PER_STUD, 3.1), 2 * amp, 1 - amp), lin(cells(PX_PER_STUD / 3, 7.7), 2 * patch, 1 - patch))
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(tc.outputs["Object"], sep.inputs[0])
+    zq = nt.nodes.new("ShaderNodeMath")                # z snapped to the pixel rows
+    zq.operation = "SNAP"
+    zq.inputs[1].default_value = 1 / PX_PER_STUD
+    nt.links.new(sep.outputs["Z"], zq.inputs[0])
+    k = mul(k, lin(zq.outputs[0], shade / (2 * half), 1 - shade * zc / (2 * half)))
+    mx_ = nt.nodes.new("ShaderNodeMix")
+    mx_.data_type = "RGBA"
+    mx_.blend_type = "MULTIPLY"
+    mx_.inputs["Factor"].default_value = 1.0
+    mx_.inputs["A"].default_value = (*_lin(rgb), 1)
+    nt.links.new(k, mx_.inputs["B"])
+    nt.links.new(mx_.outputs["Result"], b.inputs["Base Color"])
     return m
 
 
@@ -155,10 +219,14 @@ class Noob:
     pass
 
 
-def build_noob(col, head="classic", height=2.0, name="noob"):
-    """Build him in collection `col`, standing at the origin facing -y."""
+def build_noob(col, head="classic", height=2.0, name="noob", finish="plastic"):
+    """Build him in collection `col`, standing at the origin facing -y.
+    finish: "plastic" (plain), "pixel_soft" or "pixel" (see FINISH)."""
     n = Noob()
-    yel, blu, grn = plastic(name + "_yellow", YELLOW), plastic(name + "_blue", BLUE), plastic(name + "_green", GREEN)
+    yel = plastic(name + "_yellow", YELLOW, finish)
+    blu = plastic(name + "_blue", BLUE, finish)
+    grn = plastic(name + "_green", GREEN, finish)
+    yel_head = plastic(name + "_yellow_head", YELLOW, finish, zc=HEAD_H / 2 if head == "classic" else 0.0, half=HEAD_H / 2)
     total = 4.0 + HEAD_H
     n.root = _empty(name + "_root", (0, 0, 0), None, col)
     n.root.scale = (height / total,) * 3
@@ -171,9 +239,17 @@ def build_noob(col, head="classic", height=2.0, name="noob"):
     else:
         hm = rounded_box(name + "_head", (HEAD_W, HEAD_W, HEAD_H), r=0.13, seg=4)
     hz = 0.0 if head == "classic" else HEAD_H / 2
-    n.head_mesh = _part(name + "_head_mesh", hm, yel, (0, 0, hz), n.neck, col)
+    n.head_mesh = _part(name + "_head_mesh", hm, yel_head, (0, 0, hz), n.neck, col)
     img = bpy.data.images.new(name + "_skin", 8, 8)
-    img.pixels = [*(c / 255 for c in YELLOW), 1.0] * 64     # a generated byte image holds sRGB values
+    import random as _r
+    amp = FINISH[finish][0]
+    rr = _r.Random(11)
+    px = []
+    for j in range(8):                                  # rows from the bottom: the same shading as his material
+        for i in range(8):
+            k = (1 + rr.uniform(-amp, amp)) * (1 + FINISH[finish][2] * (j - 3.5) / 7 * 0.5)
+            px += [min(1.0, c / 255 * k) for c in YELLOW] + [1.0]
+    img.pixels = px                                     # a generated byte image holds sRGB values
     n.face = bpy.data.objects.new(name + "_face", _plate(name + "_face", head))
     n.face.data.materials.append(face_material(img, name + "_face_mat", style="noob"))
     col.objects.link(n.face)
