@@ -1,0 +1,401 @@
+{
+ "idle (Benly 2.2)": {
+  "root_yaw": -14,
+  "chest_lean": 4,
+  "chest_twist": 6,
+  "head_turn": 10,
+  "head_tilt": 7,
+  "hips_drop": 0.09,
+  "arm_sl": {
+   "out": 17,
+   "fwd": 9,
+   "elbow": 20,
+   "twist": -8
+  },
+  "arm_sr": {
+   "out": 15,
+   "fwd": 6,
+   "elbow": 17,
+   "twist": -8
+  },
+  "foot_sl": {
+   "x": -0.1,
+   "y": -0.05,
+   "yaw": -16
+  },
+  "foot_sr": {
+   "x": 0.1,
+   "y": 0.07,
+   "yaw": 18
+  }
+ },
+ "talk, one hand": {
+  "root_yaw": -8,
+  "chest_lean": 4,
+  "chest_twist": -6,
+  "head_tilt": -5,
+  "head_nod": 4,
+  "arm_sl": {
+   "out": 14,
+   "fwd": 38,
+   "elbow": 65,
+   "twist": -20
+  },
+  "arm_sr": {
+   "out": 8,
+   "fwd": 3,
+   "elbow": 10
+  },
+  "foot_sr": {
+   "x": 0.04,
+   "y": 0.05,
+   "yaw": 8
+  }
+ },
+ "explain, both": {
+  "chest_lean": 6,
+  "head_nod": 6,
+  "arm_sl": {
+   "out": 22,
+   "fwd": 30,
+   "elbow": 70,
+   "twist": -25
+  },
+  "arm_sr": {
+   "out": 22,
+   "fwd": 30,
+   "elbow": 70,
+   "twist": -25
+  },
+  "foot_sl": {
+   "x": -0.06
+  },
+  "foot_sr": {
+   "x": 0.06
+  }
+ },
+ "point": {
+  "root_yaw": -15,
+  "chest_twist": -12,
+  "head_turn": -10,
+  "arm_sl": {
+   "out": 8,
+   "fwd": 85,
+   "elbow": 4
+  },
+  "arm_sr": {
+   "out": 6,
+   "fwd": -6,
+   "elbow": 8
+  },
+  "foot_sl": {
+   "y": -0.18
+  },
+  "foot_sr": {
+   "y": 0.12
+  }
+ },
+ "shrug": {
+  "head_tilt": 12,
+  "chest_lean": -2,
+  "arm_sl": {
+   "out": 28,
+   "fwd": 12,
+   "elbow": 85,
+   "twist": 40
+  },
+  "arm_sr": {
+   "out": 28,
+   "fwd": 12,
+   "elbow": 85,
+   "twist": 40
+  }
+ },
+ "surprised": {
+  "chest_lean": -7,
+  "head_nod": -8,
+  "arm_sl": {
+   "out": 32,
+   "fwd": 22,
+   "elbow": 42
+  },
+  "arm_sr": {
+   "out": 32,
+   "fwd": 22,
+   "elbow": 42
+  },
+  "foot_sl": {
+   "y": 0.1
+  },
+  "hips_drop": 0.05
+ },
+ "scared": {
+  "chest_lean": 12,
+  "head_nod": 10,
+  "hips_drop": 0.18,
+  "arm_sl": {
+   "out": 10,
+   "fwd": 55,
+   "elbow": 100
+  },
+  "arm_sr": {
+   "out": 10,
+   "fwd": 55,
+   "elbow": 100
+  },
+  "foot_sl": {
+   "x": -0.08
+  },
+  "foot_sr": {
+   "x": 0.08
+  }
+ },
+ "celebrate": {
+  "chest_lean": -8,
+  "head_nod": -10,
+  "arm_sl": {
+   "out": 40,
+   "fwd": 130,
+   "elbow": 15
+  },
+  "arm_sr": {
+   "out": 40,
+   "fwd": 130,
+   "elbow": 15
+  },
+  "foot_sl": {
+   "x": -0.08
+  },
+  "foot_sr": {
+   "x": 0.08
+  }
+ },
+ "thinking": {
+  "head_tilt": 10,
+  "head_turn": 10,
+  "chest_lean": 3,
+  "arm_sl": {
+   "out": -10,
+   "fwd": 40,
+   "elbow": 120,
+   "twist": 10
+  },
+  "arm_sr": {
+   "out": -5,
+   "fwd": 20,
+   "elbow": 95
+  },
+  "foot_sr": {
+   "x": 0.04,
+   "yaw": 12
+  }
+ },
+ "angry fists": {
+  "chest_lean": 10,
+  "head_nod": 8,
+  "hips_drop": 0.06,
+  "arm_sl": {
+   "out": 18,
+   "fwd": 10,
+   "elbow": 35
+  },
+  "arm_sr": {
+   "out": 18,
+   "fwd": 10,
+   "elbow": 35
+  },
+  "foot_sl": {
+   "x": -0.1
+  },
+  "foot_sr": {
+   "x": 0.1
+  }
+ },
+ "walk (contact)": {
+  "chest_lean": 4,
+  "chest_twist": 6,
+  "arm_sl": {
+   "fwd": -25,
+   "elbow": 20,
+   "out": 5
+  },
+  "arm_sr": {
+   "fwd": 28,
+   "elbow": 28,
+   "out": 5
+  },
+  "foot_sl": {
+   "y": -0.35,
+   "z": 0.0
+  },
+  "foot_sr": {
+   "y": 0.32,
+   "z": 0.06
+  },
+  "hips_drop": 0.06
+ },
+ "run": {
+  "chest_lean": 18,
+  "chest_twist": 12,
+  "head_nod": -14,
+  "hips_drop": 0.18,
+  "arm_sl": {
+   "fwd": -55,
+   "elbow": 85,
+   "out": 8
+  },
+  "arm_sr": {
+   "fwd": 60,
+   "elbow": 90,
+   "out": 8
+  },
+  "foot_sl": {
+   "y": -0.6,
+   "z": 0.25
+  },
+  "foot_sr": {
+   "y": 0.55,
+   "z": 0.6
+  }
+ },
+ "crouch": {
+  "root_yaw": 0,
+  "chest_lean": 36,
+  "head_nod": -28,
+  "hips_drop": 0.45,
+  "arm_sl": {
+   "fwd": 40,
+   "out": 10,
+   "elbow": 30
+  },
+  "arm_sr": {
+   "fwd": 10,
+   "out": 14,
+   "elbow": 35
+  },
+  "foot_sl": {
+   "x": -0.14,
+   "y": -0.62
+  },
+  "foot_sr": {
+   "x": 0.14,
+   "y": 0.5,
+   "z": 0.05
+  }
+ },
+ "wave": {
+  "head_tilt": -6,
+  "arm_sl": {
+   "out": 60,
+   "fwd": 10,
+   "elbow": 95,
+   "twist": -10
+  },
+  "arm_sr": {
+   "out": 8,
+   "elbow": 10
+  },
+  "foot_sr": {
+   "x": 0.04,
+   "yaw": 8
+  }
+ },
+ "hands on hips": {
+  "chest_lean": -3,
+  "arm_sl": {
+   "out": 38,
+   "fwd": -12,
+   "elbow": 95,
+   "twist": -75
+  },
+  "arm_sr": {
+   "out": 38,
+   "fwd": -12,
+   "elbow": 95,
+   "twist": -75
+  },
+  "foot_sl": {
+   "x": -0.08
+  },
+  "foot_sr": {
+   "x": 0.08
+  }
+ },
+ "sad, slumped": {
+  "chest_lean": 14,
+  "head_nod": 18,
+  "arm_sl": {
+   "out": 3,
+   "fwd": 8,
+   "elbow": 6
+  },
+  "arm_sr": {
+   "out": 3,
+   "fwd": 8,
+   "elbow": 6
+  },
+  "hips_drop": 0.04
+ },
+ "look up, awe": {
+  "chest_lean": -10,
+  "head_nod": -22,
+  "arm_sl": {
+   "out": 14,
+   "fwd": 10,
+   "elbow": 20
+  },
+  "arm_sr": {
+   "out": 14,
+   "fwd": 10,
+   "elbow": 20
+  },
+  "foot_sl": {
+   "y": 0.12
+  }
+ },
+ "punch wind-up": {
+  "root_yaw": -25,
+  "chest_twist": 30,
+  "chest_lean": 8,
+  "hips_drop": 0.12,
+  "arm_sl": {
+   "fwd": -35,
+   "out": 20,
+   "elbow": 95
+  },
+  "arm_sr": {
+   "fwd": 55,
+   "out": 5,
+   "elbow": 40
+  },
+  "foot_sl": {
+   "y": 0.25
+  },
+  "foot_sr": {
+   "y": -0.25
+  }
+ },
+ "jump": {
+  "chest_lean": -6,
+  "head_nod": -10,
+  "hips_drop": 0.15,
+  "arm_sl": {
+   "fwd": 160,
+   "out": 25,
+   "elbow": 30
+  },
+  "arm_sr": {
+   "fwd": 150,
+   "out": 25,
+   "elbow": 35
+  },
+  "foot_sl": {
+   "y": -0.35,
+   "z": 0.85
+  },
+  "foot_sr": {
+   "y": 0.12,
+   "z": 0.05
+  }
+ }
+}
