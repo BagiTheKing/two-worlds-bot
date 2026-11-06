@@ -425,7 +425,7 @@ if os.environ.get("NOOB"):                           # the Noob beside him: {"x"
     _nb = _json.loads(os.environ["NOOB"])
     _ncol = bpy.data.collections.new("noob")
     sc.collection.children.link(_ncol)
-    NOOB = build_noob(_ncol, head=_nb.get("head", "classic"), height=_nb.get("height", 2.0), finish=_nb.get("finish", "plastic"))
+    NOOB = build_noob(_ncol, head=_nb.get("head", "classic"), height=_nb.get("height", 2.0), finish=_nb.get("finish", "pixel"))
     NOOB.root.location = (_nb.get("x", 1.6), _nb.get("y", 0.3), 0)
     pose_noob(NOOB, {**_nb.get("pose", {}), "root_yaw": _nb.get("pose", {}).get("root_yaw", 0) + _nb.get("yaw", 0)})
     set_face(NOOB.face, _nb.get("face", {}))
@@ -481,6 +481,8 @@ steve.instance_collection = rig
 sc.collection.objects.link(steve)
 steve.scale = (k, k, k)
 steve.rotation_euler = (0, 0, math.radians(-4))
+if os.environ.get("NO_STEVE") == "1":                # a shot without him (e.g. the Noob alone)
+    steve.hide_render = True
 
 # character light, as the reference lights its close-ups: edge lights from behind, narrow
 # spots aimed at his head and shoulders (so the world around stays as the sun lights it)
@@ -559,6 +561,9 @@ def around(az, el, dist=2.9, lens=60):
     return dict(loc=tuple(loc), at=tuple(HEAD), lens=lens, focus=None, fstop=4.0)
 SHOT.update({"h_front": around(0, 2), "h_q": around(-35, 18), "h_side": around(-70, 8),
              "h_backq": around(-150, 10), "h_top": around(160, 50)})
+if os.environ.get("NOOB"):                           # a close-up of the Noob, wherever he stands
+    _nx, _ny = NOOB.root.location.x, NOOB.root.location.y
+    SHOT["noob_close"] = dict(loc=(_nx - 0.55, _ny - 2.0, 1.62), at=(_nx, _ny, 1.72), lens=42, focus=None, fstop=0.9)
 for name in SHOTS:
     s = SHOT[name]
     cam.location = s["loc"]

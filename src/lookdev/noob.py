@@ -219,9 +219,9 @@ class Noob:
     pass
 
 
-def build_noob(col, head="classic", height=2.0, name="noob", finish="plastic"):
+def build_noob(col, head="classic", height=2.0, name="noob", finish="pixel"):
     """Build him in collection `col`, standing at the origin facing -y.
-    finish: "plastic" (plain), "pixel_soft" or "pixel" (see FINISH)."""
+    finish: "pixel" (chosen: a Minecraft-style pixel skin), "pixel_soft" or "plastic" (see FINISH)."""
     n = Noob()
     yel = plastic(name + "_yellow", YELLOW, finish)
     blu = plastic(name + "_blue", BLUE, finish)
