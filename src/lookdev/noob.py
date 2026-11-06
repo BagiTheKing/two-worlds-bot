@@ -203,6 +203,7 @@ def _q(axis, deg):
 
 def pose_noob(n, P):
     X, Y, Z = (1, 0, 0), (0, 1, 0), (0, 0, 1)
+    n.pelvis.location = (0, 0, 2.0 - P.get("hips_drop", 0))       # e.g. 1.0 to sit on a block
     n.root.rotation_mode = "XYZ"
     n.root.rotation_euler = (0, 0, math.radians(P.get("root_yaw", 0)))
     n.torso.rotation_quaternion = _q(Z, P.get("chest_twist", 0)) @ _q(Y, -P.get("chest_side", 0)) @ _q(X, P.get("chest_lean", 0))
@@ -215,3 +216,50 @@ def pose_noob(n, P):
         a = P.get("leg_" + side, {})
         s = 1 if side == "sl" else -1
         piv.rotation_quaternion = _q(X, -a.get("fwd", 0)) @ _q(Y, a.get("out", 0) * s)
+
+
+def noob_hold(n, ob, side, up=-15.0, face=55.0, steve_px_scale=2.0 / 3.215):
+    """A tool in the Noob's hand, Roblox style: gripped at the end of the rigid arm,
+    the tool pointing forward from the fist (with the arm raised forward, as Roblox
+    holds tools, it stands up). The item, built at Steve's size, is matched to the
+    Noob's scale so items look the same size in both hands."""
+    from props import _lin  # noqa: F401  (keeps props importable from here)
+    k = steve_px_scale / n.root.scale.x
+    ob.scale = (k, k, k)
+    piv = n.arms[side]
+    for col in piv.users_collection:
+        if ob.name not in col.objects:
+            col.objects.link(ob)
+    ob.parent = piv
+    a = math.radians(up)
+    diag = Vector((0, -math.cos(a), math.sin(a)))
+    nrm = Vector((-1, 0, 0)) if side == "sl" else Vector((1, 0, 0))
+    r45 = Matrix.Rotation(math.radians(45), 3, nrm)
+    xa, za = (r45.inverted() @ diag).normalized(), (r45 @ diag).normalized()
+    m3 = Matrix((xa, za.cross(xa).normalized(), za)).transposed()
+    m3 = Matrix.Rotation(math.radians(face if side == "sl" else -face), 3, diag) @ m3
+    ob.matrix_basis = Matrix.Translation((0, -0.1, -1.38)) @ m3.to_4x4() @ Matrix.Diagonal((k, k, k, 1))
+    return ob
+
+
+NOOB_POSES = {
+    "idle": {"head_tilt": 4, "arm_sl": {"out": 6, "fwd": 3}, "arm_sr": {"out": 6, "fwd": 3}, "leg_sl": {"out": 2}, "leg_sr": {"out": 2}},
+    "tool out (Roblox)": {"arm_sl": {"fwd": 90}, "arm_sr": {"out": 4}},
+    "wave": {"head_tilt": -6, "arm_sl": {"out": 150, "fwd": 10}, "arm_sr": {"out": 5}},
+    "point": {"root_yaw": -12, "head_turn": -12, "arm_sl": {"fwd": 88, "out": 6}, "arm_sr": {"out": 4, "fwd": -6}},
+    "explain": {"chest_lean": 4, "head_nod": 4, "arm_sl": {"fwd": 40, "out": 25}, "arm_sr": {"fwd": 40, "out": 25}},
+    "shrug": {"head_tilt": 12, "arm_sl": {"out": 40, "fwd": 20, "twist": 30}, "arm_sr": {"out": 40, "fwd": 20, "twist": 30}},
+    "surprised": {"chest_lean": -6, "head_nod": -8, "arm_sl": {"out": 55, "fwd": 25}, "arm_sr": {"out": 55, "fwd": 25}},
+    "scared": {"chest_lean": 8, "head_nod": 10, "arm_sl": {"fwd": 75, "out": -8}, "arm_sr": {"fwd": 75, "out": -8},
+               "leg_sl": {"out": 6}, "leg_sr": {"out": 6}},
+    "celebrate": {"chest_lean": -6, "head_nod": -12, "arm_sl": {"out": 160}, "arm_sr": {"out": 160}, "leg_sl": {"out": 8}, "leg_sr": {"out": 8}},
+    "sad": {"chest_lean": 6, "head_nod": 20, "arm_sl": {"fwd": 4}, "arm_sr": {"fwd": 4}},
+    "angry": {"chest_lean": 8, "head_nod": 8, "arm_sl": {"out": 18, "fwd": -8}, "arm_sr": {"out": 18, "fwd": -8}, "leg_sl": {"out": 6}, "leg_sr": {"out": 6}},
+    "walk": {"arm_sl": {"fwd": -30}, "arm_sr": {"fwd": 30}, "leg_sl": {"fwd": 30}, "leg_sr": {"fwd": -30}},
+    "run": {"chest_lean": 10, "arm_sl": {"fwd": -55}, "arm_sr": {"fwd": 55}, "leg_sl": {"fwd": 45}, "leg_sr": {"fwd": -45}},
+    "jump": {"head_nod": -10, "arm_sl": {"out": 150, "fwd": 20}, "arm_sr": {"out": 150, "fwd": 20}, "leg_sl": {"fwd": 25}, "leg_sr": {"fwd": -15}},
+    "look up": {"chest_lean": -8, "head_nod": -30, "arm_sl": {"out": 10}, "arm_sr": {"out": 10}},
+    "think": {"head_tilt": 10, "head_turn": 10, "arm_sl": {"fwd": 100, "out": -30, "twist": 20}, "arm_sr": {"out": 6}},
+    "zombie (classic)": {"arm_sl": {"fwd": 90}, "arm_sr": {"fwd": 90}},
+    "sit": {"hips_drop": 1.0, "leg_sl": {"fwd": 90}, "leg_sr": {"fwd": 90}, "arm_sl": {"fwd": 30}, "arm_sr": {"fwd": 30}},
+}

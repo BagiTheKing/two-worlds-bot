@@ -70,6 +70,14 @@ for i, v in enumerate(VAR):
     set_face(n.face, v.get("face", {}))
     n.face.update_tag()
     pose_noob(n, v.get("pose", {}))
+    for ob_ in list(bpy.data.objects):
+        if ob_.name.startswith("item_"):
+            bpy.data.objects.remove(ob_, do_unlink=True)
+    for pr in v.get("props", []):
+        from props import sprite_item
+        from noob import noob_hold
+        ITEMS = os.environ.get("TWB_ASSETS", "/home/user/assets") + "/mcprep/resourcepacks/mcprep_default/assets/minecraft/textures/item"
+        noob_hold(n, sprite_item(pr["item"], ITEMS), pr.get("side", "sl"), up=pr.get("up", -15), face=pr.get("face", 55))
     c = {"az": 0, "el": 2, "dist": 2.6, "tz": 1.77, "lens": 70, **v.get("cam", {})}
     a, e_ = math.radians(c["az"]), math.radians(c["el"])
     tgt = Vector((0, 0, c["tz"]))
