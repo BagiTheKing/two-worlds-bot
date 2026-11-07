@@ -23,6 +23,12 @@ def _read(path):
 
 def shapes(path, fps=24):
     a, sr = _read(path)
+    return shapes_from(a, sr, fps)
+
+
+def shapes_from(a, sr, fps=24):
+    """The same, from samples (e.g. one line's slice of the voice track)."""
+    a = a / (np.abs(a).max() + 1e-9)
     hop = sr // fps
     frames = len(a) // hop
     rms, zcr, cen = [], [], []

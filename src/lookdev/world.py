@@ -167,7 +167,8 @@ def _quad(x, y, z, d):
     return [(x, y, z), (x + 1, y, z), (x + 1, y, z + 1), (x, y, z + 1)]
 
 
-def voxel_mesh(sc, name, cells, kinds, occluders=None, keep_leaf_faces=(), scale=(1, 1, 1), offset=(0, 0, 0)):
+def voxel_mesh(sc, name, cells, kinds, occluders=None, keep_leaf_faces=(), scale=(1, 1, 1), offset=(0, 0, 0),
+               group_of=None):
     """One object for {(x, y, z): kind}. A face is drawn unless its neighbour
     (in `cells` or `occluders`) hides it; kinds in keep_leaf_faces keep their faces
     toward each other (fancy leaves). kinds: {kind: {"top", "side", "bottom": material}}."""
@@ -179,17 +180,22 @@ def voxel_mesh(sc, name, cells, kinds, occluders=None, keep_leaf_faces=(), scale
                 slots[m.name] = len(slots)
                 me.materials.append(m)
     verts, faces, mats = {}, [], []
-    vlist = []
+    vlist, tops = [], []
+    cur = [None, 0.0]
 
     def vi(p):
-        i = verts.get(p)
+        key = (p, cur[0])                      # a group (a column, a tree) keeps its own vertices
+        i = verts.get(key)
         if i is None:
-            i = verts[p] = len(vlist)
+            i = verts[key] = len(vlist)
             vlist.append(p)
+            tops.append(cur[1])
         return i
 
     occ = occluders or {}
     for (x, y, z), kind in cells.items():
+        if group_of is not None:
+            cur[0], cur[1] = group_of((x, y, z))
         for d, face in _DIRS:
             nb = (x + d[0], y + d[1], z + d[2])
             nk = cells.get(nb) or occ.get(nb)
@@ -201,6 +207,9 @@ def voxel_mesh(sc, name, cells, kinds, occluders=None, keep_leaf_faces=(), scale
     sx, sy, sz = scale
     ox, oy, oz = offset
     me.from_pydata([(p[0] * sx + ox, p[1] * sy + oy, p[2] * sz + oz) for p in vlist], [], faces)
+    if group_of is not None:                    # the ground height under each piece, for world_fx
+        at = me.attributes.new("top", "FLOAT", "POINT")
+        at.data.foreach_set("value", [v * sz + oz for v in tops])
     uv = me.uv_layers.new()
     for poly, mi in zip(me.polygons, mats):
         poly.material_index = mi
@@ -229,6 +238,8 @@ def crosses(sc, name, items, seed=11):
             faces.append([i, i + 1, i + 2, i + 3])
             mats.append(slots[m.name])
     me.from_pydata(verts, [], faces)
+    at = me.attributes.new("top", "FLOAT", "POINT")
+    at.data.foreach_set("value", [v[2] if k % 4 < 2 else verts[k - 2][2] for k, v in enumerate(verts)])
     uv = me.uv_layers.new()
     for poly, mi in zip(me.polygons, mats):
         poly.material_index = mi
@@ -324,6 +335,12 @@ class Layout:
         ds = math.hypot(x - sx, y - sy)
         if ds < 13:
             h = h * max(0.0, (ds - 8) / 5)
+        fb = self.cfg.get("flat_box")                         # a flat corridor (e.g. a chase path)
+        if fb:
+            x0, x1, y0, y1 = fb
+            dd = max(x0 - x, x - x1, y0 - y, y - y1, 0.0)
+            if dd < 6:
+                h = h * (dd / 6)
         # the lake
         lx, ly, lr = self.lake
         dl = math.hypot((x - lx) * 0.8, y - ly) / lr
@@ -550,6 +567,7 @@ def build_world(sc, assets, cfg=None):
     near = _terrain_cells(Hn, 1, 70, L.lake)
     # --- trees
     tcells = {}
+    tbase = {}                                             # each tree's cells -> its trunk base
     stage = cfg.get("stage", [(0, 0)])
     keep = cfg.get("keep_clear", [])                       # [(x, y, r)]: e.g. the camera's view to the stage
     for gx in range(NX0 + 3, NX1 - 3, 5):
@@ -561,6 +579,9 @@ def build_world(sc, assets, cfg=None):
             dst = min(math.hypot(x - sx, y - sy) for sx, sy in stage)
             if dst < 9 or any(math.hypot(x - kx, y - ky) < kr for kx, ky, kr in keep):
                 continue
+            fb = cfg.get("flat_box")
+            if fb and fb[0] - 6 <= x <= fb[1] + 6 and fb[2] - 6 <= y <= fb[3] + 6:
+                continue
             g = L.n.fbm(x * 0.05 + 70, y * 0.05 + 13)                 # trees in groves, open slopes between
             front = 14 < y < 40 and -30 < x < 20                      # the open face of the big hill
             p_tree = 0.1 if dst < 20 else (0.75 if g > (0.62 if front else 0.54) else (0.02 if front else 0.07))
@@ -570,14 +591,20 @@ def build_world(sc, assets, cfg=None):
             r_ = rnd.random()
             kind = ("cherry" if r_ < 0.7 else "oak") if on_cherry_hill else \
                 ("big_oak" if r_ < 0.12 else "birch" if r_ < 0.27 else "cherry" if r_ < 0.31 else "oak")
+            _k0 = set(tcells)
             tree(tcells, x, y, h, kind, rnd)
+            for _c in set(tcells) - _k0:
+                tbase[_c] = (x, y, h)
     # trees placed for the cameras: cherries where the shots look (meadow and hill frames)
     for fx, fy, fk in cfg.get("feature_trees", [(9, 15, "cherry"), (14, 23, "cherry"), (5, 27, "cherry"),
                                                 (-12, 21, "cherry"), (19, 31, "cherry"), (-5, 33, "oak"),
                                                 (-18, 30, "big_oak"), (11, 38, "cherry"), (2, 41, "oak")]):
         h = Hn.get((fx, fy))
         if h is not None and near.get((fx, fy, h - 1)) == "grass":
+            _k0 = set(tcells)
             tree(tcells, fx, fy, h, fk, rnd)
+            for _c in set(tcells) - _k0:
+                tbase[_c] = (fx, fy, h)
     # bushes: low leaf mounds on the slopes and the meadow's edge (the reference's dense near background)
     for gx in range(NX0 + 2, NX1 - 2, 3):
         for gy in range(NY0 + 2, NY1 - 2, 3):
@@ -591,7 +618,10 @@ def build_world(sc, assets, cfg=None):
             p = 0.42 if (8 < y < 45 and -32 < x < 26) else (0.22 if dst < 60 else 0.0)
             if rnd.random() < p:
                 kind = "cherry_lv" if rnd.random() < 0.12 else "oak_lv"
+                _k0 = set(tcells)
                 _blob(tcells, x, y, h, rnd.uniform(1.1, 1.9), rnd.uniform(0.8, 1.3), kind, rnd, rough=0.3)
+                for _c in set(tcells) - _k0:
+                    tbase[_c] = (x, y, h)
     for k in list(tcells):                                 # never inside the ground
         if k in near:
             del tcells[k]
@@ -601,9 +631,12 @@ def build_world(sc, assets, cfg=None):
         x, y, z = k
         if all((x + dx, y + dy, z + dz) in leaves for (dx, dy, dz), _ in _DIRS):
             del leaves[k]
-    W.terrain = voxel_mesh(sc, "terrain", near, KINDS, occluders={**logs, **leaves})
-    W.logs = voxel_mesh(sc, "logs", logs, KINDS, occluders={**near, **leaves})
-    W.leaves = voxel_mesh(sc, "leaves", leaves, KINDS, occluders={**near, **logs}, keep_leaf_faces=LEAVES)
+    col_top = lambda c: ((c[0], c[1]), float(Hn.get((c[0], c[1]), 0)))                     # noqa: E731
+    tree_top = lambda c: (tbase.get(c, (c[0], c[1], 0)), float(tbase.get(c, (0, 0, 0))[2]))  # noqa: E731
+    W.terrain = voxel_mesh(sc, "terrain", near, KINDS, group_of=col_top)       # (tops under trees too: they flatten)
+    W.logs = voxel_mesh(sc, "logs", logs, KINDS, occluders={**near, **leaves}, group_of=tree_top)
+    W.leaves = voxel_mesh(sc, "leaves", leaves, KINDS, occluders={**near, **logs}, keep_leaf_faces=LEAVES,
+                          group_of=tree_top)
     # --- far terrain: 3-unit blocks, with forest bumps
     S = 3
     Mf = {k: material("wf_" + k, T[k], tile=S) for k in ("grass_top", "grass_side", "dirt", "stone", "snow",
@@ -635,7 +668,8 @@ def build_world(sc, assets, cfg=None):
                 far[(gx, gy, h)] = "pink" if L.n.fbm(gx * 0.1 + 3, gy * 0.1) > 0.72 else "forest"
                 if n > 0.6:
                     far[(gx, gy, h + 1)] = far[(gx, gy, h)]
-    W.far = voxel_mesh(sc, "far_terrain", far, KF, scale=(S, S, S))
+    W.far = voxel_mesh(sc, "far_terrain", far, KF, scale=(S, S, S),
+                       group_of=lambda c: ((c[0], c[1]), float(Hf.get((c[0], c[1]), 0))))
     # --- water
     lx, ly, lr = L.lake
     bpy.ops.mesh.primitive_plane_add(size=lr * 3.2, location=(lx, ly, -0.15))
@@ -668,6 +702,9 @@ def build_world(sc, assets, cfg=None):
                 continue
             x, y = gx + rnd.random(), gy + rnd.random()
             if any(math.hypot(x - cx, y - cy) < cr for cx, cy, cr in clear):
+                continue
+            cb = cfg.get("plant_clear_box")
+            if cb and cb[0] <= x <= cb[1] and cb[2] <= y <= cb[3]:
                 continue
             r_ = rnd.random()
             if r_ < 0.07:
@@ -876,3 +913,130 @@ def render_depth(sc, path, far=600.0):
     sc.view_settings.look = look
     sc.render.image_settings.color_mode = mode_
     sc.render.image_settings.color_depth = depth_
+
+
+# ------------------------------------------------------------- world effects
+FX_INPUTS = ("R", "Wd", "Cx", "Cy", "veg", "D", "Nx", "Ny", "Dz")
+
+
+def world_fx_group():
+    """The world's two effects, as a geometry-nodes group:
+    reveal  - beyond radius R of (Cx, Cy) the world is flat (each column lowered
+              so its surface sits at 0, vegetation gone); inside R it is whole; a
+              band Wd wide in between rises (the upgrade wave).
+    delete  - every 4x4 chunk whose centre is within D of (Nx, Ny), give or take
+              some noise, is gone (Null erasing the world); Dz < 0 turns it off.
+    Uses the point attribute "top" (the ground height under each piece)."""
+    g = bpy.data.node_groups.get("world_fx")
+    if g:
+        return g
+    g = bpy.data.node_groups.new("world_fx", "GeometryNodeTree")
+    g.interface.new_socket("Geometry", in_out="INPUT", socket_type="NodeSocketGeometry")
+    for nme in FX_INPUTS:
+        g.interface.new_socket(nme, in_out="INPUT", socket_type="NodeSocketFloat")
+    g.interface.new_socket("Geometry", in_out="OUTPUT", socket_type="NodeSocketGeometry")
+    nd, L = g.nodes, g.links.new
+    gi, go = nd.new("NodeGroupInput"), nd.new("NodeGroupOutput")
+
+    def math_(op, a, b=None, c=None):
+        m = nd.new("ShaderNodeMath")
+        m.operation = op
+        for i, v in enumerate((a, b, c)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                m.inputs[i].default_value = float(v)
+            else:
+                L(v, m.inputs[i])
+        return m.outputs[0]
+
+    pos = nd.new("GeometryNodeInputPosition").outputs[0]
+    sep = nd.new("ShaderNodeSeparateXYZ")
+    L(pos, sep.inputs[0])
+    X, Y, Z = sep.outputs[0], sep.outputs[1], sep.outputs[2]
+    top_a = nd.new("GeometryNodeInputNamedAttribute")
+    top_a.data_type = "FLOAT"
+    top_a.inputs["Name"].default_value = "top"
+    top = top_a.outputs["Attribute"]
+    # reveal factor f
+    dx = math_("SUBTRACT", X, gi.outputs["Cx"])
+    dy = math_("SUBTRACT", Y, gi.outputs["Cy"])
+    d = math_("SQRT", math_("ADD", math_("MULTIPLY", dx, dx), math_("MULTIPLY", dy, dy)))
+    f = math_("DIVIDE", math_("SUBTRACT", gi.outputs["R"], d), math_("MAXIMUM", gi.outputs["Wd"], 0.01))
+    f = math_("MINIMUM", math_("MAXIMUM", f, 0.0), 1.0)
+    f = math_("MULTIPLY", math_("MULTIPLY", f, f), math_("SUBTRACT", 3.0, math_("MULTIPLY", f, 2.0)))   # smoothstep
+    # terrain: z - top * (1 - f); vegetation: z * f
+    z_terr = math_("SUBTRACT", Z, math_("MULTIPLY", top, math_("SUBTRACT", 1.0, f)))
+    z_veg = math_("MULTIPLY", Z, f)
+    vegw = gi.outputs["veg"]
+    z_new = math_("ADD", math_("MULTIPLY", z_terr, math_("SUBTRACT", 1.0, vegw)), math_("MULTIPLY", z_veg, vegw))
+    com = nd.new("ShaderNodeCombineXYZ")
+    L(X, com.inputs[0])
+    L(Y, com.inputs[1])
+    L(z_new, com.inputs[2])
+    sp = nd.new("GeometryNodeSetPosition")
+    L(gi.outputs["Geometry"], sp.inputs["Geometry"])
+    L(com.outputs[0], sp.inputs["Position"])
+    # delete: vegetation where f is small; and Null's chunks (computed on the original positions, per face)
+    cap = nd.new("GeometryNodeCaptureAttribute")
+    cap.domain = "FACE"
+    L(gi.outputs["Geometry"], cap.inputs["Geometry"])
+    try:
+        cap.capture_items.new("FLOAT", "veg_gone")
+        cap.capture_items.new("VECTOR", "pos0")
+    except Exception:
+        pass
+    gone_veg = math_("MULTIPLY", vegw, math_("LESS_THAN", f, 0.14))
+    L(gone_veg, cap.inputs["veg_gone"])
+    L(pos, cap.inputs["pos0"])
+    # (we capture on the original geometry, then move it)
+    sp2 = nd.new("GeometryNodeSetPosition")
+    L(cap.outputs["Geometry"], sp2.inputs["Geometry"])
+    L(com.outputs[0], sp2.inputs["Position"])
+    pos0 = cap.outputs["pos0"]
+    s0 = nd.new("ShaderNodeSeparateXYZ")
+    L(pos0, s0.inputs[0])
+    cx_ = math_("ADD", math_("MULTIPLY", math_("FLOOR", math_("DIVIDE", s0.outputs[0], 4.0)), 4.0), 2.0)
+    cy_ = math_("ADD", math_("MULTIPLY", math_("FLOOR", math_("DIVIDE", s0.outputs[1], 4.0)), 4.0), 2.0)
+    ndx = math_("SUBTRACT", cx_, gi.outputs["Nx"])
+    ndy = math_("SUBTRACT", cy_, gi.outputs["Ny"])
+    dn = math_("SQRT", math_("ADD", math_("MULTIPLY", ndx, ndx), math_("MULTIPLY", ndy, ndy)))
+    wn = nd.new("ShaderNodeTexWhiteNoise")
+    wn.noise_dimensions = "2D"
+    cc = nd.new("ShaderNodeCombineXYZ")
+    L(cx_, cc.inputs[0])
+    L(cy_, cc.inputs[1])
+    L(cc.outputs[0], wn.inputs["Vector"])
+    reach = math_("ADD", gi.outputs["D"], math_("MULTIPLY", wn.outputs["Value"], 5.0))
+    erased = math_("MULTIPLY", math_("LESS_THAN", dn, reach), math_("GREATER_THAN", gi.outputs["Dz"], 0.0))
+    kill = math_("MAXIMUM", erased, cap.outputs["veg_gone"])
+    dg = nd.new("GeometryNodeDeleteGeometry")
+    dg.domain = "FACE"
+    L(sp2.outputs[0], dg.inputs["Geometry"])
+    L(kill, dg.inputs["Selection"])
+    L(dg.outputs[0], go.inputs[0])
+    return g
+
+
+def add_world_fx(W):
+    """Put the effects on every world mesh; returns the modifiers (set W.fx_set(...) per frame)."""
+    g = world_fx_group()
+    mods = []
+    for ob, veg in ((W.terrain, 0), (W.logs, 1), (W.leaves, 1), (W.far, 0), (W.plants, 1)):
+        md = ob.modifiers.new("world_fx", "NODES")
+        md.node_group = g
+        mods.append((md, veg))
+    ids = {it.name: it.identifier for it in g.interface.items_tree if it.item_type == "SOCKET" and it.in_out == "INPUT"}
+    W.fx_mods, W.fx_ids = mods, ids
+    fx_set(W, R=1e5, Wd=8, Cx=0, Cy=0, D=0, Nx=0, Ny=0, Dz=-1)
+    return mods
+
+
+def fx_set(W, **kw):
+    for md, veg in W.fx_mods:
+        ins = md.properties.inputs                 # Blender 5: md.properties.inputs.<identifier>.value
+        for k, v in kw.items():
+            getattr(ins, W.fx_ids[k]).value = float(v)
+        getattr(ins, W.fx_ids["veg"]).value = float(veg)
+    for ob in (W.terrain, W.logs, W.leaves, W.far, W.plants):
+        ob.update_tag()

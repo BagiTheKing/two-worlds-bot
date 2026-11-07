@@ -15,7 +15,7 @@ import assemble  # noqa: E402
 FAR = 600.0                       # world.render_depth's scale
 
 
-def haze(img, depth_path, sun=None):
+def haze(img, depth_path, sun=None, params=None):
     """Far things fade into pale blue: f = HMAX * (1 - exp(-(d - d0) / L)).
     The haze colour runs from the sky's blue (top of frame) to its pale horizon,
     warmer around the sun."""
@@ -28,10 +28,10 @@ def haze(img, depth_path, sun=None):
     dist = d * FAR
     sky = d > 0.995
     side = depth_path.replace("_depth.png", "_haze.json")
-    hz = __import__("json").load(open(side)) if os.path.exists(side) else {}
+    hz = params if params is not None else (__import__("json").load(open(side)) if os.path.exists(side) else {})
     L = float(os.environ.get("HAZE_L", hz.get("L", 140)))
     d0 = float(os.environ.get("HAZE_START", hz.get("start", 18)))
-    hmax = float(os.environ.get("HAZE_MAX", "0.78"))
+    hmax = float(os.environ.get("HAZE_MAX", hz.get("max", 0.78)))
     f = hmax * (1 - np.exp(-np.maximum(dist - d0, 0) / L))
     f[sky] = 0.0
     h, w = d.shape
