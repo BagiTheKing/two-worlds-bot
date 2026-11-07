@@ -275,6 +275,10 @@ def _dome(x, y, cx, cy, r, h):
     return h * max(0.0, 1 - d * d) ** 1.4
 
 
+PEAKS = [(-330, -55, 150, 75), (-300, 12, 118, 62), (-372, 70, 172, 85), (-285, 108, 98, 55),
+         (-390, -150, 138, 80), (-292, -118, 92, 52), (-420, 0, 125, 80)]          # x, y, height, radius
+
+
 class Layout:
     """The landscape as height fields. Stage = flat ground at the origin."""
 
@@ -301,12 +305,19 @@ class Layout:
         # mountains
         dist = math.hypot(x, y - 20)
         ridge = 1 - abs(2 * n.fbm(x * 0.016 + 11, y * 0.016 + 5, 5) - 1)        # sharp crests
+        west = min(1.0, max(0.0, (-x - 40) / 40)) * max(0.0, 1 - abs(y - 5) / (0.9 * max(1.0, -x)))  # the vista's sector
         if dist > 105:
-            k = min(1.0, (dist - 105) / 60)
-            h += k * (26 + 60 * n.fbm(x * 0.012 + 3, y * 0.012 + 7, 5) ** 1.5 + 38 * ridge ** 3)
-        if x < -95:                                       # the great range of the vista
-            k = min(1.0, (-x - 95) / 40)
-            h += k * (50 + 120 * ridge ** 2.2 * (0.6 + 0.6 * n.fbm(x * 0.008, y * 0.008 + 40)))
+            k = min(1.0, (dist - 105) / 60) * (1 - 0.85 * west * min(1.0, max(0.0, (250 + x) / 40)))
+            h += k * (18 + 45 * n.fbm(x * 0.012 + 3, y * 0.012 + 7, 5) ** 1.5 + 30 * ridge ** 3)
+        if x < -220:                                      # the great range of the vista: separate peaks
+            pk = 0.0
+            for px, py, ph, pr in PEAKS:
+                d = math.hypot(x - px, y - py) / pr
+                if d < 1:
+                    pk = max(pk, ph * (1 - d) ** 1.25)
+            if pk > 0:
+                pk *= 0.7 + 0.6 * ridge                    # crests and gullies on the faces
+            h += max(pk, 14 * min(1.0, (-x - 220) / 40))
         # the stage: flat around the origin
         sx, sy = self.cfg.get("stage_center", (0.0, 0.0))
         ds = math.hypot(x - sx, y - sy)
@@ -340,16 +351,21 @@ def _terrain_cells(H, step, snowline, lake, scale_far=False):
     for (gx, gy), h in H.items():
         nbs = [H.get((gx + 1, gy), h), H.get((gx - 1, gy), h), H.get((gx, gy + 1), h), H.get((gx, gy - 1), h)]
         low = min(nbs + [h]) - 1
-        steep = h - min(nbs) >= (2 if not scale_far else 1)
+        steep = h - min(nbs) >= 2
         wz = h * step
         wx, wy = (gx + 0.5) * step, (gy + 0.5) * step
         near_water = math.hypot(wx - lx, wy - ly) < lr * 1.15 and wz <= 1
         for z in range(low, h):
             depth = h - 1 - z
-            if wz > snowline + 8 * (math.sin(wx * 0.11) + math.cos(wy * 0.13)):
-                k = "snow" if depth == 0 else "stone"
+            sl = snowline + 8 * (math.sin(wx * 0.11) + math.cos(wy * 0.13))
+            if wz > sl:
+                if scale_far:                                  # far peaks: snow, with rock breaking through
+                    rock = steep and ((gx * 7 + gy * 13 + z * 5) % 5 < 2)
+                    k = "snowblock" if (z + 1) * step > sl - 6 and not rock else ("andesite" if z % 4 == 0 else "stone")
+                else:
+                    k = "snow" if depth == 0 else ("snowblock" if wz - (h - z) * step > sl - 10 else "stone")
             elif steep and wz > 8:
-                k = "stone"
+                k = "andesite" if (int(wx * 0.3) + int(wy * 0.21) + z) % 3 == 0 else "stone"
             elif near_water:
                 k = "sand" if depth < 2 else "stone"
             elif depth == 0:
@@ -515,6 +531,8 @@ def build_world(sc, assets, cfg=None):
         "stone": {"top": M["stone"], "side": M["stone"], "bottom": M["stone"]},
         "sand": {"top": M["sand"], "side": M["sand"], "bottom": M["sand"]},
         "snow": {"top": M["snow"], "side": M["grass_block_snow"], "bottom": M["stone"]},
+        "snowblock": {"top": M["snow"], "side": M["snow"], "bottom": M["snow"]},
+        "andesite": {"top": M["andesite"], "side": M["andesite"], "bottom": M["andesite"]},
         "oak_log": {"top": M["oak_log_top"], "side": M["oak_log"], "bottom": M["oak_log_top"]},
         "birch_log": {"top": M["birch_log_top"], "side": M["birch_log"], "bottom": M["birch_log_top"]},
         "cherry_log": {"top": M["cherry_log_top"], "side": M["cherry_log"], "bottom": M["cherry_log_top"]},
@@ -566,7 +584,7 @@ def build_world(sc, assets, cfg=None):
     # --- far terrain: 3-unit blocks, with forest bumps
     S = 3
     Mf = {k: material("wf_" + k, T[k], tile=S) for k in ("grass_top", "grass_side", "dirt", "stone", "snow",
-                                                           "grass_block_snow", "sand")}
+                                                           "grass_block_snow", "sand", "andesite")}
     Mf["oak_leaves"] = material("wf_leaves", T["oak_leaves"], tile=S, rough=0.7)
     Mf["cherry_leaves"] = material("wf_cherry", T["cherry_leaves"], tile=S, rough=0.7)
     KF = {
@@ -575,16 +593,18 @@ def build_world(sc, assets, cfg=None):
         "stone": {"top": Mf["stone"], "side": Mf["stone"], "bottom": Mf["stone"]},
         "sand": {"top": Mf["sand"], "side": Mf["sand"], "bottom": Mf["sand"]},
         "snow": {"top": Mf["snow"], "side": Mf["grass_block_snow"], "bottom": Mf["stone"]},
+        "snowblock": {"top": Mf["snow"], "side": Mf["snow"], "bottom": Mf["snow"]},
+        "andesite": {"top": Mf["andesite"], "side": Mf["andesite"], "bottom": Mf["andesite"]},
         "forest": {"top": Mf["oak_leaves"], "side": Mf["oak_leaves"], "bottom": Mf["oak_leaves"]},
         "pink": {"top": Mf["cherry_leaves"], "side": Mf["cherry_leaves"], "bottom": Mf["cherry_leaves"]},
     }
-    R = cfg.get("far_radius", 330)
+    R = cfg.get("far_radius", 430)
 
     def inside_near(wx, wy):
         return NX0 + 1 <= wx < NX1 - 1 and NY0 + 1 <= wy < NY1 - 1
 
     Hf = _columns(L, -R // S, R // S, (NY0 - 60) // S, (R + 60) // S, S, skip=inside_near)
-    far = _terrain_cells(Hf, S, 70, L.lake, scale_far=True)
+    far = _terrain_cells(Hf, S, 88, L.lake, scale_far=True)
     for (gx, gy), h in Hf.items():                         # forests on the far hills
         if far.get((gx, gy, h - 1)) == "grass" and h * S < 55:
             n = L.n.fbm(gx * 0.25 + 31, gy * 0.25 + 17)
@@ -643,9 +663,9 @@ def build_world(sc, assets, cfg=None):
     W.sky_dot = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "VECT_MATH" and n_.operation == "DOT_PRODUCT")
     cm_top = flat("cloud", (255, 255, 255), rough=1.0, emission=0.85)
     cm_bot = flat("cloud_under", (226, 232, 244), rough=1.0, emission=0.6)
-    cc = cloud_cells(assets, cfg.get("cloud_offset", (40, 90)), cfg.get("cloud_radius", 70))
+    cc = cloud_cells(assets, cfg.get("cloud_offset", (40, 90)), cfg.get("cloud_radius", 110))
     W.clouds = voxel_mesh(sc, "clouds", cc, {"c": {"top": cm_top, "side": cm_bot, "bottom": cm_bot}},
-                          scale=(8, 8, 3), offset=(-cfg.get("cloud_radius", 70) * 0, 0, cfg.get("cloud_height", 118)))
+                          scale=(6, 6, 2.5), offset=(0, 0, cfg.get("cloud_height", 130)))
     only_camera(W.clouds)
     return W
 

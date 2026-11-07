@@ -169,8 +169,8 @@ if WORLD2:
     import json as _jw  # noqa: E402
     WCFG = _jw.loads(os.environ.get("WCFG", "{}"))
     WCFG.setdefault("clear_plants", [(0, 0, 1.2), (1.5, 0.3, 1.4),          # the characters' feet
-                                     (0.6, -6.0, 2.2), (-2.0, -9.0, 2.2), (0.0, -4.5, 2.2), (0.3, -2.05, 1.6)])  # cameras
-    WCFG.setdefault("keep_clear", [(0, -14, 8)])
+                                     (0.6, -6.0, 2.2), (-1.0, -3.0, 2.4), (-4.0, 3.0, 2.6), (0.3, -2.05, 1.6)])  # cameras
+    WCFG.setdefault("keep_clear", [(0, -14, 8), (0, 14, 7), (-14, 3, 7), (-22, 3, 9), (-34, 4, 10), (-46, 5, 10)])        # the view to the lake
     W = build_world(sc, A, WCFG)
     rnd = random.Random(7)
 else:
@@ -514,6 +514,9 @@ def char_light(name, loc, power, color, aim=(0, 0, 1.55), cone=26, size=0.25):
 if os.environ.get("CHAR_LIGHT", "1") == "1":
     char_light("edge_cool", (-1.6, 2.6, 2.3), float(os.environ.get("EDGE_W", "900")), (0.72, 0.92, 1.0))
     char_light("edge_warm", (1.2, 2.4, 3.4), float(os.environ.get("EDGE_W2", "700")), (1.0, 0.8, 0.55), aim=(0, 0, 1.8))
+    if WORLD2:                                         # a warm key from the camera side, on the faces
+        char_light("char_key", (1.8, -3.2, 2.9), float(os.environ.get("KEY_W", "650")), (1.0, 0.88, 0.76),
+                   aim=(0.6, 0.3, 1.7), cone=34, size=0.9)
     if os.environ.get("NOOB"):                         # the same edge light on the Noob
         _nx, _ny = NOOB.root.location.x, NOOB.root.location.y
         char_light("noob_edge_cool", (_nx - 1.6, _ny + 2.6, 2.3), 700, (0.72, 0.92, 1.0), aim=(_nx, _ny, 1.4))
@@ -559,7 +562,7 @@ else:
 sc.view_settings.exposure = float(os.environ.get("EXPOSURE", "-0.1" if WORLD2 else "-0.25"))
 
 SHOT = {
-    "close": dict(loc=(0.3, -2.05, 1.45), at=(0.0, 0.0, 1.58), lens=42, focus=None, fstop=0.9),
+    "close": dict(loc=(0.45, -2.05, 1.38), at=(0.05, 0.0, 1.62), lens=42, focus=None, fstop=0.9),
     "two": dict(loc=(0.55, -6.4, 1.35), at=(0.65, 0.1, 1.35), lens=34, focus=None, fstop=2.4),
     "medium": dict(loc=(0.55, -3.1, 1.55), at=(-0.15, 0.0, 1.62), lens=40, focus=None, fstop=1.4),
     "full": dict(loc=(-0.3, -4.3, 0.8), at=(0.0, 0.0, 1.25), lens=32, focus=None, fstop=2.4),
@@ -577,11 +580,11 @@ if os.environ.get("NOOB"):                           # a close-up of the Noob, w
     _nx, _ny = NOOB.root.location.x, NOOB.root.location.y
     SHOT["noob_close"] = dict(loc=(_nx - 0.55, _ny - 2.0, 1.62), at=(_nx, _ny, 1.72), lens=42, focus=None, fstop=0.9)
 SHOT.update({
-    "meadow": dict(loc=(0.6, -6.0, 0.75), at=(-0.4, 4.0, 2.4), lens=28, focus=6.1, fstop=2.8),       # Benly 2.0
+    "meadow": dict(loc=(0.7, -3.1, 0.65), at=(0.55, 4.0, 2.6), lens=28, focus=3.2, fstop=2.2),        # Benly 2.0
     "hill": dict(loc=(-1.0, -3.0, 1.0), at=(-6.0, 40.0, 11.0), lens=24, focus=8.0, fstop=4.0,        # Benly 7.0
-                 sun=(62, 16, 6.0, (1.0, 0.78, 0.55))),
-    "vista": dict(loc=(-14.0, 3.0, 3.2), at=(-160.0, 0.0, 34.0), lens=20, focus=8.0, fstop=8.0,      # movie 10.0
-                  sun=(-120, 38, 5.4, (1.0, 0.9, 0.78))),
+                 sun=(95, 22, 6.0, (1.0, 0.8, 0.58)), haze=(260, 30)),
+    "vista": dict(loc=(-4.0, 3.0, 2.3), at=(-300.0, 0.0, 48.0), lens=26, focus=8.0, fstop=8.0,       # movie 10.0
+                  sun=(163, 34, 5.6, (1.0, 0.92, 0.82)), haze=(380, 50)),
 })
 from world import set_sun as _set_sun  # noqa: E402
 for name in SHOTS:
@@ -600,3 +603,5 @@ for name in SHOTS:
     print("SAVED", sc.render.filepath)
     if WORLD2 and os.environ.get("HAZE", "1") == "1":
         render_depth(sc, f"{OUT}_{name}_depth.png")
+        if s.get("haze"):                              # this shot's haze distance and start, for grade.py
+            open(f"{OUT}_{name}_haze.json", "w").write(_jw.dumps({"L": s["haze"][0], "start": s["haze"][1]}))
