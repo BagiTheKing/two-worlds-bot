@@ -38,6 +38,9 @@ def haze(img, depth_path, sun=None):
     yy = np.linspace(0, 1, h)[:, None, None]
     top = np.array((150, 196, 250), np.float32) / 255
     low = np.array((214, 230, 250), np.float32) / 255
+    if hz.get("haze_storm"):                           # Null's storm: violet-pink air
+        top = np.array((112, 86, 150), np.float32) / 255
+        low = np.array((214, 150, 206), np.float32) / 255
     if hz.get("haze_warm"):                            # golden hour: the far air glows warm
         top = np.array((196, 190, 230), np.float32) / 255
         low = np.array((252, 214, 196), np.float32) / 255

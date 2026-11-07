@@ -431,6 +431,65 @@ _lat = bpy.data.objects["Head"]
 FACE = build_faceplate(arm, bpy.data.images.load(make_face_skin(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_faceskin.png"))), lattice=_lat)
 BROWS = build_brows(arm, lattice=_lat)
 _expr = _json.loads(os.environ.get("EXPR", "{}"))
+if os.environ.get("NULL"):                           # Null: {"x", "y", "yaw", "height"}
+    from null import build_null  # noqa: E402
+    _nl = _json.loads(os.environ["NULL"])
+    _lcol = bpy.data.collections.new("null")
+    sc.collection.children.link(_lcol)
+    NULL = build_null(_lcol, A, height=_nl.get("height", 11.0))
+    NULL.root.location = (_nl.get("x", 0.0), _nl.get("y", 13.0), _nl.get("z", 0.0))     # he floats
+    NULL.root.rotation_euler = (0, 0, math.radians(_nl.get("yaw", 0)))
+    _hz = _nl.get("height", 11.0) / 10.0
+    for _n, _loc, _c, _p in (("null_rim_pink", (-8, 6, 9), (1.0, 0.35, 0.85), 9000),
+                             ("null_rim_cyan", (8, 6, 8), (0.45, 0.85, 1.0), 8000)):
+        _L = bpy.data.lights.new(_n, "AREA")
+        _L.energy, _L.color, _L.size = _p * _hz * _hz, _c, 5
+        _o = bpy.data.objects.new(_n, _L)
+        sc.collection.objects.link(_o)
+        _rz = Matrix.Rotation(math.radians(_nl.get("yaw", 0)), 3, "Z")
+        _o.location = Vector(NULL.root.location) + _rz @ (Vector(_loc) * _hz)
+        _o.rotation_euler = (Vector(NULL.root.location) + Vector((0, 0, 5.5 * _hz)) - _o.location).to_track_quat("-Z", "Y").to_euler()
+    # the cold glow behind him (the thumbnail's backlight), seen by the camera only
+    _gm = bpy.data.materials.new("null_backglow")
+    _gm.use_nodes = True
+    _gt = _gm.node_tree
+    for _n_ in list(_gt.nodes):
+        _gt.nodes.remove(_n_)
+    _go = _gt.nodes.new("ShaderNodeOutputMaterial")
+    _gg = _gt.nodes.new("ShaderNodeTexGradient")
+    _gg.gradient_type = "SPHERICAL"
+    _gtc = _gt.nodes.new("ShaderNodeTexCoord")
+    _gsc = _gt.nodes.new("ShaderNodeVectorMath")             # fade to nothing before the plane's edge
+    _gsc.operation = "SCALE"
+    _gsc.inputs["Scale"].default_value = 2.0
+    _gt.links.new(_gtc.outputs["Object"], _gsc.inputs[0])
+    _gt.links.new(_gsc.outputs[0], _gg.inputs["Vector"])
+    _gp = _gt.nodes.new("ShaderNodeMath")
+    _gp.operation = "POWER"
+    _gp.inputs[1].default_value = 1.8
+    _gt.links.new(_gg.outputs["Fac"], _gp.inputs[0])
+    _gs = _gt.nodes.new("ShaderNodeMath")
+    _gs.operation = "MULTIPLY"
+    _gs.inputs[1].default_value = float(os.environ.get("NULL_GLOW", "3.0"))
+    _gt.links.new(_gp.outputs[0], _gs.inputs[0])
+    _ge = _gt.nodes.new("ShaderNodeEmission")
+    _ge.inputs["Color"].default_value = (0.62, 0.74, 0.98, 1)
+    _gt.links.new(_gs.outputs[0], _ge.inputs["Strength"])
+    _gtr = _gt.nodes.new("ShaderNodeBsdfTransparent")
+    _gad = _gt.nodes.new("ShaderNodeAddShader")
+    _gt.links.new(_gtr.outputs["BSDF"], _gad.inputs[0])
+    _gt.links.new(_ge.outputs["Emission"], _gad.inputs[1])
+    _gt.links.new(_gad.outputs["Shader"], _go.inputs["Surface"])
+    bpy.ops.mesh.primitive_plane_add(size=1, rotation=(math.radians(90), 0, 0))
+    _gl = bpy.context.active_object
+    _gl.name = "null_backglow"
+    _rz = Matrix.Rotation(math.radians(_nl.get("yaw", 0)), 3, "Z")
+    _gl.location = Vector(NULL.root.location) + _rz @ (Vector((0.4, 5.0, 6.4)) * _hz)
+    _gl.rotation_euler = (math.radians(90), 0, math.radians(_nl.get("yaw", 0)))
+    _gl.scale = (24 * _hz, 24 * _hz, 1)
+    _gl.data.materials.append(_gm)
+    for _a in ("visible_diffuse", "visible_glossy", "visible_transmission", "visible_shadow"):
+        setattr(_gl, _a, False)
 if os.environ.get("NOOB"):                           # the Noob beside him: {"x", "y", "yaw", "head", "pose", "face"}
     from noob import build_noob, pose_noob  # noqa: E402
     from faceplate import NOOB_EYES as _NE  # noqa: E402
@@ -588,20 +647,28 @@ SHOT.update({
     "hill": dict(loc=(-1.0, -3.0, 1.0), at=(-6.0, 40.0, 11.0), lens=24, focus=4.5, fstop=4.0,          # Benly 7.0
                  sun=(140, 16, 6.6, (1.0, 0.74, 0.48)), glow_dir=(22, 13), golden=True, sun_xy=(0.95, 0.1), haze=(240, 25),
                  steve_at=(-2.0, 2.4, 0), steve_yaw=172, noob_at=(1.4, 7.5, 175)),
+    "storm": dict(loc=(5.2, 0.15, 1.35), at=(-6.0, 0.1, 8.6), lens=17, focus=5.2, fstop=4.0,           # the thumbnail
+                  sun=(180, 30, 1.6, (0.85, 0.75, 1.0)), sky="storm", haze=(120, 12), storm=True, glow_dir=(-90, 14),
+                  hide=("clouds", "falling_leaf_green", "falling_leaf_petal"),
+                  steve_at=(0.0, -0.95, 0), steve_yaw=82, noob_at=(0.4, 1.0, 98)),
     "vista": dict(loc=(-3.0, 3.0, 3.0), at=(-300.0, 0.0, 44.0), lens=26, focus=5.5, fstop=6.0,         # movie 10.0
                   sun=(163, 34, 5.6, (1.0, 0.92, 0.82)), haze=(380, 50),
                   steve_at=(-7.3, 2.25, 0), steve_yaw=-90, noob_at=(-9.2, 3.9, -96)),
 })
-from world import set_sun as _set_sun, set_sky as _set_sky, SKY_DAY, SKY_GOLDEN  # noqa: E402
+from world import set_sun as _set_sun, set_sky as _set_sky, SKY_DAY, SKY_GOLDEN, SKY_STORM  # noqa: E402
 for name in SHOTS:
     s = SHOT[name]
     if WORLD2:
         _set_sun(W, *(s.get("sun") or WCFG.get("sun", (105, 34)))[:2],
                  *(list(s["sun"][2:]) if s.get("sun") else [5.4, (1.0, 0.87, 0.7)]))
-        _set_sky(W, SKY_GOLDEN if s.get("golden") else SKY_DAY)
+        _set_sky(W, SKY_STORM if s.get("sky") == "storm" else SKY_GOLDEN if s.get("golden") else SKY_DAY)
         if s.get("glow_dir"):                          # the sky's glow placed for the frame, apart from the light
             ga, ge = (math.radians(v) for v in s["glow_dir"])
             W.sky_dot.inputs[1].default_value = (math.sin(ga) * math.cos(ge), math.cos(ga) * math.cos(ge), math.sin(ge))
+    for _hn in ("clouds", "speck", "falling_leaf_green", "falling_leaf_petal"):   # things a shot can leave out
+        _ho = bpy.data.objects.get(_hn)
+        if _ho is not None:
+            _ho.hide_render = _hn in s.get("hide", ())
     # staging for this shot: where the characters stand and face
     steve.rotation_euler = (0, 0, math.radians(s.get("steve_yaw", -4)))
     steve.location = s.get("steve_at", (0, 0, 0))
@@ -642,6 +709,8 @@ for name in SHOTS:
             shot_look.update({"L": s["haze"][0], "start": s["haze"][1]})
         if s.get("golden"):
             shot_look.update({"tint": [1.1, 1.0, 0.86], "haze_warm": True})
+        if s.get("storm"):
+            shot_look.update({"tint": [1.02, 0.9, 1.08], "haze_storm": True})
         if s.get("sun_xy"):
             shot_look["sun"] = s["sun_xy"]
         open(f"{OUT}_{name}_haze.json", "w").write(_jw.dumps(shot_look))

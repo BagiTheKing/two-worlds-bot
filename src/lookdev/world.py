@@ -687,6 +687,7 @@ def build_world(sc, assets, cfg=None):
     W.sky_pow = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "MATH" and n_.operation == "POWER")
     W.sky_glow = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "MIX")
     W.sky_ramp = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "VALTORGB")
+    W.sky_lit = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "BACKGROUND" and not n_.inputs["Color"].is_linked)
     cm_top = flat("cloud", (255, 255, 255), rough=1.0, emission=0.85)
     cm_bot = flat("cloud_under", (226, 232, 244), rough=1.0, emission=0.6)
     cc = cloud_cells(assets, cfg.get("cloud_offset", (40, 90)), cfg.get("cloud_radius", 110))
@@ -769,11 +770,22 @@ SKY_DAY = {"glow": (255, 236, 236), "power": 6.0, "horizon": (200, 224, 250)}
 SKY_GOLDEN = {"glow": (255, 222, 200), "power": 8.0, "horizon": (214, 222, 248)}     # golden hour: a warm glow by the sun
 
 
+SKY_DAY.update({"mid": (118, 182, 255), "zenith": (40, 128, 245)})
+SKY_GOLDEN.update({"mid": (118, 182, 255), "zenith": (40, 128, 245)})
+SKY_STORM = {"glow": (200, 222, 252), "power": 9.0, "horizon": (196, 128, 192),        # Null's storm (the thumbnail)
+             "mid": (92, 66, 128), "zenith": (22, 18, 40), "fill": 0.45, "fill_col": (170, 140, 210)}
+
+
 def set_sky(W, look):
     lin = lambda c: (*(((v / 255 + 0.055) / 1.055) ** 2.4 for v in c), 1)   # noqa: E731
     W.sky_glow.inputs["B"].default_value = lin(look["glow"])
     W.sky_pow.inputs[1].default_value = look["power"]
-    W.sky_ramp.color_ramp.elements[0].color = lin(look["horizon"])
+    el = sorted(W.sky_ramp.color_ramp.elements, key=lambda e: e.position)
+    el[0].color = lin(look["horizon"])
+    el[1].color = lin(look["mid"])
+    el[2].color = lin(look["zenith"])
+    W.sky_lit.inputs["Strength"].default_value = look.get("fill", 1.1)
+    W.sky_lit.inputs["Color"].default_value = lin(look.get("fill_col", (176, 204, 240)))
 
 
 def set_sun(W, azimuth, elevation, energy=None, color=None):
@@ -843,7 +855,7 @@ def render_depth(sc, path, far=600.0):
     sc.camera.data.dof.use_dof = False                   # the haze follows sharp depth
     hidden = []
     for ob in sc.objects:                                 # particles and motes don't belong in the depth
-        if ob.name.startswith(("mote", "speck", "falling_leaf")):
+        if ob.name.startswith(("mote", "speck", "falling_leaf", "null_backglow")):
             hidden.append((ob, ob.hide_render))
             ob.hide_render = True
     sc.render.filepath = path
