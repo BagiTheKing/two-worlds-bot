@@ -1,0 +1,760 @@
+{
+ "id": "ep09_before_finale",
+ "number": 9,
+ "title": "Before the Finale",
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "cut_loose": false,
+ "music": [
+  {
+   "cue": "chase",
+   "from": 0,
+   "to": "rewind",
+   "gain": 0.24,
+   "hard_end": true
+  },
+  {
+   "cue": "theme_soft",
+   "from": "brief",
+   "to": "r6",
+   "gain": 0.17,
+   "hard_end": true
+  },
+  {
+   "cue": "null",
+   "from": "r6",
+   "to": "r7",
+   "gain": 0.2,
+   "hard_end": true
+  },
+  {
+   "cue": "memory",
+   "from": "r7",
+   "to": "holo_off",
+   "gain": 0.22
+  },
+  {
+   "cue": "theme_soft",
+   "from": "holo_off",
+   "to": "patch_upgrade",
+   "gain": 0.15
+  },
+  {
+   "cue": "theme_full",
+   "from": "up_steve",
+   "to": "quiet",
+   "gain": 0.2,
+   "hard_end": true,
+   "swell": [
+    {
+     "from": "up_world",
+     "to": "noob_woah",
+     "gain": 1.7,
+     "ramp": 0.4
+    }
+   ]
+  },
+  {
+   "cue": "null",
+   "from": "rise",
+   "to": "run",
+   "gain": 0.3
+  },
+  {
+   "cue": "chase",
+   "from": "run",
+   "to": "end",
+   "gain": 0.3
+  }
+ ],
+ "sets": [
+  {
+   "kind": "forest_valley",
+   "origin": [
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "meadow",
+   "from": "brief",
+   "to": "quiet",
+   "gain": 0.05,
+   "fade_in": 0.3
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "rewind",
+   "at": "rewind",
+   "dur": 0.9,
+   "gain": 0.6
+  },
+  {
+   "kind": "glitch",
+   "at": "hook+0.2",
+   "dur": 0.5,
+   "gain": 0.35
+  },
+  {
+   "kind": "whir",
+   "at": "holo_on",
+   "dur": 0.6,
+   "gain": 0.35
+  },
+  {
+   "kind": "glitch",
+   "at": "r6",
+   "dur": 0.4,
+   "gain": 0.3
+  },
+  {
+   "kind": "click",
+   "at": "holo_off",
+   "gain": 0.4
+  },
+  {
+   "kind": "pop",
+   "at": "card",
+   "gain": 0.5
+  },
+  {
+   "kind": "scan",
+   "at": "up_steve",
+   "dur": 1.2,
+   "gain": 0.5
+  },
+  {
+   "kind": "chime",
+   "at": "up_steve+0.75",
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_steve+1.5",
+   "pitch": 1.12,
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_steve+2.25",
+   "pitch": 1.26,
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_steve+3.0",
+   "pitch": 1.5,
+   "gain": 0.5
+  },
+  {
+   "kind": "pop",
+   "at": "up_steve+3.7",
+   "gain": 0.5
+  },
+  {
+   "kind": "scan",
+   "at": "up_noob",
+   "dur": 1.2,
+   "gain": 0.5
+  },
+  {
+   "kind": "chime",
+   "at": "up_noob+0.7",
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_noob+1.4",
+   "pitch": 1.12,
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_noob+2.1",
+   "pitch": 1.26,
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_noob+2.8",
+   "pitch": 1.5,
+   "gain": 0.5
+  },
+  {
+   "kind": "scan",
+   "at": "up_patch",
+   "dur": 0.9,
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "up_patch+0.8",
+   "pitch": 1.26,
+   "gain": 0.45
+  },
+  {
+   "kind": "jingle",
+   "at": "up_patch+1.7",
+   "gain": 0.4
+  },
+  {
+   "kind": "whoosh",
+   "at": "up_world+0.3",
+   "dur": 2.5,
+   "gain": 0.45
+  },
+  {
+   "kind": "rumble_rise",
+   "at": "up_world+0.4",
+   "dur": 2.6,
+   "gain": 0.3
+  },
+  {
+   "kind": "sub_drop",
+   "at": "rise",
+   "dur": 2.0,
+   "gain": 0.55
+  },
+  {
+   "kind": "roar",
+   "at": "rise+1.2",
+   "dur": 1.6,
+   "gain": 0.4
+  },
+  {
+   "kind": "glitch",
+   "at": "delete",
+   "dur": 1.2,
+   "gain": 0.45
+  },
+  {
+   "kind": "break",
+   "at": "delete+0.4",
+   "gain": 0.5
+  },
+  {
+   "kind": "break",
+   "at": "delete+1.0",
+   "gain": 0.5
+  },
+  {
+   "kind": "break",
+   "at": "delete+1.6",
+   "gain": 0.5
+  },
+  {
+   "kind": "run",
+   "at": "run",
+   "dur": 3.0,
+   "gain": 0.5
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 12%",
+   "from": "brief",
+   "to": "holo_on"
+  },
+  {
+   "type": "endnote",
+   "from": "end",
+   "to": "end+3.0",
+   "next_label": "THE FINALE",
+   "next_title": "THE FIRST PORTAL WAS A TRAP",
+   "question": "WHICH ONE SHOULDN'T BE IN THIS WORLD?",
+   "question_sub": "Comment your theory",
+   "highlight": true
+  }
+ ],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "events": [
+  {
+   "beat": "hook",
+   "dur": 1.3
+  },
+  {
+   "line": "noob",
+   "name": "noob_wait",
+   "text": "Okay, wait. Before THAT happens...",
+   "direction_text": "[quick, to the audience, half-whisper, like pausing a movie] Okay, wait. Before THAT happens...",
+   "pad": 0.05,
+   "own_scene": true
+  },
+  {
+   "beat": "rewind",
+   "dur": 0.9
+  },
+  {
+   "beat": "brief",
+   "dur": 0.5
+  },
+  {
+   "line": "noob",
+   "name": "noob_hi",
+   "text": "Hi, new people! You have no idea what's going on.",
+   "direction_text": "[bright, waving at the camera, way too cheerful] Hi, new people! You have no idea what's going on.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_same",
+   "text": "...Same.",
+   "direction_text": "[small beat, then shrugging, honest] ...Same.",
+   "pad": 0.25
+  },
+  {
+   "line": "steve",
+   "name": "steve_eight",
+   "text": "Eight episodes of problems. Patch. Show them.",
+   "direction_text": "[dry, deadpan, tired] Eight episodes of problems. Patch. Show them.",
+   "pad": 0.12
+  },
+  {
+   "line": "patch",
+   "name": "patch_archive",
+   "text": "Playing the archive. Please keep your arms inside the timeline.",
+   "direction_text": "[calm, polite, like a ride announcement] Playing the archive. Please keep your arms inside the timeline.",
+   "pad": 0.12
+  },
+  {
+   "beat": "holo_on",
+   "dur": 0.6
+  },
+  {
+   "beat": "r0",
+   "dur": 1.4
+  },
+  {
+   "line": "noob",
+   "name": "noob_falling",
+   "text": "That's us. Falling. Spoiler: it's the end.",
+   "direction_text": "[casual, pointing, unbothered] That's us. Falling. Spoiler: it's the end.",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_beginning",
+   "text": "It's the beginning.",
+   "direction_text": "[dry correction] It's the beginning.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_deep",
+   "text": "It's the end AND the beginning. Deep.",
+   "direction_text": "[pretending to be wise, slow] It's the end AND the beginning. Deep.",
+   "pad": 0.12
+  },
+  {
+   "beat": "r1",
+   "dur": 1.2
+  },
+  {
+   "line": "steve",
+   "name": "steve_tree",
+   "text": "He punched a tree. The tree stayed in the air.",
+   "direction_text": "[deadpan, still annoyed about it] He punched a tree. The tree stayed in the air.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_respect",
+   "text": "The tree respected me.",
+   "direction_text": "[proud, completely serious] The tree respected me.",
+   "pad": 0.12
+  },
+  {
+   "beat": "r2",
+   "dur": 1.3
+  },
+  {
+   "line": "steve",
+   "name": "steve_plan",
+   "text": "My plan.",
+   "direction_text": "[flat, a little wounded] My plan.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_record",
+   "text": "Three seconds. New record!",
+   "direction_text": "[cheerful, celebrating] Three seconds. New record!",
+   "pad": 0.12
+  },
+  {
+   "beat": "r3",
+   "dur": 1.3
+  },
+  {
+   "line": "noob",
+   "name": "noob_dragon",
+   "text": "We put a dragon in an obby!",
+   "direction_text": "[excited, proud] We put a dragon in an obby!",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_you",
+   "text": "YOU put a dragon in an obby.",
+   "direction_text": "[dry, correcting him] YOU put a dragon in an obby.",
+   "pad": 0.12
+  },
+  {
+   "beat": "r4",
+   "dur": 1.2
+  },
+  {
+   "line": "patch",
+   "name": "patch_arrived",
+   "text": "And then I arrived. Things improved.",
+   "direction_text": "[calm, quietly pleased with itself] And then I arrived. Things improved.",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_weirder",
+   "text": "Things got weirder.",
+   "direction_text": "[deadpan] Things got weirder.",
+   "pad": 0.12
+  },
+  {
+   "line": "patch",
+   "name": "patch_improvement",
+   "text": "...Weirder is an improvement.",
+   "direction_text": "[calm, after a tiny pause, certain] ...Weirder is an improvement.",
+   "pad": 0.12
+  },
+  {
+   "beat": "r5",
+   "dur": 1.2
+  },
+  {
+   "line": "noob",
+   "name": "noob_creative",
+   "text": "Creative mode! Idea by our friend, Youssef!",
+   "direction_text": "[excited, giving a shout-out, pointing at the camera] Creative mode! Idea by our friend, Youssef!",
+   "pad": 0.12
+  },
+  {
+   "beat": "r6",
+   "dur": 2.0
+  },
+  {
+   "line": "noob",
+   "name": "noob_dontlike",
+   "text": "...I don't like that guy.",
+   "direction_text": "[small, quiet, uneasy] ...I don't like that guy.",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_nobody",
+   "text": "Nobody likes that guy.",
+   "direction_text": "[low, serious] Nobody likes that guy.",
+   "pad": 0.12
+  },
+  {
+   "beat": "r7",
+   "dur": 1.2
+  },
+  {
+   "line": "patch",
+   "name": "patch_behind",
+   "text": "Every time he respawns... something stays behind.",
+   "direction_text": "[quiet, careful, slightly ominous] Every time he respawns... something stays behind.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_alot",
+   "text": "I respawn a LOT.",
+   "direction_text": "[worried, realising] I respawn a LOT.",
+   "pad": 0.12
+  },
+  {
+   "beat": "r8",
+   "dur": 1.2
+  },
+  {
+   "line": "noob",
+   "name": "noob_you",
+   "text": "And YOU. Built. The portal.",
+   "direction_text": "[slow, accusing, one word at a time] And YOU. Built. The portal.",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_next",
+   "text": "...Next slide.",
+   "direction_text": "[dry, avoiding eye contact, quick] ...Next slide.",
+   "pad": 0.12
+  },
+  {
+   "beat": "holo_off",
+   "dur": 0.4
+  },
+  {
+   "line": "patch",
+   "name": "patch_theories",
+   "text": "The observers have theories.",
+   "direction_text": "[calm, mysterious] The observers have theories.",
+   "pad": 0.12
+  },
+  {
+   "beat": "card",
+   "dur": 2.8
+  },
+  {
+   "line": "noob",
+   "name": "noob_oneofus",
+   "text": "One of us shouldn't be in this world...",
+   "direction_text": "[slowly reading it, then suspicious] One of us shouldn't be in this world...",
+   "pad": 0.12
+  },
+  {
+   "beat": "look",
+   "dur": 0.5
+  },
+  {
+   "line": "noob",
+   "name": "noob_itsyou",
+   "text": "It's you. You're ALWAYS holding a pickaxe.",
+   "direction_text": "[accusing, certain, pointing] It's you. You're ALWAYS holding a pickaxe.",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_dying",
+   "text": "You're always DYING.",
+   "direction_text": "[dry, firing back instantly] You're always DYING.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_which",
+   "text": "...Patch? Which one?",
+   "direction_text": "[small, nervous, turning to Patch] ...Patch? Which one?",
+   "pad": 0.12
+  },
+  {
+   "beat": "stare",
+   "dur": 1.4
+  },
+  {
+   "line": "patch",
+   "name": "patch_nocomment",
+   "text": "No comment.",
+   "direction_text": "[calm, quiet, mysterious, a tiny smile in the voice] No comment.",
+   "pad": 0.4
+  },
+  {
+   "line": "patch",
+   "name": "patch_budget",
+   "text": "Good news. The finale has a budget.",
+   "direction_text": "[calm, polite, a little proud] Good news. The finale has a budget.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_what",
+   "text": "A what?",
+   "direction_text": "[confused] A what?",
+   "pad": 0.12
+  },
+  {
+   "line": "patch",
+   "name": "patch_upgrade",
+   "text": "Upgrade starting. Please do not move.",
+   "direction_text": "[calm, like an airport announcement] Upgrade starting. Please do not move.",
+   "pad": 0.12
+  },
+  {
+   "beat": "up_steve",
+   "dur": 4.6
+  },
+  {
+   "line": "steve",
+   "name": "steve_hair",
+   "text": "...I have hair. Real hair.",
+   "direction_text": "[stunned, quiet, touching it] ...I have hair. Real hair.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_beautiful",
+   "text": "It's beautiful.",
+   "direction_text": "[sincere, almost crying] It's beautiful.",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_dont",
+   "text": "Don't.",
+   "direction_text": "[flat, embarrassed] Don't.",
+   "pad": 0.12
+  },
+  {
+   "beat": "up_noob",
+   "dur": 4.2
+  },
+  {
+   "line": "noob",
+   "name": "noob_textured",
+   "text": "Why do I feel... textured?",
+   "direction_text": "[confused, looking at his arms] Why do I feel... textured?",
+   "pad": 0.12
+  },
+  {
+   "line": "steve",
+   "name": "steve_welcome",
+   "text": "Welcome to Minecraft.",
+   "direction_text": "[dry, a tiny smile] Welcome to Minecraft.",
+   "pad": 0.12
+  },
+  {
+   "beat": "up_patch",
+   "dur": 2.8
+  },
+  {
+   "line": "noob",
+   "name": "noob_smile",
+   "text": "PATCH CAN SMILE?!",
+   "direction_text": "[shocked, delighted, shouting] PATCH CAN SMILE?!",
+   "pad": 0.12
+  },
+  {
+   "line": "patch",
+   "name": "patch_always",
+   "text": "I always could. Now you can see it.",
+   "direction_text": "[calm, warm] I always could. Now you can see it.",
+   "pad": 0.12
+  },
+  {
+   "beat": "up_world",
+   "dur": 4.8
+  },
+  {
+   "line": "noob",
+   "name": "noob_woah",
+   "text": "Woooah.",
+   "direction_text": "[amazed, quiet, looking around] Woooah.",
+   "pad": 0.12,
+   "nonverbal": false
+  },
+  {
+   "line": "steve",
+   "name": "steve_nice",
+   "text": "Okay. That's... nice.",
+   "direction_text": "[impressed despite himself, low] Okay. That's... nice.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_him",
+   "text": "Do you think HE got upgraded too?",
+   "direction_text": "[casual at first, then the thought lands] Do you think HE got upgraded too?",
+   "pad": 0.12
+  },
+  {
+   "beat": "quiet",
+   "dur": 1.8
+  },
+  {
+   "line": "steve",
+   "name": "steve_quiet",
+   "text": "...Why did it go quiet?",
+   "direction_text": "[whispering, tense] ...Why did it go quiet?",
+   "pad": 0.12
+  },
+  {
+   "beat": "rise",
+   "dur": 3.2
+  },
+  {
+   "beat": "delete",
+   "dur": 2.2
+  },
+  {
+   "line": "patch",
+   "name": "patch_too",
+   "text": "He got upgraded too.",
+   "direction_text": "[calm, polite, very quiet] He got upgraded too.",
+   "pad": 0.12
+  },
+  {
+   "line": "noob",
+   "name": "noob_run",
+   "text": "RUUUUN!",
+   "direction_text": "[screaming, panicked] RUUUUN!",
+   "pad": 0.05,
+   "own_scene": true
+  },
+  {
+   "beat": "run",
+   "dur": 3.0
+  },
+  {
+   "beat": "end",
+   "dur": 3.0
+  }
+ ]
+}

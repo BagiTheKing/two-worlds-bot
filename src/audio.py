@@ -1135,7 +1135,31 @@ def sfx_flaps(dur=2.0, rate=1.3):
     return out
 
 
-SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
+def sfx_chime(pitch=1.0):
+    """An upgrade chime: a bright bell (inharmonic partials) with a sparkle tail."""
+    out = np.zeros(int(1.4 * SR))
+    for i, f in enumerate((1046.5, 1568.0)):
+        x = t(1.1)
+        bell = sum(np.sin(2 * np.pi * f * pitch * r * x) / (k + 1) ** 1.2 for k, r in enumerate((1, 2.0, 2.76, 4.07)))
+        place(out, bell * env(len(x), 0.002, 0.32), i * 0.07, 0.55)
+    x = t(0.6)
+    place(out, band(rng.standard_normal(len(x)), 5000, 12000) * env(len(x), 0.004, 0.18), 0.05, 0.18)
+    return norm(out, 0.8)
+
+
+def sfx_scan(dur=1.2):
+    """A scan line sweeping up a body: a soft rising digital tone with a shimmer."""
+    x = t(dur)
+    f = 300 + 900 * (x / dur) ** 1.4
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = np.sin(ph) * 0.6 + np.sign(np.sin(ph * 2)) * 0.12
+    shimmer = band(rng.standard_normal(len(x)), 3000, 9000) * (0.5 + 0.5 * np.sin(2 * np.pi * 18 * x))
+    e = np.sin(np.pi * np.clip(x / dur, 0, 1)) ** 0.7
+    return norm((tone + 0.25 * norm(shimmer)) * e, 0.6)
+
+
+SFX = {"chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
+       "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
        "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
        "groan": lambda e: sfx_groan(e.get("dur", 0.9)), "burst": lambda e: sfx_burst(),

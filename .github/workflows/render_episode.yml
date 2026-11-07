@@ -25,6 +25,10 @@ on:
       reuse_run_id:
         description: "With shots: the earlier run whose other frames to reuse"
         default: ""
+      voices_only:
+        description: "Only the voices, the timeline and the sound preview (no frames)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -113,6 +117,7 @@ jobs:
 
   render:
     needs: prep
+    if: ${{ !inputs.voices_only }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -147,6 +152,7 @@ jobs:
 
   assemble:
     needs: [prep, render]
+    if: ${{ !inputs.voices_only }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
