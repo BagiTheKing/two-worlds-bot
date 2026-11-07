@@ -72,6 +72,7 @@ jobs:
       - env:
           VOICE_ENGINE: ${{ inputs.voice }}
           VOICE_CACHE: voice_cache
+          VOICE_STEM: "1"
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
@@ -96,6 +97,7 @@ jobs:
           cp -r build/scenes /tmp/log/ 2>/dev/null || true
           ffmpeg -loglevel error -i build/audio.wav -c:a aac -b:a 128k /tmp/log/audio.m4a 2>/dev/null || true
           cp build/audio.wav /tmp/log/audio.wav 2>/dev/null || true     # the sound preview, before any frame renders
+          cp build/voice.wav /tmp/log/voice.wav 2>/dev/null || true     # the voices alone (lip sync)
           cd /tmp/log && git init -q -b preview-logs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
