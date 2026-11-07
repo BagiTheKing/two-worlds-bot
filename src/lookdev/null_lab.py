@@ -133,7 +133,7 @@ light("top", "AREA", (0, 2, 16), (0, 0, 7), 3000, lin((230, 200, 255)), 6)
 cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
 sc.collection.objects.link(cam)
 sc.camera = cam
-C = {"thumb": ((0.3, -17.5, 2.8), (0.2, 0, 5.9), 30), "low": ((1.5, -11, 0.6), (0, 0, 6.0), 22),
+C = {"thumb": ((0.3, -17.5, 2.8), (0.2, 0, 5.9), 30), "front": ((0.0, -24.0, 6.5), (0.0, 0, 6.0), 40), "hand": ((4.6, -11.0, 1.4), (4.6, 0, 1.4), 60), "low": ((1.5, -11, 0.6), (0, 0, 6.0), 22),
      "side": ((-10, -12, 4), (0, 0, 5), 32)}[CAM]
 cam.location = C[0]
 cam.rotation_euler = (Vector(C[1]) - Vector(C[0])).to_track_quat("-Z", "Y").to_euler()

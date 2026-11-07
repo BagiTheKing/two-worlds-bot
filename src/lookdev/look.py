@@ -490,6 +490,15 @@ if os.environ.get("NULL"):                           # Null: {"x", "y", "yaw", "
     _gl.data.materials.append(_gm)
     for _a in ("visible_diffuse", "visible_glossy", "visible_transmission", "visible_shadow"):
         setattr(_gl, _a, False)
+if os.environ.get("PATCH"):                          # Patch: {"x", "y", "z", "yaw", "size", "face"}
+    from patch import build_patch, set_patch, DEFAULTS as _PD  # noqa: E402
+    _pt = _json.loads(os.environ["PATCH"])
+    _pcol = bpy.data.collections.new("patch")
+    sc.collection.children.link(_pcol)
+    PATCH = build_patch(_pcol, size=_pt.get("size", 0.42))
+    PATCH.root.location = (_pt.get("x", 1.0), _pt.get("y", 0.0), _pt.get("z", 2.3))
+    PATCH.root.rotation_euler = (math.radians(_pt.get("tilt", 0)), 0, math.radians(_pt.get("yaw", 0)))
+    set_patch(PATCH, {**_PD, **_pt.get("face", {})})
 if os.environ.get("NOOB"):                           # the Noob beside him: {"x", "y", "yaw", "head", "pose", "face"}
     from noob import build_noob, pose_noob  # noqa: E402
     from faceplate import NOOB_EYES as _NE  # noqa: E402
@@ -651,6 +660,8 @@ SHOT.update({
                   sun=(180, 30, 1.6, (0.85, 0.75, 1.0)), sky="storm", haze=(120, 12), storm=True, glow_dir=(-90, 14),
                   hide=("clouds", "falling_leaf_green", "falling_leaf_petal"),
                   steve_at=(0.0, -0.95, 0), steve_yaw=82, noob_at=(0.4, 1.0, 98)),
+    "patch": dict(loc=(1.0, -6.2, 1.6), at=(1.0, 0.3, 1.75), lens=36, focus=6.4, fstop=2.4,            # Patch between them
+                  sun=(140, 30, 5.6, (1.0, 0.88, 0.74)), haze=(380, 40)),
     "vista": dict(loc=(-3.0, 3.0, 3.0), at=(-300.0, 0.0, 44.0), lens=26, focus=5.5, fstop=6.0,         # movie 10.0
                   sun=(163, 34, 5.6, (1.0, 0.92, 0.82)), haze=(380, 50),
                   steve_at=(-7.3, 2.25, 0), steve_yaw=-90, noob_at=(-9.2, 3.9, -96)),
@@ -683,6 +694,8 @@ for name in SHOTS:
         NOOB.root.rotation_euler = (0, 0, math.radians(s["noob_at"][2]))
     cam.location = s["loc"]
     at = s["at"]
+    if at == "patch":
+        at = tuple(PATCH.root.location)
     if at == "steve_head":                             # aim at where his head really is in this pose
         bpy.context.view_layer.update()
         hb = arm.pose.bones["Head"]

@@ -71,44 +71,48 @@ def _noise3(p, scale, seed):
 
 # body parts, in the 10-tall frame (x right on screen, y away from the camera, z up); he faces -y
 SHOULDER = {"sl": (-2.35, 0.1, 7.3), "sr": (2.35, 0.1, 7.3)}
-ELBOW = {"sl": (-3.45, -0.45, 5.0), "sr": (3.45, -0.45, 5.0)}
-WRIST = {"sl": (-3.9, -0.95, 2.7), "sr": (3.9, -0.95, 2.7)}
+ELBOW = {"sl": (-4.0, -0.4, 5.25), "sr": (4.0, -0.4, 5.25)}
+WRIST = {"sl": (-4.55, -0.9, 3.05), "sr": (4.55, -0.9, 3.05)}
 
 
 def _torso(p):
-    d = _ellip(p, (0, 0.15, 6.1), (2.25, 1.2, 2.15))                     # chest: tall
+    d = _ellip(p, (0, 0.15, 6.1), (2.15, 1.2, 2.15))                     # chest: tall
     d = _smin(d, _seg(p, (-2.15, 0.15, 7.25), (2.15, 0.15, 7.25), 1.0, 1.0), 0.6)   # shoulders: broad, hunched
-    d = _smin(d, _ellip(p, (0, 0.2, 4.0), (2.0, 1.05, 1.8)), 0.9)       # belly, narrowing to the waist
+    d = _smin(d, _ellip(p, (0, 0.2, 4.0), (1.6, 1.0, 1.8)), 0.8)        # belly, narrowing to the waist
     d = _smin(d, _seg(p, (0, 0.25, 3.0), (0.15, 0.4, 0.2), 1.55, 0.15), 1.0)    # the trailing tail
     d = _smin(d, _seg(p, (0, 0.0, 7.6), (0, -0.2, 8.7), 0.72, 0.5), 0.4)       # a short neck, bowed forward
     return d
 
 
 def _upper(p, s):
-    return _seg(p, SHOULDER[s], ELBOW[s], 1.0, 0.78)
+    return _seg(p, SHOULDER[s], ELBOW[s], 0.88, 0.66)
 
 
 def _fore(p, s):
-    return _seg(p, ELBOW[s], WRIST[s], 0.8, 0.62)
+    return _seg(p, ELBOW[s], WRIST[s], 0.66, 0.52)
 
 
 def _fingers(s):
-    """Claw fingers fanning from the wrist, long and drooping (the thumbnail's dripping hands)."""
+    """Five hooked claws hanging from the hand: each a long finger down, then a
+    tip curling in toward the body (the thumbnail's dripping claws)."""
     wx, wy, wz = WRIST[s]
-    sx = 1 if s == "sr" else -1
-    out = []
-    for k, (spread, length) in enumerate(((-0.6, 1.8), (-0.2, 2.15), (0.2, 2.2), (0.6, 1.9), (1.05, 1.25))):
-        a = (wx + sx * spread * 0.55, wy - 0.15, wz - 0.25)
-        b = (wx + sx * (spread * 0.95 + 0.15), wy - 0.35 + 0.1 * k, wz - 0.25 - length)
-        out.append((a, b))
-    return out
+    out_x = 1 if s == "sr" else -1                       # away from the body
+    segs = []
+    for k, (dx, length) in enumerate(((-0.95, 2.1), (-0.42, 2.6), (0.1, 2.75), (0.62, 2.45), (1.1, 1.7))):
+        x0 = wx + out_x * dx
+        a = (wx + out_x * dx * 0.45, wy - 0.2, wz - 0.5)                  # the knuckle, on the palm
+        b = (x0 + out_x * dx * 0.65, wy - 0.4 - 0.05 * k, wz - 0.5 - length)  # fanning out as it hangs
+        c = (b[0] - out_x * 0.5, b[1] - 0.3, b[2] - 0.5)                 # the hook, curling inward
+        segs.append((a, b, c))
+    return segs
 
 
 def _hand(p, s):
     wx, wy, wz = WRIST[s]
-    d = _ellip(p, (wx, wy - 0.1, wz - 0.2), (0.9, 0.6, 0.72))
-    for a, b in _fingers(s):
-        d = _smin(d, _seg(p, a, b, 0.3, 0.1), 0.22)
+    d = _ellip(p, (wx, wy - 0.15, wz - 0.35), (0.85, 0.55, 0.7))
+    for a, b, c in _fingers(s):
+        d = _smin(d, _seg(p, a, b, 0.22, 0.15), 0.12)
+        d = np.minimum(d, _seg(p, b, c, 0.15, 0.06))
     return d
 
 
@@ -320,8 +324,8 @@ def build_null(col, assets, height=10.0, seed=6, name="null", orbit=True):
                           lambda z: 0.04, rel=SHOULDER[s])
         _cubes(f"{name}_upper_{s}", items, body_mat, col).parent = sh
         el = _empty(f"{name}_elbow_{s}", tuple(np.subtract(ELBOW[s], SHOULDER[s])), sh, col)
-        items = _voxelize(lambda p, s=s: _smin(_fore(p, s), _hand(p, s), 0.35), (-6.6, -2.8, 0.2), (6.6, 1.2, 6.0),
-                          rnd, seed + 3, lambda z: 0.05 + 0.25 * max(0.0, (1.4 - z) / 1.4), rel=ELBOW[s])
+        items = _voxelize(lambda p, s=s: _smin(_fore(p, s), _hand(p, s), 0.35), (-6.6, -2.8, -1.6), (6.6, 1.2, 6.0),
+                          rnd, seed + 3, lambda z: 0.03, rel=ELBOW[s])     # claws stay whole
         _cubes(f"{name}_fore_{s}", items, body_mat, col).parent = el
         N.arms[s], N.forearms[s] = sh, el
     # head: the checkered classic head, bowed forward, its edge breaking into pixels
