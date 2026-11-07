@@ -502,8 +502,12 @@ def holo(img, o, t, f, fonts):
         lab = o["label"]
         fnt = fonts["mono_small"]
         tw = fnt.getlength(lab)
-        d.rectangle((x0 + 18, y0 + 18, x0 + 34 + tw, y0 + 70), fill=(4, 24, 32))
-        d.text((x0 + 26, y0 + 22), lab, font=fnt, fill=(120, 240, 255))
+        # a tab on top of the frame, outside the picture: the old clips have
+        # their own banners (achievements) in their top corner
+        d.rounded_rectangle((x0 + 10, y0 - 62, x0 + 34 + tw, y0 + 2), 10, fill=(4, 24, 32),
+                            outline=(150, 245, 255), width=4)
+        d.rectangle((x0 + 14, y0 - 4, x0 + 30 + tw, y0 + 2), fill=(4, 24, 32))
+        d.text((x0 + 22, y0 - 56), lab, font=fnt, fill=(120, 240, 255))
 
 
 def comment(img, o, t, f, fonts):

@@ -38,6 +38,9 @@ on:
       parts:
         description: "Which frames to render: all, old (episode kit) or new (new look)"
         default: "all"
+      assemble_from:
+        description: "Only assemble again: an earlier run whose sound, timing and frames to use (overlays re-read from the episode file)"
+        default: ""
 
 permissions:
   contents: write
@@ -48,6 +51,7 @@ env:
 
 jobs:
   prep:
+    if: ${{ inputs.assemble_from == '' }}
     runs-on: ubuntu-latest
     outputs:
       frames: ${{ steps.len.outputs.frames }}
@@ -205,7 +209,7 @@ jobs:
 
   assemble:
     needs: [prep, render, render_new]
-    if: ${{ always() && !inputs.voices_only && needs.prep.result == 'success' && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled' }}
+    if: ${{ always() && !inputs.voices_only && (inputs.assemble_from != '' || (needs.prep.result == 'success' && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -213,15 +217,38 @@ jobs:
         with:
           python-version: '3.13'
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install Pillow numpy
-      - uses: actions/download-artifact@v4
+      - if: inputs.assemble_from == ''
+        uses: actions/download-artifact@v4
         with:
           name: prep
           path: build/
-      - uses: actions/download-artifact@v4
+      - if: inputs.assemble_from == ''
+        uses: actions/download-artifact@v4
         with:
           pattern: frames-*
-          path: build/frames/
-          merge-multiple: true
+          path: build/fr/
+      - name: Assemble only - the earlier run's sound, timing and frames
+        if: inputs.assemble_from != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+          run-id: ${{ inputs.assemble_from }}
+          github-token: ${{ github.token }}
+      - if: inputs.assemble_from != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: build/fr/
+          run-id: ${{ inputs.assemble_from }}
+          github-token: ${{ github.token }}
+      - name: Assemble only - overlays from the episode file as it is now (same timing)
+        if: inputs.assemble_from != ''
+        run: python src/kit/timeref.py ${{ inputs.episode }} build/timeline.json
+      - name: One frame folder (the kit's frames, the new look's inside skip_render)
+        run: |
+          python tools/merge_frames.py ${{ inputs.episode }} build/timeline.json build/fr build/frames
+          rm -rf build/fr
       - name: Reuse the earlier render's other frames
         if: inputs.reuse_run_id != ''
         uses: actions/download-artifact@v4
@@ -236,16 +263,18 @@ jobs:
           # new frames win; every frame not re-rendered comes from the earlier run
           cp -n build/frames_old/*.png build/frames/ 2>/dev/null || true
           ls build/frames | wc -l
+      - id: ep
+        run: python -c "import json; print('id=' + json.load(open('build/timeline.json'))['id'])" >> $GITHUB_OUTPUT
       - name: Shots only, nothing to reuse - publish the clean shots instead of an episode
         if: inputs.shots != '' && inputs.reuse_run_id == ''
         run: |
           mkdir -p /tmp/pub && cp build/timeline.json /tmp/pub/
           python tools/shot_clips.py build/frames /tmp/pub
-          cd /tmp/pub && git init -q -b "preview-${{ needs.prep.outputs.id }}-shots"
+          cd /tmp/pub && git init -q -b "preview-${{ steps.ep.outputs.id }}-shots"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A && git commit -q -m "Shots from run ${{ github.run_id }}"
-          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-${{ needs.prep.outputs.id }}-shots"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-${{ steps.ep.outputs.id }}-shots"
       - if: inputs.shots == '' || inputs.reuse_run_id != ''
         run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
       - if: inputs.shots == '' || inputs.reuse_run_id != ''
@@ -258,8 +287,8 @@ jobs:
         if: inputs.shots == '' || inputs.reuse_run_id != ''
         run: |
           mkdir -p /tmp/pub && cp build/episode.mp4 build/timeline.json /tmp/pub/
-          cd /tmp/pub && git init -q -b "preview-${{ needs.prep.outputs.id }}"
+          cd /tmp/pub && git init -q -b "preview-${{ steps.ep.outputs.id }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A && git commit -q -m "Render from run ${{ github.run_id }}"
-          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-${{ needs.prep.outputs.id }}"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-${{ steps.ep.outputs.id }}"

@@ -63,7 +63,7 @@ def build():
     }
     ep["fx"] = [{"kind": "sky", "below": "sky", "sun_dir": [0.3, 0.75, -0.6], "keys": [[0, 6.5, 2.0]]}]
     # the new-look renderer (src/lookdev/ep09_new.py) draws the hook and everything after the upgrade starts
-    ep["skip_render"] = [[0, "rewind"], ["patch_upgrade.end", "end+0.4"]]
+    ep["skip_render"] = [[0, "rewind"], ["patch_upgrade.end", "end.end+1"]]
 
     turn_to_noob, turn_to_steve = [0, 0, 0.55], [0, 0, -0.55]
     up = [-0.32, 0, 0]                                    # looking up at Patch's screen

@@ -1446,19 +1446,9 @@ def build(episode_path, out_dir, keep=None):
     if os.getenv("VOICE_STEM"):                    # the voices alone, for checking dubs
         sf.write(os.path.join(out_dir, "voice.wav"), voice.astype(np.float32), SR)
 
-    overlays = []
-    for o in ep.get("overlays", []):
-        o = dict(o)
-        o["start"] = round(R(o.pop("from")), 3)
-        to = o.pop("to")
-        # "end" means the last frame: the video runs 0.4 s past the last beat
-        o["end"] = round(length + 0.4 if to == "end" else R(to), 3)
-        for key in ("grow", "full", "hl_start", "src_from", "src_to"):     # extra moments an overlay keys on
-            if key in o:
-                o[key] = round(R(o[key]), 3)
-        if o.get("type") == "chat":                   # each message at its own moment
-            o["lines"] = [dict(m, at=round(R(m["at"]), 3)) for m in o["lines"]]
-        overlays.append(o)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from kit.timeref import resolve_overlays
+    overlays = resolve_overlays(ep.get("overlays", []), beats, length)
     timeline = {"id": ep["id"], "fps": 24, "length": round(length, 3),
                 "beats": {k: [round(a, 3), round(b, 3)] for k, (a, b) in beats.items()},
                 "impacts": [round(h, 3) for h in impacts], "fx_times": fx_times,

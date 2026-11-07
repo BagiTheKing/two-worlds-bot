@@ -313,7 +313,7 @@
   },
   {
    "type": "endnote",
-   "from": "end",
+   "from": "end+0.0",
    "to": "end+3.0",
    "next_label": "THE FINALE",
    "next_title": "THE FIRST PORTAL WAS A TRAP",
@@ -2874,7 +2874,7 @@
   ],
   [
    "patch_upgrade.end",
-   "end+0.4"
+   "end.end+1"
   ]
  ]
 }
