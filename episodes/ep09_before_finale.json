@@ -492,7 +492,11 @@
    "name": "noob_creative",
    "text": "Creative mode! Idea by our friend, Youssef!",
    "direction_text": "[excited, giving a shout-out, pointing at the camera] Creative mode! Idea by our friend, Youssef!",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    0.0,
+    4.5
+   ]
   },
   {
    "beat": "r6",
@@ -593,7 +597,11 @@
    "name": "noob_which",
    "text": "...Patch? Which one?",
    "direction_text": "[small, nervous, turning to Patch] ...Patch? Which one?",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    18.6,
+    20.45
+   ]
   },
   {
    "beat": "stare",
@@ -723,7 +731,11 @@
    "name": "steve_quiet",
    "text": "...Why did it go quiet?",
    "direction_text": "[whispering, tense] ...Why did it go quiet?",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    8.95,
+    10.05
+   ]
   },
   {
    "beat": "rise",
