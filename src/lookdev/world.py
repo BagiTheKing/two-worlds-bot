@@ -571,6 +571,27 @@ def build_world(sc, assets, cfg=None):
             kind = ("cherry" if r_ < 0.7 else "oak") if on_cherry_hill else \
                 ("big_oak" if r_ < 0.12 else "birch" if r_ < 0.27 else "cherry" if r_ < 0.31 else "oak")
             tree(tcells, x, y, h, kind, rnd)
+    # trees placed for the cameras: cherries where the shots look (meadow and hill frames)
+    for fx, fy, fk in cfg.get("feature_trees", [(9, 15, "cherry"), (14, 23, "cherry"), (5, 27, "cherry"),
+                                                (-12, 21, "cherry"), (19, 31, "cherry"), (-5, 33, "oak"),
+                                                (-18, 30, "big_oak"), (11, 38, "cherry"), (2, 41, "oak")]):
+        h = Hn.get((fx, fy))
+        if h is not None and near.get((fx, fy, h - 1)) == "grass":
+            tree(tcells, fx, fy, h, fk, rnd)
+    # bushes: low leaf mounds on the slopes and the meadow's edge (the reference's dense near background)
+    for gx in range(NX0 + 2, NX1 - 2, 3):
+        for gy in range(NY0 + 2, NY1 - 2, 3):
+            x, y = gx + rnd.randint(-1, 1), gy + rnd.randint(-1, 1)
+            h = Hn.get((x, y))
+            if h is None or near.get((x, y, h - 1)) != "grass" or (x, y, h) in tcells:
+                continue
+            dst = min(math.hypot(x - sx, y - sy) for sx, sy in stage)
+            if dst < 8 or any(math.hypot(x - kx, y - ky) < kr for kx, ky, kr in keep):
+                continue
+            p = 0.42 if (8 < y < 45 and -32 < x < 26) else (0.22 if dst < 60 else 0.0)
+            if rnd.random() < p:
+                kind = "cherry_lv" if rnd.random() < 0.12 else "oak_lv"
+                _blob(tcells, x, y, h, rnd.uniform(1.1, 1.9), rnd.uniform(0.8, 1.3), kind, rnd, rough=0.3)
     for k in list(tcells):                                 # never inside the ground
         if k in near:
             del tcells[k]
@@ -672,7 +693,76 @@ def build_world(sc, assets, cfg=None):
     W.clouds = voxel_mesh(sc, "clouds", cc, {"c": {"top": cm_top, "side": cm_bot, "bottom": cm_bot}},
                           scale=(6, 6, 2.5), offset=(0, 0, cfg.get("cloud_height", 130)))
     only_camera(W.clouds)
+    if cfg.get("particles", True):
+        W.particles = add_particles(sc, T, cfg.get("particle_box", (-7, 9, -4, 16, 0.4, 6.5)), rnd)
     return W
+
+
+def add_particles(sc, T, box, rnd, leaves=170, petals=50, specks=70):
+    """What floats in the reference's air: drifting leaves (small green squares,
+    two-sided, light through them), cherry petals and warm glowing specks.
+    One mesh each; names start with falling_leaf / speck so the depth pass skips them."""
+    x0, x1, y0, y1, z0, z1 = box
+    out = []
+
+    def flakes(name, n, cols, size):
+        verts, faces, col = [], [], []
+        for _ in range(n):
+            c = (rnd.uniform(x0, x1), rnd.uniform(y0, y1), rnd.uniform(z0, z1))
+            s = rnd.uniform(*size)
+            a = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-1, 1))).normalized()
+            b = a.orthogonal().normalized()
+            e = a.cross(b).normalized()
+            i = len(verts)
+            for u, v in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                verts.append(tuple(Vector(c) + (b * u + e * v) * s / 2))
+            faces.append([i, i + 1, i + 2, i + 3])
+            col.append(rnd.choice(cols))
+        me = bpy.data.meshes.new(name)
+        me.from_pydata(verts, [], faces)
+        ca = me.color_attributes.new("flake_col", "FLOAT_COLOR", "FACE")
+        for k, c_ in enumerate(col):
+            ca.data[k].color = (*(((v / 255 + 0.055) / 1.055) ** 2.4 for v in c_), 1)
+        m = bpy.data.materials.new(name)
+        m.use_nodes = True
+        nt = m.node_tree
+        b_ = nt.nodes["Principled BSDF"]
+        at = nt.nodes.new("ShaderNodeAttribute")
+        at.attribute_name = "flake_col"
+        nt.links.new(at.outputs["Color"], b_.inputs["Base Color"])
+        b_.inputs["Roughness"].default_value = 0.6
+        tr = nt.nodes.new("ShaderNodeBsdfTranslucent")
+        nt.links.new(at.outputs["Color"], tr.inputs["Color"])
+        mx = nt.nodes.new("ShaderNodeMixShader")
+        mx.inputs["Fac"].default_value = 0.45
+        nt.links.new(b_.outputs["BSDF"], mx.inputs[1])
+        nt.links.new(tr.outputs["BSDF"], mx.inputs[2])
+        nt.links.new(mx.outputs["Shader"], nt.nodes["Material Output"].inputs["Surface"])
+        me.materials.append(m)
+        ob = bpy.data.objects.new(name, me)
+        sc.collection.objects.link(ob)
+        ob.visible_shadow = False
+        out.append(ob)
+
+    flakes("falling_leaf_green", leaves, [(96, 168, 36), (124, 196, 48), (78, 140, 30), (150, 210, 70)], (0.1, 0.18))
+    flakes("falling_leaf_petal", petals, [(250, 182, 214), (240, 160, 200), (255, 210, 228)], (0.07, 0.12))
+    me = bpy.data.meshes.new("speck")
+    verts, faces = [], []
+    for _ in range(specks):
+        c = Vector((rnd.uniform(x0, x1), rnd.uniform(y0, y1), rnd.uniform(z0, z1)))
+        s = rnd.uniform(0.012, 0.026)
+        i = len(verts)
+        for dx, dy, dz in ((-1, -1, -1), (1, -1, -1), (1, 1, -1), (-1, 1, -1), (-1, -1, 1), (1, -1, 1), (1, 1, 1), (-1, 1, 1)):
+            verts.append(tuple(c + Vector((dx, dy, dz)) * s))
+        faces += [[i, i + 1, i + 2, i + 3], [i + 4, i + 7, i + 6, i + 5], [i, i + 4, i + 5, i + 1],
+                  [i + 1, i + 5, i + 6, i + 2], [i + 2, i + 6, i + 7, i + 3], [i + 3, i + 7, i + 4, i]]
+    me.from_pydata(verts, [], faces)
+    me.materials.append(flat("speck", (255, 196, 120), emission=6.0))
+    ob = bpy.data.objects.new("speck", me)
+    sc.collection.objects.link(ob)
+    only_camera(ob)
+    out.append(ob)
+    return out
 
 
 SKY_DAY = {"glow": (255, 236, 236), "power": 6.0, "horizon": (200, 224, 250)}
