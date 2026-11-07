@@ -19,6 +19,8 @@ and checked side by side.
 | `face_lab.py` | A studio sheet: renders many face or pose variants side by side. |
 | `look.py` | The test world: a meadow, a forest hill, blocky clouds, sun and edge lights, the Standard view transform. Shots: `close`, `full`, `wide`. |
 | `grade.py` | Applies the episode grade (`assemble.grade`) to a still. |
+| `stage.py` | Builders shared by the labs and the episode renderers: Steve as a collection instance (with his parts sorted into legs, body, arms and head), the Noob, Patch, Null and his lights. |
+| `ep09_new.py` | Episode 9's new-look shots, rendered from the episode's timeline and voice track: the hook, the upgrade (old and new models in one scene, swapped part by part behind a scan ring), the world's reveal wave, Null's rise, the erasing and the chase. Everything is a function of time, applied in a frame handler, so any frame renders on its own (CI shards, with motion blur). Lip sync comes from each line's slice of the voice track. |
 
 Key findings:
 
