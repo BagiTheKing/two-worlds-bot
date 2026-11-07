@@ -77,7 +77,7 @@ def bake_textures(assets):
               "birch_log", "birch_log_top", "cherry_log", "cherry_log_top", "cherry_leaves", "coarse_dirt",
               "poppy", "dandelion", "oxeye_daisy", "cornflower", "azure_bluet", "pink_petals"):
         save(n, load(n))
-    save("oak_leaves", tint(load("oak_leaves"), FOLIAGE, 1.35))
+    save("oak_leaves", tint(load("oak_leaves"), FOLIAGE, 1.55))
     save("birch_leaves", tint(load("birch_leaves"), BIRCH_LV, 1.3))
     for n in ("short_grass", "tall_grass_bottom", "tall_grass_top", "fern", "large_fern_bottom", "large_fern_top", "bush"):
         try:
@@ -275,8 +275,9 @@ def _dome(x, y, cx, cy, r, h):
     return h * max(0.0, 1 - d * d) ** 1.4
 
 
-PEAKS = [(-330, -55, 150, 75), (-300, 12, 118, 62), (-372, 70, 172, 85), (-285, 108, 98, 55),
-         (-390, -150, 138, 80), (-292, -118, 92, 52), (-420, 0, 125, 80)]          # x, y, height, radius
+PEAKS = [(-330, -55, 150, 70), (-300, 12, 112, 52), (-372, 70, 178, 80), (-285, 108, 92, 48),
+         (-390, -150, 140, 76), (-292, -118, 84, 46), (-420, 0, 128, 74), (-318, 46, 96, 40),
+         (-350, -10, 132, 44), (-265, -40, 70, 36), (-268, 60, 66, 34), (-400, 120, 150, 70)]   # x, y, height, radius
 
 
 class Layout:
@@ -316,7 +317,7 @@ class Layout:
                 if d < 1:
                     pk = max(pk, ph * (1 - d) ** 1.25)
             if pk > 0:
-                pk *= 0.7 + 0.6 * ridge                    # crests and gullies on the faces
+                pk *= 0.62 + 0.75 * ridge                  # crests and gullies on the faces
             h += max(pk, 14 * min(1.0, (-x - 220) / 40))
         # the stage: flat around the origin
         sx, sy = self.cfg.get("stage_center", (0.0, 0.0))
@@ -344,9 +345,10 @@ def _columns(layout, x0, x1, y0, y1, step, skip=None):
     return H
 
 
-def _terrain_cells(H, step, snowline, lake, scale_far=False):
+def _terrain_cells(H, step, snowline, lake, scale_far=False, noise=None):
     """Fill each column from just under its lowest neighbour up to its top."""
     cells = {}
+    self_noise = noise or Noise(99)
     lx, ly, lr = lake
     for (gx, gy), h in H.items():
         nbs = [H.get((gx + 1, gy), h), H.get((gx - 1, gy), h), H.get((gx, gy + 1), h), H.get((gx, gy - 1), h)]
@@ -360,7 +362,7 @@ def _terrain_cells(H, step, snowline, lake, scale_far=False):
             sl = snowline + 8 * (math.sin(wx * 0.11) + math.cos(wy * 0.13))
             if wz > sl:
                 if scale_far:                                  # far peaks: snow, with rock breaking through
-                    rock = steep and ((gx * 7 + gy * 13 + z * 5) % 5 < 2)
+                    rock = steep and self_noise.value(gx * 0.45 + z * 0.3, gy * 0.45) > 0.5   # rock bands through the snow
                     k = "snowblock" if (z + 1) * step > sl - 6 and not rock else ("andesite" if z % 4 == 0 else "stone")
                 else:
                     k = "snow" if depth == 0 else ("snowblock" if wz - (h - z) * step > sl - 10 else "stone")
@@ -393,27 +395,27 @@ def _blob(cells, cx, cy, cz, rx, rz, kind, rnd, rough=0.38):
 def tree(cells, x, y, z, kind, rnd):
     """Adds one tree's blocks (logs: 'oak_log' etc., leaves: 'oak_lv' etc.) to cells."""
     if kind == "oak":
-        h = rnd.randint(5, 7)
+        h = rnd.randint(6, 8)
         for k in range(h):
             cells[(x, y, z + k)] = "oak_log"
-        _blob(cells, x, y, z + h - 1, rnd.uniform(2.4, 3.2), rnd.uniform(2.0, 2.6), "oak_lv", rnd)
+        _blob(cells, x, y, z + h - 1, rnd.uniform(3.0, 3.9), rnd.uniform(2.5, 3.1), "oak_lv", rnd, rough=0.26)
     elif kind == "big_oak":
         h = rnd.randint(8, 11)
         for k in range(h):
             cells[(x, y, z + k)] = "oak_log"
-        _blob(cells, x, y, z + h, rnd.uniform(3.4, 4.2), rnd.uniform(2.6, 3.2), "oak_lv", rnd)
+        _blob(cells, x, y, z + h, rnd.uniform(4.2, 5.2), rnd.uniform(3.2, 3.8), "oak_lv", rnd, rough=0.24)
         for _ in range(rnd.randint(2, 3)):                  # branches with their own leaf clumps
             a = rnd.uniform(0, 2 * math.pi)
             bz = z + rnd.randint(h - 5, h - 2)
             ex, ey = x + round(3 * math.cos(a)), y + round(3 * math.sin(a))
             for t in range(1, 4):
                 cells[(x + round(t * math.cos(a)), y + round(t * math.sin(a)), bz + t // 2)] = "oak_log"
-            _blob(cells, ex, ey, bz + 2, rnd.uniform(2.2, 2.8), 1.8, "oak_lv", rnd)
+            _blob(cells, ex, ey, bz + 2, rnd.uniform(2.8, 3.4), 2.3, "oak_lv", rnd, rough=0.26)
     elif kind == "birch":
         h = rnd.randint(6, 8)
         for k in range(h):
             cells[(x, y, z + k)] = "birch_log"
-        _blob(cells, x, y, z + h - 1, rnd.uniform(2.0, 2.4), rnd.uniform(2.0, 2.6), "birch_lv", rnd)
+        _blob(cells, x, y, z + h - 1, rnd.uniform(2.4, 2.9), rnd.uniform(2.4, 3.0), "birch_lv", rnd, rough=0.28)
     elif kind == "cherry":
         h = rnd.randint(5, 7)
         a = rnd.uniform(0, 2 * math.pi)
@@ -422,7 +424,7 @@ def tree(cells, x, y, z, kind, rnd):
             if k >= h - 3:                                 # the trunk leans out near the top
                 tx, ty = x + round((k - h + 4) * math.cos(a)), y + round((k - h + 4) * math.sin(a))
             cells[(tx, ty, z + k)] = "cherry_log"
-        _blob(cells, tx, ty, z + h, rnd.uniform(3.6, 4.6), rnd.uniform(1.5, 1.9), "cherry_lv", rnd, rough=0.3)
+        _blob(cells, tx, ty, z + h, rnd.uniform(4.4, 5.4), rnd.uniform(2.0, 2.5), "cherry_lv", rnd, rough=0.26)
         for _ in range(rnd.randint(4, 8)):                 # pink hanging bits under the canopy
             hx, hy = tx + rnd.randint(-3, 3), ty + rnd.randint(-3, 3)
             cells.setdefault((hx, hy, z + h - 2), "cherry_lv")
@@ -524,7 +526,7 @@ def build_world(sc, assets, cfg=None):
         "grass_top", "grass_side", "dirt", "stone", "andesite", "gravel", "sand", "snow", "grass_block_snow",
         "oak_log", "oak_log_top", "birch_log", "birch_log_top", "cherry_log", "cherry_log_top")}
     for k in ("oak_leaves", "birch_leaves", "cherry_leaves"):
-        M[k] = material("w_" + k, T[k], alpha=True, rough=0.65, translucent=0.3)
+        M[k] = material("w_" + k, T[k], alpha=True, rough=0.6, translucent=0.42)
     KINDS = {
         "grass": {"top": M["grass_top"], "side": M["grass_side"], "bottom": M["dirt"]},
         "dirt": {"top": M["dirt"], "side": M["dirt"], "bottom": M["dirt"]},
@@ -661,6 +663,9 @@ def build_world(sc, assets, cfg=None):
     W.sun, W.to_sun = sun_object(sc, az, el, energy=cfg.get("sun_energy", 5.4))
     W.world = sky(sc, W.to_sun, fill=cfg.get("fill", 1.1))
     W.sky_dot = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "VECT_MATH" and n_.operation == "DOT_PRODUCT")
+    W.sky_pow = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "MATH" and n_.operation == "POWER")
+    W.sky_glow = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "MIX")
+    W.sky_ramp = next(n_ for n_ in W.world.node_tree.nodes if n_.type == "VALTORGB")
     cm_top = flat("cloud", (255, 255, 255), rough=1.0, emission=0.85)
     cm_bot = flat("cloud_under", (226, 232, 244), rough=1.0, emission=0.6)
     cc = cloud_cells(assets, cfg.get("cloud_offset", (40, 90)), cfg.get("cloud_radius", 110))
@@ -668,6 +673,17 @@ def build_world(sc, assets, cfg=None):
                           scale=(6, 6, 2.5), offset=(0, 0, cfg.get("cloud_height", 130)))
     only_camera(W.clouds)
     return W
+
+
+SKY_DAY = {"glow": (255, 236, 236), "power": 6.0, "horizon": (200, 224, 250)}
+SKY_GOLDEN = {"glow": (255, 222, 200), "power": 8.0, "horizon": (214, 222, 248)}     # golden hour: a warm glow by the sun
+
+
+def set_sky(W, look):
+    lin = lambda c: (*(((v / 255 + 0.055) / 1.055) ** 2.4 for v in c), 1)   # noqa: E731
+    W.sky_glow.inputs["B"].default_value = lin(look["glow"])
+    W.sky_pow.inputs[1].default_value = look["power"]
+    W.sky_ramp.color_ramp.elements[0].color = lin(look["horizon"])
 
 
 def set_sun(W, azimuth, elevation, energy=None, color=None):

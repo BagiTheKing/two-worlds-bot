@@ -580,21 +580,55 @@ if os.environ.get("NOOB"):                           # a close-up of the Noob, w
     _nx, _ny = NOOB.root.location.x, NOOB.root.location.y
     SHOT["noob_close"] = dict(loc=(_nx - 0.55, _ny - 2.0, 1.62), at=(_nx, _ny, 1.72), lens=42, focus=None, fstop=0.9)
 SHOT.update({
-    "meadow": dict(loc=(0.7, -3.1, 0.65), at=(0.55, 4.0, 2.6), lens=28, focus=3.2, fstop=2.2),        # Benly 2.0
-    "hill": dict(loc=(-1.0, -3.0, 1.0), at=(-6.0, 40.0, 11.0), lens=24, focus=8.0, fstop=4.0,        # Benly 7.0
-                 sun=(95, 22, 6.0, (1.0, 0.8, 0.58)), haze=(260, 30)),
-    "vista": dict(loc=(-4.0, 3.0, 2.3), at=(-300.0, 0.0, 48.0), lens=26, focus=8.0, fstop=8.0,       # movie 10.0
-                  sun=(163, 34, 5.6, (1.0, 0.92, 0.82)), haze=(380, 50)),
+    "meadow": dict(loc=(0.25, -3.1, 0.65), at=(0.75, 4.0, 2.6), lens=28, focus=3.2, fstop=2.2,        # Benly 2.0
+                   sun=(140, 17, 6.4, (1.0, 0.76, 0.5)), glow_dir=(22, 14), golden=True, sun_xy=(0.92, 0.08), haze=(240, 25),
+                   noob_at=(1.75, 1.5, -28)),
+    "close": dict(loc=(2.05, 0.4, 1.42), at="steve_head", lens=42, focus=2.05, fstop=0.9,               # movie 46.5
+                  steve_yaw=90, noob_at=(-3.0, 5.0, 60), sun=(60, 30, 5.6, (1.0, 0.86, 0.7)), haze=(380, 40)),
+    "hill": dict(loc=(-1.0, -3.0, 1.0), at=(-6.0, 40.0, 11.0), lens=24, focus=4.5, fstop=4.0,          # Benly 7.0
+                 sun=(140, 16, 6.6, (1.0, 0.74, 0.48)), glow_dir=(22, 13), golden=True, sun_xy=(0.95, 0.1), haze=(240, 25),
+                 steve_at=(-2.0, 2.4, 0), steve_yaw=172, noob_at=(1.4, 7.5, 175)),
+    "vista": dict(loc=(-3.0, 3.0, 3.0), at=(-300.0, 0.0, 44.0), lens=26, focus=5.5, fstop=6.0,         # movie 10.0
+                  sun=(163, 34, 5.6, (1.0, 0.92, 0.82)), haze=(380, 50),
+                  steve_at=(-7.3, 2.25, 0), steve_yaw=-90, noob_at=(-9.2, 3.9, -96)),
 })
-from world import set_sun as _set_sun  # noqa: E402
+from world import set_sun as _set_sun, set_sky as _set_sky, SKY_DAY, SKY_GOLDEN  # noqa: E402
 for name in SHOTS:
     s = SHOT[name]
     if WORLD2:
         _set_sun(W, *(s.get("sun") or WCFG.get("sun", (105, 34)))[:2],
                  *(list(s["sun"][2:]) if s.get("sun") else [5.4, (1.0, 0.87, 0.7)]))
+        _set_sky(W, SKY_GOLDEN if s.get("golden") else SKY_DAY)
+        if s.get("glow_dir"):                          # the sky's glow placed for the frame, apart from the light
+            ga, ge = (math.radians(v) for v in s["glow_dir"])
+            W.sky_dot.inputs[1].default_value = (math.sin(ga) * math.cos(ge), math.cos(ga) * math.cos(ge), math.sin(ge))
+    # staging for this shot: where the characters stand and face
+    steve.rotation_euler = (0, 0, math.radians(s.get("steve_yaw", -4)))
+    steve.location = s.get("steve_at", (0, 0, 0))
+    for ln_ in ("edge_cool", "edge_warm"):             # Steve's edge lights travel with him
+        lo_ = bpy.data.objects.get(ln_)
+        if lo_ is not None:
+            if "home" not in lo_:
+                lo_["home"] = tuple(lo_.location)
+            lo_.location = Vector(lo_["home"]) + Vector(steve.location)
+    if os.environ.get("NOOB") and s.get("noob_at"):
+        NOOB.root.location = s["noob_at"][:2] + (0,)
+        NOOB.root.rotation_euler = (0, 0, math.radians(s["noob_at"][2]))
     cam.location = s["loc"]
-    d = Vector(s["at"]) - cam.location
+    at = s["at"]
+    if at == "steve_head":                             # aim at where his head really is in this pose
+        bpy.context.view_layer.update()
+        hb = arm.pose.bones["Head"]
+        at = tuple(steve.matrix_world @ arm.matrix_world @ ((hb.head + hb.tail) / 2)) 
+        at = (at[0], at[1], at[2] - 0.05)
+    d = Vector(at) - cam.location
     cam.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+    key = bpy.data.objects.get("char_key")
+    if key is not None:                                # the key light follows the camera: up and to its right
+        subj = Vector(s.get("key_at", tuple(Vector(steve.location) + Vector((0, 0, 1.7)))))
+        right = d.normalized().cross(Vector((0, 0, 1))).normalized()
+        key.location = Vector(s["loc"]) + right * 1.6 + Vector((0, 0, 1.4))
+        key.rotation_euler = (subj - key.location).to_track_quat("-Z", "Y").to_euler()
     cam.data.lens = s["lens"]
     cam.data.dof.focus_distance = s["focus"] or d.length
     cam.data.dof.aperture_fstop = s["fstop"]
@@ -603,5 +637,11 @@ for name in SHOTS:
     print("SAVED", sc.render.filepath)
     if WORLD2 and os.environ.get("HAZE", "1") == "1":
         render_depth(sc, f"{OUT}_{name}_depth.png")
-        if s.get("haze"):                              # this shot's haze distance and start, for grade.py
-            open(f"{OUT}_{name}_haze.json", "w").write(_jw.dumps({"L": s["haze"][0], "start": s["haze"][1]}))
+        shot_look = {}                                   # this shot's haze and grade, for grade.py
+        if s.get("haze"):
+            shot_look.update({"L": s["haze"][0], "start": s["haze"][1]})
+        if s.get("golden"):
+            shot_look.update({"tint": [1.1, 1.0, 0.86], "haze_warm": True})
+        if s.get("sun_xy"):
+            shot_look["sun"] = s["sun_xy"]
+        open(f"{OUT}_{name}_haze.json", "w").write(_jw.dumps(shot_look))

@@ -38,6 +38,9 @@ def haze(img, depth_path, sun=None):
     yy = np.linspace(0, 1, h)[:, None, None]
     top = np.array((150, 196, 250), np.float32) / 255
     low = np.array((214, 230, 250), np.float32) / 255
+    if hz.get("haze_warm"):                            # golden hour: the far air glows warm
+        top = np.array((196, 190, 230), np.float32) / 255
+        low = np.array((252, 214, 196), np.float32) / 255
     col = np.broadcast_to(top * (1 - yy) + low * yy, (h, w, 3)).copy()
     if sun:                                             # warmer near the sun
         sx, sy = sun
@@ -50,12 +53,17 @@ def haze(img, depth_path, sun=None):
 
 if __name__ == "__main__":
     im = Image.open(sys.argv[1]).convert("RGB")
-    sun = [float(sys.argv[3]), float(sys.argv[4])] if len(sys.argv) > 4 else None
+    side = sys.argv[1].replace("_raw.png", "_haze.json")
+    shot = __import__("json").load(open(side)) if side != sys.argv[1] and os.path.exists(side) else {}
+    sun = [float(sys.argv[3]), float(sys.argv[4])] if len(sys.argv) > 4 else shot.get("sun")
     dp = sys.argv[1].replace("_raw.png", "_depth.png")
     if dp != sys.argv[1] and os.path.exists(dp) and os.environ.get("NOHAZE") != "1":
         im = haze(im, dp, sun)
     assemble.W, assemble.H = im.size
     o = {"saturation": float(os.environ.get("SAT", "1.28")), "glow": 0.5, "threshold": 0.7}
+    if shot.get("tint"):
+        o["tint"] = shot["tint"]
+        o["glow"] = 0.65
     if sun:
         o["sun"] = sun
     assemble.grade(im, o, 0, 0, None)
