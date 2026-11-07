@@ -287,6 +287,11 @@ jobs:
         if: inputs.shots == '' || inputs.reuse_run_id != ''
         run: |
           mkdir -p /tmp/pub && cp build/episode.mp4 build/timeline.json /tmp/pub/
+          # GitHub refuses files over 100 MB: a longer episode goes up in pieces,
+          # joined back with: cat episode.mp4.part-* > episode.mp4
+          if [ $(stat -c %s /tmp/pub/episode.mp4) -gt 95000000 ]; then
+            (cd /tmp/pub && split -b 90M episode.mp4 episode.mp4.part- && rm episode.mp4)
+          fi
           cd /tmp/pub && git init -q -b "preview-${{ steps.ep.outputs.id }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
