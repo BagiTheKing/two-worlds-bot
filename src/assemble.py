@@ -644,6 +644,43 @@ def retime_map(new_tl, old_tl):
     return to_old
 
 
+def rewind_frame(o, t, f, frames_dir, fps):
+    """A tape rewinding: earlier frames (o["src_from"]..o["src_to"]) played
+    backwards, faster and faster, with VHS tracking bands, a colour split,
+    noise lines and a rewind mark."""
+    import numpy as np
+    u = (t - o["start"]) / max(1e-6, o["end"] - o["start"])
+    st = o["src_to"] - (o["src_to"] - o["src_from"]) * min(1.0, u ** 1.5)
+    path = os.path.join(frames_dir, f"{int(round(st * fps)) + 1:04d}.png")
+    if not os.path.exists(path):
+        return None
+    img = Image.open(path).convert("RGB")
+    if img.size != (W, H):
+        img = img.resize((W, H), Image.LANCZOS)
+    a = np.asarray(img, dtype=np.float32)
+    rnd = random.Random(f)
+    out = a.copy()
+    out[..., 0] = np.roll(a[..., 0], 9, axis=1)                                 # colour split
+    out[..., 2] = np.roll(a[..., 2], -9, axis=1)
+    for _ in range(3):                                                          # tracking bands
+        y0 = rnd.randrange(0, H - 120)
+        hgt = rnd.randrange(30, 120)
+        out[y0:y0 + hgt] = np.roll(out[y0:y0 + hgt], rnd.randrange(-80, 80), axis=1) * 0.8 + 50
+    for _ in range(26):                                                         # noise lines
+        y0 = rnd.randrange(0, H)
+        out[y0:y0 + 3] = out[y0:y0 + 3] * 0.3 + 200
+    lum = out @ np.array([0.3, 0.59, 0.11], np.float32)
+    out = lum[..., None] + (out - lum[..., None]) * 0.75                        # tape colours
+    img = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+    d = ImageDraw.Draw(img)
+    if (f // 6) % 2 == 0:                                                       # the blinking mark
+        x, y = 90, 150
+        for dx in (0, 70):
+            d.polygon([(x + dx + 70, y), (x + dx + 70, y + 80), (x + dx, y + 40)], fill=(255, 255, 255))
+        d.text((x + 170, y + 40), "REWIND", font=ImageFont.truetype(MONO, 60), fill=(255, 255, 255), anchor="lm")
+    return img
+
+
 def main(timeline, frames_dir, audio, out, source_timeline=None):
     """source_timeline: the timeline the frames were rendered for, when the
     audio has since been re-voiced (frames are retimed to match)."""
@@ -672,6 +709,9 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         clips.append((o["start"], o["end"], frames, o.get("graded", False)))
     overlays = [o for o in overlays if o["type"] != "clip"]
     for o in overlays:
+        if o["type"] == "rewind":
+            DRAW.setdefault("rewind", lambda *a_: None)       # drawn above, in place of the frame
+    for o in overlays:
         if o.get("steps"):
             steps = o["steps"] if isinstance(o["steps"], list) else [o["steps"]]
             o["_steps"] = sorted(sum((tl.get("fx_times", {}).get(s, []) for s in steps), []))
@@ -690,6 +730,11 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         path = os.path.join(frames_dir, f"{src:04d}.png")
         img = Image.open(path).convert("RGB") if os.path.exists(path) else black.copy()
         graded = False
+        for o in overlays:
+            if o["type"] == "rewind" and o["start"] <= t < o["end"]:
+                rw = rewind_frame(o, t, f, frames_dir, fps)
+                if rw is not None:
+                    img, graded = rw, True
         for c0, c1, frames, g in clips:
             if c0 <= t < c1 and frames:
                 img = frames[min(len(frames) - 1, int(round((t - c0) * fps)))].copy()

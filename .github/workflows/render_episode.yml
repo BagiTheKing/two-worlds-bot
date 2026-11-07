@@ -29,6 +29,15 @@ on:
         description: "Only the voices, the timeline and the sound preview (no frames)"
         type: boolean
         default: false
+      new_look:
+        description: "The episode's new-look renderer (e.g. src/lookdev/ep09_new.py); empty = none"
+        default: ""
+      new_samples:
+        description: "Samples per pixel for the new-look frames"
+        default: "32"
+      parts:
+        description: "Which frames to render: all, old (episode kit) or new (new look)"
+        default: "all"
 
 permissions:
   contents: write
@@ -119,7 +128,7 @@ jobs:
 
   render:
     needs: prep
-    if: ${{ !inputs.voices_only }}
+    if: ${{ !inputs.voices_only && inputs.parts != 'new' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -152,9 +161,51 @@ jobs:
           retention-days: 30
           if-no-files-found: ignore
 
+  render_new:
+    # the new look (src/lookdev): Steve's rig, the Noob, Patch, Null and the world. Its block
+    # textures come from the MCprep pack, fetched here and never committed (Minecraft's textures).
+    needs: prep
+    if: ${{ !inputs.voices_only && inputs.new_look != '' && inputs.parts != 'old' }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install bpy Pillow numpy soundfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+      - name: The MCprep pack (block and item textures)
+        run: |
+          for i in 1 2 3 4; do
+            curl -sSL -o /tmp/mcprep.zip "https://drive.usercontent.google.com/download?id=19RXVH0N1BIs_4OxtOooqqLpZ5jK_F1ZC&export=download&confirm=t" && unzip -tq /tmp/mcprep.zip && break
+            sleep $((2 ** i))
+          done
+          unzip -q /tmp/mcprep.zip -d /tmp/mc
+          mkdir -p /tmp/assets && ln -s /tmp/mc/MCprep_addon/MCprep_resources /tmp/assets/mcprep
+          ls /tmp/assets/mcprep/resourcepacks/mcprep_default/assets/minecraft/textures/block | wc -l
+      - name: Render this shard's new-look frames
+        run: |
+          mkdir -p build/frames
+          python src/lookdev/$(basename ${{ inputs.new_look }}) build/timeline.json build/voice.wav build/tex /tmp/assets build/frames \
+            --shard ${{ matrix.shard }}/40 --res ${{ inputs.res }} --samples ${{ inputs.new_samples }}
+          rm -rf build/frames/_mist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frames-new-${{ matrix.shard }}
+          path: build/frames/
+          retention-days: 30
+          if-no-files-found: ignore
+
   assemble:
-    needs: [prep, render]
-    if: ${{ !inputs.voices_only }}
+    needs: [prep, render, render_new]
+    if: ${{ always() && !inputs.voices_only && needs.prep.result == 'success' && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

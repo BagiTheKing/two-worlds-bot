@@ -320,12 +320,2101 @@
    "question": "WHICH ONE SHOULDN'T BE IN THIS WORLD?",
    "question_sub": "Comment your theory",
    "highlight": true
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep0.mp4",
+   "from": "holo_on",
+   "to": "r0+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 0"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep1.mp4",
+   "from": "r1",
+   "to": "r1+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 1"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep2.mp4",
+   "from": "r2",
+   "to": "r2+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 2"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep3.mp4",
+   "from": "r3",
+   "to": "r3+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 3"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep4.mp4",
+   "from": "r4",
+   "to": "r4+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 4"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep5.mp4",
+   "from": "r5",
+   "to": "r5+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 5"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep6.mp4",
+   "from": "r6",
+   "to": "r6+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 6"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep7.mp4",
+   "from": "r7",
+   "to": "r7+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 7"
+  },
+  {
+   "type": "holo",
+   "video": "assets/clips/ep09/recap_ep8.mp4",
+   "from": "r8",
+   "to": "r8+4.0",
+   "offset": 0.0,
+   "label": "ARCHIVE · EP 8"
+  },
+  {
+   "type": "comment",
+   "from": "card",
+   "to": "look",
+   "handle": "@youssefakram7493",
+   "text": "Theory: ...one of them shouldn't be in a world...",
+   "highlight": "one of them shouldn't be in a world",
+   "hl_start": "noob_oneofus",
+   "hl_dur": 2.2,
+   "avatar_color": [
+    0,
+    137,
+    123
+   ],
+   "initial": "Y",
+   "y": 560
+  },
+  {
+   "type": "rewind",
+   "from": "rewind",
+   "to": "brief",
+   "src_from": 0.0,
+   "src_to": "rewind"
+  },
+  {
+   "type": "flash",
+   "from": "brief",
+   "to": "brief+0.3",
+   "strength": 0.6
+  },
+  {
+   "type": "flash",
+   "from": "patch_upgrade.end",
+   "to": "patch_upgrade.end+0.45"
   }
  ],
- "actors": {},
- "clips": [],
- "fx": [],
- "shots": [],
+ "actors": {
+  "steve": {
+   "rig": "steve",
+   "faces": "moments",
+   "at": [
+    5.0,
+    5.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  "noob": {
+   "rig": "noob",
+   "faces": "moments",
+   "at": [
+    7.4,
+    5.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  "patch": {
+   "rig": "patch",
+   "s": 1.4,
+   "at": [
+    6.2,
+    4.85,
+    2.55
+   ],
+   "yaw": 0.0
+  }
+ },
+ "clips": [
+  {
+   "who": "noob",
+   "do": "wave",
+   "from": "noob_hi",
+   "to": "noob_hi+1.4",
+   "arm": "arm_r"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_hi",
+   "to": "noob_hi.end",
+   "face": "happy"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_same",
+   "to": "noob_same.end+0.3",
+   "head": [
+    0.15,
+    0,
+    0.05
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_eight",
+   "to": "steve_eight+1.6",
+   "head": [
+    0.12,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_eight+1.6",
+   "to": "steve_eight.end",
+   "head": [
+    0,
+    0,
+    0.55
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "noob_same",
+   "to": "steve_eight+1.5",
+   "face": "unimpressed"
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "patch_archive",
+   "to": "patch_archive+0.4",
+   "yaw": 0.0
+  },
+  {
+   "who": "patch",
+   "do": "scan",
+   "from": "holo_on-0.4",
+   "to": "holo_off"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "holo_on",
+   "to": "noob_falling",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "holo_on",
+   "to": "noob_falling",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "r0",
+   "to": "noob_falling.end",
+   "face": "scared"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_beginning",
+   "to": "steve_beginning.end+0.2",
+   "head": [
+    0,
+    0,
+    0.55
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_deep",
+   "to": "noob_deep.end",
+   "head": [
+    0.0,
+    0,
+    -0.45
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_deep+1.4",
+   "to": "noob_deep.end",
+   "face": "surprised"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r1",
+   "to": "steve_tree.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r1",
+   "to": "noob_respect",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_respect",
+   "to": "noob_respect.end",
+   "face": "happy"
+  },
+  {
+   "who": "noob",
+   "do": "pose",
+   "from": "noob_respect",
+   "to": "noob_respect.end",
+   "parts": {
+    "arm_r": [
+     -0.4,
+     0,
+     0.6
+    ],
+    "arm_l": [
+     -0.4,
+     0,
+     -0.6
+    ]
+   }
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r2",
+   "to": "noob_record",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "steve_plan",
+   "to": "noob_record.end",
+   "face": "unimpressed"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_record",
+   "to": "noob_record.end",
+   "head": [
+    0,
+    0,
+    -0.55
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_record",
+   "to": "noob_record.end",
+   "face": "happy"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r3",
+   "to": "noob_dragon.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_dragon",
+   "to": "noob_dragon.end",
+   "face": "happy"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_you",
+   "to": "steve_you.end",
+   "head": [
+    0,
+    0,
+    0.55
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "raise_arm",
+   "from": "steve_you",
+   "to": "steve_you.end",
+   "arm": "arm_r",
+   "angle": 1.45,
+   "out": -0.35,
+   "ease": 0.2
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "steve_you",
+   "to": "steve_you.end+0.2",
+   "head": [
+    0.2,
+    0,
+    0.1
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r4",
+   "to": "patch_arrived.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r4",
+   "to": "patch_arrived.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "patch_arrived",
+   "to": "patch_arrived+0.3",
+   "yaw": 0.35
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_weirder",
+   "to": "steve_weirder.end",
+   "head": [
+    0,
+    0,
+    0.3
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "steve_weirder",
+   "to": "steve_weirder.end",
+   "face": "unimpressed"
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "patch_improvement",
+   "to": "patch_improvement+0.3",
+   "yaw": 0.0
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r5",
+   "to": "r6",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "cheer",
+   "from": "noob_creative",
+   "to": "noob_creative+0.6"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_creative",
+   "to": "noob_creative.end",
+   "face": "happy"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r5",
+   "to": "r6",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r6",
+   "to": "steve_nobody",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r6",
+   "to": "steve_nobody",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "r6+0.6",
+   "to": "steve_nobody.end",
+   "face": "scared"
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "r6+0.8",
+   "to": "steve_nobody",
+   "face": "surprised"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_nobody",
+   "to": "steve_nobody.end",
+   "head": [
+    0,
+    0,
+    0.55
+   ]
+  },
+  {
+   "who": "patch",
+   "do": "glitch_eye",
+   "from": "r6+0.4",
+   "to": "r6+1.0"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r7",
+   "to": "patch_behind.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r7",
+   "to": "patch_behind.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_alot",
+   "to": "noob_alot.end",
+   "face": "happy"
+  },
+  {
+   "who": "noob",
+   "do": "raise_arm",
+   "from": "noob_alot",
+   "to": "noob_alot.end",
+   "arm": "arm_l",
+   "angle": 2.6,
+   "out": 0.2,
+   "ease": 0.18
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r8",
+   "to": "noob_you",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "r8",
+   "to": "noob_you",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_you",
+   "to": "noob_you+1.2",
+   "head": [
+    0,
+    0,
+    -0.62
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "noob_you",
+   "to": "noob_you+1.4",
+   "yaw": -0.75
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_you+0.5",
+   "to": "noob_you.end",
+   "face": "neutral"
+  },
+  {
+   "who": "noob",
+   "do": "raise_arm",
+   "from": "noob_you+1.6",
+   "to": "noob_you.end+0.2",
+   "arm": "arm_r",
+   "angle": 1.45,
+   "out": -0.4,
+   "ease": 0.2
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "noob_you+1.0",
+   "to": "steve_next.end",
+   "face": "surprised"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_next",
+   "to": "steve_next.end",
+   "head": [
+    0.1,
+    0,
+    0.0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "steve_next",
+   "to": "steve_next+0.4",
+   "yaw": 0.0
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "patch_theories",
+   "to": "patch_theories+0.3",
+   "yaw": 0.0
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "card",
+   "to": "noob_oneofus.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "card",
+   "to": "noob_oneofus.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "look",
+   "to": "noob_itsyou.end",
+   "head": [
+    0,
+    0,
+    -0.62
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "look",
+   "to": "look+0.5",
+   "yaw": -0.6
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_itsyou",
+   "to": "noob_itsyou.end",
+   "face": "surprised"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "look+0.2",
+   "to": "steve_dying.end",
+   "head": [
+    0,
+    0,
+    0.55
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "noob_itsyou+1.0",
+   "to": "steve_dying.end",
+   "face": "unimpressed"
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "steve_dying.end",
+   "to": "noob_which",
+   "yaw": 0.0
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_which",
+   "to": "stare.end",
+   "head": [
+    0,
+    0,
+    0.5
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "noob_which",
+   "to": "stare.end",
+   "head": [
+    0,
+    0,
+    0.35
+   ]
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "noob_which",
+   "to": "noob_which+0.3",
+   "yaw": -0.5
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "stare",
+   "to": "stare+1.2",
+   "yaw": 0.0
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_what",
+   "to": "noob_what.end",
+   "face": "surprised"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_what",
+   "to": "noob_what.end",
+   "head": [
+    0,
+    0,
+    0.45
+   ]
+  },
+  {
+   "who": "patch",
+   "do": "scan",
+   "from": "patch_upgrade+0.4",
+   "to": "end"
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "patch_upgrade",
+   "to": "end",
+   "face": "surprised"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "patch_upgrade",
+   "to": "end",
+   "face": "scared"
+  }
+ ],
+ "fx": [
+  {
+   "kind": "sky",
+   "below": "sky",
+   "sun_dir": [
+    0.3,
+    0.75,
+    -0.6
+   ],
+   "keys": [
+    [
+     0,
+     6.5,
+     2.0
+    ]
+   ]
+  }
+ ],
+ "shots": [
+  {
+   "name": "brief",
+   "from": "brief",
+   "to": "noob_hi+1.7",
+   "lens": 24,
+   "path": [
+    [
+     "brief",
+     [
+      6.2,
+      -1.2,
+      1.5
+     ]
+    ],
+    [
+     "noob_hi+1.7",
+     [
+      6.2,
+      -0.7,
+      1.5
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "brief",
+     [
+      6.2,
+      5.0,
+      1.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "noob_hi",
+   "from": "noob_hi+1.7",
+   "to": "steve_eight",
+   "lens": 40,
+   "path": [
+    [
+     "noob_hi+1.7",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_eight",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_hi+1.7",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "steve_eight",
+   "from": "steve_eight",
+   "to": "patch_archive",
+   "lens": 40,
+   "path": [
+    [
+     "steve_eight",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "patch_archive",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_eight",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "patch_archive",
+   "from": "patch_archive",
+   "to": "holo_on",
+   "lens": 40,
+   "path": [
+    [
+     "patch_archive",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "holo_on",
+     [
+      6.4,
+      2.4299999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_archive",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r0",
+   "from": "holo_on",
+   "to": "steve_beginning",
+   "lens": 22,
+   "path": [
+    [
+     "holo_on",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "steve_beginning",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "holo_on",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r0_steve0",
+   "from": "steve_beginning",
+   "to": "noob_deep",
+   "lens": 40,
+   "path": [
+    [
+     "steve_beginning",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "noob_deep",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_beginning",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r0_noob1",
+   "from": "noob_deep",
+   "to": "r1",
+   "lens": 40,
+   "path": [
+    [
+     "noob_deep",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "r1",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_deep",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r1",
+   "from": "r1",
+   "to": "noob_respect",
+   "lens": 22,
+   "path": [
+    [
+     "r1",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_respect",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r1",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r1_noob0",
+   "from": "noob_respect",
+   "to": "r2",
+   "lens": 40,
+   "path": [
+    [
+     "noob_respect",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "r2",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_respect",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r2",
+   "from": "r2",
+   "to": "noob_record",
+   "lens": 22,
+   "path": [
+    [
+     "r2",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_record",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r2",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r2_noob0",
+   "from": "noob_record",
+   "to": "r3",
+   "lens": 40,
+   "path": [
+    [
+     "noob_record",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "r3",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_record",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r3",
+   "from": "r3",
+   "to": "steve_you",
+   "lens": 22,
+   "path": [
+    [
+     "r3",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "steve_you",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r3",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r3_steve0",
+   "from": "steve_you",
+   "to": "r4",
+   "lens": 40,
+   "path": [
+    [
+     "steve_you",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "r4",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_you",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r4",
+   "from": "r4",
+   "to": "steve_weirder",
+   "lens": 22,
+   "path": [
+    [
+     "r4",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "steve_weirder",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r4",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r4_steve0",
+   "from": "steve_weirder",
+   "to": "patch_improvement",
+   "lens": 40,
+   "path": [
+    [
+     "steve_weirder",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "patch_improvement",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_weirder",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r4_patch1",
+   "from": "patch_improvement",
+   "to": "r5",
+   "lens": 40,
+   "path": [
+    [
+     "patch_improvement",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "r5",
+     [
+      6.4,
+      2.4299999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_improvement",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r5",
+   "from": "r5",
+   "to": "noob_creative+2.2",
+   "lens": 22,
+   "path": [
+    [
+     "r5",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_creative+2.2",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r5",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r5_noob0",
+   "from": "noob_creative+2.2",
+   "to": "r6",
+   "lens": 40,
+   "path": [
+    [
+     "noob_creative+2.2",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "r6",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_creative+2.2",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r6",
+   "from": "r6",
+   "to": "noob_dontlike+1.6",
+   "lens": 22,
+   "path": [
+    [
+     "r6",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_dontlike+1.6",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r6",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r6_noob0",
+   "from": "noob_dontlike+1.6",
+   "to": "steve_nobody",
+   "lens": 40,
+   "path": [
+    [
+     "noob_dontlike+1.6",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_nobody",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_dontlike+1.6",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r6_steve1",
+   "from": "steve_nobody",
+   "to": "r7",
+   "lens": 40,
+   "path": [
+    [
+     "steve_nobody",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "r7",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_nobody",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r7",
+   "from": "r7",
+   "to": "patch_behind+3.0",
+   "lens": 22,
+   "path": [
+    [
+     "r7",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "patch_behind+3.0",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r7",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r7_patch0",
+   "from": "patch_behind+3.0",
+   "to": "noob_alot",
+   "lens": 40,
+   "path": [
+    [
+     "patch_behind+3.0",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "noob_alot",
+     [
+      6.4,
+      2.4299999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_behind+3.0",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r7_noob1",
+   "from": "noob_alot",
+   "to": "r8",
+   "lens": 40,
+   "path": [
+    [
+     "noob_alot",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "r8",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_alot",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo_r8",
+   "from": "r8",
+   "to": "noob_you",
+   "lens": 22,
+   "path": [
+    [
+     "r8",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_you",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "r8",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r8_noob0",
+   "from": "noob_you",
+   "to": "steve_next",
+   "lens": 40,
+   "path": [
+    [
+     "noob_you",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_next",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_you",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "r8_steve1",
+   "from": "steve_next",
+   "to": "holo_off",
+   "lens": 40,
+   "path": [
+    [
+     "steve_next",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "holo_off",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_next",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "theories",
+   "from": "holo_off",
+   "to": "card",
+   "lens": 40,
+   "path": [
+    [
+     "holo_off",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "card",
+     [
+      6.4,
+      2.4299999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "holo_off",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "card",
+   "from": "card",
+   "to": "look",
+   "lens": 22,
+   "path": [
+    [
+     "card",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "look",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "card",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "itsyou",
+   "from": "look",
+   "to": "steve_dying",
+   "lens": 30,
+   "path": [
+    [
+     "look",
+     [
+      6.2,
+      -0.7,
+      1.6
+     ]
+    ],
+    [
+     "steve_dying",
+     [
+      6.2,
+      -0.45,
+      1.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "look",
+     [
+      6.2,
+      5.0,
+      1.65
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "dying",
+   "from": "steve_dying",
+   "to": "noob_which",
+   "lens": 40,
+   "path": [
+    [
+     "steve_dying",
+     [
+      5.3,
+      2.6,
+      1.73
+     ]
+    ],
+    [
+     "noob_which",
+     [
+      5.3,
+      2.7800000000000002,
+      1.73
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_dying",
+     [
+      5.0,
+      5.0,
+      1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "which",
+   "from": "noob_which",
+   "to": "stare",
+   "lens": 40,
+   "path": [
+    [
+     "noob_which",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "stare",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_which",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "stare",
+   "from": "stare",
+   "to": "patch_budget",
+   "lens": 40,
+   "path": [
+    [
+     "stare",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "patch_budget",
+     [
+      6.4,
+      2.6999999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "stare",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "budget",
+   "from": "patch_budget",
+   "to": "noob_what",
+   "lens": 24,
+   "path": [
+    [
+     "patch_budget",
+     [
+      6.2,
+      -1.2,
+      1.5
+     ]
+    ],
+    [
+     "noob_what",
+     [
+      6.2,
+      -0.7,
+      1.5
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_budget",
+     [
+      6.2,
+      5.0,
+      1.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "what",
+   "from": "noob_what",
+   "to": "patch_upgrade",
+   "lens": 40,
+   "path": [
+    [
+     "noob_what",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "patch_upgrade",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_what",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "upgrade",
+   "from": "patch_upgrade",
+   "to": "patch_upgrade+1.5",
+   "lens": 40,
+   "path": [
+    [
+     "patch_upgrade",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "patch_upgrade+1.5",
+     [
+      6.4,
+      2.4299999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_upgrade",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "upgrade_wide",
+   "from": "patch_upgrade+1.5",
+   "to": "patch_upgrade.end",
+   "lens": 24,
+   "path": [
+    [
+     "patch_upgrade+1.5",
+     [
+      6.2,
+      -1.2,
+      1.5
+     ]
+    ],
+    [
+     "patch_upgrade.end",
+     [
+      6.2,
+      -0.7,
+      1.5
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_upgrade+1.5",
+     [
+      6.2,
+      5.0,
+      1.55
+     ]
+    ]
+   ]
+  }
+ ],
  "events": [
   {
    "beat": "hook",
@@ -769,5 +2858,15 @@
    "beat": "end",
    "dur": 3.0
   }
+ ],
+ "skip_render": [
+  [
+   0,
+   "rewind"
+  ],
+  [
+   "patch_upgrade.end",
+   "end+0.4"
+  ]
  ]
 }

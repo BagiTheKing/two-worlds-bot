@@ -1453,7 +1453,7 @@ def build(episode_path, out_dir, keep=None):
         to = o.pop("to")
         # "end" means the last frame: the video runs 0.4 s past the last beat
         o["end"] = round(length + 0.4 if to == "end" else R(to), 3)
-        for key in ("grow", "full"):                 # extra moments an overlay keys on
+        for key in ("grow", "full", "hl_start", "src_from", "src_to"):     # extra moments an overlay keys on
             if key in o:
                 o[key] = round(R(o[key]), 3)
         if o.get("type") == "chat":                   # each message at its own moment

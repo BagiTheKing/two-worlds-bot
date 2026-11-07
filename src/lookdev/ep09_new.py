@@ -69,8 +69,9 @@ class Keys:
     """Values (numbers or dicts of numbers) at times; eased in between, held outside.
     keys: [(t, value, blend)] - blend = seconds of the transition INTO that key."""
 
-    def __init__(self, keys):
+    def __init__(self, keys, base=None):
         self.k = sorted(keys, key=lambda k: k[0])
+        self.base = base or (lambda k: 0.0)          # the value of a key a pose leaves out
 
     def at(self, t):
         prev = {}
@@ -84,7 +85,7 @@ class Keys:
             else:
                 break
             keys = set(out) | set(fv)
-            out = {k: lerp(out.get(k, 0.0), fv.get(k, 0.0), u) for k in keys}
+            out = {k: lerp(out.get(k, self.base(k)), fv.get(k, self.base(k)), u) for k in keys}
         return out
 
 
@@ -116,6 +117,11 @@ def build(tl, voice_path, tex_dir, assets, res, samples):
     E.null_ground = W.layout.height(nx, ny)
     # characters, new and old
     E.S = build_steve(sc)
+    from props import sprite_item, hold                    # his pickaxe, new with his new arms
+    pk = sprite_item("iron_pickaxe", os.path.join(assets, "mcprep", "resourcepacks", "mcprep_default", "assets",
+                                                  "minecraft", "textures", "item"), px=0.072)
+    hold(E.S.arm, pk, "sr", up=25, face=60, collection=[E.S.rig])
+    E.S.parts["arms"].append(pk)
     E.N = build_noob_char(sc)
     E.P = build_patch_char(sc, size=0.4)
     E.X = build_null_char(sc, assets, height=15.0)
@@ -139,7 +145,7 @@ def build(tl, voice_path, tex_dir, assets, res, samples):
     E.key = char_light(sc, "char_key", (0, -3, 3), 650, (1.0, 0.88, 0.76), cone=34, size=0.9)
     # the upgrade's scan ring and pixel bursts
     E.ring = _ring(sc)
-    E.wave_ring = _ring(sc, "wave_ring", r=1.0, h=0.06, strength=12.0)
+    E.wave_ring = _ring(sc, "wave_ring", r=1.0, h=0.16, strength=5.0)
     E.bursts = _bursts(sc, E)
     E.debris = _debris(sc, W)
     # the camera
@@ -173,7 +179,7 @@ def build(tl, voice_path, tex_dir, assets, res, samples):
     return E
 
 
-def _ring(sc, name="scan_ring", r=0.62, h=0.035, strength=8.0):
+def _ring(sc, name="scan_ring", r=0.62, h=0.035, strength=2.6):
     import bmesh
     bm = bmesh.new()
     bmesh.ops.create_cone(bm, cap_ends=False, segments=48, radius1=r, radius2=r, depth=h)
@@ -201,7 +207,7 @@ def _bursts(sc, E):
     b = m.node_tree.nodes["Principled BSDF"]
     b.inputs["Base Color"].default_value = (0, 0, 0, 1)
     b.inputs["Emission Color"].default_value = (0.4, 0.95, 1.0, 1)
-    b.inputs["Emission Strength"].default_value = 9.0
+    b.inputs["Emission Strength"].default_value = 3.5
     me = bpy.data.meshes.new("burst_cube")
     s = 0.5
     me.from_pydata([(x, y, z) for x in (-s, s) for y in (-s, s) for z in (-s, s)], [],
@@ -291,7 +297,7 @@ SF = {   # Steve: eyes (both_*), mouth (m_*), brows (bb_*)
                "m_w": 1.2, "m_up": 0.9, "m_r": 0.9, "m_vee": 0.3},
     "flat": {"both_to": -0.35, "both_tm": -0.4, "both_ti": -0.3, "bb_raise": -0.1, "m_arch": 0.05},
     "smile": {"both_bo": 0.2, "both_bm": 0.35, "both_bi": 0.2, "m_arch": -0.22, "m_w": 2.0, "bb_raise": 0.1},
-    "smug": {"both_to": -0.25, "both_tm": -0.3, "both_ti": -0.35, "both_bm": 0.25, "m_arch": -0.08, "m_tilt": 0.12,
+    "smug": {"both_to": -0.1, "both_tm": -0.14, "both_ti": -0.2, "both_bm": 0.25, "m_arch": -0.08, "m_tilt": 0.12,
              "bb_tilt": 0.2},
     "worried": {"both_to": -0.3, "both_ti": 0.15, "m_arch": 0.18, "bb_tilt": -0.8, "bb_raise": 0.2},
     "scared": {"both_to": 0.3, "both_tm": 0.35, "both_ti": 0.3, "both_ps": 0.7, "bb_tilt": -0.7, "bb_raise": 0.35,
@@ -328,7 +334,7 @@ class Choreo:
         self.t_del = T("delete")
         self.t_run = T("run")
         self.t_end = tl_end = E.tl["length"] + 0.4
-        self.hook_end = T("rewind")
+        self.hook_end = T("rewind") + 1.0 / FPS         # (one frame of overlap with the old look)
         self.new_from = T("patch_upgrade.end")
         # shots: (from, to, camera function)
         L = lambda name: (T(name), T(name + ".end"))   # noqa: E731
@@ -364,12 +370,14 @@ class Choreo:
 
     # ---- spans this renderer owns
     def owns(self, t):
-        return t < self.hook_end or t >= self.new_from
+        return t < self.hook_end or t >= self.new_from - 1.0 / FPS     # a frame of overlap: no gaps
 
     def story_t(self, t):
         """The hook is a moment of the chase."""
         if t < self.hook_end:
             return self.t_run + 0.9 + t
+        if t < self.new_from:
+            return self.new_from
         return t
 
     # ---- character positions over time
@@ -381,16 +389,17 @@ class Choreo:
 
     def facing(self, t):
         """0 = toward the camera side (-y); turns toward Null during the rise and delete."""
-        a = ss(self.t_rise + 0.4, self.t_rise + 1.2, t) * (1 - ss(self.E.T("noob_run"), self.E.T("noob_run") + 0.5, t))
-        return a * 150.0
+        a = ss(self.t_del - 0.2, self.t_del + 0.6, t) * (1 - ss(self.E.T("noob_run"), self.E.T("noob_run") + 0.4, t))
+        return a * 40.0
 
     # ---- cameras
     def head(self, who, t):
         E = self.E
+        old = t < self.swap.get(who, [0, 0, 0, 0])[3] and t >= self.new_from     # still the old head
         if who == "steve":
-            return Vector((STEVE_AT.x, STEVE_AT.y + self.run_offset(t), 1.72))
+            return Vector((STEVE_AT.x, STEVE_AT.y + self.run_offset(t), 1.75 if old else 1.68))
         if who == "noob":
-            return Vector((NOOB_AT.x, NOOB_AT.y + self.run_offset(t), 1.74))
+            return Vector((NOOB_AT.x, NOOB_AT.y + self.run_offset(t), 1.92 if old else 1.77))
         return self.patch_pos(t)
 
     def cam_full(self, who, p0, p1, lens):
@@ -404,8 +413,8 @@ class Choreo:
     def cam_close(self, who, off, lens, shake=0.0):
         def f(t, u):
             h = self.head(who, t)
-            loc = h + Vector((off[0], off[1], -0.1 + off[2])) + Vector((0.0, 0.1 * u, 0))
-            look = h + Vector((0, 0, -0.05))
+            loc = h + Vector((off[0], off[1], -0.04 + off[2])) + Vector((0.0, 0.1 * u, 0))
+            look = h + Vector((0, 0, -0.2))
             return loc, look, lens, (loc - look).length, 1.2, shake
         return f
 
@@ -423,9 +432,9 @@ class Choreo:
         return loc, look, lerp(30, 21, k), (loc - Vector((0, 0, 1.3))).length, lerp(2.8, 8.0, k), 0.0
 
     def cam_two(self, t, u):
-        loc = Vector((-0.1, -3.9, 1.25)) + Vector((0.15 * u, 0, 0))
-        look = Vector((0.0, 0.0, 1.5))
-        return loc, look, 30, 3.9, 2.0, 0.0
+        loc = Vector((0.0, -6.0, 1.35)) + Vector((0.12 * u, 0.25 * u, 0))
+        look = Vector((0.0, 0.0, 1.3))
+        return loc, look, 28, 5.6, 2.4, 0.0
 
     def cam_wide_quiet(self, t, u):
         loc = Vector((0.3, -8.0, 0.9)).lerp(Vector((0.25, -6.8, 0.95)), u)
@@ -433,21 +442,21 @@ class Choreo:
         return loc, look, 26, 8.0, 3.5, 0.0
 
     def cam_rise(self, t, u):
-        loc = Vector((4.2, -2.6, 0.45)) + Vector((0.0, -0.2 * u, 0.0))
-        look = Vector((-1.2, 30.0, 11.0)).lerp(Vector((-1.6, 30.0, 14.5)), ss(0, 1, u))
-        return loc, look, 21, 4.6, 5.0, 0.004 + 0.012 * ss(0.3, 0.8, u)
+        loc = Vector((0.9, -6.4, 0.75)) + Vector((0.0, -0.35 * u, 0.1 * u))
+        look = Vector((-0.6, 30.0, 8.0)).lerp(Vector((-0.8, 30.0, 10.5)), ss(0, 1, u))
+        return loc, look, 22, 6.4, 4.0, 0.004 + 0.012 * ss(0.3, 0.8, u)
 
     def cam_delete(self, t, u):
-        loc = Vector((9.5, -11.0, 5.0)).lerp(Vector((8.5, -10.0, 4.4)), u)
-        look = Vector((-0.5, 14.0, 3.0))
-        return loc, look, 22, 14.0, 6.0, 0.006
+        loc = Vector((6.5, -11.5, 3.6)).lerp(Vector((6.0, -10.6, 3.3)), u)
+        look = Vector((-1.2, 14.0, 5.2))
+        return loc, look, 20, 13.0, 6.0, 0.006
 
     def cam_chase(self, t, u):
         ts = self.story_t(t)
         y = self.run_offset(ts)
-        loc = Vector((0.35, y - 4.6 - 0.8 * ss(0, 2.5, ts - self.t_run), 0.55))
-        look = Vector((0.1, y + 8.0, 6.2))
-        return loc, look, 18, 4.6, 4.0, 0.01
+        loc = Vector((0.05, y - 4.1 - 0.5 * ss(0, 2.5, ts - self.t_run), 0.95))
+        look = Vector((0.0, y + 10.0, 4.4))
+        return loc, look, 21, 4.2, 4.0, 0.012
 
     def camera(self, t):
         ts = self.story_t(t)
@@ -500,10 +509,10 @@ def apply(E, t_render):
     g, s = C.looks(t)
     D = 0.0
     Dz = -1.0
-    if t >= C.t_del:
-        D = 4.0 + 7.5 * (t - C.t_del)
-        Dz = 1.0
     nxy = (NULL_AT.x, NULL_AT.y - (2.2 * max(0.0, t - C.t_run) if t >= C.t_run else 0.0))
+    if t >= C.t_del:
+        D = min(4.0 + 11.0 * (t - C.t_del), nxy[1] - ro - 9.0)    # the void stays behind them
+        Dz = 1.0
     fx_set(E.W, R=R, Wd=5.0 + 0.12 * min(R, 1e3), Cx=0.0, Cy=0.0, D=D, Nx=nxy[0], Ny=nxy[1], Dz=Dz)
     E.W.water.hide_render = R < 60
     for ob in getattr(E.W, "particles", []):
@@ -512,7 +521,7 @@ def apply(E, t_render):
     wr.hide_render = not (tw <= t < tw + 4.2)
     if not wr.hide_render:
         wr.scale = (R, R, 1.0)
-        wr.location = (0, 0, 0.08)
+        wr.location = (0, 0, 0.3)
     def mixlook(a, b, k):
         out = {}
         for key in a:
@@ -661,15 +670,12 @@ def apply(E, t_render):
     idle = lib["idle (Benly 2.2)"]
     breathe = math.sin(2 * math.pi * 0.25 * t)
     # Steve
-    sp = json.loads(json.dumps(idle))
+    sp = flat(idle)
+    sp.update(flat(C.steve_act(t)))
     sp["root_yaw"] = 0
     sp["chest_lean"] = sp.get("chest_lean", 0) + 1.2 * breathe
-    sp["head_nod"] = sp.get("head_nod", 0)
-    act = C.steve_act(t) if hasattr(C, "steve_act") else {}
-    for kk, vv in flat(act).items():
-        cur = flat(sp)
-        cur[kk] = vv
-        sp = unflat(cur)
+    sp["head_nod"] = sp.get("head_nod", 0) - 0.8 * breathe
+    sp = unflat(sp)
     if running:
         ph = 2 * math.pi * 2.6 * (t - C.t_run)
         sw = math.sin(ph)
@@ -679,7 +685,7 @@ def apply(E, t_render):
               "foot_sr": {"y": 0.5 * sw, "z": max(0.0, 0.45 * math.sin(ph + 1.2 + math.pi))}}
     pose(S.arm, sp)
     S.holder.location = (STEVE_AT.x, STEVE_AT.y + ro, 0.0 if not running else 0.06 * abs(math.sin(2 * math.pi * 2.6 * (t - C.t_run))))
-    S.holder.rotation_euler = (0, 0, math.radians(face_dir - 4))
+    S.holder.rotation_euler = (0, 0, math.radians(face_dir - 4))          # he turns over his left shoulder
     # Noob
     from noob import NOOB_POSES
     npz = dict(NOOB_POSES["idle"])
@@ -693,7 +699,7 @@ def apply(E, t_render):
         sw = math.sin(ph)
         npz = {"chest_lean": 10, "head_turn": 0, "arm_sl": {"fwd": -60 * sw, "out": 12}, "arm_sr": {"fwd": 60 * sw, "out": 12},
                "leg_sl": {"fwd": 45 * sw}, "leg_sr": {"fwd": -45 * sw}}
-    pose_noob(N, {**npz, "root_yaw": npz.get("root_yaw", 0) + face_dir})
+    pose_noob(N, {**npz, "root_yaw": npz.get("root_yaw", 0) - face_dir})  # the Noob over his right
     N.root.location = (NOOB_AT.x, NOOB_AT.y + ro, 0.0 if not running else 0.07 * abs(math.sin(2 * math.pi * 2.6 * (t - C.t_run) + 0.8)))
     # old ones stand where the new ones stand
     E.oS.root.location = (STEVE_AT.x, STEVE_AT.y, 0)
@@ -702,7 +708,7 @@ def apply(E, t_render):
     pp = C.patch_pos(t)
     E.oP.root.location = pp
     P.root.location = pp
-    P.root.rotation_euler = (0, 0, math.radians(face_dir if face_dir < 90 else 180))
+    P.root.rotation_euler = (0, 0, math.radians(0.5 * face_dir))
     fl = 25 * math.sin(2 * math.pi * 2.0 * t) * (C.patch_flap(t) if hasattr(C, "patch_flap") else 0)
     for side, pv in P.fins.items():
         pv.rotation_euler = (math.radians(fl) * (1 if side == "l" else -1), 0, 0)
@@ -769,7 +775,8 @@ def apply(E, t_render):
     right = d.cross(Vector((0, 0, 1))).normalized()
     key.location = loc + right * 1.6 + Vector((0, 0, 1.4))
     key.rotation_euler = (lookat - key.location).to_track_quat("-Z", "Y").to_euler()
-    key.data.energy = 650 * (1 - 0.6 * s)
+    key.data.energy = 650 * (1 - 0.35 * s)
+    key.data.color = tuple(lerp(a_, b_, s) for a_, b_ in zip((1.0, 0.88, 0.76), (0.86, 0.84, 1.0)))
     return {"g": g, "s": s}
 
 
@@ -789,6 +796,20 @@ def _acting(C):
     """Who does what, line by line (keys of poses and faces)."""
     E = C.E
     T = E.T
+    from faceplate import EYE_DEFAULTS, MOUTH_DEFAULTS, NOOB_EYE_DEFAULTS, NOOB_MOUTH
+    from patch import DEFAULTS as PD
+    from noob import NOOB_POSES
+    idle_s = flat(json.load(open(os.path.join(HERE, "poses_lib.json")))["idle (Benly 2.2)"])
+    idle_n = flat(NOOB_POSES["idle"])
+
+    def face_base(eyes, mouth):
+        def b(k):
+            if k.startswith(("both_", "eR_", "eL_")):
+                return eyes.get(k.split("_", 1)[1], 0.0)
+            return mouth.get(k, 0.0)
+        return b
+    sbase = face_base(EYE_DEFAULTS, MOUTH_DEFAULTS)
+    nbase = face_base(NOOB_EYE_DEFAULTS, {**MOUTH_DEFAULTS, **NOOB_MOUTH})
     look_noob = {"head_turn": -22}
     look_steve = {"head_turn": 22}
     C.steve_keys = Keys([
@@ -810,13 +831,13 @@ def _acting(C):
         (T("steve_quiet") + 0.6, {"head_turn": 16, "head_nod": -6}, 0.4),
         (T("rise"), {"head_nod": -24, "arm_sl": {"out": 22, "fwd": 18, "elbow": 40}, "arm_sr": {"out": 22, "fwd": 18, "elbow": 40}, "chest_lean": -6}, 0.6),
         (T("noob_run"), {"head_nod": -10}, 0.3),
-    ])
+    ], base=lambda k: idle_s.get(k, 0.0))
     C.steve_faces = Keys([
         (C.new_from, SF["stunned"], 0.2), (T("steve_hair"), SF["stunned"], 0.2), (T("steve_hair.end") - 0.6, SF["smile"], 0.4),
         (T("steve_dont"), SF["flat"], 0.2), (T("up_noob"), SF["neutral"], 0.4), (T("steve_welcome"), SF["smug"], 0.3),
         (T("up_patch"), SF["neutral"], 0.4), (T("up_world"), SF["amazed"], 0.6), (T("steve_nice"), SF["smile"], 0.5),
         (T("noob_him"), SF["neutral"], 0.3), (T("quiet"), SF["worried"], 0.6), (T("rise"), SF["scared"], 0.5),
-    ])
+    ], base=sbase)
     C.noob_keys = Keys([
         (C.new_from, {"head_turn": -20}, 0.2),
         (T("noob_beautiful"), {"head_tilt": 14, "arm_sl": {"fwd": 60, "out": -20}, "arm_sr": {"fwd": 60, "out": -20}}, 0.4),
@@ -834,21 +855,21 @@ def _acting(C):
         (T("quiet"), {"head_turn": 10, "head_nod": -6}, 0.6),
         (T("rise"), {"head_nod": -28, "arm_sl": {"fwd": 75, "out": -8}, "arm_sr": {"fwd": 75, "out": -8}}, 0.6),
         (T("noob_run"), {"head_nod": -6, "arm_sl": {"out": 150, "fwd": 20}, "arm_sr": {"out": 150, "fwd": 20}}, 0.2),
-    ])
+    ], base=lambda k: idle_n.get(k, 0.0))
     C.noob_faces = Keys([
         (C.new_from, NF["neutral"], 0.2), (T("noob_beautiful"), NF["teary"], 0.3), (T("up_noob"), NF["neutral"], 0.4),
         (T("noob_textured"), NF["confused"], 0.3), (T("up_patch"), NF["neutral"], 0.4), (T("noob_smile"), NF["shock"], 0.15),
         (T("patch_always"), NF["happy"], 0.4), (T("up_world"), NF["awe"], 0.6), (T("steve_nice"), NF["happy"], 0.5),
         (T("noob_him") + 1.2, NF["worried"], 0.5), (T("quiet"), NF["worried"], 0.4), (T("rise"), NF["scared"], 0.4),
         (T("noob_run"), NF["shout"], 0.15),
-    ])
+    ], base=nbase)
     C.patch_faces = Keys([
         (C.new_from, {"look_x": -0.6}, 0.2), (T("up_noob"), {"look_x": 0.6}, 0.3), (T("up_patch"), {"look_y": -0.4}, 0.3),
         (T("up_patch") + 1.7, {"smile": 1.0}, 0.12), (T("patch_always.end"), {"smile": 1.0}, 0.1),
         (T("up_world"), {"wide": 0.6, "look_y": 0.3}, 0.4), (T("noob_him"), {"look_x": 0.5}, 0.3),
         (T("quiet"), {"squint": 0.4}, 0.4), (T("rise"), {"wide": 1.0, "look_y": 0.5}, 0.3),
         (T("delete"), {"glitch": 1.0, "wide": 0.6}, 0.1), (T("patch_too"), {"squint": 0.3}, 0.3),
-    ])
+    ], base=lambda k: PD.get(k, 0.0))
     C.steve_act = lambda t: unflat(C.steve_keys.at(t))
     C.noob_act = lambda t: unflat(C.noob_keys.at(t))
     C.steve_face = lambda t: C.steve_faces.at(t)
@@ -900,7 +921,7 @@ def main():
     if a.list:
         from kit.timeref import resolve
         hook_end, new_from = resolve(tl["beats"], "rewind", tl["length"]), resolve(tl["beats"], "patch_upgrade.end", tl["length"])
-        owned = [f for f in range(1, n_frames + 1) if (f - 1) / FPS < hook_end or (f - 1) / FPS >= new_from]
+        owned = [f for f in range(1, n_frames + 1) if (f - 1) / FPS < hook_end + 1 / FPS or (f - 1) / FPS >= new_from - 1 / FPS]
         print(json.dumps({"frames": owned, "count": len(owned)}))
         return
     E = build(tl, a.voice, a.tex_dir, a.assets, a.res, a.samples)
@@ -936,11 +957,11 @@ def main():
         sc.frame_set(f)
         sc.render.filepath = dst
         bpy.ops.render.render(write_still=True)
-        mist = os.path.join(mist_dir, f"mmist{f:04d}.png")
-        if not os.path.exists(mist):
-            cand = [x for x in os.listdir(mist_dir) if x.endswith(f"{f:04d}.png")]
-            mist = os.path.join(mist_dir, cand[0]) if cand else mist
+        cand = sorted((os.path.join(mist_dir, x) for x in os.listdir(mist_dir)), key=os.path.getmtime)
+        mist = cand[-1] if cand else ""
         finish(dst, mist, state.get("look", {"g": 0, "s": 0}))
+        for x in cand:
+            os.remove(x)
         print("FRAME", f, flush=True)
 
 
