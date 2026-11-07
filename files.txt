@@ -1,0 +1,28 @@
+.:
+total 42220
+drwxr-xr-x 4 runner runner     4096 Nov  7 16:42 .
+drwxr-xr-x 3 runner runner     4096 Nov  7 16:42 ..
+drwxr-xr-x 7 runner runner     4096 Nov  7 16:42 .git
+-rw-r--r-- 1 runner runner 32230772 Nov  7 16:42 audio.wav
+drwxr-xr-x 2 runner runner     4096 Nov  7 16:42 scenes
+-rw-r--r-- 1 runner runner    12612 Nov  7 16:42 timeline.json
+-rw-r--r-- 1 runner runner 16115408 Nov  7 16:42 voice.wav
+-rw-r--r-- 1 runner runner     8329 Nov  7 16:42 voice_log.txt
+
+scenes:
+total 8616
+drwxr-xr-x 2 runner runner    4096 Nov  7 16:42 .
+drwxr-xr-x 4 runner runner    4096 Nov  7 16:42 ..
+-rw-r--r-- 1 runner runner  457358 Nov  7 16:42 noob_creative.wav
+-rw-r--r-- 1 runner runner  839438 Nov  7 16:42 noob_hi.wav
+-rw-r--r-- 1 runner runner  994958 Nov  7 16:42 noob_oneofus.wav
+-rw-r--r-- 1 runner runner  265358 Nov  7 16:42 patch_always.wav
+-rw-r--r-- 1 runner runner  513038 Nov  7 16:42 patch_archive.wav
+-rw-r--r-- 1 runner runner  393998 Nov  7 16:42 patch_arrived.wav
+-rw-r--r-- 1 runner runner  543758 Nov  7 16:42 patch_behind.wav
+-rw-r--r-- 1 runner runner 1327118 Nov  7 16:42 patch_nocomment.wav
+-rw-r--r-- 1 runner runner  123278 Nov  7 16:42 patch_too.wav
+-rw-r--r-- 1 runner runner 1290638 Nov  7 16:42 steve_beginning.wav
+-rw-r--r-- 1 runner runner 1329038 Nov  7 16:42 steve_hair.wav
+-rw-r--r-- 1 runner runner  203918 Nov  7 16:42 steve_next.wav
+-rw-r--r-- 1 runner runner  505358 Nov  7 16:42 steve_nice.wav
