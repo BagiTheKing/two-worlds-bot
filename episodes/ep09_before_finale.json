@@ -2765,7 +2765,11 @@
    "name": "steve_welcome",
    "text": "Welcome to Minecraft.",
    "direction_text": "[dry, a tiny smile] Welcome to Minecraft.",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    22.48,
+    23.18
+   ]
   },
   {
    "beat": "up_patch",
@@ -2802,7 +2806,11 @@
    "name": "steve_nice",
    "text": "Okay. That's... nice.",
    "direction_text": "[impressed despite himself, low] Okay. That's... nice.",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    1.85,
+    3.62
+   ]
   },
   {
    "line": "noob",
