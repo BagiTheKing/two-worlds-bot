@@ -12,11 +12,12 @@ import bpy
 from faceplate import EYES, EYE_DEFAULTS
 
 P = 0.1
-LEN = 2.55
-T_IN, T_OUT = 0.72, 0.52
+LEN = 2.2                         # short enough to leave a clear gap over the nose
+T_IN, T_OUT = 0.6, 0.52            # not heavy at the inner end: a friendly face
 DEPTH = 0.17
-BASE_Y = 4.9                     # the brow's centre line, just above the eyes
-ARCH0 = 0.12                      # a gentle arch at rest
+BASE_Y = 4.85                    # the brow's centre line, just above the eyes
+ARCH0 = 0.16                      # a gentle arch at rest
+REST_LIFT = 0.14                  # inner ends a touch higher than the outer: open, likable
 N = 12
 
 
@@ -28,7 +29,7 @@ def _brow_mesh(name, cx, inner_dir):
         t = k / N                                      # 0 outer .. 1 inner
         x = cx + (t - 0.5) * LEN * inner_dir
         s = 2 * t - 1
-        yc = BASE_Y + ARCH0 * (1 - s * s)
+        yc = BASE_Y + ARCH0 * (1 - s * s) + REST_LIFT * t
         th = T_OUT + (T_IN - T_OUT) * t
         col = []
         for dy in (-th / 2, th / 2):
@@ -93,7 +94,7 @@ def build_brows(arm, lattice=None, bone="Head"):
     mat = brow_material()
     out = {}
     for e, inner_dir in (("eR", 1.0), ("eL", -1.0)):
-        cx = EYES[e] + EYE_DEFAULTS["cx"] - 0.08 * inner_dir     # a hair toward the outside
+        cx = EYES[e] + EYE_DEFAULTS["cx"] - 0.26 * inner_dir     # toward the outside: the brows never meet
         name = "brow_" + e
         ob = bpy.data.objects.new(name, _brow_mesh(name, cx, inner_dir))
         ob.data.materials.append(mat)

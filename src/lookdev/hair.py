@@ -114,7 +114,7 @@ def build_hair(arm, lattice=None, bone="Head", seed=12, name="steve_hair"):
     OF = 0.2                                     # standoff of the fringe (closer to the face)
     T = 0.3                                      # strip thickness
     # front fringe: 8 strips; corners longer, joining the sides
-    front = [4.2, 2.6, 2.3, 1.9, 2.2, 2.0, 2.7, 4.3]
+    front = [4.2, 2.1, 1.8, 1.5, 1.7, 1.6, 2.2, 4.3]
     for i, L in enumerate(front):
         a0 = -HALF + i - (OF + T if i == 0 else 0)
         a1 = -HALF + i + 1 + (OF + T if i == 7 else 0)
