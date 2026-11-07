@@ -452,7 +452,154 @@ def endnote(img, o, t, f, fonts):
     d.text((W // 2, y0 + 250 + dq), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
 
 
-DRAW = {"grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+_HOLO_CACHE = {}
+
+
+def holo(img, o, t, f, fonts):
+    """Patch's projected screen: a piece of an earlier episode inside a glowing
+    cyan frame, above the captions. It flickers on (a bright line opening
+    out) and off; scanlines, a slight cyan cast and a label ("ARCHIVE · EP 3").
+    The source is cropped to the middle of its picture (no HUD, no captions)."""
+    import numpy as np
+    from PIL import ImageFilter
+    key = o["video"]
+    if key not in _HOLO_CACHE:
+        _HOLO_CACHE[key] = read_clip(os.path.join(HERE, "..", o["video"]))
+    frames = _HOLO_CACHE[key]
+    a, b = o["start"], o["end"]
+    fps = o.get("fps", 24)
+    src = frames[min(len(frames) - 1, int((t - a + o.get("offset", 0.0)) * fps))]
+    bw, bh = o.get("w", 900), o.get("h", 750)
+    cx, top = W // 2, o.get("y", 250)
+    pic = src.crop((0, 210, W, 1110)).resize((bw, bh), Image.LANCZOS)
+    arr = np.asarray(pic, dtype=np.float32)
+    arr = (arr - 128) * 1.12 + 128                                              # a touch more contrast
+    arr = arr * 0.92 + np.array((40, 160, 200), np.float32) * 0.08              # a light cyan cast
+    arr[::4] *= 0.9                                                             # scanlines
+    pic = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+    k_on = min(1.0, (t - a) / 0.28)
+    k_off = min(1.0, (b - t) / 0.2)
+    k = max(0.0, min(k_on, k_off))
+    open_y = max(0.02, k ** 0.6)                                                # opening from a line
+    ph = max(2, int(bh * open_y))
+    pic = pic.resize((bw, ph))
+    x0, y0 = cx - bw // 2, top + (bh - ph) // 2
+    glow = Image.new("RGBA", (bw + 120, ph + 120), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.rounded_rectangle((60 - 8, 60 - 8, 60 + bw + 8, 60 + ph + 8), 18, outline=(60, 230, 255, 230), width=10)
+    glow = glow.filter(ImageFilter.GaussianBlur(14))
+    img.paste(glow, (x0 - 60, y0 - 60), glow)
+    alpha = int(255 * (0.93 if k >= 1 else 0.6 + 0.35 * k))
+    if random.Random(f).random() < 0.05:
+        alpha = int(alpha * 0.7)                                                # a flicker
+    mask = Image.new("L", (bw, ph), alpha)
+    img.paste(pic, (x0, y0), mask)
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle((x0 - 4, y0 - 4, x0 + bw + 4, y0 + ph + 4), 14, outline=(150, 245, 255), width=4)
+    if k_on < 1:                                                                # the bright opening line
+        d.rectangle((x0, top + bh // 2 - 3, x0 + bw, top + bh // 2 + 3), fill=(220, 255, 255))
+    if k > 0.6 and o.get("label"):
+        lab = o["label"]
+        fnt = fonts["mono_small"]
+        tw = fnt.getlength(lab)
+        d.rectangle((x0 + 18, y0 + 18, x0 + 34 + tw, y0 + 70), fill=(4, 24, 32))
+        d.text((x0 + 26, y0 + 22), lab, font=fnt, fill=(120, 240, 255))
+
+
+def comment(img, o, t, f, fonts):
+    """A YouTube comment, dark mode: round avatar with an initial, @handle,
+    the comment text (one phrase highlighted as it is read), like/dislike/Reply."""
+    a = o["start"]
+    k = min(1.0, (t - a) / 0.22)
+    s = 1.0 + 0.08 * math.sin(min(1.0, k) * math.pi)                          # a small overshoot
+    if k <= 0:
+        return
+    cw = 940
+    name_f = ImageFont.truetype(FONT, 40)
+    text_f = ImageFont.truetype(FONT, 50)
+    small_f = ImageFont.truetype(FONT, 34)
+    words = o["text"].split()
+    lines, cur = [], ""
+    for w_ in words:                                                            # wrap to the card
+        if text_f.getlength((cur + " " + w_).strip()) > cw - 190:
+            lines.append(cur)
+            cur = w_
+        else:
+            cur = (cur + " " + w_).strip()
+    lines.append(cur)
+    chh = 150 + 66 * len(lines) + 90
+    card = Image.new("RGBA", (cw, chh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    d.rounded_rectangle((0, 0, cw - 1, chh - 1), 34, fill=(24, 24, 24, 245), outline=(70, 70, 70, 255), width=2)
+    d.ellipse((36, 40, 136, 140), fill=tuple(o.get("avatar_color", (0, 137, 123))))
+    d.text((86, 90), o.get("initial", "Y"), font=ImageFont.truetype(FONT, 56), fill=(255, 255, 255), anchor="mm")
+    d.text((162, 46), o["handle"], font=name_f, fill=(241, 241, 241))
+    hl = o.get("highlight", "")
+    y = 108
+    hk = max(0.0, min(1.0, (t - o.get("hl_start", a + 0.8)) / o.get("hl_dur", 1.6)))
+    for ln in lines:
+        x = 162
+        if hl and hk > 0:
+            lo = ln.lower()
+            i = lo.find(hl.lower()[:12]) if hl.lower()[:12] in lo else -1
+            if i >= 0 or any(w_.lower() in hl.lower() for w_ in ln.split()[:1]):
+                pass
+        d.text((x, y), ln, font=text_f, fill=(241, 241, 241))
+        y += 66
+    if hl and hk > 0:                                                           # the highlight sweep, under the phrase
+        full = " ".join(lines)
+        y = 108
+        for ln in lines:
+            for w_ in ln.split():
+                pass
+        # mark each word of the phrase where it sits
+        pos = []
+        y = 108
+        for ln in lines:
+            x = 162
+            for w_ in ln.split(" "):
+                ww = text_f.getlength(w_)
+                pos.append((w_, x, y, ww))
+                x += ww + text_f.getlength(" ")
+            y += 66
+        target = hl.lower().split()
+        n_t = len(target)
+        for i in range(len(pos) - n_t + 1):
+            if [p[0].lower().strip(".,!?\"'…") for p in pos[i:i + n_t]] == [w_.strip(".,!?\"'…") for w_ in target]:
+                upto = hk * n_t
+                for j, (w_, x, yy, ww) in enumerate(pos[i:i + n_t]):
+                    part = max(0.0, min(1.0, upto - j))
+                    if part > 0:
+                        ww = ww + (text_f.getlength(" ") if j < n_t - 1 and part >= 1 else 0)   # one continuous band
+                        hb = Image.new("RGBA", (int(ww * part) + 8, 60), (255, 210, 63, 90))
+                        card.alpha_composite(hb, (int(x) - 4, yy + 2))
+                        d.line((x, yy + 60, x + ww * part, yy + 60), fill=(255, 210, 63), width=5)
+                break
+    y = 108 + 66 * len(lines) + 24
+    gray = (170, 170, 170)
+
+    def thumb(x, y, down=False):                                                # a simple outline thumb
+        pts = [(x, y + 14), (x + 10, y + 14), (x + 10, y + 40), (x, y + 40)]
+        d.polygon(pts, outline=gray, width=3)
+        hand = [(x + 14, y + 16), (x + 22, y + 2), (x + 28, y + 4), (x + 26, y + 16), (x + 42, y + 16),
+                (x + 40, y + 40), (x + 14, y + 40)]
+        if down:
+            pts = [(px, 2 * y + 42 - py) for px, py in pts]
+            hand = [(px, 2 * y + 42 - py) for px, py in hand]
+            d.polygon(pts, outline=gray, width=3)
+        d.polygon(hand, outline=gray, width=3)
+
+    thumb(162, y)
+    thumb(262, y, down=True)
+    d.text((352, y + 2), "Reply", font=small_f, fill=gray)
+    if s != 1.0:
+        card = card.resize((int(cw * s), int(chh * s)), Image.LANCZOS)
+    al = card.split()[3].point(lambda v: int(v * k))
+    card.putalpha(al)
+    img.paste(card, (W // 2 - card.width // 2, o.get("y", 520) - card.height // 2), card)
+
+
+DRAW = {"holo": holo, "comment": comment, "grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
 FULL = ("grade", "memory", "card", "fade_in", "endcard")
 

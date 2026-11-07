@@ -1158,7 +1158,7 @@ def sfx_scan(dur=1.2):
     return norm((tone + 0.25 * norm(shimmer)) * e, 0.6)
 
 
-SFX = {"chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
+SFX = {"rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
        "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
        "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),

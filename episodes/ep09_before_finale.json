@@ -744,9 +744,10 @@
    "line": "noob",
    "name": "noob_run",
    "text": "RUUUUN!",
-   "direction_text": "[screaming, panicked] RUUUUN!",
+   "direction_text": "RUUUUUN!",
    "pad": 0.05,
-   "own_scene": true
+   "solo_only": true,
+   "solo_text": "RUUUUUN!"
   },
   {
    "beat": "run",
