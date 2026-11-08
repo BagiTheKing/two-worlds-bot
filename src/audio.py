@@ -65,6 +65,43 @@ def _env(x, win):
     return np.sqrt((c[hi] - c[lo]) / np.maximum(hi - lo, 1))
 
 
+def clean_tail(x, sr=SR):
+    """Drop what a take leaves after its last word: a short burst of noise
+    (a click, a breath, the generator's end-of-take hiss) that comes after a
+    real silence. Only noise-like bursts (spectrally flat, under 0.2 s) after
+    0.2 s or more of silence go; a word said after a pause is voiced and stays."""
+    w = int(0.01 * sr)
+    n = len(x) // w
+    if n < 40:
+        return x
+    fr = np.sqrt(np.mean(x[:n * w].reshape(n, w) ** 2, axis=1)) + 1e-9
+    db = 20 * np.log10(fr / fr.max())
+    loud = np.nonzero(db > -40)[0]
+    if len(loud) < 2:
+        return x
+    # the last stretch of sound, and the silence before it
+    end = loud[-1]
+    start = end
+    while start > 0 and db[start - 1] > -40:
+        start -= 1
+    gap_end = start
+    gap_start = gap_end
+    while gap_start > 0 and db[gap_start - 1] <= -40:
+        gap_start -= 1
+    burst = (end + 1 - start) * w
+    gap = (gap_end - gap_start) * w
+    if gap_start == 0 or burst > 0.2 * sr or gap < 0.2 * sr:
+        return x
+    seg = x[start * w:(end + 1) * w]
+    X = np.abs(np.fft.rfft(seg * np.hanning(len(seg)))) + 1e-9
+    if np.exp(np.mean(np.log(X))) / np.mean(X) < 0.25:       # voiced: a word, keep it
+        return x
+    out = x[:gap_start * w + int(0.06 * sr)].copy()
+    f = int(0.04 * sr)
+    out[-f:] *= np.linspace(1, 0, f)
+    return out
+
+
 def level_line(x, target_db=-18.0, quiet=False, sr=SR):
     """Every line at the same speaking loudness: the RMS of its spoken parts
     (20 ms frames within 25 dB of its loudest) brought to target_db. A
@@ -1389,6 +1426,8 @@ def build(episode_path, out_dir, keep=None):
                 audio = audio.copy()
                 audio[:m - f] = 0.0
                 audio[m - f:m] *= np.linspace(0, 1, f)
+            if not ev.get("trim"):                         # a cut-off line ends where it was cut
+                audio = clean_tail(audio)
             quiet = any(w in ev.get("direction_text", "").lower() for w in ("whisper", "very quiet"))
             audio = level_line(audio, quiet=quiet)
             if ev.get("together") and lines:              # said at the same time as the last line

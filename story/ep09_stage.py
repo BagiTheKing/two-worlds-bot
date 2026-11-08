@@ -88,6 +88,8 @@ def build():
     # Episode 0
     c("noob", "expr", "r0", "noob_falling.end", face="scared")
     c("steve", "look", "steve_beginning", "steve_beginning.end+0.2", head=turn_to_noob)
+    c("noob", "look", "noob_deep", "noob_deep.end", head=[0.0, 0, -0.45])
+    c("noob", "expr", "noob_deep+1.2", "noob_deep.end", face="surprised")
     # Episode 1: the eye
     for who in ("steve", "noob"):
         c(who, "look", "r1", "patch_eye.end", head=U)
@@ -106,6 +108,8 @@ def build():
     c("noob", "raise_arm", "noob_button", "noob_button.end", arm="arm_l", angle=1.6, out=0.3, ease=0.12)
     c("steve", "expr", "steve_three", "steve_three.end", face="unimpressed")
     c("noob", "expr", "patch_waved+1.0", "patch_waved.end", face="scared")
+    c("noob", "expr", "noob_polite", "noob_polite.end", face="happy")
+    c("noob", "wave", "noob_polite", "noob_polite.end", arm="arm_r")
     c("steve", "look", "steve_watching", "steve_watching.end", head=[0.05, 0, 0.1])
     c("steve", "expr", "steve_watching", "steve_watching.end", face="surprised")
     # Episode 3
@@ -136,8 +140,8 @@ def build():
     for who in ("steve", "noob"):
         c(who, "look", "r5", "patch_belong", head=U)
     c("noob", "cheer", "noob_creative", "noob_creative+0.7")
-    c("noob", "expr", "noob_creative", "steve_list.end", face="happy")
-    c("steve", "expr", "steve_list", "steve_list.end", face="unimpressed")
+    c("noob", "expr", "noob_creative", "noob_creative.end", face="happy")
+    c("steve", "expr", "noob_creative+1.5", "patch_belong", face="unimpressed")
     for who in ("steve", "noob"):
         c(who, "look", "patch_belong", "noob_duck", head=U)
     c("noob", "expr", "patch_worse", "noob_duck.end", face="scared")
@@ -205,22 +209,21 @@ def build():
     E = "assets/clips/ep09/"
     recap = [
         (0, [("holo", "holo_on", "steve_beginning", [("holo_on", "recap_ep0")]),
-             ("steve", "steve_beginning", "r1")]),
+             ("steve", "steve_beginning", "noob_deep"), ("noob", "noob_deep", "r1")]),
         (1, [("holo", "r1", "patch_unknown", [("r1", "e1_tree"), ("steve_sky", "e1_sky")]),
              ("patch", "patch_unknown", "r2")]),
         (2, [("holo", "r2", "noob_button", [("r2", "e2_eye"), ("steve_plan+1.4", "e1_sky", 2.3),
                                              ("steve_steps", "e2_steps")]),
              ("noob", "noob_button", "steve_three"),
-             ("holo", "steve_three", "steve_watching", [("steve_three", "e2_button"), ("steve_three+0.9", "e2_zombies"),
-                                                         ("patch_waved", "e2_waved")]),
-             ("steve", "steve_watching", "r3")]),
+             ("holo", "steve_three", "noob_polite", [("steve_three", "e2_button"), ("steve_three+0.9", "e2_zombies"),
+                                                      ("patch_waved", "e2_waved")]),
+             ("noob", "noob_polite", "steve_watching"), ("steve", "steve_watching", "r3")]),
         (3, [("holo", "r3", "steve_you", [("r3", "recap_ep3")]), ("steve", "steve_you", "r4")]),
         (4, [("holo", "r4", "noob_touched", [("r4", "e4_dragon"), ("noob_block+1.3", "e4_block")]),
              ("noob", "noob_touched", "patch_grew"),
              ("holo", "patch_grew", "steve_weirder", [("patch_grew", "e4_grow"), ("patch_arrived", "e4_patch")]),
              ("steve", "steve_weirder", "patch_improvement"), ("patch", "patch_improvement", "r5")]),
-        (5, [("holo", "r5", "patch_belong", [("r5", "e5_build"), ("steve_list", "e5_statue"),
-                                              ("steve_list+1.6", "e5_door")]),
+        (5, [("holo", "r5", "patch_belong", [("r5", "e5_build"), ("noob_creative+2.0", "e5_statue")]),
              ("patch", "patch_belong", "patch_worse"),
              ("holo", "patch_worse", "noob_duck", [("patch_worse", "e5_chunk")]),
              ("noob", "noob_duck", "r6")]),

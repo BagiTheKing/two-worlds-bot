@@ -387,7 +387,7 @@
   {
    "type": "holo",
    "from": "steve_three",
-   "to": "steve_watching",
+   "to": "noob_polite",
    "label": "ARCHIVE · EP 2",
    "w": 468,
    "h": 832,
@@ -483,13 +483,8 @@
      "offset": 0.0
     },
     {
-     "at": "steve_list",
+     "at": "noob_creative+2.0",
      "video": "assets/clips/ep09/e5_statue.mp4",
-     "offset": 0.0
-    },
-    {
-     "at": "steve_list+1.6",
-     "video": "assets/clips/ep09/e5_door.mp4",
      "offset": 0.0
     }
    ]
@@ -740,6 +735,24 @@
    ]
   },
   {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_deep",
+   "to": "noob_deep.end",
+   "head": [
+    0.0,
+    0,
+    -0.45
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_deep+1.2",
+   "to": "noob_deep.end",
+   "face": "surprised"
+  },
+  {
    "who": "steve",
    "do": "look",
    "from": "r1",
@@ -878,6 +891,20 @@
    "from": "patch_waved+1.0",
    "to": "patch_waved.end",
    "face": "scared"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_polite",
+   "to": "noob_polite.end",
+   "face": "happy"
+  },
+  {
+   "who": "noob",
+   "do": "wave",
+   "from": "noob_polite",
+   "to": "noob_polite.end",
+   "arm": "arm_r"
   },
   {
    "who": "steve",
@@ -1137,14 +1164,14 @@
    "who": "noob",
    "do": "expr",
    "from": "noob_creative",
-   "to": "steve_list.end",
+   "to": "noob_creative.end",
    "face": "happy"
   },
   {
    "who": "steve",
    "do": "expr",
-   "from": "steve_list",
-   "to": "steve_list.end",
+   "from": "noob_creative+1.5",
+   "to": "patch_belong",
    "face": "unimpressed"
   },
   {
@@ -1774,7 +1801,7 @@
   {
    "name": "ep0_steve1",
    "from": "steve_beginning",
-   "to": "r1",
+   "to": "noob_deep",
    "lens": 40,
    "path": [
     [
@@ -1786,7 +1813,7 @@
      ]
     ],
     [
-     "r1",
+     "noob_deep",
      [
       5.3,
       2.7800000000000002,
@@ -1801,6 +1828,40 @@
       5.0,
       5.0,
       1.57
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep0_noob2",
+   "from": "noob_deep",
+   "to": "r1",
+   "lens": 40,
+   "path": [
+    [
+     "noob_deep",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "r1",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_deep",
+     [
+      7.4,
+      5.0,
+      1.72
      ]
     ]
    ]
@@ -1944,7 +2005,7 @@
   {
    "name": "holo2_2",
    "from": "steve_three",
-   "to": "steve_watching",
+   "to": "noob_polite",
    "lens": 22,
    "path": [
     [
@@ -1956,7 +2017,7 @@
      ]
     ],
     [
-     "steve_watching",
+     "noob_polite",
      [
       6.2,
       -2.2,
@@ -1976,7 +2037,41 @@
    ]
   },
   {
-   "name": "ep2_steve3",
+   "name": "ep2_noob3",
+   "from": "noob_polite",
+   "to": "steve_watching",
+   "lens": 40,
+   "path": [
+    [
+     "noob_polite",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_watching",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_polite",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep2_steve4",
    "from": "steve_watching",
    "to": "r3",
    "lens": 40,
@@ -3119,7 +3214,6 @@
    "text": "It's the end AND the beginning. Deep.",
    "direction_text": "[pretending to be wise, slow] It's the end AND the beginning. Deep.",
    "pad": 0.15,
-   "unused": true,
    "speed": 1.13,
    "tighten": 0.2
   },
@@ -3134,7 +3228,8 @@
    "direction_text": "[proud, quick, like it's a big achievement] Episode one. I punched a tree. It floated.",
    "pad": 0.1,
    "speed": 1.13,
-   "tighten": 0.2
+   "tighten": 0.2,
+   "solo_text": "Episode one. I punched a tree. It floated."
   },
   {
    "line": "steve",
@@ -3249,7 +3344,6 @@
    "text": "I waved first! I was being polite!",
    "direction_text": "[defensive, quick] I waved first! I was being polite!",
    "pad": 0.5,
-   "unused": true,
    "speed": 1.13,
    "tighten": 0.2
   },
@@ -3370,7 +3464,7 @@
    "name": "noob_creative",
    "text": "Then the block gave me CREATIVE MODE! I built everything!",
    "direction_text": "[excited, arms wide open] Then the block gave me CREATIVE MODE! I built everything!",
-   "pad": 0.05,
+   "pad": 0.1,
    "speed": 1.13,
    "tighten": 0.2
   },
@@ -3383,7 +3477,8 @@
    "trim": 4.8,
    "trim_fade": 0.06,
    "speed": 1.13,
-   "tighten": 0.2
+   "tighten": 0.2,
+   "unused": true
   },
   {
    "line": "noob",
