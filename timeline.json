@@ -1,0 +1,1303 @@
+{
+ "id": "ep09_before_finale",
+ "fps": 24,
+ "length": 178.805,
+ "beats": {
+  "hook": [
+   0.0,
+   1.3
+  ],
+  "noob_wait": [
+   1.3,
+   3.48
+  ],
+  "rewind": [
+   3.53,
+   4.43
+  ],
+  "brief": [
+   4.43,
+   4.93
+  ],
+  "noob_hi": [
+   4.93,
+   8.077
+  ],
+  "noob_same": [
+   8.427,
+   8.933
+  ],
+  "steve_eight": [
+   9.283,
+   11.422
+  ],
+  "patch_archive": [
+   11.522,
+   14.261
+  ],
+  "holo_on": [
+   14.381,
+   14.781
+  ],
+  "r0": [
+   14.781,
+   15.581
+  ],
+  "noob_falling": [
+   15.581,
+   18.21
+  ],
+  "steve_beginning": [
+   18.26,
+   18.978
+  ],
+  "noob_deep": [
+   19.278,
+   21.648
+  ],
+  "r1": [
+   21.798,
+   22.398
+  ],
+  "noob_ep1": [
+   22.398,
+   25.109
+  ],
+  "steve_sky": [
+   25.209,
+   26.512
+  ],
+  "patch_eye": [
+   26.562,
+   29.049
+  ],
+  "patch_unknown": [
+   29.449,
+   31.991
+  ],
+  "r2": [
+   32.341,
+   32.941
+  ],
+  "steve_plan": [
+   32.941,
+   36.014
+  ],
+  "steve_steps": [
+   36.114,
+   39.037
+  ],
+  "noob_button": [
+   39.087,
+   40.111
+  ],
+  "steve_three": [
+   40.511,
+   42.175
+  ],
+  "patch_waved": [
+   42.525,
+   46.675
+  ],
+  "noob_polite": [
+   46.975,
+   48.794
+  ],
+  "steve_watching": [
+   49.294,
+   52.033
+  ],
+  "r3": [
+   52.333,
+   52.933
+  ],
+  "noob_dragon": [
+   52.933,
+   54.425
+  ],
+  "steve_you": [
+   54.475,
+   56.209
+  ],
+  "r4": [
+   56.509,
+   57.109
+  ],
+  "noob_block": [
+   57.109,
+   59.45
+  ],
+  "steve_exist": [
+   59.55,
+   62.035
+  ],
+  "noob_touched": [
+   62.085,
+   62.84
+  ],
+  "patch_grew": [
+   63.29,
+   65.503
+  ],
+  "patch_arrived": [
+   65.903,
+   68.073
+  ],
+  "steve_weirder": [
+   68.123,
+   69.276
+  ],
+  "patch_improvement": [
+   69.776,
+   70.947
+  ],
+  "r5": [
+   71.247,
+   71.847
+  ],
+  "noob_creative": [
+   71.847,
+   75.962
+  ],
+  "patch_belong": [
+   76.062,
+   79.929
+  ],
+  "patch_worse": [
+   79.979,
+   81.41
+  ],
+  "noob_duck": [
+   81.91,
+   83.043
+  ],
+  "r6": [
+   83.343,
+   84.443
+  ],
+  "noob_dontlike": [
+   84.443,
+   85.688
+  ],
+  "steve_nobody": [
+   85.738,
+   87.564
+  ],
+  "r7": [
+   87.864,
+   88.464
+  ],
+  "patch_behind": [
+   88.464,
+   91.71
+  ],
+  "steve_sense": [
+   92.01,
+   94.261
+  ],
+  "noob_bigger": [
+   94.261,
+   95.929
+  ],
+  "steve_howmany": [
+   96.129,
+   97.983
+  ],
+  "r8": [
+   98.383,
+   98.983
+  ],
+  "noob_you": [
+   98.983,
+   102.018
+  ],
+  "steve_next": [
+   102.468,
+   104.116
+  ],
+  "noob_dontnext": [
+   104.116,
+   105.959
+  ],
+  "patch_lastslide": [
+   106.459,
+   108.012
+  ],
+  "holo_off": [
+   108.212,
+   108.512
+  ],
+  "patch_theories": [
+   108.512,
+   110.319
+  ],
+  "card": [
+   110.439,
+   112.039
+  ],
+  "noob_oneofus": [
+   112.039,
+   114.402
+  ],
+  "look": [
+   114.522,
+   114.822
+  ],
+  "noob_itsyou": [
+   114.822,
+   117.601
+  ],
+  "steve_dying": [
+   117.651,
+   118.561
+  ],
+  "noob_which": [
+   119.161,
+   120.151
+  ],
+  "stare": [
+   120.271,
+   121.371
+  ],
+  "patch_nocomment": [
+   121.371,
+   122.439
+  ],
+  "patch_budget": [
+   122.789,
+   125.232
+  ],
+  "noob_what": [
+   125.332,
+   126.008
+  ],
+  "patch_upgrade": [
+   126.108,
+   128.231
+  ],
+  "up_steve": [
+   128.351,
+   131.951
+  ],
+  "steve_hair": [
+   131.951,
+   135.214
+  ],
+  "noob_beautiful": [
+   135.714,
+   136.184
+  ],
+  "steve_dont": [
+   136.164,
+   136.621
+  ],
+  "up_noob": [
+   136.741,
+   140.041
+  ],
+  "noob_textured": [
+   140.041,
+   142.751
+  ],
+  "steve_welcome": [
+   142.751,
+   143.721
+  ],
+  "up_patch": [
+   143.841,
+   146.041
+  ],
+  "noob_smile": [
+   146.041,
+   147.863
+  ],
+  "patch_always": [
+   148.263,
+   151.469
+  ],
+  "up_world": [
+   151.589,
+   155.089
+  ],
+  "noob_woah": [
+   155.089,
+   156.699
+  ],
+  "steve_nice": [
+   156.949,
+   158.699
+  ],
+  "noob_him": [
+   158.999,
+   160.924
+  ],
+  "quiet": [
+   161.044,
+   162.344
+  ],
+  "steve_quiet": [
+   162.344,
+   163.358
+  ],
+  "rise": [
+   163.478,
+   165.778
+  ],
+  "delete": [
+   165.778,
+   167.978
+  ],
+  "noob_run": [
+   167.978,
+   169.138
+  ],
+  "run": [
+   169.188,
+   172.388
+  ],
+  "noob_finale": [
+   172.388,
+   174.431
+  ],
+  "steve_stop": [
+   174.481,
+   176.505
+  ],
+  "end": [
+   176.605,
+   178.805
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_wait",
+   "who": "noob",
+   "text": "Okay, wait. Before THAT happens...",
+   "vo": false,
+   "caption": true,
+   "start": 1.3,
+   "end": 3.48
+  },
+  {
+   "name": "noob_hi",
+   "who": "noob",
+   "text": "Hi, new people! You have no idea what's going on.",
+   "vo": false,
+   "caption": true,
+   "start": 4.93,
+   "end": 8.077
+  },
+  {
+   "name": "noob_same",
+   "who": "noob",
+   "text": "...Same.",
+   "vo": false,
+   "caption": true,
+   "start": 8.427,
+   "end": 8.933
+  },
+  {
+   "name": "steve_eight",
+   "who": "steve",
+   "text": "Eight episodes of problems. Patch. Show them.",
+   "vo": false,
+   "caption": true,
+   "start": 9.283,
+   "end": 11.422
+  },
+  {
+   "name": "patch_archive",
+   "who": "patch",
+   "text": "Rewinding. To the very start.",
+   "vo": false,
+   "caption": true,
+   "start": 11.522,
+   "end": 14.261
+  },
+  {
+   "name": "noob_falling",
+   "who": "noob",
+   "text": "That's us. Falling. Spoiler: it's the end.",
+   "vo": false,
+   "caption": true,
+   "start": 15.581,
+   "end": 18.21
+  },
+  {
+   "name": "steve_beginning",
+   "who": "steve",
+   "text": "It's the beginning.",
+   "vo": false,
+   "caption": true,
+   "start": 18.26,
+   "end": 18.978
+  },
+  {
+   "name": "noob_deep",
+   "who": "noob",
+   "text": "It's the end AND the beginning. Deep.",
+   "vo": false,
+   "caption": true,
+   "start": 19.278,
+   "end": 21.648
+  },
+  {
+   "name": "noob_ep1",
+   "who": "noob",
+   "text": "Episode one. I punched a tree. It floated.",
+   "vo": false,
+   "caption": true,
+   "start": 22.398,
+   "end": 25.109
+  },
+  {
+   "name": "steve_sky",
+   "who": "steve",
+   "text": "Then the sky cracked open...",
+   "vo": false,
+   "caption": true,
+   "start": 25.209,
+   "end": 26.512
+  },
+  {
+   "name": "patch_eye",
+   "who": "patch",
+   "text": "...and something looked down at us.",
+   "vo": false,
+   "caption": true,
+   "start": 26.562,
+   "end": 29.049
+  },
+  {
+   "name": "patch_unknown",
+   "who": "patch",
+   "text": "Unknown. But it saw everything.",
+   "vo": false,
+   "caption": true,
+   "start": 29.449,
+   "end": 31.991
+  },
+  {
+   "name": "steve_plan",
+   "who": "steve",
+   "text": "So I made a plan. Leave, before that eye came back.",
+   "vo": false,
+   "caption": true,
+   "start": 32.941,
+   "end": 36.014
+  },
+  {
+   "name": "steve_steps",
+   "who": "steve",
+   "text": "Portal home. Three steps. Nobody touches anything.",
+   "vo": false,
+   "caption": true,
+   "start": 36.114,
+   "end": 39.037
+  },
+  {
+   "name": "noob_button",
+   "who": "noob",
+   "text": "There was a BUTTON!",
+   "vo": false,
+   "caption": true,
+   "start": 39.087,
+   "end": 40.111
+  },
+  {
+   "name": "steve_three",
+   "who": "steve",
+   "text": "The plan lasted three seconds.",
+   "vo": false,
+   "caption": true,
+   "start": 40.511,
+   "end": 42.175
+  },
+  {
+   "name": "patch_waved",
+   "who": "patch",
+   "text": "Then, inside the portal... something waved back.",
+   "vo": false,
+   "caption": true,
+   "start": 42.525,
+   "end": 46.675
+  },
+  {
+   "name": "noob_polite",
+   "who": "noob",
+   "text": "I waved first! I was being polite!",
+   "vo": false,
+   "caption": true,
+   "start": 46.975,
+   "end": 48.794
+  },
+  {
+   "name": "steve_watching",
+   "who": "steve",
+   "text": "First the eye. Then that. Something was watching us.",
+   "vo": false,
+   "caption": true,
+   "start": 49.294,
+   "end": 52.033
+  },
+  {
+   "name": "noob_dragon",
+   "who": "noob",
+   "text": "We put a dragon in an obby!",
+   "vo": false,
+   "caption": true,
+   "start": 52.933,
+   "end": 54.425
+  },
+  {
+   "name": "steve_you",
+   "who": "steve",
+   "text": "YOU put a dragon in an obby.",
+   "vo": false,
+   "caption": true,
+   "start": 54.475,
+   "end": 56.209
+  },
+  {
+   "name": "noob_block",
+   "who": "noob",
+   "text": "Then the dragon glitched... and dropped a weird block!",
+   "vo": false,
+   "caption": true,
+   "start": 57.109,
+   "end": 59.45
+  },
+  {
+   "name": "steve_exist",
+   "who": "steve",
+   "text": "A block that shouldn't exist. Nobody knows why.",
+   "vo": false,
+   "caption": true,
+   "start": 59.55,
+   "end": 62.035
+  },
+  {
+   "name": "noob_touched",
+   "who": "noob",
+   "text": "So I touched it.",
+   "vo": false,
+   "caption": true,
+   "start": 62.085,
+   "end": 62.84
+  },
+  {
+   "name": "patch_grew",
+   "who": "patch",
+   "text": "It grew bigger... every time he died.",
+   "vo": false,
+   "caption": true,
+   "start": 63.29,
+   "end": 65.503
+  },
+  {
+   "name": "patch_arrived",
+   "who": "patch",
+   "text": "And then I arrived. Things improved.",
+   "vo": false,
+   "caption": true,
+   "start": 65.903,
+   "end": 68.073
+  },
+  {
+   "name": "steve_weirder",
+   "who": "steve",
+   "text": "Things got weirder.",
+   "vo": false,
+   "caption": true,
+   "start": 68.123,
+   "end": 69.276
+  },
+  {
+   "name": "patch_improvement",
+   "who": "patch",
+   "text": "...Weirder is an improvement.",
+   "vo": false,
+   "caption": true,
+   "start": 69.776,
+   "end": 70.947
+  },
+  {
+   "name": "noob_creative",
+   "who": "noob",
+   "text": "Then the block gave me CREATIVE MODE! I built everything!",
+   "vo": false,
+   "caption": true,
+   "start": 71.847,
+   "end": 75.962
+  },
+  {
+   "name": "patch_belong",
+   "who": "patch",
+   "text": "None of it belonged in this world. So the world started deleting it...",
+   "vo": false,
+   "caption": true,
+   "start": 76.062,
+   "end": 79.929
+  },
+  {
+   "name": "patch_worse",
+   "who": "patch",
+   "text": "...and everything around it.",
+   "vo": false,
+   "caption": true,
+   "start": 79.979,
+   "end": 81.41
+  },
+  {
+   "name": "noob_duck",
+   "who": "noob",
+   "text": "...RIP duck.",
+   "vo": false,
+   "caption": true,
+   "start": 81.91,
+   "end": 83.043
+  },
+  {
+   "name": "noob_dontlike",
+   "who": "noob",
+   "text": "...I don't like that guy.",
+   "vo": false,
+   "caption": true,
+   "start": 84.443,
+   "end": 85.688
+  },
+  {
+   "name": "steve_nobody",
+   "who": "steve",
+   "text": "Nobody likes that guy.",
+   "vo": false,
+   "caption": true,
+   "start": 85.738,
+   "end": 87.564
+  },
+  {
+   "name": "patch_behind",
+   "who": "patch",
+   "text": "Every time he respawns... something stays behind.",
+   "vo": false,
+   "caption": true,
+   "start": 88.464,
+   "end": 91.71
+  },
+  {
+   "name": "steve_sense",
+   "who": "steve",
+   "text": "So some things started making sense...",
+   "vo": false,
+   "caption": true,
+   "start": 92.01,
+   "end": 94.261
+  },
+  {
+   "name": "noob_bigger",
+   "who": "noob",
+   "text": "...and the questions got WAY bigger.",
+   "vo": false,
+   "caption": true,
+   "start": 94.261,
+   "end": 95.929
+  },
+  {
+   "name": "steve_howmany",
+   "who": "steve",
+   "text": "And how many times have we done this?",
+   "vo": false,
+   "caption": true,
+   "start": 96.129,
+   "end": 97.983
+  },
+  {
+   "name": "noob_you",
+   "who": "noob",
+   "text": "And YOU. Built. The FIRST portal.",
+   "vo": false,
+   "caption": true,
+   "start": 98.983,
+   "end": 102.018
+  },
+  {
+   "name": "steve_next",
+   "who": "steve",
+   "text": "...Patch. Next slide.",
+   "vo": false,
+   "caption": true,
+   "start": 102.468,
+   "end": 104.116
+  },
+  {
+   "name": "noob_dontnext",
+   "who": "noob",
+   "text": "Don't 'next slide' me!",
+   "vo": false,
+   "caption": true,
+   "start": 104.116,
+   "end": 105.959
+  },
+  {
+   "name": "patch_lastslide",
+   "who": "patch",
+   "text": "...That was the last slide.",
+   "vo": false,
+   "caption": true,
+   "start": 106.459,
+   "end": 108.012
+  },
+  {
+   "name": "patch_theories",
+   "who": "patch",
+   "text": "The observers have theories.",
+   "vo": false,
+   "caption": true,
+   "start": 108.512,
+   "end": 110.319
+  },
+  {
+   "name": "noob_oneofus",
+   "who": "noob",
+   "text": "One of us shouldn't be in this world...",
+   "vo": false,
+   "caption": true,
+   "start": 112.039,
+   "end": 114.402
+  },
+  {
+   "name": "noob_itsyou",
+   "who": "noob",
+   "text": "It's you. You're ALWAYS holding a pickaxe.",
+   "vo": false,
+   "caption": true,
+   "start": 114.822,
+   "end": 117.601
+  },
+  {
+   "name": "steve_dying",
+   "who": "steve",
+   "text": "You're always DYING.",
+   "vo": false,
+   "caption": true,
+   "start": 117.651,
+   "end": 118.561
+  },
+  {
+   "name": "noob_which",
+   "who": "noob",
+   "text": "...Patch? Which one?",
+   "vo": false,
+   "caption": true,
+   "start": 119.161,
+   "end": 120.151
+  },
+  {
+   "name": "patch_nocomment",
+   "who": "patch",
+   "text": "No comment.",
+   "vo": false,
+   "caption": true,
+   "start": 121.371,
+   "end": 122.439
+  },
+  {
+   "name": "patch_budget",
+   "who": "patch",
+   "text": "Good news. The finale has a budget.",
+   "vo": false,
+   "caption": true,
+   "start": 122.789,
+   "end": 125.232
+  },
+  {
+   "name": "noob_what",
+   "who": "noob",
+   "text": "A what?",
+   "vo": false,
+   "caption": true,
+   "start": 125.332,
+   "end": 126.008
+  },
+  {
+   "name": "patch_upgrade",
+   "who": "patch",
+   "text": "Upgrade starting. Please do not move.",
+   "vo": false,
+   "caption": true,
+   "start": 126.108,
+   "end": 128.231
+  },
+  {
+   "name": "steve_hair",
+   "who": "steve",
+   "text": "...I have hair. Real hair.",
+   "vo": false,
+   "caption": true,
+   "start": 131.951,
+   "end": 135.214
+  },
+  {
+   "name": "noob_beautiful",
+   "who": "noob",
+   "text": "It's beauti\u2014",
+   "vo": false,
+   "caption": true,
+   "start": 135.714,
+   "end": 136.184
+  },
+  {
+   "name": "steve_dont",
+   "who": "steve",
+   "text": "Don't.",
+   "vo": false,
+   "caption": true,
+   "start": 136.164,
+   "end": 136.621
+  },
+  {
+   "name": "noob_textured",
+   "who": "noob",
+   "text": "Why do I feel... textured?",
+   "vo": false,
+   "caption": true,
+   "start": 140.041,
+   "end": 142.751
+  },
+  {
+   "name": "steve_welcome",
+   "who": "steve",
+   "text": "Welcome to Minecraft.",
+   "vo": false,
+   "caption": true,
+   "start": 142.751,
+   "end": 143.721
+  },
+  {
+   "name": "noob_smile",
+   "who": "noob",
+   "text": "PATCH CAN SMILE?!",
+   "vo": false,
+   "caption": true,
+   "start": 146.041,
+   "end": 147.863
+  },
+  {
+   "name": "patch_always",
+   "who": "patch",
+   "text": "I always could. Now you can see it.",
+   "vo": false,
+   "caption": true,
+   "start": 148.263,
+   "end": 151.469
+  },
+  {
+   "name": "noob_woah",
+   "who": "noob",
+   "text": "Woooah.",
+   "vo": false,
+   "caption": true,
+   "start": 155.089,
+   "end": 156.699
+  },
+  {
+   "name": "steve_nice",
+   "who": "steve",
+   "text": "That's... nice.",
+   "vo": false,
+   "caption": true,
+   "start": 156.949,
+   "end": 158.699
+  },
+  {
+   "name": "noob_him",
+   "who": "noob",
+   "text": "Do you think HE got upgraded too?",
+   "vo": false,
+   "caption": true,
+   "start": 158.999,
+   "end": 160.924
+  },
+  {
+   "name": "steve_quiet",
+   "who": "steve",
+   "text": "...Why did it go quiet?",
+   "vo": false,
+   "caption": true,
+   "start": 162.344,
+   "end": 163.358
+  },
+  {
+   "name": "noob_run",
+   "who": "noob",
+   "text": "RUUUUN!",
+   "vo": false,
+   "caption": true,
+   "start": 167.978,
+   "end": 169.138
+  },
+  {
+   "name": "noob_finale",
+   "who": "noob",
+   "text": "SEE YOU IN THE FINALE!",
+   "vo": false,
+   "caption": true,
+   "start": 172.388,
+   "end": 174.431
+  },
+  {
+   "name": "steve_stop",
+   "who": "steve",
+   "text": "STOP TALKING AND RUN!",
+   "vo": false,
+   "caption": true,
+   "start": 174.481,
+   "end": 176.505
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 179.205
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 12%",
+   "start": 4.43,
+   "end": 14.381
+  },
+  {
+   "type": "endnote",
+   "next_label": "THE FINALE",
+   "next_title": "THE FIRST PORTAL WAS A TRAP",
+   "question": "WHICH ONE SHOULDN'T BE IN THIS WORLD?",
+   "question_sub": "Comment your theory",
+   "highlight": true,
+   "start": 176.605,
+   "end": 179.605
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 0",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 14.381,
+     "video": "assets/clips/ep09/recap_ep0.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 14.381,
+   "end": 18.26
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 1",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 21.798,
+     "video": "assets/clips/ep09/e1_tree.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 25.209,
+     "video": "assets/clips/ep09/e1_sky.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 21.798,
+   "end": 29.449
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 2",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 32.341,
+     "video": "assets/clips/ep09/e2_eye.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 34.341,
+     "video": "assets/clips/ep09/e1_sky.mp4",
+     "offset": 2.3
+    },
+    {
+     "at": 36.114,
+     "video": "assets/clips/ep09/e2_steps.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 32.341,
+   "end": 39.087
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 2",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 40.511,
+     "video": "assets/clips/ep09/e2_button.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 41.411,
+     "video": "assets/clips/ep09/e2_zombies.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 42.525,
+     "video": "assets/clips/ep09/e2_waved.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 40.511,
+   "end": 46.975
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 3",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 52.333,
+     "video": "assets/clips/ep09/recap_ep3.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 52.333,
+   "end": 54.475
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 4",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 56.509,
+     "video": "assets/clips/ep09/e4_dragon.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 58.409,
+     "video": "assets/clips/ep09/e4_block.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 56.509,
+   "end": 62.085
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 4",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 63.29,
+     "video": "assets/clips/ep09/e4_grow.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 65.903,
+     "video": "assets/clips/ep09/e4_patch.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 63.29,
+   "end": 68.123
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 5",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 71.247,
+     "video": "assets/clips/ep09/e5_build.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 73.847,
+     "video": "assets/clips/ep09/e5_statue.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 71.247,
+   "end": 76.062
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 5",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 79.979,
+     "video": "assets/clips/ep09/e5_chunk.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 79.979,
+   "end": 81.91
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 6",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 83.343,
+     "video": "assets/clips/ep09/recap_ep6.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 83.343,
+   "end": 84.443
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 7",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 87.864,
+     "video": "assets/clips/ep09/e7_bodies.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": 90.864,
+     "video": "assets/clips/ep09/e7_drift.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 87.864,
+   "end": 92.01
+  },
+  {
+   "type": "holo",
+   "label": "ARCHIVE \u00b7 EP 8",
+   "w": 468,
+   "h": 832,
+   "y": 225,
+   "clips": [
+    {
+     "at": 98.383,
+     "video": "assets/clips/ep09/e8_portal.mp4",
+     "offset": 0.0
+    }
+   ],
+   "start": 98.383,
+   "end": 102.468
+  },
+  {
+   "type": "comment",
+   "handle": "@youssefakram7493",
+   "text": "Theory: ...one of them shouldn't be in a world...",
+   "highlight": "one of them shouldn't be in a world",
+   "hl_start": 112.039,
+   "hl_dur": 2.2,
+   "avatar_color": [
+    0,
+    137,
+    123
+   ],
+   "initial": "Y",
+   "y": 560,
+   "start": 110.439,
+   "end": 114.522
+  },
+  {
+   "type": "rewind",
+   "src_from": 0.0,
+   "src_to": 3.53,
+   "start": 3.53,
+   "end": 4.43
+  },
+  {
+   "type": "flash",
+   "strength": 0.6,
+   "start": 4.43,
+   "end": 4.73
+  },
+  {
+   "type": "flash",
+   "start": 128.231,
+   "end": 128.681
+  }
+ ]
+}
