@@ -105,7 +105,7 @@ def master(out, voice, speech_db=-16.0, ceiling=0.95, sr=SR):
     return np.clip(y * g, -ceiling, ceiling)
 
 
-def keep_under(voice, bg, margin_db=15.0, cap_db=-22.0, sr=SR):
+def keep_under(voice, bg, margin_db=15.0, cap_db=-26.0, sr=SR):
     """The background (music, effects, ambience) never covers a word: while
     someone speaks it stays margin_db under the voice; and whenever it rises
     above cap_db (a big moment) it is compressed 3:1, so nothing is ever much
@@ -1123,8 +1123,8 @@ def sfx_rewind(dur):
     x = t(dur)
     f = 180 + 2600 * (x / dur) ** 2
     chirp = np.sign(np.sin(2 * np.pi * np.cumsum(f * (1 + 0.3 * np.sin(2 * np.pi * 23 * x))) / SR))
-    chirp = band(chirp, 300, 6000) * 0.35
-    air = band(rng.standard_normal(len(x)), 800, 9000) * (x / dur) ** 1.5
+    chirp = band(chirp, 300, 3500) * 0.35
+    air = band(rng.standard_normal(len(x)), 600, 3000) * (x / dur) ** 1.5 * 0.25   # a breath of air, not hiss
     return norm((chirp + air) * np.minimum(1, x / 0.08) * np.minimum(1, (dur - x) / 0.05 + 0.001), 0.6)
 
 
@@ -1377,6 +1377,8 @@ def build(episode_path, out_dir, keep=None):
                 audio[i0:i1] *= g
             if ev.get("tighten"):                     # shorter pauses inside the line
                 audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
+            if ev.get("speed", 1.0) != 1.0:                 # a little faster, same pitch
+                audio = stretch(audio, ev["speed"])
             if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
                 audio = audio[:int(ev["trim"] * SR)].copy()
                 f = int(ev.get("trim_fade", 0.25) * SR)

@@ -88,36 +88,24 @@ def build():
     # Episode 0
     c("noob", "expr", "r0", "noob_falling.end", face="scared")
     c("steve", "look", "steve_beginning", "steve_beginning.end+0.2", head=turn_to_noob)
-    c("noob", "look", "noob_deep", "noob_deep.end", head=[0.0, 0, -0.45])
-    c("noob", "expr", "noob_deep+1.4", "noob_deep.end", face="surprised")
     # Episode 1: the eye
     for who in ("steve", "noob"):
         c(who, "look", "r1", "patch_eye.end", head=U)
     c("noob", "expr", "noob_ep1", "noob_ep1.end", face="happy")
     c("noob", "raise_arm", "noob_ep1", "noob_ep1+1.2", arm="arm_r", angle=1.3, out=-0.1, ease=0.15)
     c("steve", "expr", "steve_sky", "patch_eye.end", face="surprised")
-    c("noob", "expr", "patch_eye", "noob_whatisit.end", face="scared")
+    c("noob", "expr", "patch_eye", "patch_unknown.end", face="scared")
     c("patch", "glitch_eye", "patch_eye+0.6", "patch_eye+1.1")
-    c("noob", "look", "noob_whatisit", "noob_whatisit.end", head=[-0.15, 0, -0.45])
+    c("noob", "look", "patch_unknown", "patch_unknown.end", head=[-0.15, 0, -0.45])
     c("patch", "face", "patch_unknown", "patch_unknown+0.3", yaw=0.35)
-    c("noob", "look", "noob_hieye", "noob_hieye.end+0.3", head=[-0.55, 0, 0])
-    c("noob", "wave", "noob_hieye", "noob_hieye.end+0.3", arm="arm_r")
-    c("noob", "expr", "noob_hieye", "noob_hieye.end+0.3", face="scared")
     # Episode 2: the plan, the button, the thing that waved
     for who in ("steve", "noob"):
-        c(who, "look", "r2", "noob_record", head=U)
-    c("steve", "raise_arm", "steve_steps", "steve_steps.end", arm="arm_r", angle=0.9, out=-0.2, ease=0.2)
+        c(who, "look", "r2", "steve_watching", head=U)
+    c("steve", "raise_arm", "steve_plan+1.4", "steve_plan.end", arm="arm_r", angle=0.9, out=-0.2, ease=0.2)
     c("noob", "expr", "noob_button", "noob_button.end", face="surprised")
     c("noob", "raise_arm", "noob_button", "noob_button.end", arm="arm_l", angle=1.6, out=0.3, ease=0.12)
-    c("steve", "expr", "steve_three", "noob_record.end", face="unimpressed")
-    c("noob", "look", "noob_record", "noob_record.end", head=turn_to_steve)
-    c("noob", "cheer", "noob_record", "noob_record+0.6")
-    c("noob", "expr", "noob_record", "noob_record.end", face="happy")
-    for who in ("steve", "noob"):
-        c(who, "look", "patch_waved", "noob_polite", head=U)
+    c("steve", "expr", "steve_three", "steve_three.end", face="unimpressed")
     c("noob", "expr", "patch_waved+1.0", "patch_waved.end", face="scared")
-    c("noob", "expr", "noob_polite", "noob_polite.end", face="happy")
-    c("noob", "wave", "noob_polite", "noob_polite.end", arm="arm_r")
     c("steve", "look", "steve_watching", "steve_watching.end", head=[0.05, 0, 0.1])
     c("steve", "expr", "steve_watching", "steve_watching.end", face="surprised")
     # Episode 3
@@ -129,13 +117,12 @@ def build():
     c("noob", "look", "steve_you", "steve_you.end+0.2", head=[0.2, 0, 0.1])
     # Episode 4: the block
     for who in ("steve", "noob"):
-        c(who, "look", "r4", "noob_helping", head=U)
+        c(who, "look", "r4", "noob_touched", head=U)
     c("noob", "expr", "noob_block", "noob_block.end", face="happy")
     c("steve", "expr", "steve_exist", "steve_exist.end", face="unimpressed")
     c("noob", "expr", "noob_touched", "noob_touched.end", face="happy")
-    c("steve", "look", "noob_touched", "patch_grew", head=turn_to_noob)
-    c("noob", "raise_arm", "noob_helping", "noob_helping.end", arm="arm_l", angle=2.4, out=0.2, ease=0.15)
-    c("noob", "expr", "noob_helping", "noob_helping.end", face="surprised")
+    c("steve", "look", "noob_touched", "patch_arrived", head=turn_to_noob)
+    c("noob", "raise_arm", "noob_touched", "noob_touched.end", arm="arm_l", angle=2.4, out=0.2, ease=0.15)
     for who in ("steve", "noob"):
         c(who, "look", "patch_arrived", "patch_arrived.end", head=U)
     c("patch", "face", "patch_arrived", "patch_arrived+0.3", yaw=0.35)
@@ -164,13 +151,12 @@ def build():
     # Episode 7: it starts to make sense; the questions get bigger
     for who in ("steve", "noob"):
         c(who, "look", "r7", "patch_behind.end", head=U)
-    c("noob", "expr", "noob_alot", "noob_alot.end", face="happy")
-    c("noob", "raise_arm", "noob_alot", "noob_alot.end", arm="arm_l", angle=2.6, out=0.2, ease=0.18)
+    c("noob", "expr", "patch_behind+1.5", "patch_behind.end", face="scared")
     c("steve", "look", "steve_sense", "steve_sense.end", head=[-0.1, 0, 0.2])
     c("noob", "look", "noob_bigger", "noob_bigger.end", head=turn_to_steve)
-    c("noob", "expr", "noob_bigger", "noob_where.end", face="scared")
+    c("noob", "expr", "noob_bigger", "noob_bigger.end", face="scared")
     for who in ("steve", "noob"):
-        c(who, "look", "noob_where", "patch_counting", head=U)
+        c(who, "look", "steve_howmany", "patch_counting", head=U)
     c("steve", "expr", "steve_howmany", "patch_counting.end", face="surprised")
     c("patch", "glitch_eye", "patch_counting+0.2", "patch_counting+0.6")
     # Episode 8: Steve dodges
@@ -218,21 +204,17 @@ def build():
     E = "assets/clips/ep09/"
     recap = [
         (0, [("holo", "holo_on", "steve_beginning", [("holo_on", "recap_ep0")]),
-             ("steve", "steve_beginning", "noob_deep"), ("noob", "noob_deep", "r1")]),
-        (1, [("holo", "r1", "noob_whatisit", [("r1", "e1_tree"), ("steve_sky", "e1_sky")]),
-             ("noob", "noob_whatisit", "patch_unknown"), ("patch", "patch_unknown", "noob_hieye"),
-             ("noob", "noob_hieye", "r2")]),
+             ("steve", "steve_beginning", "r1")]),
+        (1, [("holo", "r1", "patch_unknown", [("r1", "e1_tree"), ("steve_sky", "e1_sky")]),
+             ("patch", "patch_unknown", "r2")]),
         (2, [("holo", "r2", "noob_button", [("r2", "e2_eye"), ("steve_plan+1.6", "e2_steps")]),
              ("noob", "noob_button", "steve_three"),
-             ("holo", "steve_three", "noob_record", [("steve_three", "e2_button"), ("steve_three+1.0", "e2_zombies")]),
-             ("noob", "noob_record", "patch_waved"),
-             ("holo", "patch_waved", "noob_polite", [("patch_waved", "e2_waved")]),
-             ("noob", "noob_polite", "steve_watching"), ("steve", "steve_watching", "r3")]),
+             ("holo", "steve_three", "steve_watching", [("steve_three", "e2_button"), ("steve_three+0.9", "e2_zombies"),
+                                                         ("patch_waved", "e2_waved")]),
+             ("steve", "steve_watching", "r3")]),
         (3, [("holo", "r3", "steve_you", [("r3", "recap_ep3")]), ("steve", "steve_you", "r4")]),
         (4, [("holo", "r4", "noob_touched", [("r4", "e4_dragon"), ("noob_block+1.3", "e4_block")]),
-             ("noob", "noob_touched", "patch_grew"),
-             ("holo", "patch_grew", "noob_helping", [("patch_grew", "e4_grow")]),
-             ("noob", "noob_helping", "patch_arrived"),
+             ("noob", "noob_touched", "patch_arrived"),
              ("holo", "patch_arrived", "steve_weirder", [("patch_arrived", "e4_patch")]),
              ("steve", "steve_weirder", "patch_improvement"), ("patch", "patch_improvement", "r5")]),
         (5, [("holo", "r5", "noob_close", [("r5", "e5_build"), ("steve_list", "e5_statue"),
@@ -243,9 +225,9 @@ def build():
              ("noob", "noob_duck", "r6")]),
         (6, [("holo", "r6", "noob_dontlike", [("r6", "recap_ep6")]),
              ("noob", "noob_dontlike", "steve_nobody"), ("steve", "steve_nobody", "r7")]),
-        (7, [("holo", "r7", "noob_alot", [("r7", "e7_bodies")]),
-             ("noob", "noob_alot", "steve_sense"), ("two", "steve_sense", "noob_where"),
-             ("holo", "noob_where", "patch_counting", [("noob_where", "e7_drift"), ("steve_howmany", "e7_times")]),
+        (7, [("holo", "r7", "steve_sense", [("r7", "e7_bodies"), ("patch_behind+2.4", "e7_drift")]),
+             ("two", "steve_sense", "steve_howmany"),
+             ("holo", "steve_howmany", "patch_counting", [("steve_howmany", "e7_times")]),
              ("patch", "patch_counting", "r8")]),
         (8, [("holo", "r8", "steve_next", [("r8", "e8_portal")]),
              ("steve", "steve_next", "noob_dontnext"), ("noob", "noob_dontnext", "patch_lastslide")]),

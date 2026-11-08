@@ -356,8 +356,7 @@ class Choreo:
         sh.append((A("quiet"), A("steve_quiet"), self.cam_wide_quiet))
         sh.append((A("steve_quiet"), A("rise"), self.cam_close("steve", (0.3, -2.0, 0.0), 42)))
         sh.append((A("rise"), A("delete"), self.cam_rise))
-        sh.append((A("delete"), A("patch_too"), self.cam_delete))
-        sh.append((A("patch_too"), A("noob_run"), self.cam_patch((0.25, -1.35, -0.05), 40)))
+        sh.append((A("delete"), A("noob_run"), self.cam_delete))           # straight into "RUUUN!"
         sh.append((A("noob_run"), A("run"), self.cam_close("noob", (-0.15, -1.9, 0.0), 36, shake=0.02)))
         sh.append((A("run"), tl_end + 0.1, self.cam_chase))
         self.shots = sh
@@ -874,7 +873,7 @@ def _acting(C):
         (T("up_patch") + 1.7, {"smile": 1.0}, 0.12), (T("patch_always.end"), {"smile": 1.0}, 0.1),
         (T("up_world"), {"wide": 0.6, "look_y": 0.3}, 0.4), (T("noob_him"), {"look_x": 0.5}, 0.3),
         (T("quiet"), {"squint": 0.4}, 0.4), (T("rise"), {"wide": 1.0, "look_y": 0.5}, 0.3),
-        (T("delete"), {"glitch": 1.0, "wide": 0.6}, 0.1), (T("patch_too"), {"squint": 0.3}, 0.3),
+        (T("delete"), {"glitch": 1.0, "wide": 0.6}, 0.1),
     ], base=lambda k: PD.get(k, 0.0))
     C.steve_act = lambda t: unflat(C.steve_keys.at(t))
     C.noob_act = lambda t: unflat(C.noob_keys.at(t))
