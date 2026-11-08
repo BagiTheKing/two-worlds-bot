@@ -3804,7 +3804,9 @@
    "name": "steve_list",
    "text": "A giant statue of himself. A duck. A door to nowhere.",
    "direction_text": "[deadpan, listing, unimpressed] A giant statue of himself. A duck. A door to nowhere.",
-   "pad": 0.0
+   "pad": 0.0,
+   "trim": 4.8,
+   "trim_fade": 0.06
   },
   {
    "line": "noob",
@@ -3818,7 +3820,9 @@
    "name": "patch_belong",
    "text": "None of it belonged in this world. So the world started deleting it...",
    "direction_text": "[calm, serious, explaining clearly] None of it belonged in this world. So the world started deleting it...",
-   "pad": 0.05
+   "pad": 0.05,
+   "trim": 4.7,
+   "trim_fade": 0.05
   },
   {
    "line": "patch",
@@ -3928,7 +3932,8 @@
    "name": "noob_dontnext",
    "text": "Don't 'next slide' me!",
    "direction_text": "[outraged, instantly] Don't 'next slide' me!",
-   "pad": 0.6
+   "pad": 0.6,
+   "solo_text": "Don't 'next slide' me!"
   },
   {
    "line": "patch",

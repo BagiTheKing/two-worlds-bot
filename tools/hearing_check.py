@@ -41,8 +41,12 @@ def main(audio_path, timeline_path):
         miss = [w for w in want if w not in got]
         bad = len(miss) > max(0, len(want) // 4)                # a quarter of its words or more
         flagged += bad
+        extra = [w for w in words(heard) if w not in set(words(ln["text"])) and not w.isdigit()]
+        bad = bad or len(extra) > 1
+        flagged += bad and not (len(miss) > max(0, len(want) // 4))
         print(f"  {'!!' if bad else 'ok'} {ln['start']:6.1f}s {ln['name']:<18} heard {heard!r}"
-              + (f"  missing: {' '.join(miss)}" if miss else ""))
+              + (f"  missing: {' '.join(miss)}" if miss else "")
+              + (f"  extra: {' '.join(extra)}" if extra else ""))
     print(f"hearing check: {flagged} of {len(tl['lines'])} lines flagged")
 
 
