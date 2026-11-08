@@ -38,6 +38,9 @@ on:
       parts:
         description: "Which frames to render: all, old (episode kit) or new (new look)"
         default: "all"
+      prep_from:
+        description: "Render with an earlier run's approved sound and timing (its prep), not new voices"
+        default: ""
       assemble_from:
         description: "Only assemble again: an earlier run whose sound, timing and frames to use (overlays re-read from the episode file)"
         default: ""
@@ -51,7 +54,7 @@ env:
 
 jobs:
   prep:
-    if: ${{ inputs.assemble_from == '' }}
+    if: ${{ inputs.assemble_from == '' && inputs.prep_from == '' }}
     runs-on: ubuntu-latest
     outputs:
       frames: ${{ steps.len.outputs.frames }}
@@ -133,7 +136,7 @@ jobs:
 
   render:
     needs: prep
-    if: ${{ !inputs.voices_only && inputs.parts != 'new' }}
+    if: ${{ always() && !inputs.voices_only && inputs.parts != 'new' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -144,13 +147,21 @@ jobs:
         with:
           python-version: '3.13'
       - run: pip install bpy Pillow numpy
-      - uses: actions/download-artifact@v4
+      - if: inputs.prep_from == ''
+        uses: actions/download-artifact@v4
         with:
           name: prep
           path: build/
+      - if: inputs.prep_from != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+          run-id: ${{ inputs.prep_from }}
+          github-token: ${{ github.token }}
       - name: Render this shard's frames
         run: |
-          N=${{ needs.prep.outputs.frames }}
+          N=$(python -c "import json; t=json.load(open('build/timeline.json')); print(int(round((t['length'] + 0.4) * t['fps'])) + 1)")
           PER=$(( (N + SHARDS - 1) / SHARDS ))
           FIRST=$(( ${{ matrix.shard }} * PER + 1 ))
           LAST=$(( FIRST + PER - 1 )); [ $LAST -gt $N ] && LAST=$N
@@ -170,7 +181,7 @@ jobs:
     # the new look (src/lookdev): Steve's rig, the Noob, Patch, Null and the world. Its block
     # textures come from the MCprep pack, fetched here and never committed (Minecraft's textures).
     needs: prep
-    if: ${{ !inputs.voices_only && inputs.new_look != '' && inputs.parts != 'old' }}
+    if: ${{ always() && !inputs.voices_only && inputs.new_look != '' && inputs.parts != 'old' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -182,10 +193,18 @@ jobs:
         with:
           python-version: '3.13'
       - run: pip install bpy Pillow numpy soundfile
-      - uses: actions/download-artifact@v4
+      - if: inputs.prep_from == ''
+        uses: actions/download-artifact@v4
         with:
           name: prep
           path: build/
+      - if: inputs.prep_from != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+          run-id: ${{ inputs.prep_from }}
+          github-token: ${{ github.token }}
       - name: The MCprep pack (block and item textures)
         run: |
           for i in 1 2 3 4; do
@@ -210,7 +229,7 @@ jobs:
 
   assemble:
     needs: [prep, render, render_new]
-    if: ${{ always() && !inputs.voices_only && (inputs.assemble_from != '' || (needs.prep.result == 'success' && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled')) }}
+    if: ${{ always() && !inputs.voices_only && (inputs.assemble_from != '' || ((needs.prep.result == 'success' || inputs.prep_from != '') && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -218,11 +237,18 @@ jobs:
         with:
           python-version: '3.13'
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install Pillow numpy
-      - if: inputs.assemble_from == ''
+      - if: inputs.assemble_from == '' && inputs.prep_from == ''
         uses: actions/download-artifact@v4
         with:
           name: prep
           path: build/
+      - if: inputs.prep_from != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: prep
+          path: build/
+          run-id: ${{ inputs.prep_from }}
+          github-token: ${{ github.token }}
       - if: inputs.assemble_from == ''
         uses: actions/download-artifact@v4
         with:
