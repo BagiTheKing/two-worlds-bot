@@ -373,7 +373,12 @@
      "offset": 0.0
     },
     {
-     "at": "steve_plan+1.6",
+     "at": "steve_plan+1.4",
+     "video": "assets/clips/ep09/e1_sky.mp4",
+     "offset": 2.3
+    },
+    {
+     "at": "steve_steps",
      "video": "assets/clips/ep09/e2_steps.mp4",
      "offset": 0.0
     }
@@ -444,13 +449,18 @@
   },
   {
    "type": "holo",
-   "from": "patch_arrived",
+   "from": "patch_grew",
    "to": "steve_weirder",
    "label": "ARCHIVE · EP 4",
    "w": 468,
    "h": 832,
    "y": 225,
    "clips": [
+    {
+     "at": "patch_grew",
+     "video": "assets/clips/ep09/e4_grow.mp4",
+     "offset": 0.0
+    },
     {
      "at": "patch_arrived",
      "video": "assets/clips/ep09/e4_patch.mp4",
@@ -461,7 +471,7 @@
   {
    "type": "holo",
    "from": "r5",
-   "to": "noob_close",
+   "to": "patch_belong",
    "label": "ARCHIVE · EP 5",
    "w": 468,
    "h": 832,
@@ -478,7 +488,7 @@
      "offset": 0.0
     },
     {
-     "at": "steve_list+1.7",
+     "at": "steve_list+1.6",
      "video": "assets/clips/ep09/e5_door.mp4",
      "offset": 0.0
     }
@@ -486,23 +496,13 @@
   },
   {
    "type": "holo",
-   "from": "patch_belong",
+   "from": "patch_worse",
    "to": "noob_duck",
    "label": "ARCHIVE · EP 5",
    "w": 468,
    "h": 832,
    "y": 225,
    "clips": [
-    {
-     "at": "patch_belong",
-     "video": "assets/clips/ep09/e5_duck.mp4",
-     "offset": 0.0
-    },
-    {
-     "at": "patch_belong+2.2",
-     "video": "assets/clips/ep09/e5_delete.mp4",
-     "offset": 0.0
-    },
     {
      "at": "patch_worse",
      "video": "assets/clips/ep09/e5_chunk.mp4",
@@ -543,22 +543,6 @@
     {
      "at": "patch_behind+2.4",
      "video": "assets/clips/ep09/e7_drift.mp4",
-     "offset": 0.0
-    }
-   ]
-  },
-  {
-   "type": "holo",
-   "from": "steve_howmany",
-   "to": "patch_counting",
-   "label": "ARCHIVE · EP 7",
-   "w": 468,
-   "h": 832,
-   "y": 225,
-   "clips": [
-    {
-     "at": "steve_howmany",
-     "video": "assets/clips/ep09/e7_times.mp4",
      "offset": 0.0
     }
    ]
@@ -857,8 +841,8 @@
   {
    "who": "steve",
    "do": "raise_arm",
-   "from": "steve_plan+1.4",
-   "to": "steve_plan.end",
+   "from": "steve_steps",
+   "to": "steve_steps.end",
    "arm": "arm_r",
    "angle": 0.9,
    "out": -0.2,
@@ -1021,7 +1005,7 @@
    "who": "steve",
    "do": "look",
    "from": "noob_touched",
-   "to": "patch_arrived",
+   "to": "patch_grew",
    "head": [
     0,
     0,
@@ -1037,6 +1021,35 @@
    "angle": 2.4,
    "out": 0.2,
    "ease": 0.15
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "patch_grew",
+   "to": "patch_grew.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "patch_grew",
+   "to": "patch_grew.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "patch_grew+1.0",
+   "to": "patch_grew.end",
+   "face": "surprised"
   },
   {
    "who": "steve",
@@ -1096,7 +1109,7 @@
    "who": "steve",
    "do": "look",
    "from": "r5",
-   "to": "noob_close",
+   "to": "patch_belong",
    "head": [
     -0.32,
     0,
@@ -1107,7 +1120,7 @@
    "who": "noob",
    "do": "look",
    "from": "r5",
-   "to": "noob_close",
+   "to": "patch_belong",
    "head": [
     -0.32,
     0,
@@ -1124,7 +1137,7 @@
    "who": "noob",
    "do": "expr",
    "from": "noob_creative",
-   "to": "noob_close.end",
+   "to": "steve_list.end",
    "face": "happy"
   },
   {
@@ -1133,16 +1146,6 @@
    "from": "steve_list",
    "to": "steve_list.end",
    "face": "unimpressed"
-  },
-  {
-   "who": "noob",
-   "do": "raise_arm",
-   "from": "noob_close",
-   "to": "noob_close.end",
-   "arm": "arm_r",
-   "angle": 1.2,
-   "out": -0.3,
-   "ease": 0.12
   },
   {
    "who": "steve",
@@ -1306,36 +1309,25 @@
    "who": "steve",
    "do": "look",
    "from": "steve_howmany",
-   "to": "patch_counting",
+   "to": "steve_howmany.end",
    "head": [
-    -0.32,
+    -0.15,
     0,
-    0
-   ]
-  },
-  {
-   "who": "noob",
-   "do": "look",
-   "from": "steve_howmany",
-   "to": "patch_counting",
-   "head": [
-    -0.32,
-    0,
-    0
+    0.35
    ]
   },
   {
    "who": "steve",
    "do": "expr",
    "from": "steve_howmany",
-   "to": "patch_counting.end",
+   "to": "r8",
    "face": "surprised"
   },
   {
    "who": "patch",
    "do": "glitch_eye",
-   "from": "patch_counting+0.2",
-   "to": "patch_counting+0.6"
+   "from": "steve_howmany.end+0.1",
+   "to": "steve_howmany.end+0.5"
   },
   {
    "who": "steve",
@@ -2122,7 +2114,7 @@
   {
    "name": "ep4_noob1",
    "from": "noob_touched",
-   "to": "patch_arrived",
+   "to": "patch_grew",
    "lens": 40,
    "path": [
     [
@@ -2134,7 +2126,7 @@
      ]
     ],
     [
-     "patch_arrived",
+     "patch_grew",
      [
       7.1000000000000005,
       2.68,
@@ -2155,12 +2147,12 @@
   },
   {
    "name": "holo4_2",
-   "from": "patch_arrived",
+   "from": "patch_grew",
    "to": "steve_weirder",
    "lens": 22,
    "path": [
     [
-     "patch_arrived",
+     "patch_grew",
      [
       6.2,
       -2.6,
@@ -2178,7 +2170,7 @@
    ],
    "look": [
     [
-     "patch_arrived",
+     "patch_grew",
      [
       6.2,
       5.0,
@@ -2258,7 +2250,7 @@
   {
    "name": "holo5_0",
    "from": "r5",
-   "to": "noob_close",
+   "to": "patch_belong",
    "lens": 22,
    "path": [
     [
@@ -2270,7 +2262,7 @@
      ]
     ],
     [
-     "noob_close",
+     "patch_belong",
      [
       6.2,
       -2.2,
@@ -2290,47 +2282,47 @@
    ]
   },
   {
-   "name": "ep5_noob1",
-   "from": "noob_close",
-   "to": "patch_belong",
+   "name": "ep5_patch1",
+   "from": "patch_belong",
+   "to": "patch_worse",
    "lens": 40,
    "path": [
     [
-     "noob_close",
+     "patch_belong",
      [
-      7.1000000000000005,
-      2.5,
-      1.8699999999999999
+      6.4,
+      2.2499999999999996,
+      2.57
      ]
     ],
     [
-     "patch_belong",
+     "patch_worse",
      [
-      7.1000000000000005,
-      2.68,
-      1.8699999999999999
+      6.4,
+      2.4299999999999997,
+      2.57
      ]
     ]
    ],
    "look": [
     [
-     "noob_close",
+     "patch_belong",
      [
-      7.4,
-      5.0,
-      1.72
+      6.2,
+      4.85,
+      2.4299999999999997
      ]
     ]
    ]
   },
   {
    "name": "holo5_2",
-   "from": "patch_belong",
+   "from": "patch_worse",
    "to": "noob_duck",
    "lens": 22,
    "path": [
     [
-     "patch_belong",
+     "patch_worse",
      [
       6.2,
       -2.6,
@@ -2348,7 +2340,7 @@
    ],
    "look": [
     [
-     "patch_belong",
+     "patch_worse",
      [
       6.2,
       5.0,
@@ -2562,69 +2554,35 @@
    ]
   },
   {
-   "name": "holo7_2",
+   "name": "ep7_steve2",
    "from": "steve_howmany",
-   "to": "patch_counting",
-   "lens": 22,
-   "path": [
-    [
-     "steve_howmany",
-     [
-      6.2,
-      -2.6,
-      0.55
-     ]
-    ],
-    [
-     "patch_counting",
-     [
-      6.2,
-      -2.2,
-      0.6
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "steve_howmany",
-     [
-      6.2,
-      5.0,
-      3.55
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "ep7_patch3",
-   "from": "patch_counting",
    "to": "r8",
    "lens": 40,
    "path": [
     [
-     "patch_counting",
+     "steve_howmany",
      [
-      6.4,
-      2.2499999999999996,
-      2.57
+      5.3,
+      2.6,
+      1.73
      ]
     ],
     [
      "r8",
      [
-      6.4,
-      2.4299999999999997,
-      2.57
+      5.3,
+      2.7800000000000002,
+      1.73
      ]
     ]
    ],
    "look": [
     [
-     "patch_counting",
+     "steve_howmany",
      [
-      6.2,
-      4.85,
-      2.4299999999999997
+      5.0,
+      5.0,
+      1.57
      ]
     ]
    ]
@@ -3098,8 +3056,8 @@
    "name": "noob_hi",
    "text": "Hi, new people! You have no idea what's going on.",
    "direction_text": "[bright, waving at the camera, way too cheerful] Hi, new people! You have no idea what's going on.",
-   "pad": 0.45,
-   "speed": 1.1,
+   "pad": 0.35,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3108,7 +3066,7 @@
    "text": "...Same.",
    "direction_text": "[small beat, then shrugging, honest] ...Same.",
    "pad": 0.35,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3117,7 +3075,7 @@
    "text": "Eight episodes of problems. Patch. Show them.",
    "direction_text": "[dry, deadpan, tired] Eight episodes of problems. Patch. Show them.",
    "pad": 0.1,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3126,7 +3084,7 @@
    "text": "Rewinding. To the very start.",
    "direction_text": "[calm, simple, polite] Rewinding. To the very start.",
    "pad": 0.12,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3143,7 +3101,7 @@
    "text": "That's us. Falling. Spoiler: it's the end.",
    "direction_text": "[casual, pointing, unbothered] That's us. Falling. Spoiler: it's the end.",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3152,7 +3110,7 @@
    "text": "It's the beginning.",
    "direction_text": "[dry correction, instantly] It's the beginning.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3162,7 +3120,7 @@
    "direction_text": "[pretending to be wise, slow] It's the end AND the beginning. Deep.",
    "pad": 0.15,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3175,7 +3133,7 @@
    "text": "Episode one. I punched a tree. It floated.",
    "direction_text": "[proud, quick, like it's a big achievement] Episode one. I punched a tree. It floated.",
    "pad": 0.1,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3184,7 +3142,7 @@
    "text": "Then the sky cracked open...",
    "direction_text": "[low, serious, slower] Then the sky cracked open...",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3193,7 +3151,7 @@
    "text": "...and something looked down at us.",
    "direction_text": "[quiet, careful, ominous] ...and something looked down at us.",
    "pad": 0.4,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3203,7 +3161,7 @@
    "direction_text": "[scared whisper, but clear] What IS that thing?",
    "pad": 0.3,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3212,7 +3170,7 @@
    "text": "Unknown. But it saw everything.",
    "direction_text": "[calm, honest, quiet but clear] Unknown. But it saw everything.",
    "pad": 0.35,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3223,7 +3181,7 @@
    "pad": 0.3,
    "solo_text": "Hi, giant eye.",
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3236,7 +3194,7 @@
    "text": "So I made a plan. Leave, before that eye came back.",
    "direction_text": "[practical, explaining, a little proud] So I made a plan. Leave, before that eye came back.",
    "pad": 0.1,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3245,8 +3203,7 @@
    "text": "Portal home. Three steps. Nobody touches anything.",
    "direction_text": "[firm, counting the steps] Portal home. Three steps. Nobody touches anything.",
    "pad": 0.05,
-   "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3255,7 +3212,7 @@
    "text": "There was a BUTTON!",
    "direction_text": "[defensive, instantly, loud] There was a BUTTON!",
    "pad": 0.4,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3264,7 +3221,7 @@
    "text": "The plan lasted three seconds.",
    "direction_text": "[flat, still hurt about it] The plan lasted three seconds.",
    "pad": 0.35,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3274,7 +3231,7 @@
    "direction_text": "[cheerful, celebrating] Three seconds. New record!",
    "pad": 0.35,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3283,7 +3240,7 @@
    "text": "Then, inside the portal... something waved back.",
    "direction_text": "[quiet, slow, ominous] Then, inside the portal... something waved back.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3293,7 +3250,7 @@
    "direction_text": "[defensive, quick] I waved first! I was being polite!",
    "pad": 0.5,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3302,7 +3259,7 @@
    "text": "First the eye. Then that. Something was watching us.",
    "direction_text": "[low, serious, putting it together] First the eye. Then that. Something was watching us.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3315,7 +3272,7 @@
    "text": "We put a dragon in an obby!",
    "direction_text": "[excited, proud] We put a dragon in an obby!",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3324,7 +3281,7 @@
    "text": "YOU put a dragon in an obby.",
    "direction_text": "[dry, correcting him] YOU put a dragon in an obby.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3337,7 +3294,7 @@
    "text": "Then the dragon glitched... and dropped a weird block!",
    "direction_text": "[excited, telling a story] Then the dragon glitched... and dropped a weird block!",
    "pad": 0.1,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3346,7 +3303,7 @@
    "text": "A block that shouldn't exist. Nobody knows why.",
    "direction_text": "[dry, serious] A block that shouldn't exist. Nobody knows why.",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3354,8 +3311,8 @@
    "name": "noob_touched",
    "text": "So I touched it.",
    "direction_text": "[proud, matter-of-fact, like it was obvious] So I touched it.",
-   "pad": 0.4,
-   "speed": 1.1,
+   "pad": 0.45,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3363,9 +3320,8 @@
    "name": "patch_grew",
    "text": "It grew bigger... every time he died.",
    "direction_text": "[calm, quiet, clear] It grew bigger... every time he died.",
-   "pad": 0.05,
-   "unused": true,
-   "speed": 1.1,
+   "pad": 0.4,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3375,7 +3331,7 @@
    "direction_text": "[defensive, instantly] I was HELPING!",
    "pad": 0.5,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3384,7 +3340,7 @@
    "text": "And then I arrived. Things improved.",
    "direction_text": "[calm, quietly pleased with itself] And then I arrived. Things improved.",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3393,7 +3349,7 @@
    "text": "Things got weirder.",
    "direction_text": "[deadpan] Things got weirder.",
    "pad": 0.5,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3402,7 +3358,7 @@
    "text": "...Weirder is an improvement.",
    "direction_text": "[calm, after a tiny pause, certain] ...Weirder is an improvement.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3415,7 +3371,7 @@
    "text": "Then the block gave me CREATIVE MODE! I built everything!",
    "direction_text": "[excited, arms wide open] Then the block gave me CREATIVE MODE! I built everything!",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3423,10 +3379,10 @@
    "name": "steve_list",
    "text": "A giant statue of himself. A duck. A door to nowhere.",
    "direction_text": "[deadpan, listing, unimpressed] A giant statue of himself. A duck. A door to nowhere.",
-   "pad": 0.0,
+   "pad": 0.4,
    "trim": 4.8,
    "trim_fade": 0.06,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3435,8 +3391,9 @@
    "text": "Close enough!",
    "direction_text": "[cheerful, instantly] Close enough!",
    "pad": 0.4,
-   "speed": 1.1,
-   "tighten": 0.2
+   "speed": 1.13,
+   "tighten": 0.2,
+   "unused": true
   },
   {
    "line": "patch",
@@ -3446,7 +3403,7 @@
    "pad": 0.05,
    "trim": 4.7,
    "trim_fade": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3455,7 +3412,7 @@
    "text": "...and everything around it.",
    "direction_text": "[quieter, heavy, but clear] ...and everything around it.",
    "pad": 0.5,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3464,12 +3421,12 @@
    "text": "...RIP duck.",
    "direction_text": "[small, sad, sincere] ...RIP duck.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
    "beat": "r6",
-   "dur": 1.4
+   "dur": 1.1
   },
   {
    "line": "noob",
@@ -3477,7 +3434,7 @@
    "text": "...I don't like that guy.",
    "direction_text": "[small, uneasy, but clear] ...I don't like that guy.",
    "pad": 0.05,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3486,7 +3443,7 @@
    "text": "Nobody likes that guy.",
    "direction_text": "[low, serious] Nobody likes that guy.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3499,7 +3456,7 @@
    "text": "Every time he respawns... something stays behind.",
    "direction_text": "[quiet, careful, slightly ominous, clear] Every time he respawns... something stays behind.",
    "pad": 0.3,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3509,7 +3466,7 @@
    "direction_text": "[worried, realising] I respawn a LOT.",
    "pad": 0.5,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3518,7 +3475,7 @@
    "text": "So some things started making sense...",
    "direction_text": "[slow, thinking it through] So some things started making sense...",
    "pad": 0.0,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3527,7 +3484,7 @@
    "text": "...and the questions got WAY bigger.",
    "direction_text": "[cutting in, worried] ...and the questions got WAY bigger.",
    "pad": 0.2,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3537,7 +3494,7 @@
    "direction_text": "[nervous, really asking] Like... where do all the old me's GO?",
    "pad": 0.3,
    "unused": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3545,8 +3502,8 @@
    "name": "steve_howmany",
    "text": "And how many times have we done this?",
    "direction_text": "[quiet, serious] And how many times have we done this?",
-   "pad": 0.5,
-   "speed": 1.1,
+   "pad": 0.4,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3555,8 +3512,9 @@
    "text": "...I stopped counting.",
    "direction_text": "[calm, too quiet, but clear] ...I stopped counting.",
    "pad": 0.3,
-   "speed": 1.1,
-   "tighten": 0.2
+   "speed": 1.13,
+   "tighten": 0.2,
+   "unused": true
   },
   {
    "beat": "r8",
@@ -3568,7 +3526,7 @@
    "text": "And YOU. Built. The FIRST portal.",
    "direction_text": "[slow, accusing, one word at a time] And YOU. Built. The FIRST portal.",
    "pad": 0.45,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3577,7 +3535,7 @@
    "text": "...Patch. Next slide.",
    "direction_text": "[dry, avoiding eye contact, quick] ...Patch. Next slide.",
    "pad": 0.0,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3587,7 +3545,7 @@
    "direction_text": "[outraged, instantly] Don't 'next slide' me!",
    "pad": 0.5,
    "solo_text": "Don't 'next slide' me!",
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3596,12 +3554,12 @@
    "text": "...That was the last slide.",
    "direction_text": "[calm, polite] ...That was the last slide.",
    "pad": 0.2,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
    "beat": "holo_off",
-   "dur": 0.4
+   "dur": 0.3
   },
   {
    "line": "patch",
@@ -3609,12 +3567,12 @@
    "text": "The observers have theories.",
    "direction_text": "[calm, mysterious] The observers have theories.",
    "pad": 0.12,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
    "beat": "card",
-   "dur": 1.8
+   "dur": 1.6
   },
   {
    "line": "noob",
@@ -3627,7 +3585,7 @@
     5.38
    ],
    "scene_start": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3644,7 +3602,7 @@
     5.863,
     9.572
    ],
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3657,7 +3615,7 @@
     12.728,
     13.796
    ],
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3670,7 +3628,7 @@
     18.6,
     20.45
    ],
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3688,7 +3646,7 @@
     8.653
    ],
    "scene_start": true,
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3701,7 +3659,7 @@
     14.497,
     17.768
    ],
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3714,7 +3672,7 @@
     18.57,
     19.374
    ],
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3727,7 +3685,7 @@
     24.515,
     27.334
    ],
-   "speed": 1.1,
+   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3798,7 +3756,7 @@
   },
   {
    "beat": "up_patch",
-   "dur": 2.4
+   "dur": 2.2
   },
   {
    "line": "noob",
@@ -3857,7 +3815,7 @@
   },
   {
    "beat": "quiet",
-   "dur": 1.5
+   "dur": 1.3
   },
   {
    "line": "steve",
@@ -3872,7 +3830,7 @@
   },
   {
    "beat": "rise",
-   "dur": 2.5
+   "dur": 2.3
   },
   {
    "beat": "delete",
@@ -3920,7 +3878,7 @@
   },
   {
    "beat": "end",
-   "dur": 2.5
+   "dur": 2.2
   }
  ],
  "skip_render": [

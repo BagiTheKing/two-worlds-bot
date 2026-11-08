@@ -101,7 +101,7 @@ def build():
     # Episode 2: the plan, the button, the thing that waved
     for who in ("steve", "noob"):
         c(who, "look", "r2", "steve_watching", head=U)
-    c("steve", "raise_arm", "steve_plan+1.4", "steve_plan.end", arm="arm_r", angle=0.9, out=-0.2, ease=0.2)
+    c("steve", "raise_arm", "steve_steps", "steve_steps.end", arm="arm_r", angle=0.9, out=-0.2, ease=0.2)
     c("noob", "expr", "noob_button", "noob_button.end", face="surprised")
     c("noob", "raise_arm", "noob_button", "noob_button.end", arm="arm_l", angle=1.6, out=0.3, ease=0.12)
     c("steve", "expr", "steve_three", "steve_three.end", face="unimpressed")
@@ -121,8 +121,11 @@ def build():
     c("noob", "expr", "noob_block", "noob_block.end", face="happy")
     c("steve", "expr", "steve_exist", "steve_exist.end", face="unimpressed")
     c("noob", "expr", "noob_touched", "noob_touched.end", face="happy")
-    c("steve", "look", "noob_touched", "patch_arrived", head=turn_to_noob)
+    c("steve", "look", "noob_touched", "patch_grew", head=turn_to_noob)
     c("noob", "raise_arm", "noob_touched", "noob_touched.end", arm="arm_l", angle=2.4, out=0.2, ease=0.15)
+    for who in ("steve", "noob"):
+        c(who, "look", "patch_grew", "patch_grew.end", head=U)
+    c("noob", "expr", "patch_grew+1.0", "patch_grew.end", face="surprised")
     for who in ("steve", "noob"):
         c(who, "look", "patch_arrived", "patch_arrived.end", head=U)
     c("patch", "face", "patch_arrived", "patch_arrived+0.3", yaw=0.35)
@@ -131,11 +134,10 @@ def build():
     c("patch", "face", "patch_improvement", "patch_improvement+0.3", yaw=0.0)
     # Episode 5: creative mode made it worse
     for who in ("steve", "noob"):
-        c(who, "look", "r5", "noob_close", head=U)
+        c(who, "look", "r5", "patch_belong", head=U)
     c("noob", "cheer", "noob_creative", "noob_creative+0.7")
-    c("noob", "expr", "noob_creative", "noob_close.end", face="happy")
+    c("noob", "expr", "noob_creative", "steve_list.end", face="happy")
     c("steve", "expr", "steve_list", "steve_list.end", face="unimpressed")
-    c("noob", "raise_arm", "noob_close", "noob_close.end", arm="arm_r", angle=1.2, out=-0.3, ease=0.12)
     for who in ("steve", "noob"):
         c(who, "look", "patch_belong", "noob_duck", head=U)
     c("noob", "expr", "patch_worse", "noob_duck.end", face="scared")
@@ -155,10 +157,9 @@ def build():
     c("steve", "look", "steve_sense", "steve_sense.end", head=[-0.1, 0, 0.2])
     c("noob", "look", "noob_bigger", "noob_bigger.end", head=turn_to_steve)
     c("noob", "expr", "noob_bigger", "noob_bigger.end", face="scared")
-    for who in ("steve", "noob"):
-        c(who, "look", "steve_howmany", "patch_counting", head=U)
-    c("steve", "expr", "steve_howmany", "patch_counting.end", face="surprised")
-    c("patch", "glitch_eye", "patch_counting+0.2", "patch_counting+0.6")
+    c("steve", "look", "steve_howmany", "steve_howmany.end", head=[-0.15, 0, 0.35])   # asks Patch
+    c("steve", "expr", "steve_howmany", "r8", face="surprised")
+    c("patch", "glitch_eye", "steve_howmany.end+0.1", "steve_howmany.end+0.5")
     # Episode 8: Steve dodges
     for who in ("steve", "noob"):
         c(who, "look", "r8", "noob_you", head=U)
@@ -207,28 +208,26 @@ def build():
              ("steve", "steve_beginning", "r1")]),
         (1, [("holo", "r1", "patch_unknown", [("r1", "e1_tree"), ("steve_sky", "e1_sky")]),
              ("patch", "patch_unknown", "r2")]),
-        (2, [("holo", "r2", "noob_button", [("r2", "e2_eye"), ("steve_plan+1.6", "e2_steps")]),
+        (2, [("holo", "r2", "noob_button", [("r2", "e2_eye"), ("steve_plan+1.4", "e1_sky", 2.3),
+                                             ("steve_steps", "e2_steps")]),
              ("noob", "noob_button", "steve_three"),
              ("holo", "steve_three", "steve_watching", [("steve_three", "e2_button"), ("steve_three+0.9", "e2_zombies"),
                                                          ("patch_waved", "e2_waved")]),
              ("steve", "steve_watching", "r3")]),
         (3, [("holo", "r3", "steve_you", [("r3", "recap_ep3")]), ("steve", "steve_you", "r4")]),
         (4, [("holo", "r4", "noob_touched", [("r4", "e4_dragon"), ("noob_block+1.3", "e4_block")]),
-             ("noob", "noob_touched", "patch_arrived"),
-             ("holo", "patch_arrived", "steve_weirder", [("patch_arrived", "e4_patch")]),
+             ("noob", "noob_touched", "patch_grew"),
+             ("holo", "patch_grew", "steve_weirder", [("patch_grew", "e4_grow"), ("patch_arrived", "e4_patch")]),
              ("steve", "steve_weirder", "patch_improvement"), ("patch", "patch_improvement", "r5")]),
-        (5, [("holo", "r5", "noob_close", [("r5", "e5_build"), ("steve_list", "e5_statue"),
-                                            ("steve_list+1.7", "e5_door")]),
-             ("noob", "noob_close", "patch_belong"),
-             ("holo", "patch_belong", "noob_duck", [("patch_belong", "e5_duck"), ("patch_belong+2.2", "e5_delete"),
-                                                    ("patch_worse", "e5_chunk")]),
+        (5, [("holo", "r5", "patch_belong", [("r5", "e5_build"), ("steve_list", "e5_statue"),
+                                              ("steve_list+1.6", "e5_door")]),
+             ("patch", "patch_belong", "patch_worse"),
+             ("holo", "patch_worse", "noob_duck", [("patch_worse", "e5_chunk")]),
              ("noob", "noob_duck", "r6")]),
         (6, [("holo", "r6", "noob_dontlike", [("r6", "recap_ep6")]),
              ("noob", "noob_dontlike", "steve_nobody"), ("steve", "steve_nobody", "r7")]),
         (7, [("holo", "r7", "steve_sense", [("r7", "e7_bodies"), ("patch_behind+2.4", "e7_drift")]),
-             ("two", "steve_sense", "steve_howmany"),
-             ("holo", "steve_howmany", "patch_counting", [("steve_howmany", "e7_times")]),
-             ("patch", "patch_counting", "r8")]),
+             ("two", "steve_sense", "steve_howmany"), ("steve", "steve_howmany", "r8")]),
         (8, [("holo", "r8", "steve_next", [("r8", "e8_portal")]),
              ("steve", "steve_next", "noob_dontnext"), ("noob", "noob_dontnext", "patch_lastslide")]),
     ]
@@ -241,7 +240,8 @@ def build():
                 # a vertical screen: the episode whole, as it was published, above Patch
                 holos.append({"type": "holo", "from": a, "to": b, "label": f"ARCHIVE · EP {k}",
                               "w": 468, "h": 832, "y": 225,
-                              "clips": [{"at": at, "video": E + v + ".mp4", "offset": 0.0} for at, v in cl]})
+                              "clips": [{"at": c[0], "video": E + c[1] + ".mp4", "offset": c[2] if len(c) > 2 else 0.0}
+                                        for c in cl]})
             elif seg[0] == "two":
                 sh.append(two(f"two{k}_{i}", seg[1], seg[2]))
             else:
