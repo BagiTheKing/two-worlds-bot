@@ -474,7 +474,8 @@ def holo(img, o, t, f, fonts):
         if k not in {c["video"] for c in clips}:
             del _HOLO_CACHE[k]
     if cur["video"] not in _HOLO_CACHE:
-        _HOLO_CACHE[cur["video"]] = read_holo_clip(os.path.join(HERE, "..", cur["video"]), bw, bh)
+        _HOLO_CACHE[cur["video"]] = read_holo_clip(os.path.join(HERE, "..", cur["video"]), bw, bh,
+                                                   crop=o.get("crop", False))
     frames = _HOLO_CACHE[cur["video"]]
     pic = frames[max(0, min(len(frames) - 1, int((t - cur["at"] + cur.get("offset", 0.0)) * fps)))]
     switch = cur is not clips[0] and t - cur["at"] < 2 / fps
@@ -620,14 +621,14 @@ DRAW = {"holo": holo, "comment": comment, "grade": grade, "chat": chat, "warp": 
 FULL = ("grade", "memory", "card", "fade_in", "endcard")
 
 
-def read_holo_clip(path, bw, bh):
-    """A clip's frames as the holo screen shows them (bw x bh): a full 1080x1920
-    episode clip is cropped to the middle of its picture (no HUD, no captions);
-    a clip already cut to that crop is only scaled."""
+def read_holo_clip(path, bw, bh, crop=False):
+    """A clip's frames as the holo screen shows them (bw x bh). The screen
+    shows the episode as it was published, whole (a vertical screen for a
+    vertical episode); crop=True keeps only the middle of a vertical picture."""
     w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
                                     "stream=width,height", "-of", "csv=p=0", path],
                                    capture_output=True, text=True, check=True).stdout.strip().split(","))
-    crop = f"scale={W}:{H},crop={W}:900:0:210," if h > w else ""
+    crop = f"scale={W}:{H},crop={W}:900:0:210," if crop and h > w else ""
     raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-vf", f"{crop}scale={bw}:{bh}",
                           "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
     n = len(raw) // (bw * bh * 3)

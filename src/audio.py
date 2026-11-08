@@ -757,6 +757,7 @@ def gemini_lines(ep, cache_dir):
     borrowed = {}       # lines whose recording comes from another (cached) scene
     files = {}          # lines taken as they are from a recording in the repo
     own = set()         # lines recorded as a scene of their own, direction kept, used whole
+    starts = set()      # lines that always begin a new scene
     for ev in ep["events"]:
         if "line" not in ev:
             continue
@@ -770,6 +771,8 @@ def gemini_lines(ep, cache_dir):
         todo.append((name, who, text, ev.get("nonverbal", False)))
         if ev.get("own_scene"):
             own.add(name)
+        if ev.get("scene_start"):          # a new scene starts here (keeps a recorded scene as it was)
+            starts.add(name)
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
         if ev.get("solo_take") is not None:         # this take by number, not Whisper's pick
@@ -789,7 +792,7 @@ def gemini_lines(ep, cache_dir):
     for item in todo:
         speakers = {w for _, w, _, _ in cur} | {item[1]}
         if cur and (item[3] or cur[-1][3] or len(speakers) > 2 or "null" in speakers and len(speakers) > 1
-                    or item[0] in own or cur[-1][0] in own):
+                    or item[0] in own or cur[-1][0] in own or item[0] in starts):
             scenes.append(cur)              # screams and Null are voiced on their own
             cur = []
         cur.append(item)
@@ -857,6 +860,9 @@ def gemini_lines(ep, cache_dir):
         both = {k: cut_lines(s, sr, spans, names, loose=k) for k in (False, True)}
         cuts = {n: both[loose[n]][n] for n in names if n in both[loose[n]]}
         for n, (a, b) in pinned.items():
+            if b > len(s) / sr + 0.05:
+                raise SystemExit(f"{n}: pinned cut {a}-{b}s is past the end of its scene "
+                                 f"({len(s) / sr:.2f}s): the scene was re-recorded or regrouped")
             seg = s[int(a * sr):int(b * sr)].copy()
             f = int(0.006 * sr)
             seg[:f] *= np.linspace(0, 1, f)

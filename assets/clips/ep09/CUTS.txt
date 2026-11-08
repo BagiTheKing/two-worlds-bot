@@ -1,11 +1,11 @@
-# name source_episode start_s duration_s (cut from the published episodes, cropped to the holo picture: crop=1080:900:0:210,scale=900:750)
-e1_tree 1 19.5 5.5
+# name source_episode start_s duration_s (cut from the published episodes, whole frame at 540x960)
+e1_tree 1 20.0 5.0
 e1_sky 1 25.0 4.4
 e2_eye 2 0.0 1.5
 e2_steps 2 3.4 3.6
 e2_button 2 7.0 1.6
 e2_zombies 2 8.4 6.0
-e2_waved 2 19.6 6.0
+e2_waved 2 19.8 5.8
 e4_dragon 3 23.45 1.0
 e4_block 4 4.3 2.4
 e4_grow 4 8.0 3.8
@@ -20,3 +20,6 @@ e7_bodies 7 9.4 4.4
 e7_drift 7 13.8 3.0
 e7_times 7 20.6 5.0
 e8_portal 8 4.8 6.0
+recap_ep0 0 44.8 3.7
+recap_ep3 3 12.0 4.0
+recap_ep6 6 23.0 4.0

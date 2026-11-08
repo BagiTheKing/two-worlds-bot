@@ -831,6 +831,8 @@ def _acting(C):
         (T("steve_quiet") + 0.6, {"head_turn": 16, "head_nod": -6}, 0.4),
         (T("rise"), {"head_nod": -24, "arm_sl": {"out": 22, "fwd": 18, "elbow": 40}, "arm_sr": {"out": 22, "fwd": 18, "elbow": 40}, "chest_lean": -6}, 0.6),
         (T("noob_run"), {"head_nod": -10}, 0.3),
+        *([(T("steve_stop"), {"head_nod": -6, "head_turn": 24}, 0.2),        # snaps at the Noob
+           (T("steve_stop.end") + 0.2, {"head_nod": -10}, 0.4)] if "steve_stop" in E.tl["beats"] else []),
     ], base=lambda k: idle_s.get(k, 0.0))
     C.steve_faces = Keys([
         (C.new_from, SF["stunned"], 0.2), (T("steve_hair"), SF["stunned"], 0.2), (T("steve_hair.end") - 0.6, SF["smile"], 0.4),
@@ -855,6 +857,8 @@ def _acting(C):
         (T("quiet"), {"head_turn": 10, "head_nod": -6}, 0.6),
         (T("rise"), {"head_nod": -28, "arm_sl": {"fwd": 75, "out": -8}, "arm_sr": {"fwd": 75, "out": -8}}, 0.6),
         (T("noob_run"), {"head_nod": -6, "arm_sl": {"out": 150, "fwd": 20}, "arm_sr": {"out": 150, "fwd": 20}}, 0.2),
+        *([(T("noob_finale"), {"head_nod": 4, "head_tilt": 10}, 0.2),          # to the camera, mid-run
+           (T("steve_stop"), {"head_nod": -4, "head_turn": -20}, 0.25)] if "noob_finale" in E.tl["beats"] else []),
     ], base=lambda k: idle_n.get(k, 0.0))
     C.noob_faces = Keys([
         (C.new_from, NF["neutral"], 0.2), (T("noob_beautiful"), NF["teary"], 0.3), (T("up_noob"), NF["neutral"], 0.4),
@@ -862,6 +866,8 @@ def _acting(C):
         (T("patch_always"), NF["happy"], 0.4), (T("up_world"), NF["awe"], 0.6), (T("steve_nice"), NF["happy"], 0.5),
         (T("noob_him") + 1.2, NF["worried"], 0.5), (T("quiet"), NF["worried"], 0.4), (T("rise"), NF["scared"], 0.4),
         (T("noob_run"), NF["shout"], 0.15),
+        *([(T("noob_finale"), NF["happy"], 0.15), (T("steve_stop"), NF["shout"], 0.2)]
+          if "noob_finale" in E.tl["beats"] else []),
     ], base=nbase)
     C.patch_faces = Keys([
         (C.new_from, {"look_x": -0.6}, 0.2), (T("up_noob"), {"look_x": 0.6}, 0.3), (T("up_patch"), {"look_y": -0.4}, 0.3),

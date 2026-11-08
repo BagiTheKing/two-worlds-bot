@@ -256,7 +256,9 @@ def build():
             if seg[0] == "holo":
                 _, a, b, cl = seg
                 sh.append(wide(f"holo{k}_{i}", a, b))
+                # a vertical screen: the episode whole, as it was published, above Patch
                 holos.append({"type": "holo", "from": a, "to": b, "label": f"ARCHIVE · EP {k}",
+                              "w": 468, "h": 832, "y": 225,
                               "clips": [{"at": at, "video": E + v + ".mp4", "offset": 0.0} for at, v in cl]})
             elif seg[0] == "two":
                 sh.append(two(f"two{k}_{i}", seg[1], seg[2]))
