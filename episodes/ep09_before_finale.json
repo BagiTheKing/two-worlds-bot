@@ -3645,9 +3645,10 @@
   {
    "line": "noob",
    "name": "noob_hieye",
-   "text": "...Hi, eye.",
+   "text": "...Hi, giant eye.",
    "direction_text": "[tiny, nervous, waving up at the sky] ...Hi, eye.",
-   "pad": 0.4
+   "pad": 0.4,
+   "solo_text": "Hi, giant eye."
   },
   {
    "beat": "r2",
@@ -4128,7 +4129,8 @@
    "cut_at": [
     26.323,
     27.324
-   ]
+   ],
+   "solo_text": "PATCH CAN SMILE?!"
   },
   {
    "line": "patch",
@@ -4153,7 +4155,7 @@
   {
    "line": "steve",
    "name": "steve_nice",
-   "text": "Okay. That's... nice.",
+   "text": "That's... nice.",
    "direction_text": "[impressed despite himself, low] Okay. That's... nice.",
    "pad": 0.3,
    "cut_at": [
