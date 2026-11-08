@@ -3516,7 +3516,6 @@
    "text": "...RIP duck.",
    "direction_text": "[small, sad, sincere] ...RIP duck.",
    "pad": 0.3,
-   "speed": 1.13,
    "tighten": 0.2
   },
   {
@@ -3697,7 +3696,6 @@
     5.863,
     9.572
    ],
-   "speed": 1.13,
    "tighten": 0.2
   },
   {
