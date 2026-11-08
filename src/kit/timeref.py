@@ -50,6 +50,8 @@ def resolve_overlays(ep_overlays, beats, length):
                 o[key] = round(R(o[key]), 3)
         if o.get("type") == "chat":                   # each message at its own moment
             o["lines"] = [dict(m, at=round(R(m["at"]), 3)) for m in o["lines"]]
+        if "clips" in o:                              # a holo screen switching clips
+            o["clips"] = [dict(c, at=round(R(c["at"]), 3)) for c in o["clips"]]
         out.append(o)
     return out
 

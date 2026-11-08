@@ -96,6 +96,7 @@ jobs:
           set -o pipefail
           mkdir -p build
           SCENES_OUT=build/scenes python -u src/audio.py ${{ inputs.episode }} build 2>&1 | tee build/voice_log.txt
+          python -u tools/hearing_check.py build/audio.wav build/timeline.json 2>&1 | grep -v "HF Hub" | tee -a build/voice_log.txt
       - name: Save the voice cache (also when a later line failed)
         if: always()
         uses: actions/cache/save@v4

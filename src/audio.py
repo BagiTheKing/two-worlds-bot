@@ -56,6 +56,81 @@ def norm(x, peak=1.0):
     return x / m * peak
 
 
+def _env(x, win):
+    """RMS envelope of x over a centred window of win samples."""
+    c = np.concatenate(([0.0], np.cumsum(x.astype(np.float64) ** 2)))
+    h = win // 2
+    i = np.arange(len(x))
+    lo, hi = np.clip(i - h, 0, len(x)), np.clip(i + h, 0, len(x))
+    return np.sqrt((c[hi] - c[lo]) / np.maximum(hi - lo, 1))
+
+
+def level_line(x, target_db=-18.0, quiet=False, sr=SR):
+    """Every line at the same speaking loudness: the RMS of its spoken parts
+    (20 ms frames within 25 dB of its loudest) brought to target_db. A
+    whispered or very quiet line sits 4 dB lower, but stays clear."""
+    w = int(0.02 * sr)
+    if len(x) < 2 * w:
+        return x
+    fr = np.sqrt(np.mean(x[:len(x) // w * w].reshape(-1, w) ** 2, axis=1)) + 1e-9
+    db = 20 * np.log10(fr)
+    act = fr[db > db.max() - 25]
+    rms_db = 20 * np.log10(np.sqrt(np.mean(act ** 2)))
+    g = 10 ** ((target_db - (4.0 if quiet else 0.0) - rms_db) / 20)
+    return x * float(np.clip(g, 0.3, 8.0))
+
+
+def master(out, voice, speech_db=-16.0, ceiling=0.95, sr=SR):
+    """The final level: the dialogue at a steady loudness (speech_db RMS while
+    someone speaks; about what Shorts play at), and a peak limiter instead of
+    turning the whole track down for one loud hit. The limiter looks 5 ms ahead
+    and lets go over 120 ms, so it never clicks or pumps on words."""
+    from numpy.lib.stride_tricks import sliding_window_view
+    ev = _env(voice, int(0.05 * sr))
+    talk = ev > ev.max() * 10 ** (-30 / 20)
+    rms = np.sqrt(np.mean(out[talk] ** 2)) if talk.any() else np.sqrt(np.mean(out ** 2))
+    y = out * (10 ** (speech_db / 20) / max(rms, 1e-9))
+    la = int(0.005 * sr)
+    pk = np.pad(np.abs(y), (la, la), mode="edge")
+    pk = sliding_window_view(pk, 2 * la + 1).max(axis=1)        # the peak around each sample
+    g = np.minimum(1.0, ceiling / np.maximum(pk, 1e-9))
+    rel = int(0.12 * sr)
+    step = int(0.002 * sr)
+    gs = g[::step].copy()
+    a = np.exp(-step / rel)
+    for i in range(1, len(gs)):
+        gs[i] = min(gs[i], a * gs[i - 1] + (1 - a))
+    gs = np.minimum(gs, np.pad(sliding_window_view(g, step).min(axis=1)[::step], (0, len(gs)))[:len(gs)])
+    g = np.interp(np.arange(len(y)), np.arange(len(gs)) * step, gs)
+    return np.clip(y * g, -ceiling, ceiling)
+
+
+def keep_under(voice, bg, margin_db=15.0, cap_db=-22.0, sr=SR):
+    """The background (music, effects, ambience) never covers a word: while
+    someone speaks it stays margin_db under the voice; and whenever it rises
+    above cap_db (a big moment) it is compressed 3:1, so nothing is ever much
+    louder than the dialogue. Gains move smoothly (fast down, slow back up)."""
+    win = int(0.05 * sr)
+    ev, eb = _env(voice, win), _env(bg, win) + 1e-9
+    g = np.ones(len(bg))
+    speaking = ev > 10 ** (-45 / 20)
+    g[speaking] = np.minimum(1.0, ev[speaking] * 10 ** (-margin_db / 20) / eb[speaking])
+    cap = 10 ** (cap_db / 20)
+    over = eb > cap
+    g[over] = np.minimum(g[over], (cap / eb[over]) ** (2 / 3))
+    # fast down (a running minimum over 80 ms, so a word's start is covered), slow up
+    from numpy.lib.stride_tricks import sliding_window_view
+    step = int(0.01 * sr)
+    gs = g[::step]
+    k = 8
+    gs = np.pad(gs, (k // 2, k - k // 2 - 1), mode="edge")
+    gs = sliding_window_view(gs, k).min(axis=1)
+    sm = np.ones(16) / 16                                     # 160 ms release
+    gs = np.convolve(np.pad(gs, (8, 7), mode="edge"), sm, "valid")
+    g = np.interp(np.arange(len(bg)), np.arange(len(gs)) * step, gs)
+    return bg * g
+
+
 def place(mix, clip, at, gain=1.0):
     i = int(at * SR)
     if i >= len(mix):
@@ -1306,6 +1381,8 @@ def build(episode_path, out_dir, keep=None):
                 audio = audio.copy()
                 audio[:m - f] = 0.0
                 audio[m - f:m] *= np.linspace(0, 1, f)
+            quiet = any(w in ev.get("direction_text", "").lower() for w in ("whisper", "very quiet"))
+            audio = level_line(audio, quiet=quiet)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1
@@ -1440,8 +1517,8 @@ def build(episode_path, out_dir, keep=None):
         place(score, x, m0, m.get("gain", 0.2))
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
-    out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck)
-    out = norm(out, 0.89)
+    out = voice + keep_under(voice, mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck))
+    out = master(out, voice)
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
     if os.getenv("VOICE_STEM"):                    # the voices alone, for checking dubs
         sf.write(os.path.join(out_dir, "voice.wav"), voice.astype(np.float32), SR)

@@ -462,20 +462,32 @@ def holo(img, o, t, f, fonts):
     The source is cropped to the middle of its picture (no HUD, no captions)."""
     import numpy as np
     from PIL import ImageFilter
-    key = o["video"]
-    if key not in _HOLO_CACHE:
-        _HOLO_CACHE[key] = read_clip(os.path.join(HERE, "..", o["video"]))
-    frames = _HOLO_CACHE[key]
     a, b = o["start"], o["end"]
     fps = o.get("fps", 24)
-    src = frames[min(len(frames) - 1, int((t - a + o.get("offset", 0.0)) * fps))]
     bw, bh = o.get("w", 900), o.get("h", 750)
     cx, top = W // 2, o.get("y", 250)
-    pic = src.crop((0, 210, W, 1110)).resize((bw, bh), Image.LANCZOS)
+    # one clip ("video"), or several in turn ("clips": [{"at", "video", "offset"}]):
+    # the screen stays on and switches with a two-frame glitch
+    clips = o.get("clips") or [{"at": a, "video": o["video"], "offset": o.get("offset", 0.0)}]
+    cur = max((c for c in clips if c["at"] <= t + 1e-6), key=lambda c: c["at"], default=clips[0])
+    for k in list(_HOLO_CACHE):                     # only this screen's clips stay in memory
+        if k not in {c["video"] for c in clips}:
+            del _HOLO_CACHE[k]
+    if cur["video"] not in _HOLO_CACHE:
+        _HOLO_CACHE[cur["video"]] = read_holo_clip(os.path.join(HERE, "..", cur["video"]), bw, bh)
+    frames = _HOLO_CACHE[cur["video"]]
+    pic = frames[max(0, min(len(frames) - 1, int((t - cur["at"] + cur.get("offset", 0.0)) * fps)))]
+    switch = cur is not clips[0] and t - cur["at"] < 2 / fps
     arr = np.asarray(pic, dtype=np.float32)
     arr = (arr - 128) * 1.12 + 128                                              # a touch more contrast
     arr = arr * 0.92 + np.array((40, 160, 200), np.float32) * 0.08              # a light cyan cast
     arr[::4] *= 0.9                                                             # scanlines
+    if switch:                                                                  # a channel change
+        rr = random.Random(f)
+        for _ in range(6):
+            y0_, h_ = rr.randrange(0, bh - 40), rr.randrange(10, 60)
+            arr[y0_:y0_ + h_] = np.roll(arr[y0_:y0_ + h_], rr.randrange(-80, 80), axis=1)
+        arr = arr * 0.8 + 255 * 0.2
     pic = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
     k_on = min(1.0, (t - a) / 0.28)
     k_off = min(1.0, (b - t) / 0.2)
@@ -606,6 +618,20 @@ def comment(img, o, t, f, fonts):
 DRAW = {"holo": holo, "comment": comment, "grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
 FULL = ("grade", "memory", "card", "fade_in", "endcard")
+
+
+def read_holo_clip(path, bw, bh):
+    """A clip's frames as the holo screen shows them (bw x bh): a full 1080x1920
+    episode clip is cropped to the middle of its picture (no HUD, no captions);
+    a clip already cut to that crop is only scaled."""
+    w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                                    "stream=width,height", "-of", "csv=p=0", path],
+                                   capture_output=True, text=True, check=True).stdout.strip().split(","))
+    crop = f"scale={W}:{H},crop={W}:900:0:210," if h > w else ""
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-vf", f"{crop}scale={bw}:{bh}",
+                          "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
+    n = len(raw) // (bw * bh * 3)
+    return [Image.frombytes("RGB", (bw, bh), raw[i * bw * bh * 3:(i + 1) * bw * bh * 3]) for i in range(n)]
 
 
 def read_clip(path):

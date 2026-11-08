@@ -323,75 +323,243 @@
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep0.mp4",
    "from": "holo_on",
-   "to": "r0+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 0"
+   "to": "steve_beginning",
+   "label": "ARCHIVE · EP 0",
+   "clips": [
+    {
+     "at": "holo_on",
+     "video": "assets/clips/ep09/recap_ep0.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep1.mp4",
    "from": "r1",
-   "to": "r1+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 1"
+   "to": "noob_whatisit",
+   "label": "ARCHIVE · EP 1",
+   "clips": [
+    {
+     "at": "r1",
+     "video": "assets/clips/ep09/e1_tree.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "steve_sky",
+     "video": "assets/clips/ep09/e1_sky.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep2.mp4",
    "from": "r2",
-   "to": "r2+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 2"
+   "to": "noob_button",
+   "label": "ARCHIVE · EP 2",
+   "clips": [
+    {
+     "at": "r2",
+     "video": "assets/clips/ep09/e2_eye.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "steve_plan+1.6",
+     "video": "assets/clips/ep09/e2_steps.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep3.mp4",
+   "from": "steve_three",
+   "to": "noob_record",
+   "label": "ARCHIVE · EP 2",
+   "clips": [
+    {
+     "at": "steve_three",
+     "video": "assets/clips/ep09/e2_button.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "steve_three+1.0",
+     "video": "assets/clips/ep09/e2_zombies.mp4",
+     "offset": 0.0
+    }
+   ]
+  },
+  {
+   "type": "holo",
+   "from": "patch_waved",
+   "to": "noob_polite",
+   "label": "ARCHIVE · EP 2",
+   "clips": [
+    {
+     "at": "patch_waved",
+     "video": "assets/clips/ep09/e2_waved.mp4",
+     "offset": 0.0
+    }
+   ]
+  },
+  {
+   "type": "holo",
    "from": "r3",
-   "to": "r3+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 3"
+   "to": "steve_you",
+   "label": "ARCHIVE · EP 3",
+   "clips": [
+    {
+     "at": "r3",
+     "video": "assets/clips/ep09/recap_ep3.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep4.mp4",
    "from": "r4",
-   "to": "r4+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 4"
+   "to": "noob_touched",
+   "label": "ARCHIVE · EP 4",
+   "clips": [
+    {
+     "at": "r4",
+     "video": "assets/clips/ep09/e4_dragon.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "noob_block+1.3",
+     "video": "assets/clips/ep09/e4_block.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep5.mp4",
+   "from": "patch_grew",
+   "to": "noob_helping",
+   "label": "ARCHIVE · EP 4",
+   "clips": [
+    {
+     "at": "patch_grew",
+     "video": "assets/clips/ep09/e4_grow.mp4",
+     "offset": 0.0
+    }
+   ]
+  },
+  {
+   "type": "holo",
+   "from": "patch_arrived",
+   "to": "steve_weirder",
+   "label": "ARCHIVE · EP 4",
+   "clips": [
+    {
+     "at": "patch_arrived",
+     "video": "assets/clips/ep09/e4_patch.mp4",
+     "offset": 0.0
+    }
+   ]
+  },
+  {
+   "type": "holo",
    "from": "r5",
-   "to": "r5+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 5"
+   "to": "noob_close",
+   "label": "ARCHIVE · EP 5",
+   "clips": [
+    {
+     "at": "r5",
+     "video": "assets/clips/ep09/e5_build.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "steve_list",
+     "video": "assets/clips/ep09/e5_statue.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "steve_list+1.7",
+     "video": "assets/clips/ep09/e5_door.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep6.mp4",
+   "from": "patch_belong",
+   "to": "noob_duck",
+   "label": "ARCHIVE · EP 5",
+   "clips": [
+    {
+     "at": "patch_belong",
+     "video": "assets/clips/ep09/e5_duck.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "patch_belong+2.2",
+     "video": "assets/clips/ep09/e5_delete.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "patch_worse",
+     "video": "assets/clips/ep09/e5_chunk.mp4",
+     "offset": 0.0
+    }
+   ]
+  },
+  {
+   "type": "holo",
    "from": "r6",
-   "to": "r6+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 6"
+   "to": "noob_dontlike",
+   "label": "ARCHIVE · EP 6",
+   "clips": [
+    {
+     "at": "r6",
+     "video": "assets/clips/ep09/recap_ep6.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep7.mp4",
    "from": "r7",
-   "to": "r7+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 7"
+   "to": "noob_alot",
+   "label": "ARCHIVE · EP 7",
+   "clips": [
+    {
+     "at": "r7",
+     "video": "assets/clips/ep09/e7_bodies.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "holo",
-   "video": "assets/clips/ep09/recap_ep8.mp4",
+   "from": "noob_where",
+   "to": "patch_counting",
+   "label": "ARCHIVE · EP 7",
+   "clips": [
+    {
+     "at": "noob_where",
+     "video": "assets/clips/ep09/e7_drift.mp4",
+     "offset": 0.0
+    },
+    {
+     "at": "steve_howmany",
+     "video": "assets/clips/ep09/e7_times.mp4",
+     "offset": 0.0
+    }
+   ]
+  },
+  {
+   "type": "holo",
    "from": "r8",
-   "to": "r8+4.0",
-   "offset": 0.0,
-   "label": "ARCHIVE · EP 8"
+   "to": "steve_next",
+   "label": "ARCHIVE · EP 8",
+   "clips": [
+    {
+     "at": "r8",
+     "video": "assets/clips/ep09/e8_portal.mp4",
+     "offset": 0.0
+    }
+   ]
   },
   {
    "type": "comment",
@@ -591,7 +759,7 @@
    "who": "steve",
    "do": "look",
    "from": "r1",
-   "to": "steve_tree.end",
+   "to": "patch_eye.end",
    "head": [
     -0.32,
     0,
@@ -602,7 +770,7 @@
    "who": "noob",
    "do": "look",
    "from": "r1",
-   "to": "noob_respect",
+   "to": "patch_eye.end",
    "head": [
     -0.32,
     0,
@@ -612,27 +780,82 @@
   {
    "who": "noob",
    "do": "expr",
-   "from": "noob_respect",
-   "to": "noob_respect.end",
+   "from": "noob_ep1",
+   "to": "noob_ep1.end",
    "face": "happy"
   },
   {
    "who": "noob",
-   "do": "pose",
-   "from": "noob_respect",
-   "to": "noob_respect.end",
-   "parts": {
-    "arm_r": [
-     -0.4,
-     0,
-     0.6
-    ],
-    "arm_l": [
-     -0.4,
-     0,
-     -0.6
-    ]
-   }
+   "do": "raise_arm",
+   "from": "noob_ep1",
+   "to": "noob_ep1+1.2",
+   "arm": "arm_r",
+   "angle": 1.3,
+   "out": -0.1,
+   "ease": 0.15
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "steve_sky",
+   "to": "patch_eye.end",
+   "face": "surprised"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "patch_eye",
+   "to": "noob_whatisit.end",
+   "face": "scared"
+  },
+  {
+   "who": "patch",
+   "do": "glitch_eye",
+   "from": "patch_eye+0.6",
+   "to": "patch_eye+1.1"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_whatisit",
+   "to": "noob_whatisit.end",
+   "head": [
+    -0.15,
+    0,
+    -0.45
+   ]
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "patch_unknown",
+   "to": "patch_unknown+0.3",
+   "yaw": 0.35
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_hieye",
+   "to": "noob_hieye.end+0.3",
+   "head": [
+    -0.55,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "wave",
+   "from": "noob_hieye",
+   "to": "noob_hieye.end+0.3",
+   "arm": "arm_r"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_hieye",
+   "to": "noob_hieye.end+0.3",
+   "face": "scared"
   },
   {
    "who": "steve",
@@ -646,9 +869,47 @@
    ]
   },
   {
+   "who": "noob",
+   "do": "look",
+   "from": "r2",
+   "to": "noob_record",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "raise_arm",
+   "from": "steve_steps",
+   "to": "steve_steps.end",
+   "arm": "arm_r",
+   "angle": 0.9,
+   "out": -0.2,
+   "ease": 0.2
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_button",
+   "to": "noob_button.end",
+   "face": "surprised"
+  },
+  {
+   "who": "noob",
+   "do": "raise_arm",
+   "from": "noob_button",
+   "to": "noob_button.end",
+   "arm": "arm_l",
+   "angle": 1.6,
+   "out": 0.3,
+   "ease": 0.12
+  },
+  {
    "who": "steve",
    "do": "expr",
-   "from": "steve_plan",
+   "from": "steve_three",
    "to": "noob_record.end",
    "face": "unimpressed"
   },
@@ -665,10 +926,77 @@
   },
   {
    "who": "noob",
+   "do": "cheer",
+   "from": "noob_record",
+   "to": "noob_record+0.6"
+  },
+  {
+   "who": "noob",
    "do": "expr",
    "from": "noob_record",
    "to": "noob_record.end",
    "face": "happy"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "patch_waved",
+   "to": "noob_polite",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "patch_waved",
+   "to": "noob_polite",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "patch_waved+1.0",
+   "to": "patch_waved.end",
+   "face": "scared"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_polite",
+   "to": "noob_polite.end",
+   "face": "happy"
+  },
+  {
+   "who": "noob",
+   "do": "wave",
+   "from": "noob_polite",
+   "to": "noob_polite.end",
+   "arm": "arm_r"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_watching",
+   "to": "steve_watching.end",
+   "head": [
+    0.05,
+    0,
+    0.1
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "steve_watching",
+   "to": "steve_watching.end",
+   "face": "surprised"
   },
   {
    "who": "noob",
@@ -687,6 +1015,17 @@
    "from": "noob_dragon",
    "to": "noob_dragon.end",
    "face": "happy"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "r3",
+   "to": "steve_you",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
   },
   {
    "who": "steve",
@@ -724,7 +1063,7 @@
    "who": "steve",
    "do": "look",
    "from": "r4",
-   "to": "patch_arrived.end",
+   "to": "noob_helping",
    "head": [
     -0.32,
     0,
@@ -735,6 +1074,77 @@
    "who": "noob",
    "do": "look",
    "from": "r4",
+   "to": "noob_helping",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_block",
+   "to": "noob_block.end",
+   "face": "happy"
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "steve_exist",
+   "to": "steve_exist.end",
+   "face": "unimpressed"
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_touched",
+   "to": "noob_touched.end",
+   "face": "happy"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "noob_touched",
+   "to": "patch_grew",
+   "head": [
+    0,
+    0,
+    0.55
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "raise_arm",
+   "from": "noob_helping",
+   "to": "noob_helping.end",
+   "arm": "arm_l",
+   "angle": 2.4,
+   "out": 0.2,
+   "ease": 0.15
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_helping",
+   "to": "noob_helping.end",
+   "face": "surprised"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "patch_arrived",
+   "to": "patch_arrived.end",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "patch_arrived",
    "to": "patch_arrived.end",
    "head": [
     -0.32,
@@ -775,10 +1185,21 @@
    "yaw": 0.0
   },
   {
+   "who": "steve",
+   "do": "look",
+   "from": "r5",
+   "to": "noob_close",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
    "who": "noob",
    "do": "look",
    "from": "r5",
-   "to": "r6",
+   "to": "noob_close",
    "head": [
     -0.32,
     0,
@@ -789,22 +1210,75 @@
    "who": "noob",
    "do": "cheer",
    "from": "noob_creative",
-   "to": "noob_creative+0.6"
+   "to": "noob_creative+0.7"
   },
   {
    "who": "noob",
    "do": "expr",
    "from": "noob_creative",
-   "to": "noob_creative.end",
+   "to": "noob_close.end",
    "face": "happy"
   },
   {
    "who": "steve",
+   "do": "expr",
+   "from": "steve_list",
+   "to": "steve_list.end",
+   "face": "unimpressed"
+  },
+  {
+   "who": "noob",
+   "do": "raise_arm",
+   "from": "noob_close",
+   "to": "noob_close.end",
+   "arm": "arm_r",
+   "angle": 1.2,
+   "out": -0.3,
+   "ease": 0.12
+  },
+  {
+   "who": "steve",
    "do": "look",
-   "from": "r5",
-   "to": "r6",
+   "from": "patch_belong",
+   "to": "noob_duck",
    "head": [
     -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "patch_belong",
+   "to": "noob_duck",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "patch_worse",
+   "to": "noob_duck.end",
+   "face": "scared"
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "patch_worse",
+   "to": "noob_duck.end",
+   "face": "surprised"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_duck",
+   "to": "noob_duck.end",
+   "head": [
+    0.3,
     0,
     0
    ]
@@ -904,6 +1378,70 @@
   {
    "who": "steve",
    "do": "look",
+   "from": "steve_sense",
+   "to": "steve_sense.end",
+   "head": [
+    -0.1,
+    0,
+    0.2
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_bigger",
+   "to": "noob_bigger.end",
+   "head": [
+    0,
+    0,
+    -0.55
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "expr",
+   "from": "noob_bigger",
+   "to": "noob_where.end",
+   "face": "scared"
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "noob_where",
+   "to": "patch_counting",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_where",
+   "to": "patch_counting",
+   "head": [
+    -0.32,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "expr",
+   "from": "steve_howmany",
+   "to": "patch_counting.end",
+   "face": "surprised"
+  },
+  {
+   "who": "patch",
+   "do": "glitch_eye",
+   "from": "patch_counting+0.2",
+   "to": "patch_counting+0.6"
+  },
+  {
+   "who": "steve",
+   "do": "look",
    "from": "r8",
    "to": "noob_you",
    "head": [
@@ -943,13 +1481,6 @@
   },
   {
    "who": "noob",
-   "do": "expr",
-   "from": "noob_you+0.5",
-   "to": "noob_you.end",
-   "face": "neutral"
-  },
-  {
-   "who": "noob",
    "do": "raise_arm",
    "from": "noob_you+1.6",
    "to": "noob_you.end+0.2",
@@ -971,16 +1502,40 @@
    "from": "steve_next",
    "to": "steve_next.end",
    "head": [
-    0.1,
+    -0.15,
     0,
-    0.0
+    0.35
    ]
   },
   {
    "who": "noob",
+   "do": "expr",
+   "from": "noob_dontnext",
+   "to": "noob_dontnext.end",
+   "face": "surprised"
+  },
+  {
+   "who": "noob",
+   "do": "raise_arm",
+   "from": "noob_dontnext",
+   "to": "noob_dontnext.end",
+   "arm": "arm_r",
+   "angle": 1.45,
+   "out": -0.4,
+   "ease": 0.1
+  },
+  {
+   "who": "noob",
    "do": "face",
-   "from": "steve_next",
-   "to": "steve_next+0.4",
+   "from": "patch_lastslide",
+   "to": "patch_lastslide+0.4",
+   "yaw": 0.0
+  },
+  {
+   "who": "patch",
+   "do": "face",
+   "from": "patch_lastslide",
+   "to": "patch_lastslide+0.3",
    "yaw": 0.0
   },
   {
@@ -1293,7 +1848,7 @@
    ]
   },
   {
-   "name": "holo_r0",
+   "name": "holo0_0",
    "from": "holo_on",
    "to": "steve_beginning",
    "lens": 22,
@@ -1327,7 +1882,7 @@
    ]
   },
   {
-   "name": "r0_steve0",
+   "name": "ep0_steve1",
    "from": "steve_beginning",
    "to": "noob_deep",
    "lens": 40,
@@ -1361,7 +1916,7 @@
    ]
   },
   {
-   "name": "r0_noob1",
+   "name": "ep0_noob2",
    "from": "noob_deep",
    "to": "r1",
    "lens": 40,
@@ -1395,9 +1950,9 @@
    ]
   },
   {
-   "name": "holo_r1",
+   "name": "holo1_0",
    "from": "r1",
-   "to": "noob_respect",
+   "to": "noob_whatisit",
    "lens": 22,
    "path": [
     [
@@ -1409,7 +1964,7 @@
      ]
     ],
     [
-     "noob_respect",
+     "noob_whatisit",
      [
       6.2,
       -2.2,
@@ -1429,13 +1984,81 @@
    ]
   },
   {
-   "name": "r1_noob0",
-   "from": "noob_respect",
+   "name": "ep1_noob1",
+   "from": "noob_whatisit",
+   "to": "patch_unknown",
+   "lens": 40,
+   "path": [
+    [
+     "noob_whatisit",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "patch_unknown",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_whatisit",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep1_patch2",
+   "from": "patch_unknown",
+   "to": "noob_hieye",
+   "lens": 40,
+   "path": [
+    [
+     "patch_unknown",
+     [
+      6.4,
+      2.2499999999999996,
+      2.57
+     ]
+    ],
+    [
+     "noob_hieye",
+     [
+      6.4,
+      2.4299999999999997,
+      2.57
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_unknown",
+     [
+      6.2,
+      4.85,
+      2.4299999999999997
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep1_noob3",
+   "from": "noob_hieye",
    "to": "r2",
    "lens": 40,
    "path": [
     [
-     "noob_respect",
+     "noob_hieye",
      [
       7.1000000000000005,
       2.5,
@@ -1453,7 +2076,7 @@
    ],
    "look": [
     [
-     "noob_respect",
+     "noob_hieye",
      [
       7.4,
       5.0,
@@ -1463,9 +2086,9 @@
    ]
   },
   {
-   "name": "holo_r2",
+   "name": "holo2_0",
    "from": "r2",
-   "to": "noob_record",
+   "to": "noob_button",
    "lens": 22,
    "path": [
     [
@@ -1477,7 +2100,7 @@
      ]
     ],
     [
-     "noob_record",
+     "noob_button",
      [
       6.2,
       -2.2,
@@ -1497,9 +2120,77 @@
    ]
   },
   {
-   "name": "r2_noob0",
+   "name": "ep2_noob1",
+   "from": "noob_button",
+   "to": "steve_three",
+   "lens": 40,
+   "path": [
+    [
+     "noob_button",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_three",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_button",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo2_2",
+   "from": "steve_three",
+   "to": "noob_record",
+   "lens": 22,
+   "path": [
+    [
+     "steve_three",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_record",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_three",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep2_noob3",
    "from": "noob_record",
-   "to": "r3",
+   "to": "patch_waved",
    "lens": 40,
    "path": [
     [
@@ -1508,30 +2199,132 @@
       7.1000000000000005,
       2.5,
       1.8699999999999999
+     ]
+    ],
+    [
+     "patch_waved",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_record",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo2_4",
+   "from": "patch_waved",
+   "to": "noob_polite",
+   "lens": 22,
+   "path": [
+    [
+     "patch_waved",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_polite",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_waved",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep2_noob5",
+   "from": "noob_polite",
+   "to": "steve_watching",
+   "lens": 40,
+   "path": [
+    [
+     "noob_polite",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_watching",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_polite",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep2_steve6",
+   "from": "steve_watching",
+   "to": "r3",
+   "lens": 40,
+   "path": [
+    [
+     "steve_watching",
+     [
+      5.3,
+      2.6,
+      1.73
      ]
     ],
     [
      "r3",
      [
-      7.1000000000000005,
-      2.68,
-      1.8699999999999999
+      5.3,
+      2.7800000000000002,
+      1.73
      ]
     ]
    ],
    "look": [
     [
-     "noob_record",
+     "steve_watching",
      [
-      7.4,
       5.0,
-      1.72
+      5.0,
+      1.57
      ]
     ]
    ]
   },
   {
-   "name": "holo_r3",
+   "name": "holo3_0",
    "from": "r3",
    "to": "steve_you",
    "lens": 22,
@@ -1565,7 +2358,7 @@
    ]
   },
   {
-   "name": "r3_steve0",
+   "name": "ep3_steve1",
    "from": "steve_you",
    "to": "r4",
    "lens": 40,
@@ -1599,9 +2392,9 @@
    ]
   },
   {
-   "name": "holo_r4",
+   "name": "holo4_0",
    "from": "r4",
-   "to": "steve_weirder",
+   "to": "noob_touched",
    "lens": 22,
    "path": [
     [
@@ -1613,7 +2406,7 @@
      ]
     ],
     [
-     "steve_weirder",
+     "noob_touched",
      [
       6.2,
       -2.2,
@@ -1633,7 +2426,143 @@
    ]
   },
   {
-   "name": "r4_steve0",
+   "name": "ep4_noob1",
+   "from": "noob_touched",
+   "to": "patch_grew",
+   "lens": 40,
+   "path": [
+    [
+     "noob_touched",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "patch_grew",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_touched",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo4_2",
+   "from": "patch_grew",
+   "to": "noob_helping",
+   "lens": 22,
+   "path": [
+    [
+     "patch_grew",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_helping",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_grew",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep4_noob3",
+   "from": "noob_helping",
+   "to": "patch_arrived",
+   "lens": 40,
+   "path": [
+    [
+     "noob_helping",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "patch_arrived",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_helping",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo4_4",
+   "from": "patch_arrived",
+   "to": "steve_weirder",
+   "lens": 22,
+   "path": [
+    [
+     "patch_arrived",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "steve_weirder",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_arrived",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep4_steve5",
    "from": "steve_weirder",
    "to": "patch_improvement",
    "lens": 40,
@@ -1667,7 +2596,7 @@
    ]
   },
   {
-   "name": "r4_patch1",
+   "name": "ep4_patch6",
    "from": "patch_improvement",
    "to": "r5",
    "lens": 40,
@@ -1701,9 +2630,9 @@
    ]
   },
   {
-   "name": "holo_r5",
+   "name": "holo5_0",
    "from": "r5",
-   "to": "noob_creative+2.2",
+   "to": "noob_close",
    "lens": 22,
    "path": [
     [
@@ -1715,7 +2644,7 @@
      ]
     ],
     [
-     "noob_creative+2.2",
+     "noob_close",
      [
       6.2,
       -2.2,
@@ -1735,13 +2664,81 @@
    ]
   },
   {
-   "name": "r5_noob0",
-   "from": "noob_creative+2.2",
+   "name": "ep5_noob1",
+   "from": "noob_close",
+   "to": "patch_belong",
+   "lens": 40,
+   "path": [
+    [
+     "noob_close",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "patch_belong",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_close",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo5_2",
+   "from": "patch_belong",
+   "to": "noob_duck",
+   "lens": 22,
+   "path": [
+    [
+     "patch_belong",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "noob_duck",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "patch_belong",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep5_noob3",
+   "from": "noob_duck",
    "to": "r6",
    "lens": 40,
    "path": [
     [
-     "noob_creative+2.2",
+     "noob_duck",
      [
       7.1000000000000005,
       2.5,
@@ -1759,7 +2756,7 @@
    ],
    "look": [
     [
-     "noob_creative+2.2",
+     "noob_duck",
      [
       7.4,
       5.0,
@@ -1769,9 +2766,9 @@
    ]
   },
   {
-   "name": "holo_r6",
+   "name": "holo6_0",
    "from": "r6",
-   "to": "noob_dontlike+1.6",
+   "to": "noob_dontlike",
    "lens": 22,
    "path": [
     [
@@ -1783,7 +2780,7 @@
      ]
     ],
     [
-     "noob_dontlike+1.6",
+     "noob_dontlike",
      [
       6.2,
       -2.2,
@@ -1803,13 +2800,13 @@
    ]
   },
   {
-   "name": "r6_noob0",
-   "from": "noob_dontlike+1.6",
+   "name": "ep6_noob1",
+   "from": "noob_dontlike",
    "to": "steve_nobody",
    "lens": 40,
    "path": [
     [
-     "noob_dontlike+1.6",
+     "noob_dontlike",
      [
       7.1000000000000005,
       2.5,
@@ -1827,7 +2824,7 @@
    ],
    "look": [
     [
-     "noob_dontlike+1.6",
+     "noob_dontlike",
      [
       7.4,
       5.0,
@@ -1837,7 +2834,7 @@
    ]
   },
   {
-   "name": "r6_steve1",
+   "name": "ep6_steve2",
    "from": "steve_nobody",
    "to": "r7",
    "lens": 40,
@@ -1871,9 +2868,9 @@
    ]
   },
   {
-   "name": "holo_r7",
+   "name": "holo7_0",
    "from": "r7",
-   "to": "patch_behind+3.0",
+   "to": "noob_alot",
    "lens": 22,
    "path": [
     [
@@ -1885,7 +2882,7 @@
      ]
     ],
     [
-     "patch_behind+3.0",
+     "noob_alot",
      [
       6.2,
       -2.2,
@@ -1905,13 +2902,115 @@
    ]
   },
   {
-   "name": "r7_patch0",
-   "from": "patch_behind+3.0",
-   "to": "noob_alot",
+   "name": "ep7_noob1",
+   "from": "noob_alot",
+   "to": "steve_sense",
    "lens": 40,
    "path": [
     [
-     "patch_behind+3.0",
+     "noob_alot",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "steve_sense",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_alot",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "two7_2",
+   "from": "steve_sense",
+   "to": "noob_where",
+   "lens": 30,
+   "path": [
+    [
+     "steve_sense",
+     [
+      6.2,
+      -0.7,
+      1.6
+     ]
+    ],
+    [
+     "noob_where",
+     [
+      6.2,
+      -0.45,
+      1.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_sense",
+     [
+      6.2,
+      5.0,
+      1.65
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "holo7_3",
+   "from": "noob_where",
+   "to": "patch_counting",
+   "lens": 22,
+   "path": [
+    [
+     "noob_where",
+     [
+      6.2,
+      -2.6,
+      0.55
+     ]
+    ],
+    [
+     "patch_counting",
+     [
+      6.2,
+      -2.2,
+      0.6
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_where",
+     [
+      6.2,
+      5.0,
+      3.55
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "ep7_patch4",
+   "from": "patch_counting",
+   "to": "r8",
+   "lens": 40,
+   "path": [
+    [
+     "patch_counting",
      [
       6.4,
       2.2499999999999996,
@@ -1919,7 +3018,7 @@
      ]
     ],
     [
-     "noob_alot",
+     "r8",
      [
       6.4,
       2.4299999999999997,
@@ -1929,7 +3028,7 @@
    ],
    "look": [
     [
-     "patch_behind+3.0",
+     "patch_counting",
      [
       6.2,
       4.85,
@@ -1939,43 +3038,9 @@
    ]
   },
   {
-   "name": "r7_noob1",
-   "from": "noob_alot",
-   "to": "r8",
-   "lens": 40,
-   "path": [
-    [
-     "noob_alot",
-     [
-      7.1000000000000005,
-      2.5,
-      1.8699999999999999
-     ]
-    ],
-    [
-     "r8",
-     [
-      7.1000000000000005,
-      2.68,
-      1.8699999999999999
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "noob_alot",
-     [
-      7.4,
-      5.0,
-      1.72
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "holo_r8",
+   "name": "holo8_0",
    "from": "r8",
-   "to": "noob_you",
+   "to": "steve_next",
    "lens": 22,
    "path": [
     [
@@ -1987,7 +3052,7 @@
      ]
     ],
     [
-     "noob_you",
+     "steve_next",
      [
       6.2,
       -2.2,
@@ -2007,43 +3072,9 @@
    ]
   },
   {
-   "name": "r8_noob0",
-   "from": "noob_you",
-   "to": "steve_next",
-   "lens": 40,
-   "path": [
-    [
-     "noob_you",
-     [
-      7.1000000000000005,
-      2.5,
-      1.8699999999999999
-     ]
-    ],
-    [
-     "steve_next",
-     [
-      7.1000000000000005,
-      2.68,
-      1.8699999999999999
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "noob_you",
-     [
-      7.4,
-      5.0,
-      1.72
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "r8_steve1",
+   "name": "ep8_steve1",
    "from": "steve_next",
-   "to": "holo_off",
+   "to": "noob_dontnext",
    "lens": 40,
    "path": [
     [
@@ -2055,7 +3086,7 @@
      ]
     ],
     [
-     "holo_off",
+     "noob_dontnext",
      [
       5.3,
       2.7800000000000002,
@@ -2075,13 +3106,47 @@
    ]
   },
   {
+   "name": "ep8_noob2",
+   "from": "noob_dontnext",
+   "to": "patch_lastslide",
+   "lens": 40,
+   "path": [
+    [
+     "noob_dontnext",
+     [
+      7.1000000000000005,
+      2.5,
+      1.8699999999999999
+     ]
+    ],
+    [
+     "patch_lastslide",
+     [
+      7.1000000000000005,
+      2.68,
+      1.8699999999999999
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_dontnext",
+     [
+      7.4,
+      5.0,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
    "name": "theories",
-   "from": "holo_off",
+   "from": "patch_lastslide",
    "to": "card",
    "lens": 40,
    "path": [
     [
-     "holo_off",
+     "patch_lastslide",
      [
       6.4,
       2.2499999999999996,
@@ -2099,7 +3164,7 @@
    ],
    "look": [
     [
-     "holo_off",
+     "patch_lastslide",
      [
       6.2,
       4.85,
@@ -2441,27 +3506,27 @@
    "name": "noob_hi",
    "text": "Hi, new people! You have no idea what's going on.",
    "direction_text": "[bright, waving at the camera, way too cheerful] Hi, new people! You have no idea what's going on.",
-   "pad": 0.12
+   "pad": 0.55
   },
   {
    "line": "noob",
    "name": "noob_same",
    "text": "...Same.",
    "direction_text": "[small beat, then shrugging, honest] ...Same.",
-   "pad": 0.25
+   "pad": 0.35
   },
   {
    "line": "steve",
    "name": "steve_eight",
    "text": "Eight episodes of problems. Patch. Show them.",
    "direction_text": "[dry, deadpan, tired] Eight episodes of problems. Patch. Show them.",
-   "pad": 0.12
+   "pad": 0.1
   },
   {
    "line": "patch",
    "name": "patch_archive",
-   "text": "Playing the archive. Please keep your arms inside the timeline.",
-   "direction_text": "[calm, polite, like a ride announcement] Playing the archive. Please keep your arms inside the timeline.",
+   "text": "Rewinding. To the very start.",
+   "direction_text": "[calm, simple, polite] Rewinding. To the very start.",
    "pad": 0.12
   },
   {
@@ -2470,122 +3535,258 @@
   },
   {
    "beat": "r0",
-   "dur": 1.4
+   "dur": 1.2
   },
   {
    "line": "noob",
    "name": "noob_falling",
    "text": "That's us. Falling. Spoiler: it's the end.",
    "direction_text": "[casual, pointing, unbothered] That's us. Falling. Spoiler: it's the end.",
-   "pad": 0.12
+   "pad": 0.05
   },
   {
    "line": "steve",
    "name": "steve_beginning",
    "text": "It's the beginning.",
-   "direction_text": "[dry correction] It's the beginning.",
-   "pad": 0.12
+   "direction_text": "[dry correction, instantly] It's the beginning.",
+   "pad": 0.45
   },
   {
    "line": "noob",
    "name": "noob_deep",
    "text": "It's the end AND the beginning. Deep.",
    "direction_text": "[pretending to be wise, slow] It's the end AND the beginning. Deep.",
-   "pad": 0.12
+   "pad": 0.15
   },
   {
    "beat": "r1",
-   "dur": 1.2
-  },
-  {
-   "line": "steve",
-   "name": "steve_tree",
-   "text": "He punched a tree. The tree stayed in the air.",
-   "direction_text": "[deadpan, still annoyed about it] He punched a tree. The tree stayed in the air.",
-   "pad": 0.12
+   "dur": 1.0
   },
   {
    "line": "noob",
-   "name": "noob_respect",
-   "text": "The tree respected me.",
-   "direction_text": "[proud, completely serious] The tree respected me.",
-   "pad": 0.12
+   "name": "noob_ep1",
+   "text": "Episode one. I punched a tree. It floated.",
+   "direction_text": "[proud, quick, like it's a big achievement] Episode one. I punched a tree. It floated.",
+   "pad": 0.1
+  },
+  {
+   "line": "steve",
+   "name": "steve_sky",
+   "text": "Then the sky cracked open...",
+   "direction_text": "[low, serious, slower] Then the sky cracked open...",
+   "pad": 0.05
+  },
+  {
+   "line": "patch",
+   "name": "patch_eye",
+   "text": "...and something looked down at us.",
+   "direction_text": "[quiet, careful, ominous] ...and something looked down at us.",
+   "pad": 0.6
+  },
+  {
+   "line": "noob",
+   "name": "noob_whatisit",
+   "text": "What IS that thing?",
+   "direction_text": "[scared whisper, but clear] What IS that thing?",
+   "pad": 0.3
+  },
+  {
+   "line": "patch",
+   "name": "patch_unknown",
+   "text": "Unknown. But it saw everything.",
+   "direction_text": "[calm, honest, quiet but clear] Unknown. But it saw everything.",
+   "pad": 0.7
+  },
+  {
+   "line": "noob",
+   "name": "noob_hieye",
+   "text": "...Hi, eye.",
+   "direction_text": "[tiny, nervous, waving up at the sky] ...Hi, eye.",
+   "pad": 0.4
   },
   {
    "beat": "r2",
-   "dur": 1.3
+   "dur": 1.0
   },
   {
    "line": "steve",
    "name": "steve_plan",
-   "text": "My plan.",
-   "direction_text": "[flat, a little wounded] My plan.",
-   "pad": 0.12
+   "text": "So I made a plan. Leave, before that eye came back.",
+   "direction_text": "[practical, explaining, a little proud] So I made a plan. Leave, before that eye came back.",
+   "pad": 0.1
+  },
+  {
+   "line": "steve",
+   "name": "steve_steps",
+   "text": "Portal home. Three steps. Nobody touches anything.",
+   "direction_text": "[firm, counting the steps] Portal home. Three steps. Nobody touches anything.",
+   "pad": 0.05
+  },
+  {
+   "line": "noob",
+   "name": "noob_button",
+   "text": "There was a BUTTON!",
+   "direction_text": "[defensive, instantly, loud] There was a BUTTON!",
+   "pad": 0.5
+  },
+  {
+   "line": "steve",
+   "name": "steve_three",
+   "text": "The plan lasted three seconds.",
+   "direction_text": "[flat, still hurt about it] The plan lasted three seconds.",
+   "pad": 0.05
   },
   {
    "line": "noob",
    "name": "noob_record",
    "text": "Three seconds. New record!",
    "direction_text": "[cheerful, celebrating] Three seconds. New record!",
-   "pad": 0.12
+   "pad": 0.35
+  },
+  {
+   "line": "patch",
+   "name": "patch_waved",
+   "text": "Then, inside the portal... something waved back.",
+   "direction_text": "[quiet, slow, ominous] Then, inside the portal... something waved back.",
+   "pad": 0.4
+  },
+  {
+   "line": "noob",
+   "name": "noob_polite",
+   "text": "I waved first! I was being polite!",
+   "direction_text": "[defensive, quick] I waved first! I was being polite!",
+   "pad": 0.5
+  },
+  {
+   "line": "steve",
+   "name": "steve_watching",
+   "text": "First the eye. Then that. Something was watching us.",
+   "direction_text": "[low, serious, putting it together] First the eye. Then that. Something was watching us.",
+   "pad": 0.3
   },
   {
    "beat": "r3",
-   "dur": 1.3
+   "dur": 1.1
   },
   {
    "line": "noob",
    "name": "noob_dragon",
    "text": "We put a dragon in an obby!",
    "direction_text": "[excited, proud] We put a dragon in an obby!",
-   "pad": 0.12
+   "pad": 0.05
   },
   {
    "line": "steve",
    "name": "steve_you",
    "text": "YOU put a dragon in an obby.",
    "direction_text": "[dry, correcting him] YOU put a dragon in an obby.",
-   "pad": 0.12
+   "pad": 0.4
   },
   {
    "beat": "r4",
-   "dur": 1.2
+   "dur": 1.0
+  },
+  {
+   "line": "noob",
+   "name": "noob_block",
+   "text": "Then the dragon glitched... and dropped a weird block!",
+   "direction_text": "[excited, telling a story] Then the dragon glitched... and dropped a weird block!",
+   "pad": 0.1
+  },
+  {
+   "line": "steve",
+   "name": "steve_exist",
+   "text": "A block that shouldn't exist. Nobody knows why.",
+   "direction_text": "[dry, serious] A block that shouldn't exist. Nobody knows why.",
+   "pad": 0.05
+  },
+  {
+   "line": "noob",
+   "name": "noob_touched",
+   "text": "So I touched it.",
+   "direction_text": "[proud, matter-of-fact, like it was obvious] So I touched it.",
+   "pad": 0.55
+  },
+  {
+   "line": "patch",
+   "name": "patch_grew",
+   "text": "It grew bigger... every time he died.",
+   "direction_text": "[calm, quiet, clear] It grew bigger... every time he died.",
+   "pad": 0.05
+  },
+  {
+   "line": "noob",
+   "name": "noob_helping",
+   "text": "I was HELPING!",
+   "direction_text": "[defensive, instantly] I was HELPING!",
+   "pad": 0.5
   },
   {
    "line": "patch",
    "name": "patch_arrived",
    "text": "And then I arrived. Things improved.",
    "direction_text": "[calm, quietly pleased with itself] And then I arrived. Things improved.",
-   "pad": 0.12
+   "pad": 0.05
   },
   {
    "line": "steve",
    "name": "steve_weirder",
    "text": "Things got weirder.",
    "direction_text": "[deadpan] Things got weirder.",
-   "pad": 0.12
+   "pad": 0.55
   },
   {
    "line": "patch",
    "name": "patch_improvement",
    "text": "...Weirder is an improvement.",
    "direction_text": "[calm, after a tiny pause, certain] ...Weirder is an improvement.",
-   "pad": 0.12
+   "pad": 0.3
   },
   {
    "beat": "r5",
-   "dur": 1.2
+   "dur": 1.0
   },
   {
    "line": "noob",
    "name": "noob_creative",
-   "text": "Creative mode! Idea by our friend, Youssef!",
-   "direction_text": "[excited, giving a shout-out, pointing at the camera] Creative mode! Idea by our friend, Youssef!",
-   "pad": 0.12,
-   "cut_at": [
-    0.0,
-    4.5
-   ]
+   "text": "Then the block gave me CREATIVE MODE! I built everything!",
+   "direction_text": "[excited, arms wide open] Then the block gave me CREATIVE MODE! I built everything!",
+   "pad": 0.05
+  },
+  {
+   "line": "steve",
+   "name": "steve_list",
+   "text": "A giant statue of himself. A duck. A door to nowhere.",
+   "direction_text": "[deadpan, listing, unimpressed] A giant statue of himself. A duck. A door to nowhere.",
+   "pad": 0.0
+  },
+  {
+   "line": "noob",
+   "name": "noob_close",
+   "text": "Close enough!",
+   "direction_text": "[cheerful, instantly] Close enough!",
+   "pad": 0.5
+  },
+  {
+   "line": "patch",
+   "name": "patch_belong",
+   "text": "None of it belonged in this world. So the world started deleting it...",
+   "direction_text": "[calm, serious, explaining clearly] None of it belonged in this world. So the world started deleting it...",
+   "pad": 0.05
+  },
+  {
+   "line": "patch",
+   "name": "patch_worse",
+   "text": "...and everything around it.",
+   "direction_text": "[quieter, heavy, but clear] ...and everything around it.",
+   "pad": 0.6
+  },
+  {
+   "line": "noob",
+   "name": "noob_duck",
+   "text": "...RIP duck.",
+   "direction_text": "[small, sad, sincere] ...RIP duck.",
+   "pad": 0.4
   },
   {
    "beat": "r6",
@@ -2595,51 +3796,100 @@
    "line": "noob",
    "name": "noob_dontlike",
    "text": "...I don't like that guy.",
-   "direction_text": "[small, quiet, uneasy] ...I don't like that guy.",
-   "pad": 0.12
+   "direction_text": "[small, uneasy, but clear] ...I don't like that guy.",
+   "pad": 0.05
   },
   {
    "line": "steve",
    "name": "steve_nobody",
    "text": "Nobody likes that guy.",
    "direction_text": "[low, serious] Nobody likes that guy.",
-   "pad": 0.12
+   "pad": 0.45
   },
   {
    "beat": "r7",
-   "dur": 1.2
+   "dur": 1.0
   },
   {
    "line": "patch",
    "name": "patch_behind",
    "text": "Every time he respawns... something stays behind.",
-   "direction_text": "[quiet, careful, slightly ominous] Every time he respawns... something stays behind.",
-   "pad": 0.12
+   "direction_text": "[quiet, careful, slightly ominous, clear] Every time he respawns... something stays behind.",
+   "pad": 0.1
   },
   {
    "line": "noob",
    "name": "noob_alot",
    "text": "I respawn a LOT.",
    "direction_text": "[worried, realising] I respawn a LOT.",
-   "pad": 0.12
+   "pad": 0.5
+  },
+  {
+   "line": "steve",
+   "name": "steve_sense",
+   "text": "So some things started making sense...",
+   "direction_text": "[slow, thinking it through] So some things started making sense...",
+   "pad": 0.0
+  },
+  {
+   "line": "noob",
+   "name": "noob_bigger",
+   "text": "...and the questions got WAY bigger.",
+   "direction_text": "[cutting in, worried] ...and the questions got WAY bigger.",
+   "pad": 0.3
+  },
+  {
+   "line": "noob",
+   "name": "noob_where",
+   "text": "Like... where do all the old me's GO?",
+   "direction_text": "[nervous, really asking] Like... where do all the old me's GO?",
+   "pad": 0.3
+  },
+  {
+   "line": "steve",
+   "name": "steve_howmany",
+   "text": "And how many times have we done this?",
+   "direction_text": "[quiet, serious] And how many times have we done this?",
+   "pad": 0.6
+  },
+  {
+   "line": "patch",
+   "name": "patch_counting",
+   "text": "...I stopped counting.",
+   "direction_text": "[calm, too quiet, but clear] ...I stopped counting.",
+   "pad": 0.4
   },
   {
    "beat": "r8",
-   "dur": 1.2
+   "dur": 1.0
   },
   {
    "line": "noob",
    "name": "noob_you",
-   "text": "And YOU. Built. The portal.",
-   "direction_text": "[slow, accusing, one word at a time] And YOU. Built. The portal.",
-   "pad": 0.12
+   "text": "And YOU. Built. The FIRST portal.",
+   "direction_text": "[slow, accusing, one word at a time] And YOU. Built. The FIRST portal.",
+   "pad": 0.5
   },
   {
    "line": "steve",
    "name": "steve_next",
-   "text": "...Next slide.",
-   "direction_text": "[dry, avoiding eye contact, quick] ...Next slide.",
-   "pad": 0.12
+   "text": "...Patch. Next slide.",
+   "direction_text": "[dry, avoiding eye contact, quick] ...Patch. Next slide.",
+   "pad": 0.0
+  },
+  {
+   "line": "noob",
+   "name": "noob_dontnext",
+   "text": "Don't 'next slide' me!",
+   "direction_text": "[outraged, instantly] Don't 'next slide' me!",
+   "pad": 0.6
+  },
+  {
+   "line": "patch",
+   "name": "patch_lastslide",
+   "text": "...That was the last slide.",
+   "direction_text": "[calm, polite] ...That was the last slide.",
+   "pad": 0.3
   },
   {
    "beat": "holo_off",
@@ -2661,7 +3911,11 @@
    "name": "noob_oneofus",
    "text": "One of us shouldn't be in this world...",
    "direction_text": "[slowly reading it, then suspicious] One of us shouldn't be in this world...",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    2.67,
+    5.38
+   ]
   },
   {
    "beat": "look",
@@ -2672,14 +3926,22 @@
    "name": "noob_itsyou",
    "text": "It's you. You're ALWAYS holding a pickaxe.",
    "direction_text": "[accusing, certain, pointing] It's you. You're ALWAYS holding a pickaxe.",
-   "pad": 0.12
+   "pad": 0.05,
+   "cut_at": [
+    5.863,
+    9.572
+   ]
   },
   {
    "line": "steve",
    "name": "steve_dying",
    "text": "You're always DYING.",
    "direction_text": "[dry, firing back instantly] You're always DYING.",
-   "pad": 0.12
+   "pad": 0.6,
+   "cut_at": [
+    12.728,
+    13.796
+   ]
   },
   {
    "line": "noob",
@@ -2701,28 +3963,44 @@
    "name": "patch_nocomment",
    "text": "No comment.",
    "direction_text": "[calm, quiet, mysterious, a tiny smile in the voice] No comment.",
-   "pad": 0.4
+   "pad": 0.5,
+   "cut_at": [
+    7.406,
+    8.653
+   ]
   },
   {
    "line": "patch",
    "name": "patch_budget",
    "text": "Good news. The finale has a budget.",
    "direction_text": "[calm, polite, a little proud] Good news. The finale has a budget.",
-   "pad": 0.12
+   "pad": 0.1,
+   "cut_at": [
+    14.497,
+    17.768
+   ]
   },
   {
    "line": "noob",
    "name": "noob_what",
    "text": "A what?",
    "direction_text": "[confused] A what?",
-   "pad": 0.12
+   "pad": 0.1,
+   "cut_at": [
+    18.57,
+    19.374
+   ]
   },
   {
    "line": "patch",
    "name": "patch_upgrade",
    "text": "Upgrade starting. Please do not move.",
    "direction_text": "[calm, like an airport announcement] Upgrade starting. Please do not move.",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    24.515,
+    27.334
+   ]
   },
   {
    "beat": "up_steve",
@@ -2733,21 +4011,35 @@
    "name": "steve_hair",
    "text": "...I have hair. Real hair.",
    "direction_text": "[stunned, quiet, touching it] ...I have hair. Real hair.",
-   "pad": 0.12
+   "pad": 0.5,
+   "cut_at": [
+    5.137,
+    8.44
+   ]
   },
   {
    "line": "noob",
    "name": "noob_beautiful",
-   "text": "It's beautiful.",
+   "text": "It's beauti—",
    "direction_text": "[sincere, almost crying] It's beautiful.",
-   "pad": 0.12
+   "pad": -0.02,
+   "cut_at": [
+    8.959,
+    9.92
+   ],
+   "trim": 0.47,
+   "trim_fade": 0.03
   },
   {
    "line": "steve",
    "name": "steve_dont",
    "text": "Don't.",
    "direction_text": "[flat, embarrassed] Don't.",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    12.821,
+    13.318
+   ]
   },
   {
    "beat": "up_noob",
@@ -2758,7 +4050,11 @@
    "name": "noob_textured",
    "text": "Why do I feel... textured?",
    "direction_text": "[confused, looking at his arms] Why do I feel... textured?",
-   "pad": 0.12
+   "pad": 0.0,
+   "cut_at": [
+    16.486,
+    19.236
+   ]
   },
   {
    "line": "steve",
@@ -2780,7 +4076,11 @@
    "name": "noob_smile",
    "text": "PATCH CAN SMILE?!",
    "direction_text": "[shocked, delighted, shouting] PATCH CAN SMILE?!",
-   "pad": 0.12
+   "pad": 0.4,
+   "cut_at": [
+    26.323,
+    27.324
+   ]
   },
   {
    "line": "patch",
@@ -2798,7 +4098,7 @@
    "name": "noob_woah",
    "text": "Woooah.",
    "direction_text": "[amazed, quiet, looking around] Woooah.",
-   "pad": 0.12,
+   "pad": 0.25,
    "nonverbal": false
   },
   {
@@ -2806,7 +4106,7 @@
    "name": "steve_nice",
    "text": "Okay. That's... nice.",
    "direction_text": "[impressed despite himself, low] Okay. That's... nice.",
-   "pad": 0.12,
+   "pad": 0.3,
    "cut_at": [
     1.85,
     3.62
@@ -2817,7 +4117,11 @@
    "name": "noob_him",
    "text": "Do you think HE got upgraded too?",
    "direction_text": "[casual at first, then the thought lands] Do you think HE got upgraded too?",
-   "pad": 0.12
+   "pad": 0.12,
+   "cut_at": [
+    5.116,
+    7.081
+   ]
   },
   {
    "beat": "quiet",
