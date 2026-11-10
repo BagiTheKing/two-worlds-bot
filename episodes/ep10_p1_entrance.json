@@ -43,7 +43,7 @@
   {"kind": "burst", "at": "tear+0.04", "gain": 0.45},
   {"kind": "whoosh", "at": "tear+0.02", "dur": 0.5, "gain": 0.4},
   {"kind": "sub_drop", "at": "null_hi+0.3", "dur": 1.8, "gain": 0.75},
-  {"kind": "glitch", "at": "null_hi+0.32", "dur": 0.4, "gain": 0.3}
+  {"kind": "glitch", "at": "null_hi+0.8", "dur": 0.35, "gain": 0.25}
  ],
  "overlays": [
   {"type": "watermark", "text": "@GLITCHBOUND2469", "from": 0, "to": "end"}
