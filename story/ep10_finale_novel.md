@@ -4,9 +4,13 @@
 - *one short Short, not three minutes;*
 - *Episode 0 comes back only as a quick sped-up event;*
 - *the whole episode is in the upgraded look;*
-- *it focuses on the one big event: how they finally don't fall.*
+- *it focuses on the one big event: how they finally don't fall;*
+- *Null's entrance gets 7–8 seconds, after the creator's reference, and the
+  fast-forward shrinks to about 3;*
+- *the finale answers "Who is Null?" in the picture; "Which one shouldn't be
+  in this world?" stays open.*
 
-**Target length: about 45 seconds**, the length the series' best episodes
+**Target length: 40–45 seconds**, the length the series' best episodes
 had (Ep5: 30 s, the most pushed). A 15-second cut is at the end.
 
 Episode 9 showed why: at 2:59 YouTube never gave it a test audience (58
@@ -18,21 +22,36 @@ ideas are kept here, but only the ones that fit.
 
 ---
 
-## 0:00 – 0:07 · Hi? (and everything after it, fast)
+## 0:00 – 0:08 · Hi? (the entrance)
 
-The first frame is the first portal in the forest, upgraded, with its purple
-light on. The checkered smile presses out of it like a face against glass.
-That's Episode 8's last shot, so a returning viewer knows where we are. A
-stranger sees a monster coming out of a portal, which is the episode's
-title.
+*Staged after the creator's reference (the shot-by-shot study is in
+[ep10_ref_portal_entrance.md](ep10_ref_portal_entrance.md)): the threat
+arrives piece by piece, and the face comes last.*
 
-**NOOB** *(0.2 s in, waving)*: "...Hi?"
+The first frame is the first portal's purple surface, close, already
+bulging: dark claws are pushing through it, and it stretches around them
+like skin. That's Episode 8's last shot a second later, so a returning
+viewer knows where we are. A stranger sees a monster coming out of a
+portal, which is the episode's title.
+
+**NOOB** *(0.2 s in, off screen)*: "...Hi?"
+
+- The long arms drag out onto the grass at ground level, jerky and wrong.
+  **All sound drops away** (the silence device).
+- Steve and the Noob, close, frozen. The Noob's hand is still half raised.
+- The checkered head rises into frame in three-quarter view, the low sun
+  flaring beside it and the portal's purple behind. The copied smile turns
+  to the camera last.
 
 **NULL** *(the Noob's voice, deep and broken)*: "...Hi?"
 
-Then everything Episode 0 showed happens again, but **fast-forwarded**:
-about four seconds at double speed with a tape-whirr on the soundtrack.
-- Null unfolds out of the portal and rises over the cherry hills.
+One hit on the soundtrack. Then he unfolds out of a frame far too small
+for him: the obsidian cracks, and he rises over the treetops.
+
+## 0:08 – 0:11 · Everything after it, fast
+
+Everything Episode 0 showed happens again, **fast-forwarded**: about three
+seconds with a tape-whirr on the soundtrack.
 - The world deletes behind them as they run toward the camera.
 - The bridge blinks out plank by plank.
 - They jump, and two hands, one square and one round, catch a ledge over
@@ -43,7 +62,7 @@ about four seconds at double speed with a tape-whirr on the soundtrack.
 Nobody needs to have seen Episode 0 to follow it: it's a chase, a bridge
 and a grab. Anyone who *has* seen it recognises every shot.
 
-## 0:07 – 0:15 · The trap
+## 0:11 – 0:18 · The trap
 
 They hang there. Below them is the void, and Null is rising out of it.
 
@@ -59,11 +78,12 @@ counter climbs: **LOOP 410… 411… 412**.
 
 That's the title, and it's said by the man who built it.
 
-## 0:15 – 0:22 · What Null is made of
+## 0:18 – 0:24 · What Null is made of
 
 Null fills the frame. For the first time we see him up close: he isn't made
 of blocks. He's thousands of small dark cubes, and each one has a tiny
-smile.
+smile. They light up one by one, like embers, in the Noob's own yellow.
+(He is made of them in every shot; only here are we close enough to see.)
 
 **PATCH:** "Every time you respawned... your old body fell in there."
 
@@ -76,7 +96,7 @@ Episode 0.
 
 **NULL:** "Reality has been corrected."
 
-## 0:22 – 0:30 · The move nobody ever made
+## 0:24 – 0:31 · The move nobody ever made
 
 **STEVE** *(fast)*: "He knows every move you've ever made. Do something new!"
 
@@ -92,7 +112,7 @@ pixel from Steve's fingers.
 
 A single bird sings. The silence is broken.
 
-## 0:30 – 0:38 · The catch
+## 0:31 – 0:38 · The catch
 
 One small cube comes loose from Null and floats up to them. It has a tiny,
 scared smile. The Noob lets go with one hand to catch it, because of
@@ -110,7 +130,7 @@ with his bare hand: no tool, no block, no plan.
 *(Episode 1's line, given back. It's the biggest laugh, so nothing is said
 over it.)*
 
-## 0:38 – 0:42 · Three percent
+## 0:38 – 0:41 · Three percent
 
 Null sinks back into the void, and the void closes like an eye. Steve pulls
 them up onto all that's left of the world: one floating island, one cherry
@@ -122,7 +142,7 @@ tree, three percent.
 
 The REALITY meter flickers from **3%** to **?**
 
-## 0:42 – 0:46 · The stinger
+## 0:41 – 0:45 · The stinger
 
 The Noob smiles at the little cube, and it smiles back. Then, for half a
 frame, its smile flickers magenta.
@@ -132,8 +152,9 @@ All sound stops.
 **NULL** *(from far below)*: "You weren't supposed to survive."
 
 The end strip slides in over the last shot, not a separate card: **SEASON
-2 · Who built the trap?** The last frame (the dark void with a magenta glow)
-loops back into the first (the portal's glow).
+2 · "What is the cube?" · Comment your theory.** The last frame (the island,
+with a magenta glow rising from below) loops back into the first (the
+portal's glow).
 
 ---
 
