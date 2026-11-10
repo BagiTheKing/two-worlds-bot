@@ -35,7 +35,7 @@ LENGTH = 6.6
 
 # The moments (seconds). With a voice, they follow Null's line "HI!".
 T = {"s2": 1.75, "s3": 3.45, "grip_r": 1.2, "grip_l": 2.0, "strain": 1.9, "rip": 2.62, "press": 3.45,
-     "tear": 3.98, "burst": 4.02, "hi": 4.55, "tilt": 5.35}
+     "tear": 3.98, "burst": 4.02, "hi": 4.55, "tilt": 5.35, "s4": 5.45}
 
 
 def ss(a, b, x):
@@ -411,6 +411,86 @@ def _debris(col, assets, n=46):
     return out
 
 
+def _clip_behind(m, y0):
+    """Whatever of him is still on the other side of the portal's plane (y > y0)
+    is not in this world yet: invisible."""
+    m["clipped"] = True
+    nt = m.node_tree
+    out = next((n for n in nt.nodes if n.type == "OUTPUT_MATERIAL"), None)
+    if out is None or not out.inputs["Surface"].links:
+        return
+    src = out.inputs["Surface"].links[0].from_socket
+    geo = nt.nodes.new("ShaderNodeNewGeometry")
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(geo.outputs["Position"], sep.inputs[0])
+    gt = nt.nodes.new("ShaderNodeMath")
+    gt.operation = "GREATER_THAN"
+    gt.inputs[1].default_value = y0
+    nt.links.new(sep.outputs["Y"], gt.inputs[0])
+    tr = nt.nodes.new("ShaderNodeBsdfTransparent")
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(gt.outputs[0], mix.inputs[0])
+    nt.links.new(src, mix.inputs[1])
+    nt.links.new(tr.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], out.inputs["Surface"])
+
+
+def _rift(sc):
+    """A tear in the world itself, in the portal's plane: a dark inside and a
+    burning edge. Its shape is set per frame (rift_shape)."""
+    out = []
+    for name, rgb, power in (("rift", (20, 2, 30), 0.8), ("rift_rim", (240, 40, 220), 7.0)):
+        me = bpy.data.meshes.new(name)
+        ob = bpy.data.objects.new(name, me)
+        sc.collection.objects.link(ob)
+        m = bpy.data.materials.new(name)
+        m.use_nodes = True
+        b = m.node_tree.nodes["Principled BSDF"]
+        b.inputs["Base Color"].default_value = (*lin(rgb), 1)
+        b.inputs["Emission Color"].default_value = (*lin(rgb), 1)
+        b.inputs["Emission Strength"].default_value = power
+        me.materials.append(m)
+        ob.visible_shadow = False
+        ob.hide_render = True
+        out.append(ob)
+    return out
+
+
+def rift_shape(E, top, half_w, t):
+    """The rift's outline: a jagged lens from the portal's sill up to `top`."""
+    rnd = random.Random(31)
+    n = 40
+    z0 = 0.6
+    right, left = [], []
+    jag = [rnd.uniform(-1, 1) for _ in range(n + 1)]
+    for i in range(n + 1):
+        u = i / n
+        z = lerp(z0, top, u)
+        w = half_w * math.sin(math.pi * min(1.0, u * 1.08)) ** 0.7
+        j = 0.18 * jag[i] * (0.4 + w) + 0.05 * math.sin(t * 30 + i)
+        right.append((w + j, 0.0, z))
+        left.append((-w + 0.6 * jag[n - i] * 0.18 * (0.4 + w), 0.0, z))
+    poly = right + left[::-1]
+    for ob, grow in ((E.rift, 0.0), (E.rift_rim, 0.22)):
+        me = ob.data
+        me.clear_geometry()
+        if ob is E.rift:
+            me.from_pydata([Vector(p) + PORTAL_AT for p in poly], [], [list(range(len(poly)))])
+        else:                                           # the rim: a band around the outline
+            inner = [Vector(p) + PORTAL_AT + Vector((0, -0.02, 0)) for p in poly]
+            c = Vector((0, 0, (z0 + top) / 2))
+            outer = []
+            for p in poly:
+                d = Vector((p[0], 0, p[2])) - c
+                d.y = 0
+                d = d.normalized() if d.length > 1e-6 else Vector((1, 0, 0))
+                outer.append(Vector(p) + PORTAL_AT + Vector((0, -0.02, 0)) + d * grow * (1 + 0.6 * abs(math.sin(p[2] * 3.1))))
+            nv = len(poly)
+            faces = [[i, (i + 1) % nv, nv + (i + 1) % nv, nv + i] for i in range(nv)]
+            me.from_pydata(inner + outer, [], faces)
+        me.update()
+
+
 def build(tl, assets, res, samples):
     from world import build_world, add_world_fx
     from portal import build_portal
@@ -421,11 +501,11 @@ def build(tl, assets, res, samples):
     bpy.ops.wm.read_factory_settings(use_empty=True)
     sc = bpy.context.scene
     E.sc = sc
-    cfg = {"seed": 7, "sun": (71, 12), "flat_box": [-7, 7, -40, 8], "plant_clear_box": [-3.4, 3.4, 2.0, 6.5],
-           "keep_clear": [(0, -14, 8), (0, 16, 5), (0, 24, 5)],
-           "feature_trees": [(-6, 13, "big_oak"), (6, 13, "oak"), (-9, 19, "oak"), (9, 18, "big_oak"), (-4, 22, "birch"),
-                             (4, 23, "oak"), (-11, 9, "oak"), (11, 10, "big_oak"), (-7, 27, "oak"), (8, 28, "oak")],
-           "clear_plants": [(0.0, 3.6, 2.4)], "particle_box": (-9, 9, 9.0, 24, 0.3, 7.0)}
+    cfg = {"seed": 7, "sun": (71, 12), "flat_box": [-22, 22, -40, 8], "plant_clear_box": [-3.4, 3.4, 2.0, 6.5],
+           "keep_clear": [(0, -14, 8), (0, 16, 5), (0, 24, 5), (15, -0.5, 8), (8, 1, 6)],
+           "feature_trees": [(-6, 13, "big_oak"), (5, 17, "oak"), (-9, 19, "oak"), (9, 18, "big_oak"), (-4, 22, "birch"),
+                             (4, 23, "oak"), (-11, 9, "oak"), (-7, 27, "oak"), (8, 28, "oak")],
+           "clear_plants": [(0.0, 3.6, 2.4), (16.5, 0.6, 4.0), (10.0, 1.5, 3.0)], "particle_box": (-9, 9, 9.0, 24, 0.3, 7.0)}
     E.W = W = build_world(sc, assets, cfg)
     add_world_fx(W)
     from world import fx_set
@@ -469,6 +549,19 @@ def build(tl, assets, res, samples):
     vd.visible_shadow = False
     E.beyond = vd
     E.bits = _debris(P.col, assets)
+    # shot 4: all of him, giant, coming through a rift that tears up into the sky
+    E.G = G = build_null_char(sc, assets, height=10.0, name="giant")
+    null_lights(sc, G)
+    G.head.data.materials.clear()
+    gm = m.copy()                                          # the same face (same image), clipped on its own
+    gm["power"] = m["power"]
+    G.head.data.materials.append(gm)
+    for o in G.col.objects:
+        for slot in getattr(o, "material_slots", []):
+            if slot.material and not slot.material.get("clipped"):
+                _clip_behind(slot.material, PORTAL_AT.y)
+    _clip_behind(bpy.data.materials["null_backglow"], PORTAL_AT.y)
+    E.rift, E.rift_rim = _rift(sc)
     # light: Null's storm. A cold top light, magenta from his head, purple from the portal
     from stage import char_light
     E.key = char_light(sc, "key", (-3, -4, 6), 900, (0.72, 0.62, 1.0), cone=40, size=1.4)
@@ -603,6 +696,8 @@ def trauma(t):
         k = max(k, 0.7 * math.exp(-(t - T["burst"]) / 0.3))
     if t >= T["hi"] - 0.04:
         k = max(k, 1.0 * math.exp(-(t - T["hi"]) / 0.55) + 0.12)
+    if t >= T["s4"]:
+        k = max(k, 0.55 + 0.35 * math.exp(-(t - T["s4"]) / 0.4))
     return min(1.0, k)
 
 
@@ -620,6 +715,11 @@ def camera(t):
         loc = P0 + Vector((0.3, -4.9 + 0.35 * u - 2.6 * kb, 1.25 + 0.35 * kb))
         look = P0 + Vector((0.0, 0.0, 2.55 + 0.25 * kb))
         return loc, look, lerp(25, 21, kb), 4.5, None
+    if t >= T["s4"]:                                     # 4: wide, low, from the side: his giant body through the rift
+        u = ss(T["s4"], T["s4"] + 1.65, t)
+        loc = P0 + Vector((18.5 - 0.8 * u, -4.5 - 0.4 * u, 2.1))
+        look = P0 + Vector((0.0, -1.8, 5.5)).lerp(P0 + Vector((0.0, -2.4, 13.5)), ss(0.0, 0.9, u))
+        return loc, look, 20, 14.0, None
     # 3: close, at the opening: the membrane, the face behind it, the burst, HI!
     u = (t - T["s3"]) / (LENGTH - T["s3"])
     back = 0.7 * ss(T["burst"] - 0.05, T["burst"] + 0.25, t)                      # it comes at us: we flinch back
@@ -837,7 +937,66 @@ def apply(E, t):
     E.cam.data.dof.aperture_fstop = fstop
     E.key.location = loc + Vector((-1.6, 0.4, 2.2))
     E.key.rotation_euler = (look - E.key.location).to_track_quat("-Z", "Y").to_euler()
+    giant(E, t)
     return {"g": 0.0, "s": 1.0}
+
+
+def giant(E, t):
+    """Shot 4: the tear rises into the sky and all of him comes through it,
+    from a crawl (lying forward, head first) up to his full height."""
+    from stage import place_null_lights
+    G, X = E.G, E.X
+    on = t >= T["s4"]
+    for o in G.col.objects:
+        if o.type != "LIGHT":
+            o.hide_render = not on
+    G.glow.hide_render = not on
+    E.rift.hide_render = E.rift_rim.hide_render = not on
+    if not on:
+        place_null_lights(G, fade=0.0)
+        return
+    u = ss(T["s4"], T["s4"] + 1.55, t)
+    r = ss(T["s4"] - 0.05, T["s4"] + 0.5, t)
+    # the rift: from the torn portal up into the storm
+    rift_shape(E, lerp(4.5, 26.0, r ** 0.8), lerp(2.4, 7.5, r), t)
+    # the shot-3 pieces give way to him
+    for o in [X.head] + [c for c in X.neck.children if "head_noise" in c.name]:
+        o.hide_render = True
+    E.R.hide(True)
+    E.L.hide(True)
+    E.beyond.hide_render = True
+    # his body: scale, lean, where his neck is
+    k = lerp(0.6, 1.6, u ** 0.9)
+    lean = math.radians(lerp(72, 8, ss(0.05, 1.0, u)))
+    neck = PORTAL_AT + Vector((0.0, lerp(-1.2, -2.4, u), lerp(2.6, 17.0, u ** 1.1)))
+    neck += Vector((0, 0, 0.25 * math.sin(t * 2.0)))
+    rot = Matrix.Rotation(lean, 3, "X")
+    G.root.scale = (k, k, k)
+    G.root.rotation_euler = (lean, 0, 0)
+    G.root.location = neck - rot @ (Vector((0, -0.35, 9.25)) * k)
+    for side, sgn in (("sl", 1), ("sr", -1)):              # the arms: forward, then thrown wide as he rises
+        a = ss(0.2, 0.9, u)
+        G.arms[side].rotation_euler = (math.radians(lerp(-75, -40, a)), math.radians(sgn * lerp(4, 16, a)), 0)
+    if getattr(G, "orbit", None):
+        G.orbit.rotation_euler = (math.radians(-10), math.radians(-16), 2.4 * t)
+        G.orbit2.rotation_euler = (math.radians(-12), math.radians(14), -1.7 * t)
+        for o in G.col.objects:                          # only the ring above his head (the chest one would hit the lens)
+            p_, ring = o, None
+            while p_ is not None:
+                if p_ in (G.orbit, G.orbit2):
+                    ring = p_
+                    break
+                p_ = p_.parent
+            if ring is not None:
+                o.hide_render = u < 0.3 or ring is G.orbit
+    place_null_lights(G, fade=0.6 + 0.4 * u)
+    G.glow_strength.default_value = 0.9 * u
+    bm = next(sl.material for o in G.col.objects for sl in getattr(o, "material_slots", [])
+              if sl.material and sl.material.name.startswith("null_body"))
+    nt = bm.node_tree                                       # far away: today's Null (no faces), a few glints
+    nt.nodes[bm["near_node"]].inputs["From Min"].default_value = 0.3
+    nt.nodes[bm["near_node"]].inputs["From Max"].default_value = 0.8
+    draw_face(E.face_im, smile=1.0, eyes=1.0)
 
 
 def finish(path, mist_path):
@@ -890,6 +1049,7 @@ def align(tl, voice_path=None):
                 if len(on):
                     T["hi"] = hi["start"] + on[0] / sr
         T["tilt"] = T["hi"] + 0.8
+        T["s4"] = b["rise"][0] if "rise" in b else LENGTH
     LENGTH = tl.get("length", LENGTH) + 0.4
 
 

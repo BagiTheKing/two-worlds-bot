@@ -43,7 +43,12 @@
   {"kind": "burst", "at": "tear+0.04", "gain": 0.45},
   {"kind": "whoosh", "at": "tear+0.02", "dur": 0.5, "gain": 0.4},
   {"kind": "sub_drop", "at": "null_hi+0.3", "dur": 1.8, "gain": 0.75},
-  {"kind": "glitch", "at": "null_hi+0.8", "dur": 0.35, "gain": 0.25}
+  {"kind": "glitch", "at": "null_hi+0.8", "dur": 0.35, "gain": 0.25},
+  {"kind": "break", "at": "rise", "gain": 0.6},
+  {"kind": "rumble_rise", "at": "rise-0.15", "dur": 1.7, "gain": 0.55},
+  {"kind": "roar", "at": "rise+0.15", "dur": 1.5, "gain": 0.5},
+  {"kind": "whoosh", "at": "rise+0.1", "dur": 1.0, "gain": 0.4},
+  {"kind": "sub_drop", "at": "rise+0.35", "dur": 1.6, "gain": 0.6}
  ],
  "overlays": [
   {"type": "watermark", "text": "@GLITCHBOUND2469", "from": 0, "to": "end"}
@@ -63,6 +68,7 @@
   {"beat": "tear", "dur": 0.12},
   {"line": "null", "name": "null_hi", "text": "HI!", "direction_text": "[a huge, delighted, cheerful shout] HI!",
    "pad": 0.0, "solo_only": true, "solo_text": "HI!", "null_punch": true},
-  {"beat": "end", "dur": 1.15}
+  {"beat": "hold", "dur": 0.42},
+  {"beat": "rise", "dur": 1.65}
  ]
 }
