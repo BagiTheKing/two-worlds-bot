@@ -874,7 +874,7 @@ def align(tl, voice_path=None):
         T["tear"] = b["tear"][0]
         T["burst"] = b["tear"][0] + 0.04
         hi = next((ln for ln in tl.get("lines", []) if ln.get("who") == "null"), None)
-        T["hi"] = hi["start"] + 0.35 if hi else T["burst"] + 0.53
+        T["hi"] = hi["start"] + 0.12 if hi else T["burst"] + 0.53
         if hi and voice_path and os.path.exists(voice_path):
             import soundfile as sf
             x, sr = sf.read(voice_path)

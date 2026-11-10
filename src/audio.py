@@ -1308,11 +1308,26 @@ def void_wind(length):
     return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
 
 
-def null_voice(s, light=False):
+def null_voice(s, light=False, punch=False):
     """Null speaks with the Noob's voice: pitched down, doubled an octave
-    lower, bit-crushed, with a reversed reverb swelling into each word."""
+    lower, bit-crushed, with a reversed reverb swelling into each word.
+    punch: a shout that hits at once: the pitch goes down but the word keeps
+    its length (no slow-motion, no late octave echo), a short swell, driven."""
     def pitch(x, p):
         return np.interp(np.linspace(0, len(x) - 1, int(len(x) / p)), np.arange(len(x)), x)
+    if punch:
+        a = stretch(pitch(s, 0.62), 1 / 0.62)[:len(s)]
+        b = stretch(pitch(s, 0.31), 1 / 0.31)[:len(s)]
+        a, b = np.pad(a, (0, len(s) - len(a))), np.pad(b, (0, len(s) - len(b)))
+        v = np.tanh(2.2 * (a + 0.45 * b)) / np.tanh(2.2)
+        v = np.round(v * 40) / 40
+        tail = rng.standard_normal(int(0.5 * SR)) * np.exp(-np.arange(int(0.5 * SR)) / (0.12 * SR))
+        rev = np.convolve(v[::-1], tail * 0.02)[:len(v)][::-1]
+        lead = int(0.12 * SR)
+        v = np.concatenate([np.zeros(lead), v])
+        rev = np.concatenate([rev, np.zeros(lead)])
+        room = np.convolve(v, rng.standard_normal(int(1.2 * SR)) * np.exp(-np.arange(int(1.2 * SR)) / (0.35 * SR)) * 0.012)[:len(v)]
+        return norm(v + 0.4 * rev + room, 0.95)
     a = pitch(s, 0.8 if light else 0.62)      # light: the words still clear (an echo of the Noob)
     b = pitch(s, 0.4 if light else 0.31)[:len(a)]
     b = np.pad(b, (0, len(a) - len(b)))
@@ -1412,7 +1427,7 @@ def build(episode_path, out_dir, keep=None):
             if ep.get("gate") is not None:              # breaths and mouth noise down
                 audio = gate(audio, ep["gate"])
             if c.get("fx") == "null":
-                audio = null_voice(audio, light=ev.get("null_light", False))
+                audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
             for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
