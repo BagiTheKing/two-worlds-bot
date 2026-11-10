@@ -1,0 +1,393 @@
+{
+ "id": "ep10_the_trap",
+ "fps": 24,
+ "length": 44.885,
+ "beats": {
+  "open": [
+   0.0,
+   0.15
+  ],
+  "noob_hi": [
+   0.15,
+   0.854
+  ],
+  "crawl": [
+   1.054,
+   2.354
+  ],
+  "react": [
+   2.354,
+   3.154
+  ],
+  "reveal": [
+   3.154,
+   4.254
+  ],
+  "null_hi": [
+   4.254,
+   5.404
+  ],
+  "unfold": [
+   5.604,
+   6.804
+  ],
+  "ff": [
+   6.804,
+   9.404
+  ],
+  "hang": [
+   9.404,
+   9.704
+  ],
+  "patch_412": [
+   9.704,
+   15.136
+  ],
+  "steve_trap": [
+   15.256,
+   16.828
+  ],
+  "patch_bodies": [
+   17.048,
+   20.075
+  ],
+  "noob_smile": [
+   20.225,
+   22.653
+  ],
+  "steve_new": [
+   22.853,
+   25.578
+  ],
+  "noob_guys": [
+   25.778,
+   27.931
+  ],
+  "noob_sorry": [
+   28.231,
+   28.992
+  ],
+  "null_im": [
+   29.142,
+   29.562
+  ],
+  "glitch": [
+   29.562,
+   30.762
+  ],
+  "cube": [
+   30.762,
+   31.962
+  ],
+  "steve_noob": [
+   31.962,
+   32.942
+  ],
+  "catch": [
+   32.942,
+   33.392
+  ],
+  "noob_tool": [
+   33.392,
+   34.326
+  ],
+  "steve_roblox": [
+   34.626,
+   35.755
+  ],
+  "sink": [
+   36.605,
+   37.905
+  ],
+  "noob_real": [
+   37.905,
+   39.585
+  ],
+  "cube_look": [
+   39.785,
+   40.585
+  ],
+  "silence": [
+   40.585,
+   40.885
+  ],
+  "null_survive": [
+   40.885,
+   44.185
+  ],
+  "end": [
+   44.285,
+   44.885
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_hi",
+   "who": "noob",
+   "text": "...Hi?",
+   "vo": false,
+   "caption": true,
+   "start": 0.15,
+   "end": 0.854
+  },
+  {
+   "name": "null_hi",
+   "who": "null",
+   "text": "...Hi?",
+   "vo": false,
+   "caption": true,
+   "start": 4.254,
+   "end": 5.404
+  },
+  {
+   "name": "patch_412",
+   "who": "patch",
+   "text": "Four hundred and twelve times. Your portal catches us... and we start over.",
+   "vo": false,
+   "caption": true,
+   "start": 9.704,
+   "end": 15.136
+  },
+  {
+   "name": "steve_trap",
+   "who": "steve",
+   "text": "I built a trap.",
+   "vo": false,
+   "caption": true,
+   "start": 15.256,
+   "end": 16.828
+  },
+  {
+   "name": "patch_bodies",
+   "who": "patch",
+   "text": "Every time you respawned... your old body fell in there.",
+   "vo": false,
+   "caption": true,
+   "start": 17.048,
+   "end": 20.075
+  },
+  {
+   "name": "noob_smile",
+   "who": "noob",
+   "text": "...That's why he has my smile.",
+   "vo": false,
+   "caption": true,
+   "start": 20.225,
+   "end": 22.653
+  },
+  {
+   "name": "steve_new",
+   "who": "steve",
+   "text": "He knows every move you've ever made. Do something new!",
+   "vo": false,
+   "caption": true,
+   "start": 22.853,
+   "end": 25.578
+  },
+  {
+   "name": "noob_guys",
+   "who": "noob",
+   "text": "Hey, guys. I never came back for you.",
+   "vo": false,
+   "caption": true,
+   "start": 25.778,
+   "end": 27.931
+  },
+  {
+   "name": "noob_sorry",
+   "who": "noob",
+   "text": "...I'm sorry.",
+   "vo": false,
+   "caption": true,
+   "start": 28.231,
+   "end": 28.992
+  },
+  {
+   "name": "null_im",
+   "who": "null",
+   "text": "I'm\u2014",
+   "vo": false,
+   "caption": true,
+   "start": 29.142,
+   "end": 29.562
+  },
+  {
+   "name": "steve_noob",
+   "who": "steve",
+   "text": "NOOB!",
+   "vo": false,
+   "caption": true,
+   "start": 31.962,
+   "end": 32.942
+  },
+  {
+   "name": "noob_tool",
+   "who": "noob",
+   "text": "...No tool?",
+   "vo": false,
+   "caption": true,
+   "start": 33.392,
+   "end": 34.326
+  },
+  {
+   "name": "steve_roblox",
+   "who": "steve",
+   "text": "I'm a Roblox player.",
+   "vo": false,
+   "caption": true,
+   "start": 34.626,
+   "end": 35.755
+  },
+  {
+   "name": "noob_real",
+   "who": "noob",
+   "text": "IT'S REAL THIS TIME!",
+   "vo": false,
+   "caption": true,
+   "start": 37.905,
+   "end": 39.585
+  },
+  {
+   "name": "null_survive",
+   "who": "null",
+   "text": "You weren't supposed to survive.",
+   "vo": false,
+   "caption": true,
+   "start": 40.885,
+   "end": 44.185
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 45.285
+  },
+  {
+   "type": "ffwd",
+   "start": 6.804,
+   "end": 9.404
+  },
+  {
+   "type": "stack",
+   "cards": 9,
+   "every": 0.2,
+   "start": 10.004,
+   "end": 12.304
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: {pct}%",
+   "count_from": 12,
+   "count_to": 3,
+   "start": 6.804,
+   "end": 9.404,
+   "_steps": [
+    7.504,
+    8.304,
+    9.104
+   ]
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 3%",
+   "alert": true,
+   "start": 9.404,
+   "end": 10.004
+  },
+  {
+   "type": "hud",
+   "text": "LOOP {pct}",
+   "count_from": 410,
+   "count_to": 412,
+   "alert": true,
+   "start": 10.004,
+   "end": 15.256,
+   "_steps": [
+    10.704,
+    11.204
+   ]
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 3%",
+   "alert": true,
+   "start": 15.256,
+   "end": 38.405
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: ?",
+   "alert": true,
+   "start": 38.405,
+   "end": 45.285
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "SURVIVE THE APOCALYPSE",
+   "sub": "0.1% of players have this",
+   "start": 37.555,
+   "end": 40.085
+  },
+  {
+   "type": "endnote",
+   "next_label": "SEASON 2",
+   "next_title": "TWO WORLDS \u00b7 ONE GLITCH",
+   "question": "WHAT IS THE CUBE?",
+   "question_sub": "Comment your theory",
+   "start": 42.285,
+   "end": 45.285
+  }
+ ]
+}
