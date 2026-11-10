@@ -559,7 +559,7 @@ def head_state(t):
     push = ss(T["press"] - 0.1, T["tear"], t)
     burst = back_out((t - T["burst"]) / 0.3, 1.6) if t >= T["burst"] else 0.0
     hi = t - T["hi"]
-    y = lerp(lerp(1.4, 0.6, lean), 0.12, push) - 1.1 * burst
+    y = lerp(lerp(1.4, 0.6, lean), 0.12, push) - 1.6 * burst
     if hi > 0:
         y -= 0.42 * math.exp(-((hi - 0.12) / 0.16) ** 2)          # the shout pushes it at us
     z = 0.95 + 0.12 * math.sin(t * 2.4) * (t > T["burst"])
@@ -623,8 +623,8 @@ def camera(t):
     # 3: close, at the opening: the membrane, the face behind it, the burst, HI!
     u = (t - T["s3"]) / (LENGTH - T["s3"])
     back = 0.7 * ss(T["burst"] - 0.05, T["burst"] + 0.25, t)                      # it comes at us: we flinch back
-    punch = ss(T["hi"] - 0.04, T["hi"] + 0.13, t) * (1 - 0.3 * ss(T["hi"] + 0.35, T["hi"] + 1.4, t))
-    loc = P0 + Vector((0.1, -9.0 + 0.6 * u - back + 2.4 * punch, 2.3 + 0.15 * punch))
+    punch = ss(T["hi"] - 0.04, T["hi"] + 0.13, t) * (1 - 0.5 * ss(T["hi"] + 0.35, T["hi"] + 1.3, t))
+    loc = P0 + Vector((0.1, -9.8 + 0.6 * u - back + 2.4 * punch, 2.3 + 0.15 * punch))
     look = P0 + Vector((0.0, -0.4 - 0.9 * ss(T["burst"], T["burst"] + 0.3, t), 2.55))
     lens = 30 + 10 * punch
     return loc, look, lens, 4.0, None

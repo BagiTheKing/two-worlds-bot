@@ -60,9 +60,9 @@
   {"beat": "grip_l", "dur": 0.62},
   {"beat": "rip", "dur": 0.83},
   {"beat": "press", "dur": 0.53},
-  {"beat": "tear", "dur": 0.45},
+  {"beat": "tear", "dur": 0.12},
   {"line": "null", "name": "null_hi", "text": "HI!", "direction_text": "[a huge, delighted, cheerful shout] HI!",
    "pad": 0.0, "solo_only": true, "solo_text": "HI!", "null_punch": true},
-  {"beat": "end", "dur": 1.3}
+  {"beat": "end", "dur": 1.15}
  ]
 }
