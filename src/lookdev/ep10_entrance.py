@@ -525,11 +525,12 @@ def claw_pose(E, t):
     grip_r = ss(T["grip_r"] - 0.22, T["grip_r"], t)
     jerk = 0.03 * math.sin(t * 29) * (1 - grip_r)
     feel = Vector((0.1 + 0.06 * math.sin(t * 3.3), 0.3 + jerk - 0.25 * ss(0, 0.9, t), 2.65 + 0.08 * math.sin(t * 2.1)))
-    hold = Vector((0.7 + d, -0.42, 2.45))
+    pull = 0.05 * ss(T["strain"], T["rip"], t) * math.sin(t * 38)               # straining on it
+    hold = Vector((0.66 + d + pull, -0.36, 2.45))
     w = feel.lerp(hold, grip_r)
-    fwd = Vector((0.1, -1, 0.15)).normalized().lerp(Vector((1, -0.28, 0.0)).normalized(), grip_r)
+    fwd = Vector((0.1, -1, 0.15)).normalized().lerp(Vector((1, -0.48, 0.0)).normalized(), grip_r)
     palm = Vector((-1, 0, -0.3)).lerp(Vector((0, 1, 0)), grip_r)
-    curl = lerp(0.15 + 0.12 * math.sin(t * 5), 0.5, back_out(grip_r, 2.2))
+    curl = lerp(0.15 + 0.12 * math.sin(t * 5), 0.32 + 0.08 * ss(T["strain"], T["rip"], t), back_out(grip_r, 2.2))
     tw = (t, 0.05 * (1 - grip_r) + 0.03 * ss(T["strain"], T["rip"], t) * (t < T["rip"] + 0.2))
     out["R"] = (True, P0 + w, fwd, palm, curl, lerp(26, 8, grip_r), lerp(0.2, 0.8, grip_r), tw)
     # the left claw: through at grip_l - 0.45, gripping the left column
@@ -537,11 +538,12 @@ def claw_pose(E, t):
     a = ss(T["grip_l"] - 0.3, T["grip_l"] - 0.12, t)
     grip_l = ss(T["grip_l"] - 0.2, T["grip_l"], t)
     feel = Vector((-0.42, lerp(0.9, 0.25, a), 2.15))
-    hold = Vector((-0.7 + d, -0.42, 2.2))
+    pull = 0.05 * ss(T["strain"], T["rip"], t) * math.sin(t * 41 + 1)
+    hold = Vector((-0.66 + d - pull, -0.36, 2.2))
     w = feel.lerp(hold, grip_l)
-    fwd = Vector((-0.15, -1, 0.2)).normalized().lerp(Vector((-1, -0.28, 0.0)).normalized(), grip_l)
+    fwd = Vector((-0.15, -1, 0.2)).normalized().lerp(Vector((-1, -0.48, 0.0)).normalized(), grip_l)
     palm = Vector((0.2, 0, -1)).lerp(Vector((0, 1, 0)), grip_l)
-    curl = lerp(0.2, 0.5, back_out(grip_l, 2.2))
+    curl = lerp(0.2, 0.32 + 0.08 * ss(T["strain"], T["rip"], t), back_out(grip_l, 2.2))
     out["L"] = (t >= T["grip_l"] - 0.3, P0 + w, fwd, palm, curl, lerp(26, 8, grip_l), lerp(0.2, 0.8, grip_l),
                 (t + 1.3, 0.05 * (1 - grip_l) + 0.03 * ss(T["strain"], T["rip"], t) * (t < T["rip"] + 0.2)))
     return out
@@ -550,13 +552,14 @@ def claw_pose(E, t):
 def head_state(t):
     """-> (show, position (world, the head's base), yaw, roll, pitch, face kwargs, press)"""
     P0 = PORTAL_AT
-    if t < T["press"] - 0.3:
+    if t < T["strain"] - 0.2:
         return False, P0 + Vector((0, 4, 0.4)), 0, 0, 0, {}, 0.0
     # behind the membrane: leaning on it (a face against glass), then through
-    push = ss(T["press"] - 0.3, T["tear"], t)
-    burst = back_out((t - T["burst"]) / 0.32, 1.5) if t >= T["burst"] else 0.0
+    lean = ss(T["strain"] - 0.2, T["rip"], t)
+    push = ss(T["press"] - 0.1, T["tear"], t)
+    burst = back_out((t - T["burst"]) / 0.3, 1.6) if t >= T["burst"] else 0.0
     hi = t - T["hi"]
-    y = lerp(0.95, 0.12, push) - 1.75 * burst
+    y = lerp(lerp(1.4, 0.6, lean), 0.12, push) - 1.1 * burst
     if hi > 0:
         y -= 0.42 * math.exp(-((hi - 0.12) / 0.16) ** 2)          # the shout pushes it at us
     z = 0.95 + 0.12 * math.sin(t * 2.4) * (t > T["burst"])
@@ -613,16 +616,17 @@ def camera(t):
         return loc, look, 42, 2.8, None
     if t < T["s3"]:                                       # 2: low, from the front: both claws, the rip
         u = (t - T["s2"]) / (T["s3"] - T["s2"])
-        loc = P0 + Vector((0.3, -4.9 + 0.5 * u - 0.6 * ss(T["rip"], T["rip"] + 0.3, t), 1.25))
-        look = P0 + Vector((0.0, 0.0, 2.55 + 0.25 * ss(T["rip"], T["rip"] + 0.4, t)))
-        return loc, look, 25, 4.5, None
+        kb = ss(T["rip"], T["rip"] + 0.28, t)
+        loc = P0 + Vector((0.3, -4.9 + 0.35 * u - 2.6 * kb, 1.25 + 0.35 * kb))
+        look = P0 + Vector((0.0, 0.0, 2.55 + 0.25 * kb))
+        return loc, look, lerp(25, 21, kb), 4.5, None
     # 3: close, at the opening: the membrane, the face behind it, the burst, HI!
     u = (t - T["s3"]) / (LENGTH - T["s3"])
-    back = 0.8 * ss(T["burst"] - 0.05, T["burst"] + 0.25, t)                      # it comes at us: we flinch back
-    push = 1.0 * ss(T["hi"] - 0.05, T["hi"] + 0.16, t) * (1 - 0.35 * ss(T["hi"] + 0.4, LENGTH, t))   # the punch-in on HI!
-    loc = P0 + Vector((0.1, -8.4 + 0.5 * u - back + push, 2.35))
-    look = P0 + Vector((0.0, -0.4 - 1.5 * ss(T["burst"], T["burst"] + 0.3, t), 2.6))
-    lens = 32 + 5 * ss(T["hi"] - 0.04, T["hi"] + 0.12, t) * (1 - 0.4 * ss(T["hi"] + 0.3, LENGTH, t))
+    back = 0.7 * ss(T["burst"] - 0.05, T["burst"] + 0.25, t)                      # it comes at us: we flinch back
+    punch = ss(T["hi"] - 0.04, T["hi"] + 0.13, t) * (1 - 0.3 * ss(T["hi"] + 0.35, T["hi"] + 1.4, t))
+    loc = P0 + Vector((0.1, -9.0 + 0.6 * u - back + 2.4 * punch, 2.3 + 0.15 * punch))
+    look = P0 + Vector((0.0, -0.4 - 0.9 * ss(T["burst"], T["burst"] + 0.3, t), 2.55))
+    lens = 30 + 10 * punch
     return loc, look, lens, 4.0, None
 
 
