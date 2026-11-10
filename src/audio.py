@@ -1316,10 +1316,10 @@ def null_voice(s, light=False, punch=False):
     def pitch(x, p):
         return np.interp(np.linspace(0, len(x) - 1, int(len(x) / p)), np.arange(len(x)), x)
     if punch:
-        a = stretch(pitch(s, 0.62), 1 / 0.62)[:len(s)]
-        b = stretch(pitch(s, 0.31), 1 / 0.31)[:len(s)]
+        a = stretch(pitch(s, 0.76), 1 / 0.76)[:len(s)]      # deep, but the vowel stays a vowel
+        b = stretch(pitch(s, 0.38), 1 / 0.38)[:len(s)]      # and the monster an octave under it
         a, b = np.pad(a, (0, len(s) - len(a))), np.pad(b, (0, len(s) - len(b)))
-        v = np.tanh(2.2 * (a + 0.45 * b)) / np.tanh(2.2)
+        v = np.tanh(1.8 * (a + 0.3 * b)) / np.tanh(1.8)
         v = np.round(v * 40) / 40
         tail = rng.standard_normal(int(0.5 * SR)) * np.exp(-np.arange(int(0.5 * SR)) / (0.12 * SR))
         rev = np.convolve(v[::-1], tail * 0.02)[:len(v)][::-1]
