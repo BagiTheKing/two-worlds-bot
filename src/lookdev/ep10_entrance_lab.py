@@ -23,7 +23,7 @@ from world import build_world, add_world_fx, fx_set, set_sky, set_sun, SKY_GOLDE
 OUT = os.path.abspath(sys.argv[1])
 RES = int(sys.argv[2]) if len(sys.argv) > 2 else 540
 SAMPLES = int(sys.argv[3]) if len(sys.argv) > 3 else 24
-SHOTS = (sys.argv[4] if len(sys.argv) > 4 else "fingers,reveal").split(",")
+SHOTS = (sys.argv[4] if len(sys.argv) > 4 else "fingers,crawl,react,reveal").split(",")
 A = os.environ["TWB_ASSETS"]
 PORTAL_AT = Vector((0.0, 5.0, 0.0))
 SUN = (float(os.environ.get("SUN_AZ", 71)), float(os.environ.get("SUN_EL", 9)))
@@ -46,6 +46,15 @@ P = build_portal(sc, A, at=PORTAL_AT)
 X = build_null_char(sc, A, height=10.0)
 null_lights(sc, X)
 HAND = build_hand(X.col)
+HAND_L = build_hand(X.col, side="sl", seed=9, name="null_hand")
+HANDS = (HAND, HAND_L)
+for h_ in HANDS:
+    h_.rotation_mode = "QUATERNION"
+CHARS = None
+if "react" in SHOTS:
+    from stage import build_steve, build_noob_char
+    CHARS = (build_steve(sc), build_noob_char(sc))
+    KEY = char_light(sc, "char_key", (0, 0, 3), 500, (1.0, 0.86, 0.74), cone=40, size=0.9)
 for o in X.col.objects:                                    # the lab's Null has no orbit yet: it forms as he unfolds
     if "_orbit" in o.name or "_trail_" in o.name:
         o.hide_render = True
@@ -90,22 +99,110 @@ def camera(loc, look, lens, fstop=2.8, focus=None):
     cam.data.dof.aperture_fstop = fstop
 
 
-def shot_fingers():
-    """Frame 1: his hand already through the membrane, the skin stretched round the knuckles, the claws hanging out."""
-    k = float(os.environ.get("HAND", 0.46))
-    HAND.scale = (k, k, k)
-    HAND.rotation_euler = (math.radians(-62), math.radians(-5), math.radians(0))
-    HAND.location = PORTAL_AT + Vector((0.0, 0.35, 2.75))                # the wrist, just behind the membrane
-    for o in [HAND] + list(HAND.children):
-        o.hide_render = False
+def hands(spec):
+    """spec: [(hand, scale, wrist in the portal's frame, tilt (deg, about x), roll (deg, about the claws' axis), yaw)]"""
+    from mathutils import Quaternion
+    used = []
+    for h_, k, at, tilt, roll, yaw in spec:
+        h_.scale = (k, k, k)
+        h_.location = PORTAL_AT + Vector(at)
+        h_.rotation_quaternion = (Quaternion((0, 0, 1), math.radians(yaw)) @ Quaternion((1, 0, 0), math.radians(tilt))
+                                  @ Quaternion((0, 0, 1), math.radians(roll)))
+        used.append(h_)
+    for h_ in HANDS:
+        for o in [h_] + list(h_.children):
+            o.hide_render = h_ not in used
+    bpy.context.view_layer.update()
+    drape(P, [c for h_ in used for c in h_.children])
+
+
+def null_away():
     null_at(4.0, tuple(PORTAL_AT + Vector((0, 30, -40))), lights=0.0)    # the rest of him is still on the other side
     show([])
     null_smile(0.0)
     cells_look(near=4.0, far=9.0, awake=0.0)
     X.glow.hide_render = True
+
+
+def chars_away():
+    if CHARS:
+        CHARS[0].holder.location = (0, -60, -40)
+        CHARS[1].root.location = (0, -60, -40)
+        KEY.data.energy = 0
+
+
+def sun_at(sx, sy, energy=7.0, color=(1.0, 0.7, 0.4), power=26.0):
+    """Put the sun at a place on screen (fractions; y from the top), for the camera as set."""
     bpy.context.view_layer.update()
-    drape(P, list(HAND.children))
+    tr, br, bl, tl = [Vector(c) for c in cam.data.view_frame(scene=sc)]
+    d = bl.lerp(br, sx).lerp(tl.lerp(tr, sx), 1 - sy)
+    d = (cam.matrix_world.to_3x3() @ d).normalized()
+    set_sun(W, math.degrees(math.atan2(d.x, d.y)), math.degrees(math.asin(d.z)), energy, color)
+    W.sky_pow.inputs[1].default_value = power
+
+
+def shot_fingers():
+    """Frame 1: his hand already through the membrane, the skin stretched round the knuckles, the claws hanging out."""
+    null_away()
+    chars_away()
+    hands([(HAND, 0.46, (0.0, 0.3, 2.7), -66, float(os.environ.get("ROLL", 78)), 0)])    # the claws fanned top to bottom
     camera(PORTAL_AT + Vector((-3.5, -2.0, 1.9)), PORTAL_AT + Vector((0.0, -0.5, 2.35)), 42, fstop=2.8)
+    sun_at(0.9, 0.3)
+    return {"haze": {"L": 260, "start": 25, "max": 0.7, "haze_warm": True}, "tint": [1.04, 0.98, 1.0]}
+
+
+def shot_crawl():
+    """Ground level: the arms drag out onto the grass, the claws dug in."""
+    null_away()
+    chars_away()
+    hands([(HAND, 0.5, (0.5, -0.5, 0.42), -76, 0, -10), (HAND_L, 0.5, (-0.55, 0.1, 0.8), -62, 0, 12)])
+    camera(PORTAL_AT + Vector((1.1, -3.9, 0.2)), PORTAL_AT + Vector((0.05, -0.9, 0.85)), 28, fstop=2.8, focus=2.6)
+    sun_at(0.12, 0.2)
+    return {"haze": {"L": 260, "start": 25, "max": 0.7, "haze_warm": True}, "tint": [1.04, 0.98, 1.0], "rays": 0.7}
+
+
+def shot_react():
+    """Steve and the Noob, close, frozen; the portal's purple on their faces."""
+    from ep09_new import SF, NF, flat, unflat
+    from faceplate import EYES, EYE_DEFAULTS, MOUTH_DEFAULTS, NOOB_EYES, NOOB_EYE_DEFAULTS, NOOB_MOUTH, set_face
+    from brows import set_brows
+    from pose import pose
+    from noob import pose_noob, NOOB_POSES
+    import json
+    S, N = CHARS
+    null_away()
+    hands([])
+    lib = json.load(open(os.path.join(HERE, "poses_lib.json")))
+    sp = flat(lib["idle (Benly 2.2)"])
+    sp.update(flat({"chest_lean": -5, "head_nod": -5, "head_turn": 6, "arm_sl": {"out": 16, "fwd": 10, "elbow": 30},
+                    "arm_sr": {"out": 16, "fwd": 10, "elbow": 30}}))
+    pose(S.arm, unflat(sp))
+    S.holder.location = PORTAL_AT + Vector((0.62, -7.6, 0))
+    S.holder.rotation_euler = (0, 0, math.radians(176))
+    npz = flat(NOOB_POSES["idle"])
+    npz.update(flat({"root_yaw": 184, "head_nod": -6, "chest_lean": -4, "arm_sl": {"out": 70, "fwd": 20}}))   # the wave, half raised
+    pose_noob(N, unflat(npz))
+    N.root.location = PORTAL_AT + Vector((-0.62, -7.3, 0))
+
+    def face(target, eyes, eye_def, extra, expr):
+        f = {f"{e}_{k}": v for e in eyes for k, v in eye_def.items()}
+        f.update(MOUTH_DEFAULTS)
+        f.update(extra)
+        for kk, vv in expr.items():
+            if kk.startswith("both_"):
+                for e in eyes:
+                    f[f"{e}_{kk[5:]}"] = vv
+            elif not kk.startswith("bb_"):
+                f[kk] = vv
+        set_face(target, f)
+    face(S.face, EYES, EYE_DEFAULTS, {}, SF["stunned"])
+    set_brows(S.brows, {k: v for k, v in SF["stunned"].items() if k.startswith("bb_")})
+    face(N.face, NOOB_EYES, NOOB_EYE_DEFAULTS, NOOB_MOUTH, NF["worried"])
+    camera(PORTAL_AT + Vector((0.25, -3.6, 1.45)), PORTAL_AT + Vector((0.0, -7.45, 1.42)), 40, fstop=2.8)
+    KEY.location = PORTAL_AT + Vector((1.6, -3.2, 2.9))
+    KEY.rotation_euler = (PORTAL_AT + Vector((0, -7.4, 1.5)) - KEY.location).to_track_quat("-Z", "Y").to_euler()
+    KEY.data.energy = 500
+    sun_at(0.5, -0.2, power=8.0)
     return {"haze": {"L": 260, "start": 25, "max": 0.7, "haze_warm": True}, "tint": [1.04, 0.98, 1.0]}
 
 
@@ -115,17 +212,18 @@ def shot_reveal():
     for s in ("sl", "sr"):
         X.arms[s].rotation_euler = (math.radians(-18), 0, 0)
         X.forearms[s].rotation_euler = (0, 0, 0)
-    null_at(H, tuple(PORTAL_AT + Vector((0.3, -3.2, -1.6))), yaw=-40, lights=0.55)
+    chars_away()
+    hands([])
+    null_at(H, tuple(PORTAL_AT + Vector((1.2, -3.4, -3.1))), yaw=-40, lights=0.55)
     show(None)
-    for o in [HAND] + list(HAND.children):
-        o.hide_render = True
     null_smile(1.0)
     cells_look(near=0.9 * H, far=2.4 * H, awake=0.0)      # the cells sleep until the ledge
     X.glow.hide_render = True
     bpy.context.view_layer.update()
     drape(P, [])
     head = Vector(X.neck.matrix_world.translation) + Vector((0, 0, 0.19 * H))
-    camera(head + Vector((-9.6, -5.0, -3.2)), head + Vector((0.8, 0.3, -1.2)), 32, fstop=4.0)
+    camera(head + Vector((-9.0, -4.6, -2.2)), head + Vector((0.2, 0.6, -0.9)), 32, fstop=4.0)
+    sun_at(0.84, 0.33, power=60.0)
     return {"haze": {"L": 220, "start": 20, "max": 0.75, "haze_warm": True}, "tint": [1.08, 0.98, 0.94], "rays": 0.9}
 
 

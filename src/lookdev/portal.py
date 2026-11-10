@@ -70,7 +70,7 @@ def _mat_membrane(assets):
     mix = N("ShaderNodeMix")
     mix.data_type = "RGBA"
     mix.blend_type = "MULTIPLY"
-    mix.inputs[0].default_value = 0.35
+    mix.inputs[0].default_value = 0.2
     L(ramp.outputs["Color"], mix.inputs[6])
     bright = N("ShaderNodeVectorMath")
     bright.operation = "SCALE"
