@@ -1,0 +1,68 @@
+{
+ "id": "ep10_p1_entrance",
+ "number": 10,
+ "title": "The First Portal Was a Trap: Null's entrance",
+ "cut_loose": false,
+ "cast": {
+  "null": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.9,
+   "pace": 0.5,
+   "stability": 0.3,
+   "gemini_voice": "Puck",
+   "acting": "the Noob's own happy greeting, copied by a monster: a huge, bright, delighted shout, like seeing a best friend, far too loud and far too happy"
+  }
+ },
+ "music": [
+  {"cue": "null", "from": 0, "to": "end", "gain": 0.3, "hard_end": true},
+  {"cue": "dread", "from": 0, "to": "press", "gain": 0.22, "minimal": true, "hit_at": "rip", "hard_end": true}
+ ],
+ "ambience": [],
+ "sfx": [
+  {"kind": "portal", "at": "claws", "dur": 6.0, "gain": 0.16},
+  {"kind": "creak", "at": "claws", "dur": 1.5, "gain": 0.35},
+  {"kind": "glitch", "at": "claws+0.3", "dur": 0.25, "gain": 0.18},
+  {"kind": "thump", "at": "grip", "freq": 55, "gain": 0.55},
+  {"kind": "crunch", "at": "grip", "gain": 0.35},
+  {"kind": "thump", "at": "grip_l", "freq": 50, "gain": 0.6},
+  {"kind": "crunch", "at": "grip_l", "gain": 0.35},
+  {"kind": "creak", "at": "grip_l", "dur": 0.7, "gain": 0.45},
+  {"kind": "rumble_rise", "at": "grip_l", "dur": 0.65, "gain": 0.45},
+  {"kind": "break", "at": "rip", "gain": 0.7},
+  {"kind": "break", "at": "rip+0.12", "gain": 0.6},
+  {"kind": "crunch", "at": "rip+0.03", "gain": 0.5},
+  {"kind": "burst", "at": "rip", "gain": 0.5},
+  {"kind": "sub_drop", "at": "rip", "dur": 1.4, "gain": 0.6},
+  {"kind": "whoosh", "at": "rip+0.05", "dur": 0.6, "gain": 0.35},
+  {"kind": "creak", "at": "press", "dur": 0.6, "gain": 0.4},
+  {"kind": "snap", "at": "tear", "gain": 0.5},
+  {"kind": "burst", "at": "tear+0.04", "gain": 0.45},
+  {"kind": "whoosh", "at": "tear+0.02", "dur": 0.5, "gain": 0.4},
+  {"kind": "sub_drop", "at": "null_hi+0.3", "dur": 1.8, "gain": 0.75},
+  {"kind": "glitch", "at": "null_hi+0.32", "dur": 0.4, "gain": 0.3}
+ ],
+ "overlays": [
+  {"type": "watermark", "text": "@GLITCHBOUND2469", "from": 0, "to": "end"}
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [[0, "end.end+1"]],
+ "events": [
+  {"beat": "claws", "dur": 1.2},
+  {"beat": "grip", "dur": 0.8},
+  {"beat": "grip_l", "dur": 0.62},
+  {"beat": "rip", "dur": 0.83},
+  {"beat": "press", "dur": 0.53},
+  {"beat": "tear", "dur": 0.22},
+  {"line": "null", "name": "null_hi", "text": "HI!", "direction_text": "[a huge, delighted, cheerful shout] HI!",
+   "pad": 0.0, "solo_only": true, "solo_text": "HI!"},
+  {"beat": "end", "dur": 1.3}
+ ]
+}
