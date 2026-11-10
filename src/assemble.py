@@ -643,6 +643,7 @@ def stack(img, o, t, f, fonts):
 
 def ffwd(img, o, t, f, fonts):
     """A tape running fast: torn scan lines and the >> mark."""
+    import numpy as np
     rnd = random.Random(f)
     a = np.asarray(img).copy()
     for _ in range(5):
