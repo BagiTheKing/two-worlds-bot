@@ -30,7 +30,7 @@ PORTAL_AT = Vector((0.0, 5.0, 0.0))
 NULL_H = 15.0
 S_X, N_X = -0.62, 0.62                     # Steve screen-left, the Noob screen-right (camera looking +y)
 S_HANG, N_HANG = -2.12, -2.2               # their feet below the ledge's top when they hang by both hands
-DROP = 1.22                                # how far the Noob falls before Steve has his wrist
+DROP = 1.0                                 # how far the Noob falls before Steve has his wrist
 
 DUSK = {"glow": (255, 232, 190), "power": 26.0, "horizon": (255, 206, 176), "mid": (170, 168, 240), "zenith": (60, 96, 214),
         "fill": 1.0, "fill_col": (186, 196, 240)}
@@ -324,7 +324,7 @@ class Choreo:
         if t < self.t_island:
             d = self.drop(t)
             pull = ss(tt["sink"] + 0.25, self.t_island, t) * 0.5
-            return (Vector((S_X, 0.3, S_HANG + pull)), 0), (Vector((N_X - 0.1 * d / DROP, 0.3, N_HANG - d + pull)), 0), "hang"
+            return (Vector((S_X, 0.3, S_HANG + pull)), 0), (Vector((N_X - 0.24 * d / DROP, 0.3, N_HANG - d + pull)), 0), "hang"
         return (Vector((S_X - 0.2, 0.3, 0)), 0), (Vector((N_X + 0.15, 0.1, 0)), 0), "island"
 
     def head(self, who, t):
@@ -855,12 +855,14 @@ def _acting(C):
                            "leg_sl": {"out": 4}, "leg_sr": {"out": 4}}, 0.35),
         (tt["null_survive"] + 0.4, {"head_nod": 6}, 0.4),
     ], base=lambda k: idle_n.get(k, 0.0))
+    DEADPAN = {"both_to": -0.45, "both_tm": -0.5, "both_ti": -0.4, "both_ps": 1.0, "bb_raise": -0.25, "bb_tilt": 0.0,
+               "bb_arch": 0.0, "m_arch": 0.0, "m_w": 1.6}
     C.fS = Keys([
         (0.0, SF["stunned"], 0.1), (tt["null_hi"], SF["scared"], 0.3), (tt["ff"], SF["scared"], 0.1),
         (tt["hang"] + 0.4, SF["worried"], 0.4), (tt["steve_trap"], dict(SF["worried"], both_to=-0.45, m_arch=0.22), 0.4),
         (tt["noob_smile"], SF["worried"], 0.4), (tt["steve_new"], dict(SF["worried"], bb_tilt=0.5, bb_raise=-0.1), 0.2),
         (tt["null_im"], SF["stunned"], 0.3), (tt["cube"], SF["worried"], 0.4), (C.t_slip, SF["scared"], 0.12),
-        (tt["noob_tool"], SF["flat"], 0.5), (tt["steve_roblox"], SF["flat"], 0.2), (C.t_island, SF["smile"], 0.01),
+        (tt["noob_tool"], DEADPAN, 0.4), (tt["steve_roblox"], DEADPAN, 0.2), (C.t_island, SF["smile"], 0.01),
         (tt["cube_look"], SF["smile"], 0.3), (tt["null_survive"], SF["stunned"], 0.25),
     ], base=base(EYE_DEFAULTS, MOUTH_DEFAULTS))
     C.fN = Keys([
