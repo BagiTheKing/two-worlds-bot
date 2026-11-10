@@ -10,9 +10,9 @@ from mathutils import Vector
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from null import build_null  # noqa: E402
+from null import build_null, cells_look  # noqa: E402
 
-OUT = sys.argv[1]
+OUT = os.path.abspath(sys.argv[1])
 RES = int(sys.argv[2]) if len(sys.argv) > 2 else 540
 SAMPLES = int(sys.argv[3]) if len(sys.argv) > 3 else 24
 CAM = sys.argv[4] if len(sys.argv) > 4 else "thumb"
@@ -28,6 +28,8 @@ sc = bpy.context.scene
 col = bpy.data.collections.new("null")
 sc.collection.children.link(col)
 N = build_null(col, A, height=10.0)
+cells_look(near=float(os.environ.get("NEAR", 6.0)), far=float(os.environ.get("FAR", 16.0)),
+           power=float(os.environ.get("POWER", 1.0)), awake=float(os.environ.get("AWAKE", 1.0)))            # (the lab's Null is 10 tall; the episodes' is 15)
 
 # the storm sky: dark navy above, violet, pink low; a bright cold glow behind him
 w = bpy.data.worlds.new("storm")
@@ -134,6 +136,8 @@ cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
 sc.collection.objects.link(cam)
 sc.camera = cam
 C = {"thumb": ((0.3, -17.5, 2.8), (0.2, 0, 5.9), 30), "front": ((0.0, -24.0, 6.5), (0.0, 0, 6.0), 40), "hand": ((4.6, -11.0, 1.4), (4.6, 0, 1.4), 60), "low": ((1.5, -11, 0.6), (0, 0, 6.0), 22),
+     "cells": ((0.9, -4.6, 6.9), (0.5, 0, 6.5), 34), "cells_x": ((1.0, -2.6, 6.6), (0.9, 0, 6.45), 50),
+     "claw": ((4.3, -4.4, 1.6), (4.5, -1.0, 1.3), 38), "mid": ((0.6, -9.5, 5.2), (0.3, 0, 6.6), 30),
      "side": ((-10, -12, 4), (0, 0, 5), 32)}[CAM]
 cam.location = C[0]
 cam.rotation_euler = (Vector(C[1]) - Vector(C[0])).to_track_quat("-Z", "Y").to_euler()

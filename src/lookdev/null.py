@@ -117,21 +117,173 @@ def _hand(p, s):
 
 
 # ------------------------------------------------------------- materials
+# The cells. Every pixel of Null's body is one of the Noob's old bodies, pressed
+# into a cube: near-black, with a worn rim, and on its outward side what is left
+# of his face (the two tall eyes and the smile), glowing faintly like an ember.
+# The faces fade out with distance, so from afar he is the dark wraith he always
+# was; a few cells ("glints") keep their smile at any distance.
+CELL_PX = 16
+_E, _S = "#", "~"
+_CELL_FACES = {          # 12 x 9 drawings, placed at (2, 4) of the 16 x 16 cell
+    "smile":  ["..##....##..", "..##....##..", "..##....##..", "..##....##..", "............", ".#........#.",
+               ".##......##.", "..########..", "...######..."],
+    "left":   [".##....##...", ".##....##...", ".##....##...", ".##....##...", "............", ".#........#.",
+               ".##......##.", "..########..", "...######..."],
+    "right":  ["...##....##.", "...##....##.", "...##....##.", "...##....##.", "............", ".#........#.",
+               ".##......##.", "..########..", "...######..."],
+    "asleep": ["............", "............", ".####..####.", "............", "............", ".#........#.",
+               ".##......##.", "..########..", "...######..."],
+    "wide":   ["..##....##..", "..##....##..", "..##....##..", "............", ".##########.", ".#~~~~~~~~#.",
+               ".##~~~~~~##.", "..########..", "...######..."],
+    "one":    ["..##........", "..##....~...", "..##........", "..##........", "............", ".#........#.",
+               ".##......##.", "..########..", "...######..."],
+    "worn":   ["..#~....##..", "..~#....#~..", "..##....~#..", "..~.....##..", "............", ".#........~.",
+               ".~#......##.", "..##~##~#~..", "...#~.##~..."],
+}
+CELL_VARIANTS = ["blank"] + list(_CELL_FACES)
+_CELL_ODDS = [("smile", 0.5), ("left", 0.1), ("right", 0.1), ("asleep", 0.1), ("wide", 0.07), ("one", 0.06), ("worn", 0.07)]
+CELL_FACE_COLOURS = [((236, 190, 60), 0.5), ((244, 222, 150), 0.26), ((214, 140, 40), 0.2),    # his yellow: fresh, bleached, amber
+                     ((236, 40, 236), 0.04)]                 # and a few gone wrong (the missing texture's magenta)
+CELL_TINTS = [(26, 20, 8), (8, 13, 26), (13, 20, 8)]        # the same three, almost gone to black
+
+
+def _cell_atlas():
+    """One strip of 16 x 16 cells: R = how light the surface is (the worn rim,
+    scratches), G = the face. Not colour data."""
+    im = bpy.data.images.get("null_cells")
+    if im:
+        return im
+    n = len(CELL_VARIANTS)
+    rng = np.random.default_rng(4)
+    px = np.zeros((CELL_PX, CELL_PX * n, 4), np.float32)
+    px[..., 3] = 1
+    for k, name in enumerate(CELL_VARIANTS):
+        t = np.full((CELL_PX, CELL_PX), 0.30, np.float32) + rng.uniform(-0.07, 0.07, (CELL_PX, CELL_PX)).astype(np.float32)
+        t[0, :] = t[-1, :] = t[:, 0] = t[:, -1] = 0.07          # the seam between two cells
+        t[1, 1:-1] = 0.78                                      # a lit top edge,
+        t[1:-1, 1] = 0.55                                      # a softer left one,
+        t[-2, 1:-1] = t[1:-1, -2] = 0.16                       # shade below and right
+        t[2, 2] = t[2, -3] = 0.62                              # rivet-like corner pixels
+        g = np.zeros((CELL_PX, CELL_PX), np.float32)
+        for r, row in enumerate(_CELL_FACES.get(name, [])):
+            for c, ch in enumerate(row):
+                if ch != ".":
+                    g[4 + r, 2 + c] = rng.uniform(0.72, 1.0) if ch == _E else 0.25
+                    t[4 + r, 2 + c] = 0.12                     # the face is cut into the surface
+        px[:, k * CELL_PX:(k + 1) * CELL_PX, 0] = t[::-1]      # (image rows run bottom-up)
+        px[:, k * CELL_PX:(k + 1) * CELL_PX, 1] = g[::-1]
+    im = bpy.data.images.new("null_cells", CELL_PX * n, CELL_PX, alpha=False, float_buffer=True)
+    im.colorspace_settings.name = "Non-Color"
+    im.pixels.foreach_set(px.ravel())
+    im.pack()
+    return im
+
+
 def _mat_body():
     m = bpy.data.materials.new("null_body")
     m.use_nodes = True
     nt = m.node_tree
+    N, L = nt.nodes.new, nt.links.new
     b = nt.nodes["Principled BSDF"]
-    a = nt.nodes.new("ShaderNodeAttribute")
+    a = N("ShaderNodeAttribute")
     a.attribute_name = "vox_col"
-    nt.links.new(a.outputs["Color"], b.inputs["Base Color"])
-    e = nt.nodes.new("ShaderNodeAttribute")
+    e = N("ShaderNodeAttribute")
     e.attribute_name = "vox_glow"
-    nt.links.new(e.outputs["Color"], b.inputs["Emission Color"])
-    b.inputs["Emission Strength"].default_value = 4.0
+    cell = N("ShaderNodeAttribute")
+    cell.attribute_name = "vox_cell"                       # the face's colour; alpha = a glint
+    tex = N("ShaderNodeTexImage")
+    tex.image = _cell_atlas()
+    tex.interpolation = "Closest"
+    tex.extension = "EXTEND"
+    sep = N("ShaderNodeSeparateColor")
+    L(tex.outputs["Color"], sep.inputs["Color"])
+
+    def math_(op, x=None, y=None, z=None, clamp=False):
+        n = N("ShaderNodeMath")
+        n.operation = op
+        n.use_clamp = clamp
+        for i, v in enumerate((x, y, z)):
+            if v is None:
+                continue
+            if isinstance(v, (int, float)):
+                n.inputs[i].default_value = v
+            else:
+                L(v, n.inputs[i])
+        return n
+
+    def vmix(fac, c1, c2, kind="MIX"):
+        n = N("ShaderNodeMix")
+        n.data_type = "RGBA"
+        n.blend_type = kind
+        for sock, v in ((n.inputs[0], fac), (n.inputs[6], c1), (n.inputs[7], c2)):
+            if isinstance(v, (int, float)):
+                sock.default_value = v
+            elif isinstance(v, tuple):
+                sock.default_value = v
+            else:
+                L(v, sock)
+        return n.outputs[2]
+    # how near the camera is: 1 close, 0 far (the faces and the surface detail fade with it)
+    cd = N("ShaderNodeCameraData")
+    near = N("ShaderNodeMapRange")
+    near.interpolation_type = "SMOOTHSTEP"
+    near.inputs["From Min"].default_value = 9.0
+    near.inputs["From Max"].default_value = 24.0
+    near.inputs["To Min"].default_value = 1.0
+    near.inputs["To Max"].default_value = 0.0
+    L(cd.outputs["View Distance"], near.inputs["Value"])
+    m["near_node"] = near.name
+    # the surface: the cell's own dark colour, lighter on its worn rim (up close)
+    gain = math_("MULTIPLY_ADD", sep.outputs["Red"], 9.0, -1.7)           # 0.30 -> 1, the rim well above
+    gain = math_("MULTIPLY_ADD", math_("SUBTRACT", gain.outputs[0], 1.0).outputs[0], near.outputs["Result"], 1.0)
+    base = N("ShaderNodeVectorMath")
+    base.operation = "SCALE"
+    L(a.outputs["Color"], base.inputs[0])
+    L(gain.outputs[0], base.inputs["Scale"])
+    L(base.outputs[0], b.inputs["Base Color"])
+    # the face: an ember in the cell's colour
+    # (the attribute's alpha: over 0.95 a glint, else the cell's place in the order they wake up)
+    glint = math_("GREATER_THAN", cell.outputs["Alpha"], 0.95)
+    wake = math_("SUBTRACT", 1.0, math_("DIVIDE", cell.outputs["Alpha"], 0.9).outputs[0])
+    m["wake"] = wake.name                                  # inputs[0]: 0 none awake .. 1 all (and beyond)
+    on = math_("MULTIPLY", wake.outputs[0], 25.0, clamp=True)
+    vis = math_("MAXIMUM", math_("MULTIPLY", near.outputs["Result"], on.outputs[0]).outputs[0], glint.outputs[0])
+    amt = math_("MULTIPLY", sep.outputs["Green"], vis.outputs[0])
+    power = math_("MULTIPLY", amt.outputs[0], 1.0)
+    m["face_power"] = power.name                           # inputs[1]: how bright the faces are
+    face = N("ShaderNodeVectorMath")
+    face.operation = "SCALE"
+    L(cell.outputs["Color"], face.inputs[0])
+    L(power.outputs[0], face.inputs["Scale"])
+    glow = N("ShaderNodeVectorMath")
+    glow.operation = "SCALE"
+    L(e.outputs["Color"], glow.inputs[0])
+    glow.inputs["Scale"].default_value = 4.0
+    add = N("ShaderNodeVectorMath")
+    add.operation = "ADD"
+    L(glow.outputs[0], add.inputs[0])
+    L(face.outputs[0], add.inputs[1])
+    L(add.outputs[0], b.inputs["Emission Color"])
+    b.inputs["Emission Strength"].default_value = 1.0
     b.inputs["Roughness"].default_value = 0.85
     b.inputs["Specular IOR Level"].default_value = 0.25
     return m
+
+
+def null_smile(amount):
+    """The copied smile on his face: 0 none (as in the thumbnail) .. 1 on."""
+    m = bpy.data.materials["null_head"]
+    m.node_tree.nodes[m["smile"]].inputs[1].default_value = amount
+
+
+def cells_look(near=9.0, far=24.0, power=1.0, awake=1.0):
+    """Where the faces fade out (metres from the camera), how bright they are, and
+    how many are awake (0 none .. 1 all): they light up one by one, in an order of their own."""
+    m = bpy.data.materials["null_body"]
+    n = m.node_tree.nodes[m["near_node"]]
+    n.inputs["From Min"].default_value, n.inputs["From Max"].default_value = near, far
+    m.node_tree.nodes[m["face_power"]].inputs[1].default_value = power
+    m.node_tree.nodes[m["wake"]].inputs[0].default_value = awake * 1.05
 
 
 def _mat_head():
@@ -155,9 +307,50 @@ def _mat_head():
     nt.links.new(sc_.outputs[0], ck.inputs["Vector"])
     ck.inputs["Color1"].default_value = (*_lin((236, 20, 236)), 1)
     ck.inputs["Color2"].default_value = (*_lin((14, 6, 16)), 1)
-    nt.links.new(ck.outputs["Color"], b.inputs["Base Color"])
-    nt.links.new(ck.outputs["Color"], b.inputs["Emission Color"])
-    b.inputs["Emission Strength"].default_value = 2.4
+    # the copied smile: the Noob's face (the same drawing as on every cell), white, on the front of the head
+    px = np.zeros((38, 31, 4), np.float32)
+    px[..., 3] = 1
+    for r, row in enumerate(_CELL_FACES["smile"]):
+        for c, ch in enumerate(row):
+            if ch != ".":
+                px[9 + 2 * r:11 + 2 * r, 3 + 2 * c:5 + 2 * c, 0] = 1.0
+    im = bpy.data.images.new("null_smile", 31, 38, alpha=False, float_buffer=True)
+    im.colorspace_settings.name = "Non-Color"
+    im.pixels.foreach_set(px[::-1].ravel())
+    im.pack()
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Location"].default_value = (0.5, 0.0, 0.0)
+    mp.inputs["Scale"].default_value = (1 / 3.1, 1 / 3.85, 1.0)
+    nt.links.new(com.outputs["Vector"], mp.inputs["Vector"])
+    st = nt.nodes.new("ShaderNodeTexImage")
+    st.image, st.interpolation, st.extension = im, "Closest", "CLIP"
+    nt.links.new(mp.outputs["Vector"], st.inputs["Vector"])
+    front = nt.nodes.new("ShaderNodeMath")                 # only on the face's side (-y)
+    front.operation = "LESS_THAN"
+    front.inputs[1].default_value = -0.35
+    nt.links.new(sep.outputs["Y"], front.inputs[0])
+    on = nt.nodes.new("ShaderNodeMath")
+    on.operation = "MULTIPLY"
+    nt.links.new(st.outputs["Color"], on.inputs[0])
+    nt.links.new(front.outputs[0], on.inputs[1])
+    amt = nt.nodes.new("ShaderNodeMath")
+    amt.operation = "MULTIPLY"
+    amt.inputs[1].default_value = 0.0
+    nt.links.new(on.outputs[0], amt.inputs[0])
+    m["smile"] = amt.name                                  # inputs[1]: 0 no smile .. 1 the copied smile
+    mixc = nt.nodes.new("ShaderNodeMix")
+    mixc.data_type = "RGBA"
+    nt.links.new(amt.outputs[0], mixc.inputs[0])
+    nt.links.new(ck.outputs["Color"], mixc.inputs[6])
+    mixc.inputs[7].default_value = (1.0, 0.94, 1.0, 1)
+    es = nt.nodes.new("ShaderNodeMath")
+    es.operation = "MULTIPLY_ADD"
+    nt.links.new(amt.outputs[0], es.inputs[0])
+    es.inputs[1].default_value = 3.6
+    es.inputs[2].default_value = 2.4
+    nt.links.new(mixc.outputs[2], b.inputs["Base Color"])
+    nt.links.new(mixc.outputs[2], b.inputs["Emission Color"])
+    nt.links.new(es.outputs[0], b.inputs["Emission Strength"])
     b.inputs["Roughness"].default_value = 0.85
     b.inputs["Specular IOR Level"].default_value = 0.15
     return m
@@ -188,20 +381,30 @@ _FACES = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), 
 
 
 def _cubes(name, items, mat, col):
-    """items: [(centre, half_size, colour, glow, rotation_z)]; one mesh, colours per face."""
-    verts, faces, cols, glows = [], [], [], []
-    for c, h, rgb, glow, rz in items:
+    """items: [(centre, half_size, colour, glow, rotation_z[, cell])]; one mesh, colours
+    per face. cell = (side 2..5, variant, face colour, glint): the face on that side."""
+    verts, faces, cols, glows, cells, uvs = [], [], [], [], [], []
+    nv = len(CELL_VARIANTS)
+    for it in items:
+        c, h, rgb, glow, rz = it[:5]
+        cell = it[5] if len(it) > 5 else None
         cz, sz = math.cos(rz), math.sin(rz)
         i = len(verts)
         for dx, dy, dz in _CUBE:
             x, y = dx * h, dy * h
             verts.append((c[0] + x * cz - y * sz, c[1] + x * sz + y * cz, c[2] + dz * h))
-        for f in _FACES:
+        for fi, f in enumerate(_FACES):
             faces.append([i + k for k in f])
             cols.append(rgb)
             glows.append(glow)
+            on = cell is not None and fi == cell[0]
+            cells.append((*cell[2], cell[3]) if on else (0.0, 0.0, 0.0, 0.0))
+            u0 = (cell[1] if on else 0) / nv
+            uvs.extend((u0, 0.0, u0 + 1.0 / nv, 0.0, u0 + 1.0 / nv, 1.0, u0, 1.0))
     me = bpy.data.meshes.new(name)
     me.from_pydata(verts, [], faces)
+    me.uv_layers.new(name="cell").data.foreach_set("uv", uvs)
+    me.color_attributes.new("vox_cell", "FLOAT_COLOR", "FACE").data.foreach_set("color", [v for c_ in cells for v in c_])
     ca = me.color_attributes.new("vox_col", "FLOAT_COLOR", "FACE")
     ga = me.color_attributes.new("vox_glow", "FLOAT_COLOR", "FACE")
     for k, (c_, g_) in enumerate(zip(cols, glows)):
@@ -213,7 +416,7 @@ def _cubes(name, items, mat, col):
     return ob
 
 
-def _voxelize(sdf, lo, hi, rnd, seed, dissolve, rel=(0, 0, 0)):
+def _voxelize(sdf, lo, hi, rnd, seed, dissolve, rel=(0, 0, 0), loose=True):
     """Sample a shape on the grid: the solid shell, the voxels coming loose at its
     edge (pushed outward, shrinking), as (centre, half, colour, glow, rot) items,
     relative to `rel` (the part's pivot)."""
@@ -222,6 +425,8 @@ def _voxelize(sdf, lo, hi, rnd, seed, dissolve, rel=(0, 0, 0)):
     zs = np.arange(lo[2], hi[2], V)
     P = np.stack(np.meshgrid(xs, ys, zs, indexing="ij"), -1).reshape(-1, 3).astype(np.float32)
     d = sdf(P)
+    gx, gy, _gz = np.gradient(d.reshape(len(xs), len(ys), len(zs)), V)     # outward: where a cell's face looks
+    gx, gy = gx.ravel(), gy.ravel()
     n = _noise3(P, 1.3, seed)
     n2 = _noise3(P, 4.0, seed + 1)
     items = []
@@ -230,16 +435,21 @@ def _voxelize(sdf, lo, hi, rnd, seed, dissolve, rel=(0, 0, 0)):
     loose_zone = (d >= 0) & (d < 0.9)                       # where loose pixels can hang
     rel = np.array(rel, np.float32)
     dark = [_lin(c) for c in ((8, 6, 11), (13, 9, 17), (5, 4, 7), (20, 13, 27), (10, 8, 14))]
+    tints = [_lin(c) for c in CELL_TINTS]
+    names, odds = [CELL_VARIANTS.index(k) for k, _ in _CELL_ODDS], [w for _, w in _CELL_ODDS]
+    fcols, fodds = [_lin(c) for c, _ in CELL_FACE_COLOURS], [w for _, w in CELL_FACE_COLOURS]
     for k in np.nonzero(inner | outer | loose_zone)[0]:
         p = P[k]
         z = p[2]
         dz = dissolve(z)
         solid = (inner[k] and n[k] > dz * 1.15 - 0.08 + 0.2 * (n2[k] - 0.5)) or \
                 (outer[k] and n2[k] > 0.3 + 0.8 * dz)
+        if not loose:
+            solid = bool(inner[k] or outer[k])              # a clean part: nothing coming off it
         if solid:
             c = p - rel
             half = V * 0.5 * rnd.uniform(0.92, 1.04)
-        elif rnd.random() < (0.02 if loose_zone[k] else 0.12) + 0.45 * dz:   # a piece coming off: outward, smaller
+        elif loose and rnd.random() < (0.02 if loose_zone[k] else 0.12) + 0.45 * dz:   # a piece coming off: outward, smaller
             out_dir = p - np.array((0, 0.2, min(max(z, 1.0), 8.0)), np.float32)
             out_dir = out_dir / (np.linalg.norm(out_dir) + 1e-6)
             dist = rnd.uniform(0.05, 0.6) * (1 + 2.2 * dz)
@@ -248,13 +458,22 @@ def _voxelize(sdf, lo, hi, rnd, seed, dissolve, rel=(0, 0, 0)):
         else:
             continue
         r_ = rnd.random()
+        cell = None
         if r_ < 0.008:
             glow = _lin(rnd.choice(((255, 40, 255), (40, 255, 255), (80, 255, 120))))
             rgb = glow
         else:
-            rgb = rnd.choice(dark)
+            kc = rnd.choices(range(len(fcols)), fodds)[0]
+            rgb = rnd.choice(tints) if rnd.random() < 0.3 else rnd.choice(dark)
             glow = (0, 0, 0)
-        items.append((tuple(c), half, rgb, glow, rnd.uniform(-0.15, 0.15)))
+            # the face looks outward, and a little more often at whoever he is facing (-y)
+            sides = {2: -gy[k] * 1.5 + 0.25, 3: gx[k], 4: gy[k], 5: -gx[k]}
+            side = max(sides, key=sides.get)
+            if rnd.random() < 0.9:
+                lum = 0.1 + 1.5 * rnd.random() ** 2.6          # most are faint embers, a few burn
+                cell = (side, rnd.choices(names, odds)[0], tuple(v * lum for v in fcols[kc]),
+                        1.0 if rnd.random() < 0.012 else rnd.uniform(0.0, 0.9))
+        items.append((tuple(c), half, rgb, glow, rnd.uniform(-0.15, 0.15), cell))
     return items
 
 
@@ -367,6 +586,21 @@ def build_null(col, assets, height=10.0, seed=6, name="null", orbit=True):
         N.orbit2.rotation_euler = (math.radians(-12), math.radians(14), 0)
         _orbit(N, col, assets, rnd, name, N.orbit2, (6.8, 8.2), 14, "b")
     return N
+
+
+def build_hand(col, side="sr", seed=6, name="null_hand"):
+    """One forearm and claw hand on its own, whole (nothing coming loose), for close
+    work such as reaching through the portal. Returns an empty at the wrist: the
+    claws hang along its -z, the forearm runs up and back from it; scale it freely."""
+    rnd = random.Random(seed)
+    mat = bpy.data.materials.get("null_body") or _mat_body()
+    piv = _empty(f"{name}_{side}", (0, 0, 0), None, col)
+    items = _voxelize(lambda p: _smin(_fore(p, side), _hand(p, side), 0.35), (-6.6, -2.8, -1.6), (6.6, 1.2, 6.0),
+                      rnd, seed + 3, lambda z: 0.0, rel=WRIST[side], loose=False)
+    ob = _cubes(f"{name}_{side}_vox", items, mat, col)
+    ob.parent = piv
+    piv["mesh"] = ob.name
+    return piv
 
 
 def _orbit(N, col, assets, rnd, name, holder, radii, count, tag):
