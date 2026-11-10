@@ -83,7 +83,7 @@ def _void_stage(sc, assets, E):
     # the ledge: the last thin shelf of the far side (nothing under it, so a camera in the
     # void sees their faces below its edge and Null above it)
     cells = {(x, y, -1): "cobble" for x in range(-3, 3) for y in (-2, -1) if not (y == -2 and rnd.random() < 0.3)}
-    E.ledge = voxel_mesh(sc, "ledge", cells, K, scale=(1, 0.8, 0.25))
+    E.ledge = voxel_mesh(sc, "ledge", cells, K, scale=(1, 0.42, 0.25))
     E.planks = []
     for j in range(1, 34):
         bpy.ops.mesh.primitive_cube_add(size=1)
@@ -174,8 +174,8 @@ def build(tl, voice_path, tex_dir, assets, res, samples):
            "keep_clear": [(0, -14, 8), (0, -26, 8), (0, 16, 5), (0, 24, 5), (15, 5, 7), (27, 7, 9), (41, 9, 11), (56, 11, 12)],
            "feature_trees": [(-6, 15, "big_oak"), (6, 15, "oak"), (-9, 21, "oak"), (9, 20, "big_oak"), (-4, 24, "birch"),
                              (4, 25, "oak"), (-12, 16, "cherry"), (12, 15, "cherry"), (-7, 29, "oak"), (8, 30, "cherry")],
-           "clear_plants": [(S_X, -2.6, 0.9), (N_X, -2.3, 0.9)],
-           "particle_box": (-6, 6, -6, 9, 0.3, 6.0)}
+           "clear_plants": [(S_X, -2.6, 0.9), (N_X, -2.3, 0.9), (2.3, 2.1, 2.2), (0.1, 1.5, 1.2)],
+           "particle_box": (-6, 6, 2.5, 12, 0.3, 6.0)}
     E.W = W = build_world(sc, assets, cfg)
     add_world_fx(W)
     E.null_ground = W.layout.height(-2, 34)
@@ -274,12 +274,12 @@ class Choreo:
             (t["reveal"], t["unfold"], self.cam_reveal), (t["unfold"], t["ff"], self.cam_unfold),
             (self.t_chase, self.t_bridge, self.cam_chase), (self.t_bridge, self.t_grab, self.cam_bridge),
             (self.t_grab, t["hang"], self.cam_grab),
-            (t["hang"], t["steve_trap"], self.cam_hang_wide), (t["steve_trap"], t["patch_bodies"], self.cam_face("steve", (0.5, -2.0, 0.1), 46)),
-            (t["patch_bodies"], t["noob_smile"], self.cam_cells), (t["noob_smile"], t["steve_new"], self.cam_face("noob", (-0.45, -1.9, 0.05), 46)),
-            (t["steve_new"], t["noob_guys"], self.cam_two), (t["noob_guys"], t["null_im"], self.cam_face("noob", (-0.9, -1.9, -0.35), 42)),
-            (t["null_im"], t["bird"], self.cam_null_head), (t["bird"], t["cube"], self.cam_fingers_stop),
-            (t["cube"], t["noob_tool"], self.cam_catch), (t["noob_tool"], t["steve_roblox"], self.cam_face("noob", (-0.35, -2.0, 0.5), 44)),
-            (t["steve_roblox"], t["sink"], self.cam_face("steve", (0.55, -1.9, -0.25), 46)),
+            (t["hang"], t["steve_trap"], self.cam_hang_wide), (t["steve_trap"], t["patch_bodies"], self.cam_face("steve", (0.5, -2.0, -0.1), 46)),
+            (t["patch_bodies"], t["noob_smile"], self.cam_cells), (t["noob_smile"], t["steve_new"], self.cam_face("noob", (-0.45, -1.9, -0.1), 46)),
+            (t["steve_new"], t["noob_guys"], self.cam_two), (t["noob_guys"], t["null_im"], self.cam_face("noob", (1.15, -1.9, -0.15), 42)),
+            (t["null_im"], t["bird"], self.cam_null_head), (t["bird"], t["cube"], self.cam_two),
+            (t["cube"], t["noob_tool"], self.cam_catch), (t["noob_tool"], t["steve_roblox"], self.cam_face("noob", (-0.5, -2.1, 0.45), 42)),
+            (t["steve_roblox"], t["sink"], self.cam_face("steve", (0.45, -1.9, -0.5), 44)),
             (t["sink"], self.t_island, self.cam_sink), (self.t_island, t["cube_look"], self.cam_island),
             (t["cube_look"], t["silence"], self.cam_cube), (t["silence"], self.end + 1, self.cam_last),
         ]
@@ -402,8 +402,9 @@ class Choreo:
             return None
         (_, _), (nl, _), mode = self.chars(t)
         hand = nl + Vector((0.5, -0.42, 1.18))                          # held against his chest
-        if mode == "island":
-            hand = nl + Vector((0.0, -0.5, 1.2))
+        if mode == "island":                                        # held up in his fist, then in both hands
+            k_ = ss(tt["cube_look"] - 0.1, tt["cube_look"] + 0.3, t)
+            hand = (nl + Vector((0.62, -0.1, 2.2))).lerp(nl + Vector((0.0, -0.5, 1.2)), k_)
         if t < self.t_took:
             u = ss(tt["cube"], self.t_took, t)
             src = Vector(self.E.null_ledge) + Vector((1.5, -9.0, 10.0))
@@ -424,12 +425,12 @@ class Choreo:
 
     def cam_arms(self, t, u):
         """Low, against the sky: both arms out of the portal (the reference's hand shot)."""
-        loc = PORTAL_AT + Vector((2.3, -2.9, 0.3)) + Vector((-0.2 * u, 0.15 * u, 0))
+        loc = PORTAL_AT + Vector((2.3, -2.9, 0.6)) + Vector((-0.2 * u, 0.15 * u, 0))
         return loc, PORTAL_AT + Vector((-0.1, -0.5, 2.5)), 28, 2.8, 0.004, None
 
     def cam_react(self, t, u):
-        loc = Vector((0.25, 1.35 - 0.2 * u, 1.45))
-        return loc, Vector((0.0, -2.45, 1.42)), 40, 2.8, 0.0, None
+        loc = Vector((0.1, 1.6 - 0.2 * u, 1.5))
+        return loc, Vector((0.0, -2.45, 1.45)), 38, 2.8, 0.0, None
 
     def cam_reveal(self, t, u):
         n = self.null(self.t["null_hi"] + 0.5)
@@ -455,14 +456,14 @@ class Choreo:
         return Vector((1.5, -2.3, 0.75)), Vector((0.0, 0.2, -0.15)), 34, 2.8, 0.02 * ss(0.6, 0.8, u), None
 
     def cam_hang_wide(self, t, u):
-        loc = Vector((0.5, -5.8, -1.15)) + Vector((0.0, 0.5 * u, 0.0))
-        return loc, Vector((0.1, 0.4, -0.5)).lerp(Vector((0.1, 0.4, 0.9)), ss(0, 1, u)), 23, 4.0, 0.004, Vector((0, 0.3, -1))
+        loc = Vector((0.4, -5.2, -0.95)) + Vector((0.0, 0.4 * u, 0.0))
+        return loc, Vector((0.15, 0.4, -0.55)).lerp(Vector((0.3, 0.4, 0.5)), ss(0, 1, u)), lerp(28, 24, u), 4.0, 0.004, Vector((0, 0.3, -1))
 
     def cam_face(self, who, off, lens):
         def f(t, u):
             h = self.head(who, t)
             loc = h + Vector(off) + Vector((0.0, 0.1 * u, 0))
-            return loc, h + Vector((0, 0, -0.12)), lens, 1.4, 0.0, None
+            return loc, h + Vector((0, 0, -0.3)), lens, 1.4, 0.0, None
         return f
 
     def cam_cells(self, t, u):
@@ -488,7 +489,7 @@ class Choreo:
 
     def cam_fingers_stop(self, t, u):
         """The claw, stopped a pixel from Steve's fingers. A bird sings."""
-        return Vector((-2.2, -1.5, 0.55)) + Vector((0.1 * u, 0, 0)), Vector((S_X + 0.1, 0.35, 0.12)), 50, 2.8, 0.0, None
+        return Vector((S_X - 2.4, -1.2, 0.3)) + Vector((0.15 * u, 0, 0)), Vector((S_X + 0.3, 0.3, 0.12)), 40, 2.8, 0.0, None
 
     def cam_catch(self, t, u):
         d = self.drop(t)
@@ -784,8 +785,8 @@ def apply(E, t):
     key.location = loc + right * 1.6 + Vector((0, 0, 1.4))
     mid = (Vector(S.holder.location) + Vector(N.root.location)) / 2 + Vector((0, 0, 1.5))
     key.rotation_euler = (mid - key.location).to_track_quat("-Z", "Y").to_euler()
-    key.data.energy = 650 if (mid - loc).length < 9 else 0
-    key.data.color = (1.0, 0.88, 0.76) if tag in ("dusk", "clear") else (0.9, 0.86, 1.0)
+    key.data.energy = (650 if tag in ("dusk", "clear") else 1000) if (mid - loc).length < 9 else 0
+    key.data.color = (1.0, 0.88, 0.76) if tag in ("dusk", "clear") else (1.0, 0.92, 0.84)
     return {"tag": tag, "place": place}
 
 
@@ -811,43 +812,43 @@ def _acting(C):
         (0.0, {"chest_lean": -5, "head_nod": -5, "head_turn": 6, "arm_sl": {"out": 16, "fwd": 10, "elbow": 30}, "arm_sr": {"out": 16, "fwd": 10, "elbow": 30}}, 0.1),
         (tt["null_hi"], {"chest_lean": -9, "head_nod": -16, "head_turn": 4, "arm_sl": {"out": 24, "fwd": 20, "elbow": 45}, "arm_sr": {"out": 24, "fwd": 20, "elbow": 45}}, 0.3),
         (tt["hang"], {"head_nod": -4, "head_turn": 0}, 0.05),
-        (tt["hang"] + 0.5, {"head_turn": 34, "head_nod": 14}, 0.4),                     # down, over his shoulder: the void
-        (tt["patch_412"] + 0.8, {"head_turn": -24, "head_nod": -4}, 0.4),               # at Patch
+        (tt["hang"] + 0.5, {"head_turn": 24, "head_nod": 12}, 0.4),                     # down, over his shoulder: the void
+        (tt["patch_412"] + 0.8, {"head_turn": 24, "head_nod": -4}, 0.4),               # at Patch
         (tt["steve_trap"], {"head_turn": 0, "head_nod": 12}, 0.4),
-        (tt["noob_smile"], {"head_turn": -26, "head_nod": 0}, 0.4),
-        (tt["steve_new"], {"head_turn": -30, "head_nod": -6}, 0.2),
-        (tt["noob_guys"], {"head_turn": -22, "head_nod": -4}, 0.4),
-        (tt["null_im"], {"head_turn": 30, "head_nod": -20}, 0.3),
-        (tt["cube"], {"head_turn": -20, "head_nod": -10}, 0.4),
-        (C.t_slip, {"head_turn": -34, "head_nod": 20, "chest_twist": -14, "chest_side": -10,
+        (tt["noob_smile"], {"head_turn": 26, "head_nod": 0}, 0.4),
+        (tt["steve_new"], {"head_turn": 30, "head_nod": -6}, 0.2),
+        (tt["noob_guys"], {"head_turn": 22, "head_nod": -4}, 0.4),
+        (tt["null_im"], {"head_turn": 34, "head_nod": -20}, 0.3),
+        (tt["cube"], {"head_turn": 20, "head_nod": -10}, 0.4),
+        (C.t_slip, {"head_turn": 34, "head_nod": 20, "chest_twist": 14, "chest_side": -10,
                     "arm_sr": {"fwd": 4, "out": 34, "elbow": 6}}, 0.16),               # no tool: his bare hand
-        (tt["steve_roblox"], {"head_turn": -30, "head_nod": 24, "chest_twist": -14, "chest_side": -10,
+        (tt["steve_roblox"], {"head_turn": 26, "head_nod": 10, "chest_twist": 14, "chest_side": -10,
                               "arm_sr": {"fwd": 4, "out": 34, "elbow": 6}}, 0.3),
-        (C.t_island, {"head_turn": -14, "head_nod": 0, "chest_twist": 0, "chest_side": 0, "chest_lean": 6,
+        (C.t_island, {"head_turn": 14, "head_nod": 0, "chest_twist": 0, "chest_side": 0, "chest_lean": 6,
                       "arm_sl": {"fwd": 10, "out": 10, "elbow": 20}, "arm_sr": {"fwd": 10, "out": 10, "elbow": 20}}, 0.01),
-        (tt["cube_look"], {"head_turn": -30, "head_nod": 10, "chest_lean": 2, "arm_sl": {"fwd": 0, "out": 8, "elbow": 10},
+        (tt["cube_look"], {"head_turn": 30, "head_nod": 10, "chest_lean": 2, "arm_sl": {"fwd": 0, "out": 8, "elbow": 10},
                            "arm_sr": {"fwd": 0, "out": 8, "elbow": 10}}, 0.4),
         (tt["null_survive"], {"head_turn": 0, "head_nod": 16}, 0.5),
     ], base=lambda k: idle_s.get(k, 0.0))
     C.kN = Keys([
-        (0.0, {"head_nod": -6, "chest_lean": -4, "arm_sr": {"out": 70, "fwd": 20}}, 0.1),          # the wave, half raised
-        (tt["crawl"] + 0.5, {"head_nod": -6, "chest_lean": -6, "arm_sr": {"out": 30, "fwd": 10}}, 0.6),
+        (0.0, {"head_nod": -6, "chest_lean": -4, "arm_sl": {"out": 42, "fwd": 10}}, 0.1),          # the wave, half raised
+        (tt["crawl"] + 0.5, {"head_nod": -6, "chest_lean": -6, "arm_sl": {"out": 20, "fwd": 6}}, 0.6),
         (tt["null_hi"], {"head_nod": -18, "chest_lean": -8, "arm_sl": {"fwd": 40, "out": 8}, "arm_sr": {"fwd": 40, "out": 8}}, 0.3),
         (tt["hang"], {"head_nod": -4}, 0.05),
-        (tt["hang"] + 0.6, {"head_turn": -30, "head_nod": 16}, 0.4),
-        (tt["patch_412"] + 0.8, {"head_turn": -30, "head_nod": -4}, 0.4),
-        (tt["patch_bodies"], {"head_turn": -34, "head_nod": -22}, 0.4),                   # up, over his shoulder, at him
-        (tt["noob_smile"], {"head_turn": -20, "head_nod": -14}, 0.3),
+        (tt["hang"] + 0.6, {"head_turn": 30, "head_nod": 16}, 0.4),
+        (tt["patch_412"] + 0.8, {"head_turn": 30, "head_nod": -4}, 0.4),
+        (tt["patch_bodies"], {"head_turn": 40, "head_nod": -22}, 0.4),                   # up, over his shoulder, at him
+        (tt["noob_smile"], {"head_turn": 30, "head_nod": -14}, 0.3),
         (tt["noob_smile"] + 1.0, {"head_turn": 0, "head_nod": 12}, 0.5),
-        (tt["steve_new"], {"head_turn": 24, "head_nod": 0}, 0.3),
-        (tt["noob_guys"], {"head_turn": -38, "head_nod": -26, "head_tilt": 6}, 0.4),               # to the cells
-        (tt["null_im"], {"head_turn": -38, "head_nod": -26}, 0.2),
-        (tt["cube"], {"head_turn": -24, "head_nod": -20}, 0.3),
-        (tt["cube"] + 0.45, {"head_turn": -30, "head_nod": -18, "arm_sr": {"fwd": 60, "out": 70}}, 0.3),   # he lets go to catch it
-        (C.t_took + 0.3, {"head_turn": -10, "head_nod": 8, "arm_sr": {"fwd": 55, "out": -14}}, 0.25),
-        (C.t_slip + 0.05, {"head_turn": 20, "head_nod": -24, "arm_sr": {"fwd": 55, "out": -14}, "arm_sl": {"fwd": 168, "out": 22},
+        (tt["steve_new"], {"head_turn": -24, "head_nod": 0}, 0.3),
+        (tt["noob_guys"], {"head_turn": 30, "head_nod": -24, "head_tilt": -4}, 0.4),               # to the cells
+        (tt["null_im"], {"head_turn": 30, "head_nod": -24}, 0.2),
+        (tt["cube"], {"head_turn": 30, "head_nod": -20}, 0.3),
+        (tt["cube"] + 0.45, {"head_turn": 30, "head_nod": -18, "arm_sr": {"fwd": 60, "out": 70}}, 0.3),   # he lets go to catch it
+        (C.t_took + 0.3, {"head_turn": 14, "head_nod": 8, "arm_sr": {"fwd": 55, "out": -14}}, 0.25),
+        (C.t_slip + 0.05, {"head_turn": -20, "head_nod": -24, "arm_sr": {"fwd": 55, "out": -14}, "arm_sl": {"fwd": 168, "out": 22},
                            "leg_sl": {"fwd": 14, "out": 8}, "leg_sr": {"fwd": -10, "out": 10}}, 0.12),
-        (tt["steve_roblox"], {"head_turn": 24, "head_nod": -26, "arm_sr": {"fwd": 55, "out": -14}, "arm_sl": {"fwd": 168, "out": 22}}, 0.3),
+        (tt["steve_roblox"], {"head_turn": -24, "head_nod": -26, "arm_sr": {"fwd": 55, "out": -14}, "arm_sl": {"fwd": 168, "out": 22}}, 0.3),
         (C.t_island, {"head_turn": 0, "head_nod": -10, "chest_lean": -6, "arm_sl": {"fwd": 0, "out": 160}, "arm_sr": {"fwd": 0, "out": 160},
                       "leg_sl": {"out": 8}, "leg_sr": {"out": 8}}, 0.01),                          # fists up
         (tt["cube_look"], {"head_turn": 0, "head_nod": 20, "chest_lean": 4, "arm_sl": {"fwd": 62, "out": -18}, "arm_sr": {"fwd": 62, "out": -18},
@@ -868,7 +869,7 @@ def _acting(C):
         (tt["noob_smile"], NF["teary"], 0.4), (tt["steve_new"], NF["worried"], 0.3), (tt["noob_guys"], NF["teary"], 0.4),
         (tt["null_im"], NF["awe"], 0.3), (tt["cube"] + 0.4, NF["happy"], 0.3), (C.t_slip, NF["shock"], 0.1),
         (tt["noob_tool"], NF["confused"], 0.4), (tt["steve_roblox"], NF["awe"], 0.4), (C.t_island, NF["shout"], 0.01),
-        (tt["cube_look"], NF["happy"], 0.3), (tt["cube_look"] + 0.7, NF["confused"], 0.12), (tt["null_survive"], NF["worried"], 0.3),
+        (tt["cube_look"], {"both_bm": 0.3, "m_arch": -0.9, "m_w": 2.2}, 0.3), (tt["cube_look"] + 0.7, NF["confused"], 0.12), (tt["null_survive"], NF["worried"], 0.3),
     ], base=base(NOOB_EYE_DEFAULTS, {**MOUTH_DEFAULTS, **NOOB_MOUTH}))
     C.fP = Keys([
         (0.0, {"wide": 0.6, "look_y": 0.2}, 0.1), (tt["null_hi"], {"wide": 1.0, "look_y": 0.5}, 0.2),

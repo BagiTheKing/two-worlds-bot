@@ -616,9 +616,51 @@ def comment(img, o, t, f, fonts):
     img.paste(card, (W // 2 - card.width // 2, o.get("y", 520) - card.height // 2), card)
 
 
-DRAW = {"holo": holo, "comment": comment, "grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+def stack(img, o, t, f, fonts):
+    """The loop: the picture steps back and shows the copies of itself behind
+    it, one more every beat, like a deck of cards (we have been here before)."""
+    u = t - o["start"]
+    k_in = min(1.0, u / 0.25, max(0.0, (o["end"] - t) / 0.2))
+    if k_in <= 0:
+        return
+    n = min(o.get("cards", 9), 1 + int(u / o.get("every", 0.16)))
+    s0 = 1 - 0.2 * k_in
+    base = img.copy()
+    img.paste((150, 96, 200), (0, 0, W, H))
+    rnd = random.Random(f // 2)
+    for i in range(n, -1, -1):                       # the oldest first, the live one on top
+        s = s0 * (0.93 ** i)
+        w, h = int(W * s), int(H * s)
+        card = base.resize((w, h), Image.BILINEAR)
+        if i:
+            tint = Image.new("RGB", (w, h), (255, 40, 220))
+            card = Image.blend(card, tint, min(0.6, 0.1 + 0.07 * i))
+        x = (W - w) // 2 + int((-34 * i + (rnd.choice((0, 0, 6, -6)) if i else 0)) * k_in)
+        y = int(H * 0.58 - h * 0.5 - 46 * i * k_in)
+        ImageDraw.Draw(img).rectangle((x - 5, y - 5, x + w + 4, y + h + 4), fill=(255, 255, 255) if i == 0 else (255, 120, 235))
+        img.paste(card, (x, y))
+
+
+def ffwd(img, o, t, f, fonts):
+    """A tape running fast: torn scan lines and the >> mark."""
+    rnd = random.Random(f)
+    a = np.asarray(img).copy()
+    for _ in range(5):
+        y = rnd.randrange(0, H - 12)
+        h = rnd.randrange(3, 12)
+        a[y:y + h] = np.roll(a[y:y + h], rnd.randrange(-70, 70), axis=1)
+        a[y:y + 2] = np.minimum(255, a[y:y + 2].astype(np.int16) + 70).astype(np.uint8)
+    img.paste(Image.fromarray(a))
+    d = ImageDraw.Draw(img)
+    x, y = W - 250, 150
+    for i in range(2):
+        d.polygon([(x + i * 62, y), (x + i * 62 + 54, y + 34), (x + i * 62, y + 68)], fill=(255, 255, 255))
+    d.text((x - 96, y + 6), "x4", font=fonts["mono"], fill=(255, 255, 255))
+
+
+DRAW = {"stack": stack, "ffwd": ffwd, "holo": holo, "comment": comment, "grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
-FULL = ("grade", "memory", "card", "fade_in", "endcard")
+FULL = ("grade", "memory", "card", "fade_in", "endcard", "stack", "ffwd")
 
 
 def read_holo_clip(path, bw, bh, crop=False):

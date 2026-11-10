@@ -165,7 +165,7 @@ def build_portal(sc, assets, at=(0, 0, 0), w=4, h=5, name="portal"):
     # its light: purple, spilling out of the opening onto whatever stands in front
     L_ = bpy.data.lights.new(name + "_light", "AREA")
     L_.shape, L_.size, L_.size_y = "RECTANGLE", x1 - x0, z1 - z0
-    L_.color, L_.energy = (0.62, 0.25, 1.0), 900
+    L_.color, L_.energy = (0.62, 0.25, 1.0), 600
     P.light = bpy.data.objects.new(name + "_light", L_)
     col.objects.link(P.light)
     P.light.parent = P.root
