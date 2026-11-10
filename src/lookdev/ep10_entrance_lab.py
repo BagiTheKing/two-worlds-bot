@@ -26,12 +26,12 @@ SAMPLES = int(sys.argv[3]) if len(sys.argv) > 3 else 24
 SHOTS = (sys.argv[4] if len(sys.argv) > 4 else "fingers,reveal").split(",")
 A = os.environ["TWB_ASSETS"]
 PORTAL_AT = Vector((0.0, 5.0, 0.0))
-SUN = (float(os.environ.get("SUN_AZ", -34)), float(os.environ.get("SUN_EL", 25)))
+SUN = (float(os.environ.get("SUN_AZ", 71)), float(os.environ.get("SUN_EL", 9)))
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 sc = bpy.context.scene
 cfg = {"seed": 7, "sun": SUN, "flat_box": [-7, 7, -40, 8], "plant_clear_box": [-2.2, 2.2, 2.5, 6.0],
-       "keep_clear": [(0, -14, 8), (0, -26, 8), (0, 16, 5), (0, 24, 5)],
+       "keep_clear": [(0, -14, 8), (0, -26, 8), (0, 16, 5), (0, 24, 5), (15, 5, 7), (27, 7, 9), (41, 9, 11), (56, 11, 12)],
        "feature_trees": [(-6, 15, "big_oak"), (6, 15, "oak"), (-9, 21, "oak"), (9, 20, "big_oak"), (-4, 24, "birch"),
                          (4, 25, "oak"), (-12, 16, "cherry"), (12, 15, "cherry"), (-7, 29, "oak"), (8, 30, "cherry")],
        "particle_box": (-6, 6, -2, 9, 0.3, 6.0)}
@@ -41,7 +41,7 @@ fx_set(W, R=1e5, Wd=100.0, Cx=0.0, Cy=0.0, D=0.0, Nx=0.0, Ny=60.0, Dz=-1.0)
 DUSK = {"glow": (255, 232, 190), "power": 26.0, "horizon": (255, 206, 176), "mid": (170, 168, 240), "zenith": (60, 96, 214),
         "fill": 1.0, "fill_col": (186, 196, 240)}            # a low sun: warm at the horizon, still a bright sky
 set_sky(W, DUSK)
-set_sun(W, SUN[0], SUN[1], 6.4, (1.0, 0.74, 0.46))
+set_sun(W, SUN[0], SUN[1], 7.0, (1.0, 0.7, 0.4))
 P = build_portal(sc, A, at=PORTAL_AT)
 X = build_null_char(sc, A, height=10.0)
 null_lights(sc, X)
@@ -94,8 +94,8 @@ def shot_fingers():
     """Frame 1: his hand already through the membrane, the skin stretched round the knuckles, the claws hanging out."""
     k = float(os.environ.get("HAND", 0.46))
     HAND.scale = (k, k, k)
-    HAND.rotation_euler = (math.radians(-24), math.radians(-5), math.radians(6))
-    HAND.location = PORTAL_AT + Vector((0.12, 0.12, 3.35))                # the wrist, just behind the membrane
+    HAND.rotation_euler = (math.radians(-62), math.radians(-5), math.radians(0))
+    HAND.location = PORTAL_AT + Vector((0.0, 0.35, 2.75))                # the wrist, just behind the membrane
     for o in [HAND] + list(HAND.children):
         o.hide_render = False
     null_at(4.0, tuple(PORTAL_AT + Vector((0, 30, -40))), lights=0.0)    # the rest of him is still on the other side
@@ -105,7 +105,7 @@ def shot_fingers():
     X.glow.hide_render = True
     bpy.context.view_layer.update()
     drape(P, list(HAND.children))
-    camera(PORTAL_AT + Vector((1.1, -4.1, 1.7)), PORTAL_AT + Vector((0.0, -0.2, 2.45)), 38, fstop=2.8)
+    camera(PORTAL_AT + Vector((-3.5, -2.0, 1.9)), PORTAL_AT + Vector((0.0, -0.5, 2.35)), 42, fstop=2.8)
     return {"haze": {"L": 260, "start": 25, "max": 0.7, "haze_warm": True}, "tint": [1.04, 0.98, 1.0]}
 
 
@@ -115,7 +115,7 @@ def shot_reveal():
     for s in ("sl", "sr"):
         X.arms[s].rotation_euler = (math.radians(-18), 0, 0)
         X.forearms[s].rotation_euler = (0, 0, 0)
-    null_at(H, tuple(PORTAL_AT + Vector((0.3, -3.2, -1.6))), yaw=4, lights=0.55)
+    null_at(H, tuple(PORTAL_AT + Vector((0.3, -3.2, -1.6))), yaw=-40, lights=0.55)
     show(None)
     for o in [HAND] + list(HAND.children):
         o.hide_render = True
@@ -125,7 +125,7 @@ def shot_reveal():
     bpy.context.view_layer.update()
     drape(P, [])
     head = Vector(X.neck.matrix_world.translation) + Vector((0, 0, 0.19 * H))
-    camera(head + Vector((2.6, -8.2, -3.3)), head + Vector((0.0, 0.0, -0.9)), 30, fstop=4.0)
+    camera(head + Vector((-9.6, -5.0, -3.2)), head + Vector((0.8, 0.3, -1.2)), 32, fstop=4.0)
     return {"haze": {"L": 220, "start": 20, "max": 0.75, "haze_warm": True}, "tint": [1.08, 0.98, 0.94], "rays": 0.9}
 
 

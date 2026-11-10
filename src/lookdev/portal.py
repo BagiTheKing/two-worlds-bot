@@ -64,17 +64,17 @@ def _mat_membrane(assets):
     nz.inputs["Detail"].default_value = 3.0
     L(flow.outputs[0], nz.inputs["Vector"])
     ramp = N("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].position, ramp.color_ramp.elements[0].color = 0.3, (*_lin((58, 10, 128)), 1)
-    ramp.color_ramp.elements[1].position, ramp.color_ramp.elements[1].color = 0.75, (*_lin((196, 92, 255)), 1)
+    ramp.color_ramp.elements[0].position, ramp.color_ramp.elements[0].color = 0.3, (*_lin((120, 60, 200)), 1)
+    ramp.color_ramp.elements[1].position, ramp.color_ramp.elements[1].color = 0.75, (*_lin((226, 160, 255)), 1)
     L(nz.outputs["Fac"], ramp.inputs["Fac"])
     mix = N("ShaderNodeMix")
     mix.data_type = "RGBA"
     mix.blend_type = "MULTIPLY"
-    mix.inputs[0].default_value = 0.75
+    mix.inputs[0].default_value = 0.35
     L(ramp.outputs["Color"], mix.inputs[6])
     bright = N("ShaderNodeVectorMath")
     bright.operation = "SCALE"
-    bright.inputs["Scale"].default_value = 1.25
+    bright.inputs["Scale"].default_value = 1.5
     L(t1.outputs["Color"], bright.inputs[0])
     L(bright.outputs[0], mix.inputs[7])
     # stretched skin goes thin: paler, brighter
@@ -92,7 +92,7 @@ def _mat_membrane(assets):
     thin.data_type = "RGBA"
     half = N("ShaderNodeMath")
     half.operation = "MULTIPLY"
-    half.inputs[1].default_value = 0.55
+    half.inputs[1].default_value = 0.4
     L(st.outputs["Fac"], half.inputs[0])
     L(half.outputs[0], thin.inputs[0])
     L(dark.outputs[2], thin.inputs[6])
@@ -102,8 +102,8 @@ def _mat_membrane(assets):
     es = N("ShaderNodeMath")
     es.operation = "MULTIPLY_ADD"
     L(st.outputs["Fac"], es.inputs[0])
-    es.inputs[1].default_value = 0.3
-    es.inputs[2].default_value = 0.27
+    es.inputs[1].default_value = 0.35
+    es.inputs[2].default_value = 0.42
     m["power"] = es.name                                    # inputs[2]: the membrane's own light
     L(es.outputs[0], b.inputs["Emission Strength"])
     b.inputs["Roughness"].default_value = 0.22              # wet: the bulges catch the light
@@ -165,12 +165,12 @@ def build_portal(sc, assets, at=(0, 0, 0), w=4, h=5, name="portal"):
     # its light: purple, spilling out of the opening onto whatever stands in front
     L_ = bpy.data.lights.new(name + "_light", "AREA")
     L_.shape, L_.size, L_.size_y = "RECTANGLE", x1 - x0, z1 - z0
-    L_.color, L_.energy = (0.62, 0.25, 1.0), 650
+    L_.color, L_.energy = (0.62, 0.25, 1.0), 900
     P.light = bpy.data.objects.new(name + "_light", L_)
     col.objects.link(P.light)
     P.light.parent = P.root
     P.light.location = (0, -0.25, h / 2)
-    P.light.rotation_euler = (math.radians(90), 0, 0)
+    P.light.rotation_euler = (math.radians(-90), 0, 0)         # shining out of the opening (-y)
     return P
 
 
