@@ -235,7 +235,7 @@
   },
   {
    "kind": "bird",
-   "at": "bird",
+   "at": "glitch+0.75",
    "gain": 0.5
   },
   {
@@ -355,7 +355,7 @@
   },
   {
    "type": "endnote",
-   "from": "null_survive.end",
+   "from": "null_survive+1.4",
    "to": "end",
    "next_label": "SEASON 2",
    "next_title": "TWO WORLDS · ONE GLITCH",
@@ -378,70 +378,76 @@
    "name": "noob_hi",
    "text": "...Hi?",
    "direction_text": "...Hi?",
-   "pad": 0.25,
+   "pad": 0.2,
    "solo_only": true,
    "solo_text": "...Hi?"
   },
   {
    "beat": "crawl",
-   "dur": 1.6
+   "dur": 1.3
   },
   {
    "beat": "react",
-   "dur": 1.0
+   "dur": 0.8
   },
   {
    "beat": "reveal",
-   "dur": 1.3
+   "dur": 1.1
   },
   {
    "line": "null",
    "name": "null_hi",
    "text": "...Hi?",
    "direction_text": "...Hi?",
-   "pad": 0.35,
+   "pad": 0.2,
    "solo_only": true,
-   "solo_text": "...Hi?"
+   "solo_text": "...Hi?",
+   "trim": 1.15,
+   "trim_fade": 0.25
   },
   {
    "beat": "unfold",
-   "dur": 1.5
+   "dur": 1.2
   },
   {
    "beat": "ff",
-   "dur": 3.0
+   "dur": 2.6
   },
   {
    "beat": "hang",
-   "dur": 0.4
+   "dur": 0.3
   },
   {
    "line": "patch",
    "name": "patch_412",
-   "text": "Four hundred and twelve times. Your first portal catches us... and we start over.",
-   "direction_text": "[calm, quiet, stating a fact he wishes weren't true] Four hundred and twelve times. Your first portal catches us... and we start over.",
-   "pad": 0.15
+   "text": "Four hundred and twelve times. Your portal catches us... and we start over.",
+   "direction_text": "[calm, quiet, brisk, stating a fact he wishes weren't true] Four hundred and twelve times. Your portal catches us... and we start over.",
+   "pad": 0.12,
+   "tighten": 0.14,
+   "speed": 1.08
   },
   {
    "line": "steve",
    "name": "steve_trap",
    "text": "I built a trap.",
    "direction_text": "[very quiet, it lands on him] I built a trap.",
-   "pad": 0.35
+   "pad": 0.22
   },
   {
    "line": "patch",
    "name": "patch_bodies",
    "text": "Every time you respawned... your old body fell in there.",
    "direction_text": "[gentle, careful] Every time you respawned... your old body fell in there.",
-   "pad": 0.2
+   "pad": 0.15,
+   "tighten": 0.14,
+   "speed": 1.06
   },
   {
    "line": "noob",
    "name": "noob_smile",
    "text": "...That's why he has my smile.",
    "direction_text": "[small, no joke left in him] ...That's why he has my smile.",
-   "pad": 0.25,
+   "pad": 0.2,
    "scene_start": true
   },
   {
@@ -449,14 +455,17 @@
    "name": "steve_new",
    "text": "He knows every move you've ever made. Do something new!",
    "direction_text": "[fast, urgent, low] He knows every move you've ever made. Do something new!",
-   "pad": 0.25
+   "pad": 0.2,
+   "tighten": 0.12,
+   "speed": 1.1
   },
   {
    "line": "noob",
    "name": "noob_guys",
    "text": "Hey, guys. I never came back for you.",
    "direction_text": "[looking up, quiet, honest] Hey, guys. I never came back for you.",
-   "pad": 0.45
+   "pad": 0.3,
+   "tighten": 0.15
   },
   {
    "line": "noob",
@@ -478,15 +487,11 @@
   },
   {
    "beat": "glitch",
-   "dur": 0.9
-  },
-  {
-   "beat": "bird",
-   "dur": 0.8
+   "dur": 1.2
   },
   {
    "beat": "cube",
-   "dur": 1.5
+   "dur": 1.3
   },
   {
    "line": "steve",
@@ -495,11 +500,13 @@
    "direction_text": "NOOB!",
    "pad": 0.0,
    "solo_only": true,
-   "solo_text": "NOOB!"
+   "solo_text": "NOOB!",
+   "trim": 0.75,
+   "trim_fade": 0.12
   },
   {
    "beat": "catch",
-   "dur": 0.5
+   "dur": 0.45
   },
   {
    "line": "noob",
@@ -507,48 +514,52 @@
    "text": "...No tool?",
    "direction_text": "[dangling, a little dazed, amazed] ...No tool?",
    "pad": 0.3,
-   "scene_start": true
+   "scene_start": true,
+   "solo_text": "No tool?"
   },
   {
    "line": "steve",
    "name": "steve_roblox",
    "text": "I'm a Roblox player.",
    "direction_text": "[completely deadpan] I'm a Roblox player.",
-   "pad": 1.0
+   "pad": 0.85
   },
   {
    "beat": "sink",
-   "dur": 1.5
+   "dur": 1.3
   },
   {
    "line": "noob",
    "name": "noob_real",
    "text": "IT'S REAL THIS TIME!",
    "direction_text": "IT'S REAL THIS TIME!",
-   "pad": 0.45,
+   "pad": 0.3,
    "solo_only": true,
-   "solo_text": "IT'S REAL THIS TIME!"
+   "solo_text": "IT'S REAL THIS TIME!",
+   "speed": 1.08
   },
   {
    "beat": "cube_look",
-   "dur": 0.9
+   "dur": 0.8
   },
   {
    "beat": "silence",
-   "dur": 0.35
+   "dur": 0.3
   },
   {
    "line": "null",
    "name": "null_survive",
    "text": "You weren't supposed to survive.",
    "direction_text": "You weren't supposed to survive.",
-   "pad": 0.3,
+   "pad": 0.1,
    "solo_only": true,
-   "solo_text": "You weren't supposed to survive."
+   "solo_text": "You weren't supposed to survive.",
+   "trim": 3.3,
+   "trim_fade": 0.4
   },
   {
    "beat": "end",
-   "dur": 1.3
+   "dur": 0.8
   }
  ],
  "skip_render": [
