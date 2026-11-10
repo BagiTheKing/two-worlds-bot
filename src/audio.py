@@ -1288,7 +1288,18 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
        "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
        "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
-       "punch": lambda e: sfx_punch_wood()}
+       "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird()}
+
+
+def sfx_bird():
+    """One small bird: three quick rising chirps (the silence breaking)."""
+    out = np.zeros(int(0.75 * SR))
+    for k, (t0, f0, f1) in enumerate(((0.0, 3200, 4300), (0.17, 3500, 4700), (0.36, 3000, 5200))):
+        n = int(0.11 * SR)
+        f = np.linspace(f0, f1, n)
+        ch = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.hanning(n)
+        out[int(t0 * SR):int(t0 * SR) + n] += ch * (0.7 + 0.15 * k)
+    return norm(out)
 
 
 def void_wind(length):

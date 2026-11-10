@@ -48,6 +48,8 @@ def resolve_overlays(ep_overlays, beats, length):
         for key in ("grow", "full", "hl_start", "src_from", "src_to"):     # extra moments an overlay keys on
             if key in o:
                 o[key] = round(R(o[key]), 3)
+        if "step_at" in o:                            # a readout that counts at given moments
+            o["_steps"] = sorted(round(R(x), 3) for x in o.pop("step_at"))
         if o.get("type") == "chat":                   # each message at its own moment
             o["lines"] = [dict(m, at=round(R(m["at"]), 3)) for m in o["lines"]]
         if "clips" in o:                              # a holo screen switching clips

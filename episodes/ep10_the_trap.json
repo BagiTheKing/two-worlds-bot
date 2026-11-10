@@ -1,0 +1,560 @@
+{
+ "id": "ep10_the_trap",
+ "number": 10,
+ "title": "The First Portal Was a Trap",
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "cut_loose": false,
+ "music": [
+  {
+   "cue": "dread",
+   "from": 0,
+   "to": "crawl",
+   "gain": 0.2,
+   "hard_end": true
+  },
+  {
+   "cue": "null",
+   "from": "null_hi",
+   "to": "ff",
+   "gain": 0.3,
+   "hard_end": true
+  },
+  {
+   "cue": "chase",
+   "from": "ff",
+   "to": "hang",
+   "gain": 0.2,
+   "hard_end": true
+  },
+  {
+   "cue": "null",
+   "from": "hang",
+   "to": "null_im.end",
+   "gain": 0.2,
+   "hard_end": true
+  },
+  {
+   "cue": "theme_full",
+   "from": "sink+0.3",
+   "to": "silence",
+   "gain": 0.24,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "meadow",
+   "from": 0,
+   "to": "crawl",
+   "gain": 0.05
+  },
+  {
+   "kind": "void",
+   "from": "hang",
+   "to": "null_im.end",
+   "gain": 0.08
+  },
+  {
+   "kind": "meadow",
+   "from": "sink+0.8",
+   "to": "silence",
+   "gain": 0.05,
+   "fade_in": 0.4
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "portal",
+   "at": "open",
+   "dur": 1.2,
+   "gain": 0.4
+  },
+  {
+   "kind": "glitch",
+   "at": "crawl",
+   "dur": 0.5,
+   "gain": 0.3
+  },
+  {
+   "kind": "creak",
+   "at": "crawl+0.3",
+   "dur": 1.2,
+   "gain": 0.3
+  },
+  {
+   "kind": "sub_drop",
+   "at": "null_hi",
+   "dur": 1.6,
+   "gain": 0.6
+  },
+  {
+   "kind": "burst",
+   "at": "null_hi",
+   "gain": 0.4
+  },
+  {
+   "kind": "break",
+   "at": "unfold+0.3",
+   "gain": 0.55
+  },
+  {
+   "kind": "break",
+   "at": "unfold+0.7",
+   "gain": 0.55
+  },
+  {
+   "kind": "roar",
+   "at": "unfold+0.5",
+   "dur": 1.4,
+   "gain": 0.4
+  },
+  {
+   "kind": "whir",
+   "at": "ff",
+   "dur": 3.0,
+   "gain": 0.3
+  },
+  {
+   "kind": "run",
+   "at": "ff+0.2",
+   "dur": 1.6,
+   "gain": 0.22,
+   "step": 0.09
+  },
+  {
+   "kind": "pop",
+   "at": "ff+1.7",
+   "gain": 0.4
+  },
+  {
+   "kind": "pop",
+   "at": "ff+1.9",
+   "gain": 0.4
+  },
+  {
+   "kind": "pop",
+   "at": "ff+2.1",
+   "gain": 0.45
+  },
+  {
+   "kind": "whoosh",
+   "at": "ff+2.3",
+   "dur": 0.5,
+   "gain": 0.3
+  },
+  {
+   "kind": "thump",
+   "at": "hang",
+   "gain": 0.6
+  },
+  {
+   "kind": "click",
+   "at": "hang",
+   "gain": 0.4
+  },
+  {
+   "kind": "glitch",
+   "at": "patch_412+0.3",
+   "dur": 0.4,
+   "gain": 0.25
+  },
+  {
+   "kind": "glitch",
+   "at": "patch_412+1.0",
+   "dur": 0.3,
+   "gain": 0.25
+  },
+  {
+   "kind": "glitch",
+   "at": "patch_412+1.5",
+   "dur": 0.25,
+   "gain": 0.25
+  },
+  {
+   "kind": "charge",
+   "at": "patch_bodies",
+   "dur": 1.8,
+   "gain": 0.22
+  },
+  {
+   "kind": "glitch",
+   "at": "glitch",
+   "dur": 0.9,
+   "gain": 0.5
+  },
+  {
+   "kind": "snap",
+   "at": "glitch",
+   "gain": 0.4
+  },
+  {
+   "kind": "bird",
+   "at": "bird",
+   "gain": 0.5
+  },
+  {
+   "kind": "pop",
+   "at": "cube+0.2",
+   "gain": 0.3
+  },
+  {
+   "kind": "chime",
+   "at": "cube+0.9",
+   "pitch": 1.5,
+   "gain": 0.3
+  },
+  {
+   "kind": "whoosh",
+   "at": "steve_noob-0.15",
+   "dur": 0.4,
+   "gain": 0.35
+  },
+  {
+   "kind": "thump",
+   "at": "catch",
+   "freq": 110,
+   "gain": 0.6
+  },
+  {
+   "kind": "rumble_rise",
+   "at": "sink",
+   "dur": 1.4,
+   "gain": 0.25
+  },
+  {
+   "kind": "suck",
+   "at": "sink+0.2",
+   "dur": 1.1,
+   "gain": 0.3
+  },
+  {
+   "kind": "jingle",
+   "at": "noob_real-0.35",
+   "gain": 0.4
+  },
+  {
+   "kind": "glitch",
+   "at": "cube_look+0.6",
+   "dur": 0.2,
+   "gain": 0.35
+  },
+  {
+   "kind": "sub_drop",
+   "at": "null_survive",
+   "dur": 2.2,
+   "gain": 0.5
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: {pct}%",
+   "from": "ff",
+   "to": "hang",
+   "step_at": [
+    "ff+0.7",
+    "ff+1.5",
+    "ff+2.3"
+   ],
+   "count_from": 12,
+   "count_to": 3
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 3%",
+   "from": "hang",
+   "to": "patch_412+0.3",
+   "alert": true
+  },
+  {
+   "type": "hud",
+   "text": "LOOP {pct}",
+   "from": "patch_412+0.3",
+   "to": "steve_trap",
+   "step_at": [
+    "patch_412+1.0",
+    "patch_412+1.5"
+   ],
+   "count_from": 410,
+   "count_to": 412,
+   "alert": true
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 3%",
+   "from": "steve_trap",
+   "to": "noob_real+0.5",
+   "alert": true
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: ?",
+   "from": "noob_real+0.5",
+   "to": "end",
+   "alert": true
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "SURVIVE THE APOCALYPSE",
+   "sub": "0.1% of players have this",
+   "from": "noob_real-0.35",
+   "to": "cube_look+0.3"
+  },
+  {
+   "type": "endnote",
+   "from": "null_survive.end",
+   "to": "end",
+   "next_label": "SEASON 2",
+   "next_title": "TWO WORLDS · ONE GLITCH",
+   "question": "WHAT IS THE CUBE?",
+   "question_sub": "Comment your theory"
+  }
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "events": [
+  {
+   "beat": "open",
+   "dur": 0.15
+  },
+  {
+   "line": "noob",
+   "name": "noob_hi",
+   "text": "...Hi?",
+   "direction_text": "...Hi?",
+   "pad": 0.25,
+   "solo_only": true,
+   "solo_text": "...Hi?"
+  },
+  {
+   "beat": "crawl",
+   "dur": 1.6
+  },
+  {
+   "beat": "react",
+   "dur": 1.0
+  },
+  {
+   "beat": "reveal",
+   "dur": 1.3
+  },
+  {
+   "line": "null",
+   "name": "null_hi",
+   "text": "...Hi?",
+   "direction_text": "...Hi?",
+   "pad": 0.35,
+   "solo_only": true,
+   "solo_text": "...Hi?"
+  },
+  {
+   "beat": "unfold",
+   "dur": 1.5
+  },
+  {
+   "beat": "ff",
+   "dur": 3.0
+  },
+  {
+   "beat": "hang",
+   "dur": 0.4
+  },
+  {
+   "line": "patch",
+   "name": "patch_412",
+   "text": "Four hundred and twelve times. Your first portal catches us... and we start over.",
+   "direction_text": "[calm, quiet, stating a fact he wishes weren't true] Four hundred and twelve times. Your first portal catches us... and we start over.",
+   "pad": 0.15
+  },
+  {
+   "line": "steve",
+   "name": "steve_trap",
+   "text": "I built a trap.",
+   "direction_text": "[very quiet, it lands on him] I built a trap.",
+   "pad": 0.35
+  },
+  {
+   "line": "patch",
+   "name": "patch_bodies",
+   "text": "Every time you respawned... your old body fell in there.",
+   "direction_text": "[gentle, careful] Every time you respawned... your old body fell in there.",
+   "pad": 0.2
+  },
+  {
+   "line": "noob",
+   "name": "noob_smile",
+   "text": "...That's why he has my smile.",
+   "direction_text": "[small, no joke left in him] ...That's why he has my smile.",
+   "pad": 0.25,
+   "scene_start": true
+  },
+  {
+   "line": "steve",
+   "name": "steve_new",
+   "text": "He knows every move you've ever made. Do something new!",
+   "direction_text": "[fast, urgent, low] He knows every move you've ever made. Do something new!",
+   "pad": 0.25
+  },
+  {
+   "line": "noob",
+   "name": "noob_guys",
+   "text": "Hey, guys. I never came back for you.",
+   "direction_text": "[looking up, quiet, honest] Hey, guys. I never came back for you.",
+   "pad": 0.45
+  },
+  {
+   "line": "noob",
+   "name": "noob_sorry",
+   "text": "...I'm sorry.",
+   "direction_text": "[a beat, then small and sincere] ...I'm sorry.",
+   "pad": 0.15
+  },
+  {
+   "line": "null",
+   "name": "null_im",
+   "text": "I'm—",
+   "direction_text": "I'm sorry.",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "I'm sorry.",
+   "trim": 0.42,
+   "trim_fade": 0.03
+  },
+  {
+   "beat": "glitch",
+   "dur": 0.9
+  },
+  {
+   "beat": "bird",
+   "dur": 0.8
+  },
+  {
+   "beat": "cube",
+   "dur": 1.5
+  },
+  {
+   "line": "steve",
+   "name": "steve_noob",
+   "text": "NOOB!",
+   "direction_text": "NOOB!",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "NOOB!"
+  },
+  {
+   "beat": "catch",
+   "dur": 0.5
+  },
+  {
+   "line": "noob",
+   "name": "noob_tool",
+   "text": "...No tool?",
+   "direction_text": "[dangling, a little dazed, amazed] ...No tool?",
+   "pad": 0.3,
+   "scene_start": true
+  },
+  {
+   "line": "steve",
+   "name": "steve_roblox",
+   "text": "I'm a Roblox player.",
+   "direction_text": "[completely deadpan] I'm a Roblox player.",
+   "pad": 1.0
+  },
+  {
+   "beat": "sink",
+   "dur": 1.5
+  },
+  {
+   "line": "noob",
+   "name": "noob_real",
+   "text": "IT'S REAL THIS TIME!",
+   "direction_text": "IT'S REAL THIS TIME!",
+   "pad": 0.45,
+   "solo_only": true,
+   "solo_text": "IT'S REAL THIS TIME!"
+  },
+  {
+   "beat": "cube_look",
+   "dur": 0.9
+  },
+  {
+   "beat": "silence",
+   "dur": 0.35
+  },
+  {
+   "line": "null",
+   "name": "null_survive",
+   "text": "You weren't supposed to survive.",
+   "direction_text": "You weren't supposed to survive.",
+   "pad": 0.3,
+   "solo_only": true,
+   "solo_text": "You weren't supposed to survive."
+  },
+  {
+   "beat": "end",
+   "dur": 1.3
+  }
+ ],
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ]
+}
