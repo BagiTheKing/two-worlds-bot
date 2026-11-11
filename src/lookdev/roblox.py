@@ -227,7 +227,7 @@ class Gizmos:
             m_ = s["m"]
             sx, sy, sz = (v / 2 for v in s["size"])
             w = s.get("w", 0.035)
-            mat = "white" if s["mode"] == "snap" and s.get("k", 0) > 0.5 else "sel"
+            mat = s.get("mat") or ("white" if s["mode"] == "snap" and s.get("k", 0) > 0.5 else "sel")
             # the selection box: 12 edges, a little outside the part
             ex, ey, ez = sx + w, sy + w, sz + w
             for yy in (-ey, ey):
