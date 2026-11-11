@@ -132,7 +132,7 @@
    "name": "noob_running",
    "text": "I am running!",
    "voice_file": "assets/clips/ep10/ep0_noob_running_dejavu_tail.wav",
-   "pad": -0.25,
+   "pad": -1.04,
    "caption_y": 1420
   },
   {
@@ -141,7 +141,7 @@
    "text": "I went through this... 412 times...",
    "caption_y": 1420,
    "direction_text": "[a hushed, breathless whisper, realizing something terrible] I went through this... four hundred and twelve times...",
-   "pad": -1.05,
+   "pad": 0.0,
    "solo_only": true,
    "solo_text": "I went through this... four hundred and twelve times...",
    "vo": true
