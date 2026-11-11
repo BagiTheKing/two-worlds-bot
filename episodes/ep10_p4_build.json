@@ -1,0 +1,284 @@
+{
+ "id": "ep10_p4_build",
+ "number": 10,
+ "title": "The First Portal Was a Trap: the Noob builds",
+ "cut_loose": false,
+ "cast": {
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, a small floating robot, calm and literal, slightly too quiet; announces disasters politely"
+  }
+ },
+ "music": [
+  {
+   "cue": "chase",
+   "from": 0,
+   "to": "end",
+   "gain": 0.24,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": "c",
+   "to": "d",
+   "gain": 0.5
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "place",
+   "at": "a+0.25",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "a+0.45",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "a+0.65",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "a+0.85",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "a+1.05",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "a+1.25",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+0.05",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+0.21",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+0.37",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+0.53",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+0.69",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+0.85",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+1.01",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+1.17",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+1.33",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+1.49",
+   "gain": 0.32
+  },
+  {
+   "kind": "place",
+   "at": "b+1.65",
+   "gain": 0.32
+  },
+  {
+   "kind": "click",
+   "at": "a+0.50",
+   "gain": 0.25
+  },
+  {
+   "kind": "click",
+   "at": "a+0.90",
+   "gain": 0.25
+  },
+  {
+   "kind": "click",
+   "at": "a+1.30",
+   "gain": 0.25
+  },
+  {
+   "kind": "whoosh",
+   "at": "a+0.05",
+   "dur": 0.5,
+   "gain": 0.3
+  },
+  {
+   "kind": "whoosh",
+   "at": "c",
+   "dur": 1.2,
+   "gain": 0.35
+  },
+  {
+   "kind": "whoosh",
+   "at": "d",
+   "dur": 0.5,
+   "gain": 0.3
+  },
+  {
+   "kind": "place",
+   "at": "d+0.95",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "d+0.95",
+   "gain": 0.3
+  },
+  {
+   "kind": "place",
+   "at": "d+1.22",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "d+1.22",
+   "gain": 0.3
+  },
+  {
+   "kind": "place",
+   "at": "d+1.49",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "d+1.49",
+   "gain": 0.3
+  },
+  {
+   "kind": "place",
+   "at": "d+1.76",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "d+1.76",
+   "gain": 0.3
+  },
+  {
+   "kind": "place",
+   "at": "d+2.03",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "d+2.03",
+   "gain": 0.3
+  },
+  {
+   "kind": "place",
+   "at": "d+2.30",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "d+2.30",
+   "gain": 0.3
+  },
+  {
+   "kind": "chime",
+   "at": "d+2.32",
+   "pitch": 1.0,
+   "gain": 0.5
+  },
+  {
+   "kind": "glitch",
+   "at": "e+0.15",
+   "dur": 0.15,
+   "gain": 0.15
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [
+  [
+   0,
+   "e.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "a",
+   "dur": 1.4
+  },
+  {
+   "beat": "b",
+   "dur": 1.8
+  },
+  {
+   "beat": "c",
+   "dur": 0.6
+  },
+  {
+   "line": "patch",
+   "name": "patch_bad",
+   "vo": true,
+   "text": "This is bad.",
+   "caption_y": 1420,
+   "direction_text": "[calm, quiet, matter-of-fact] This is bad.",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "This is bad."
+  },
+  {
+   "beat": "c2",
+   "dur": 0.7
+  },
+  {
+   "beat": "d",
+   "dur": 2.2
+  },
+  {
+   "beat": "e",
+   "dur": 1.0
+  }
+ ]
+}
