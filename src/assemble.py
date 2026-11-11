@@ -767,7 +767,7 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         if not ln.get("caption", True):
             continue
         color = tl["cast"][ln["who"]]["caption"]
-        caps += [(a, b, txt, color, ln.get("caption_size", 92)) for a, b, txt in chunks(ln)]
+        caps += [(a, b, txt, color, ln.get("caption_size", 92), ln.get("caption_y", CAPTION_Y)) for a, b, txt in chunks(ln)]
     font = ImageFont.truetype(FONT, 92)
     fonts = {"mono": ImageFont.truetype(MONO, 54), "mono_small": ImageFont.truetype(MONO, 40),
              "big": ImageFont.truetype(FONT, 80), "mid": ImageFont.truetype(FONT, 50),
@@ -821,9 +821,9 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
             if o["type"] in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)
         row = 0
-        for a, b, txt, color, base in caps:
+        for a, b, txt, color, base, cy in caps:
             if a <= t < b:
-                y = CAPTION_Y + 115 * row                  # lines said together stack
+                y = cy + 115 * row                         # lines said together stack
                 row += 1
                 pop = min(1.0, (t - a) / 0.08)
                 shout = base > 120                         # a shout punches in from bigger, and shakes
