@@ -145,7 +145,8 @@
    "solo_only": true,
    "solo_text": "I went through it all... Again and again... Four hundred and twelve times.",
    "vo": true,
-   "whisper": true
+   "whisper": true,
+   "tighten": 0.38
   },
   {
    "beat": "snap",

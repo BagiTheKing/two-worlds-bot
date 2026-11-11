@@ -191,6 +191,9 @@ def apply(E, t):
     set_face(N.face, fn)
     # ------------------------------------------------ the other loops: they come apart from him, then back in
     back = 0.0 if t < T["snap"] - 0.18 else ss(T["snap"] - 0.18, T["snap"], t)      # sucked back in
+    if T["steve_412"] <= t < T["snap"]:                       # B2: again and again: every loop runs at Steve
+        loop_pass(E, t)
+        return finish_frame(E, t, tc, d)
     for k, c in enumerate(E.clones + [E.old]):
         lat, bk, po, dl = CLONES[k]
         out = ss(T["word"] + dl, T["word"] + dl + 0.45, t) * (1 - back)
@@ -212,6 +215,56 @@ def apply(E, t):
             c.root.location = pos
             for o in [c.root] + list(c.root.children_recursive):
                 o.hide_render = not show
+    return finish_frame(E, t, tc, d)
+
+
+def loop_pass(E, t):
+    """Inside the memory, seen from behind Steve: one Noob after another (each a
+    different make of him) runs at him along the bridge and blinks out just
+    before he reaches him, then the next comes, from where the loop starts."""
+    from noob import pose_noob
+    plan = E.plan
+    P, v = 1.45, 4.2                                            # one pass (s), how fast they run (m/s)
+    runners = [E.N] + E.clones + [E.old]
+    for k, c in enumerate(runners):
+        u = ((t - T["steve_412"]) * 0.8 + k * P / len(runners)) % P
+        x = -7.2 + v * u
+        lat = (-0.5, 0.45, -0.2, 0.6, 0.1)[k]
+        fade_in, fade_out = u > 0.08, x < E.Sp.x - 1.6
+        show = fade_in and fade_out
+        ph = 2 * math.pi * 2.6 * (t * 0.8) + k
+        pos = Vector((x, plan.lip.y + lat, plan.deck + 0.07 * abs(math.sin(ph))))
+        if c is E.old:
+            c.root.location = pos
+            c.root.rotation_euler = (0, 0, math.radians(90))
+            sw = math.sin(ph)
+            for nm, a in (("arm_r", -62 * sw), ("arm_l", 62 * sw), ("leg_r", 46 * sw), ("leg_l", -46 * sw)):
+                c.parts[nm].rotation_euler = (math.radians(a), 0, 0)
+            for o in c.root.children_recursive:
+                o.hide_render = not show
+        else:
+            pz = run_pose(ph)
+            pz["root_yaw"] = 90
+            pose_noob(c, pz)
+            c.root.location = pos
+            for o in [c.root] + list(c.root.children_recursive):
+                if o.name.endswith("_face") or o.type == "MESH":
+                    o.hide_render = not show
+
+
+def finish_frame(E, t, tc, d):
+    """Steve, Null and the camera (shared by every shot)."""
+    import json as _j
+    from pose import pose
+    from faceplate import set_face, EYES, EYE_DEFAULTS, MOUTH_DEFAULTS
+    from brows import set_brows
+    from ep09_new import SF, talk
+    from stage import place_null_lights
+    plan = E.plan
+    S, X = E.S, E.X
+    f_render = int(round(t * FPS))
+    nx = noob_x(tc)
+    json = _j
     # ------------------------------------------------ Steve, on the old bridge
     Sp = E.Sp
     lib = json.load(open(os.path.join(HERE, "poses_lib.json")))
@@ -223,6 +276,11 @@ def apply(E, t):
         pz = {"chest_lean": 10 * u, "head_nod": -4, "arm_sl": {"fwd": 70 * u + 25 * w * u, "elbow": 50, "out": 10},
               "arm_sr": {"fwd": 10, "out": 14, "elbow": 20}}
         face = SF["scared"]
+    elif T["steve_412"] <= t < T["snap"]:                    # in the memory: frozen, the head slowly bowing
+        u = ss(T["steve_412"], T["snap"], t)
+        pz = {"chest_lean": lerp(2, 7, u), "head_nod": lerp(-6, 16, u), "hips_drop": 0.06,
+              "arm_sl": {"fwd": 6, "out": 12, "elbow": 18}, "arm_sr": {"fwd": 6, "out": 12, "elbow": 20}}
+        face = {"both_to": 0.2, "both_ps": 0.7, "both_py": -0.3, "bb_tilt": -0.8, "bb_raise": 0.4}
     elif t < T["hush"]:                                        # stunned
         u = ss(T["snap"], T["snap"] + 0.3, t)
         pz = {"chest_lean": lerp(4, -3, u), "head_nod": lerp(-4, -8, u),
@@ -241,7 +299,7 @@ def apply(E, t):
     pose(S.arm, unflat(sp))
     S.holder.location = Sp
     S.holder.rotation_euler = (0, 0, math.radians(-90))
-    S.holder.hide_render = T["noob_running"] <= t < T["snap"]          # his own eyes
+    S.holder.hide_render = T["noob_running"] <= t < T["steve_412"]     # his own eyes (B); seen from behind in B2
     fs = {f"{e}_{k}": v for e in EYES for k, v in EYE_DEFAULTS.items()}
     fs.update(MOUTH_DEFAULTS)
     for k, v in face.items():
@@ -300,6 +358,11 @@ def camera(E, t, tc, hs):
         u = ss(T["a"], T["noob_running"], t)
         loc = hs + Vector((-1.6 + 0.2 * u, -0.9 + 0.1 * u, -0.15))
         return loc, hs + Vector((0, 0, -0.05)), 36, 2.2, None, 0.4
+    if T["steve_412"] <= t < T["snap"]:                     # B2: behind Steve, in the memory, pulling slowly back
+        u = ss(T["steve_412"], T["snap"], t)
+        loc = Sp + Vector((1.5 + 1.3 * u, 0.75 + 0.2 * u, 1.85 + 0.35 * u))
+        look = Sp + Vector((-4.5, -0.1, 1.15))
+        return loc, look, lerp(30, 27, u), 3.5, (Sp - loc).length + 0.4, 0.15
     if t < T["snap"]:                                        # B: through Steve's eyes
         eye = Sp + Vector((-0.2, 0.0, 1.72))
         nx = noob_x(tc)
