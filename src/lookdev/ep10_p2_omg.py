@@ -128,6 +128,7 @@ def find_words(voice, start, end):
             i = j
         else:
             i += 1
+    runs = [r for r in runs if r[1] - r[0] > 6]                 # a breath or a click is not a word
     while len(runs) > 3:                                        # join across the shortest gaps
         g = [runs[k + 1][0] - runs[k][1] for k in range(len(runs) - 1)]
         k = int(np.argmin(g))
