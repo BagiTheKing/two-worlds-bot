@@ -140,12 +140,13 @@
   {
    "line": "steve",
    "name": "steve_412",
-   "text": "I went through this... 412 times!",
+   "text": "I went through this 412 times!",
    "caption_y": 1420,
-   "direction_text": "[stunned, shaken, the realization rising] I went through this... four hundred and twelve times!",
+   "direction_text": "[stunned, shaken, the words tumbling out in one breath] I went through this four hundred and twelve times!",
    "pad": 0.0,
    "solo_only": true,
-   "solo_text": "I went through this... four hundred and twelve times!"
+   "solo_text": "I went through this four hundred and twelve times!",
+   "tighten": 0.3
   },
   {
    "beat": "hush",
