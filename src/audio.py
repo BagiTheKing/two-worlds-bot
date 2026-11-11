@@ -1288,7 +1288,8 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
        "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
        "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
-       "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird()}
+       "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
+       "heart": lambda e: sfx_thump(e.get("freq", 48), 0.55, 0.0)}      # a heartbeat: the thump without its crack
 
 
 def sfx_bird():

@@ -33,6 +33,8 @@ PORTAL_AT = Vector((0.0, 5.0, 0.0))        # the portal faces -y (the camera sid
 NULL_K = 0.6                               # Null's scale here: his head is about 2.7 m wide, the opening 2 m
 LENGTH = 6.6
 EXTRA_CLEAR = []                           # more places kept free of plants (later parts stand there)
+EXTRA_FEATURES = []                        # more trees (later parts run past them)
+EXTRA_KEEP = []                            # more places kept free of trees (later parts' cameras)
 
 # The moments (seconds). With a voice, they follow Null's line "HI!".
 T = {"s2": 1.75, "s3": 3.45, "grip_r": 1.2, "grip_l": 2.0, "strain": 1.9, "rip": 2.62, "press": 3.45,
@@ -503,9 +505,9 @@ def build(tl, assets, res, samples):
     sc = bpy.context.scene
     E.sc = sc
     cfg = {"seed": 7, "sun": (71, 12), "flat_box": [-22, 22, -40, 8], "plant_clear_box": [-3.4, 3.4, 2.0, 6.5],
-           "keep_clear": [(0, -14, 8), (0, 16, 5), (0, 24, 5), (15, -0.5, 8), (8, 1, 6)],
+           "keep_clear": [(0, -14, 8), (0, 16, 5), (0, 24, 5), (15, -0.5, 8), (8, 1, 6)] + EXTRA_KEEP,
            "feature_trees": [(-6, 13, "big_oak"), (5, 17, "oak"), (-9, 19, "oak"), (9, 18, "big_oak"), (-4, 22, "birch"),
-                             (4, 23, "oak"), (-11, 9, "oak"), (-7, 27, "oak"), (8, 28, "oak")],
+                             (4, 23, "oak"), (-11, 9, "oak"), (-7, 27, "oak"), (8, 28, "oak")] + EXTRA_FEATURES,
            "clear_plants": [(0.0, 3.6, 2.4), (16.5, 0.6, 4.0), (10.0, 1.5, 3.0)] + EXTRA_CLEAR, "particle_box": (-9, 9, 9.0, 24, 0.3, 7.0)}
     E.W = W = build_world(sc, assets, cfg)
     add_world_fx(W)
