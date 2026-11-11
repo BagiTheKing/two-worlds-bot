@@ -1347,6 +1347,31 @@ def void_wind(length):
     return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
 
 
+def whisperize_first(x, keep=0.12, n=1024, hop=256):
+    """The first whisper (the creator's choice). Turn a spoken take into a whisper. A whisper is breath through the same
+    mouth shapes, with no voice under it: keep each moment's spectrum (the
+    words) and throw away its phase (the pitch), so the vocal cords are gone
+    and only the breath is left. `keep` mixes a trace of the real voice back in
+    for clarity. A little extra air on top, the low end thinned."""
+    win = np.hanning(n)
+    pad = np.concatenate([np.zeros(n), x, np.zeros(n)])
+    frames = [pad[i:i + n] * win for i in range(0, len(pad) - n, hop)]
+    S = np.fft.rfft(np.array(frames), axis=1)
+    mag = np.abs(S)
+    f = np.fft.rfftfreq(n, 1 / SR)
+    shape = np.clip((f - 120) / 500, 0, 1) * (1 + 0.6 * np.clip((f - 2500) / 3000, 0, 1))   # thin lows, air on top
+    ph = np.exp(1j * rng.uniform(0, 2 * np.pi, mag.shape))
+    Y = np.fft.irfft(mag * shape * ph, n=n, axis=1)
+    out = np.zeros(len(pad))
+    wsum = np.zeros(len(pad))
+    for k, fr in enumerate(Y):
+        out[k * hop:k * hop + n] += fr * win
+        wsum[k * hop:k * hop + n] += win ** 2
+    out = (out / np.maximum(wsum, 1e-6))[n:n + len(x)]
+    out = norm(out, 0.9)
+    return norm((1 - keep) * out + keep * norm(x, 0.9), 0.9)
+
+
 def _lpc(frame, order):
     """Linear prediction coefficients (Levinson-Durbin): the shape of the mouth
     in this frame, as an all-pole filter 1 / A(z). -> (a[0..order], gain)."""
@@ -1528,7 +1553,10 @@ def build(episode_path, out_dir, keep=None):
             if c.get("fx") == "null":
                 audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
             if ev.get("whisper"):                       # a real whisper: the words without the voice's pitch
-                audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
+                if ev.get("whisper") == "first":
+                    audio = whisperize_first(audio, keep=ev.get("whisper_keep", 0.12))
+                else:
+                    audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
             for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
