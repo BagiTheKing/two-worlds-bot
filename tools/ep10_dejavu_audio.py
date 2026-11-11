@@ -27,6 +27,37 @@ def read(mp4, t0, dur):
     return np.frombuffer(raw, np.float32).astype(np.float64)
 
 
+def vstretch(x, rate_of, sr=SR):
+    """WSOLA with a speed that changes over the sound: rate_of(u) (u = 0..1 through the
+    input) is how fast the input is read (1 = as recorded, 0.25 = four times slower);
+    the pitch stays (a slow-motion voice, not a tape running down)."""
+    n = int(0.04 * sr)
+    hop = n // 2
+    tol = int(0.012 * sr)
+    win = np.hanning(n)
+    out = np.zeros(int(len(x) * 6) + n)
+    weight = np.zeros_like(out)
+    prev, pos, k = None, 0.0, 0
+    while True:
+        centre = int(pos)
+        if centre + n + tol >= len(x):
+            break
+        best = centre
+        if prev is not None and prev + hop + n <= len(x):
+            target = x[prev + hop:prev + hop + n]
+            lo, hi = max(0, centre - tol), min(len(x) - n, centre + tol)
+            scores = [(np.dot(x[c:c + n], target), c) for c in range(lo, hi + 1, 4)]
+            best = max(scores)[1] if scores else centre
+        out[k * hop:k * hop + n] += x[best:best + n] * win
+        weight[k * hop:k * hop + n] += win
+        prev = best
+        pos += hop * rate_of(pos / len(x))
+        k += 1
+    end = k * hop + n
+    weight[weight < 1e-3] = 1.0
+    return (out / weight)[:end]
+
+
 def pitch(x, semis):
     """Shift pitch, keep the length (resample, then stretch back)."""
     p = 2 ** (semis / 12)
@@ -34,22 +65,41 @@ def pitch(x, semis):
     return A.stretch(y, len(y) / len(x)) if abs(p - 1) > 1e-3 else x
 
 
-def main(mp4, out_dir):
+def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav"):
     x = read(mp4, 17.66, 0.86)                     # "I am running!" with a breath of room on each side
     split = int((18.08 - 17.66) * SR)              # "I am" | "running"
     head, word = x[:split], x[split:]
-    # "running": in slices, each slower and lower than the last (1x -> 0.25x, 0 -> -6 semitones)
-    n = 10
-    sl = np.array_split(word, n)
-    out = []
-    for k, s in enumerate(sl):
-        u = k / (n - 1)
-        rate = 1.0 - 0.75 * u ** 1.3
-        y = A.stretch(s, rate)
-        y = pitch(y, -6.0 * u ** 1.2)
-        out.append(y)
-    slow = np.concatenate(out)
+    # "running": time slows through the word, from as recorded down to `final`, and sinks a little
+    slow = vstretch(word, lambda u: 1.0 - (1.0 - final) * min(1.0, u * 2.4) ** 0.9)
+    k = 8                                           # the sinking: in a few overlapping pieces, deeper each time
+    pieces = np.array_split(np.arange(len(slow)), k)
+    sunk = np.zeros(len(slow))
+    for i, idx in enumerate(pieces):
+        seg = slow[max(0, idx[0] - 600):idx[-1] + 600]
+        y = pitch(seg, -5.0 * (i / (k - 1)) ** 1.3)[:len(seg)]
+        y = np.pad(y, (0, len(seg) - len(y)))
+        a0 = max(0, idx[0] - 600)
+        fade = np.ones(len(y))
+        r = min(600, len(y) // 4)
+        fade[:r] = np.linspace(0, 1, r)
+        fade[-r:] = np.linspace(1, 0, r)
+        sunk[a0:a0 + len(y)] += y[:len(sunk) - a0] * fade[:len(sunk) - a0]
+    norm_w = np.zeros(len(slow))
+    for i, idx in enumerate(pieces):
+        a0 = max(0, idx[0] - 600)
+        L = min(len(slow), idx[-1] + 600) - a0
+        fade = np.ones(L)
+        r = min(600, L // 4)
+        fade[:r] = np.linspace(0, 1, r)
+        fade[-r:] = np.linspace(1, 0, r)
+        norm_w[a0:a0 + L] += fade
+    slow = sunk / np.maximum(norm_w, 1e-3)
     voice = np.concatenate([head, slow])
+    if dry:                                         # the slow-down alone (to judge its speed)
+        p = os.path.join(out_dir, name)
+        sf.write(p, A.norm(voice, 0.9), SR)
+        print(p, round(len(voice) / SR, 2), "s")
+        return
     # the other loops: echoes of the line, later and lower, piling up as it slows
     ghosts = np.zeros(len(voice) + int(1.2 * SR))
     for k, (d, g, st) in enumerate(((0.18, 0.35, -2), (0.33, 0.28, 3), (0.5, 0.24, -5), (0.7, 0.2, 2))):
@@ -71,10 +121,18 @@ def main(mp4, out_dir):
     mix[end:end + len(swell)] += 0.5 * swell[:len(mix) - end]
     mix *= np.minimum(1, (len(mix) - np.arange(len(mix))) / (0.03 * SR))
     os.makedirs(out_dir, exist_ok=True)
-    p = os.path.join(out_dir, "ep0_noob_running_dejavu.wav")
+    p = os.path.join(out_dir, name)
     sf.write(p, A.norm(mix, 0.9), SR)
     print(p, round(len(mix) / SR, 2), "s")
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:3])
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("mp4")
+    ap.add_argument("out_dir")
+    ap.add_argument("--final", type=float, default=0.25, help="the speed it slows to (0.25 = a quarter)")
+    ap.add_argument("--dry", action="store_true", help="only the slow-down, no echoes or smear")
+    ap.add_argument("--name", default="ep0_noob_running_dejavu.wav")
+    a = ap.parse_args()
+    main(a.mp4, a.out_dir, a.final, a.dry, a.name)
