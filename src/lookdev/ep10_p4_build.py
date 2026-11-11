@@ -34,7 +34,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, ".."))
 from ep10_entrance import FPS, lerp, ss, back_out, lin               # noqa: E402
 
-T = {"a": 0.0, "b": 1.4, "c": 3.2, "patch_bad": 3.8, "c2": 4.6, "d": 5.4, "e": 7.6, "length": 8.6}
+T = {"a": 0.0, "b": 1.4, "b2": 2.3, "c": 3.2, "patch_bad": 3.55, "c2": 4.5, "d": 5.0, "e": 7.2, "length": 8.6}
 TILE = 3.0
 RIM = 1.5
 
@@ -200,6 +200,26 @@ class Plan:
                     self.parts.append({"kind": "obby", "size": (w, w, 1.6), "colour": bright[(k * 3 + len(placed)) % 8],
                                        "shape": "box", "at": Vector((x, y, deck + 0.8 + 1.6 * k)), "t0": t0 + 0.09 * k,
                                        "path": False})
+        # his moment: pillars shooting up beside his path and an arch he runs under
+        hero = ["Bright red", "Bright blue", "Bright yellow", "Lime green", "Bright orange", "Bright violet", "Teal"]
+        for k, (s_at, side_, h) in enumerate(((7.0, 1, 4.5), (8.5, -1, 5.5), (10.0, 1, 6.5), (11.5, -1, 5.0),
+                                              (13.0, 1, 7.0), (14.5, 1, 6.0), (16.0, 1, 5.0), (17.5, 1, 6.5))):
+            pt, dr = self.at_s(s_at)
+            sv = Vector((-dr.y, dr.x)) * side_ * 3.6
+            self.parts.append({"kind": "riser", "size": (1.1, 1.1, h), "colour": hero[k % 7], "shape": "cyl",
+                               "at": Vector((pt.x + sv.x, pt.y + sv.y, deck + h / 2)),
+                               "t0": self.t_reach(s_at) - 0.55, "path": False})
+        s_arch = self.run_s(T["b2"] + 0.45)
+        pt, dr = self.at_s(s_arch)
+        sv = Vector((-dr.y, dr.x))
+        ta = self.t_reach(s_arch) - 0.6
+        for sg in (-1, 1):
+            c = pt + sv * 2.4 * sg
+            self.parts.append({"kind": "riser", "size": (0.9, 0.9, 4.4), "colour": "Bright red", "shape": "box",
+                               "at": Vector((c.x, c.y, deck + 2.2)), "t0": ta, "path": False})
+        ang = math.atan2(sv.y, sv.x)
+        self.parts.append({"kind": "obby", "size": (5.7, 0.9, 0.9), "colour": "Bright yellow", "shape": "box",
+                           "at": Vector((pt.x, pt.y, deck + 4.85)), "t0": ta + 0.18, "path": False, "rot": ang})
         # the rainbow bridge: from his lip onto the old bridge's broken end
         from roblox import RAINBOW
         a, b = self.lip, self.bridge_end
@@ -238,6 +258,8 @@ def build(tl, assets, res, samples):
         ob = make_part(col, f"rbx_{p['kind']}_{k}", p["size"], p["colour"], mat, shape=p["shape"])
         ob.location = p["at"]
         ob.rotation_mode = "QUATERNION"
+        if p.get("rot"):
+            ob.rotation_quaternion = Quaternion((0, 0, 1), p["rot"])
         E.objs.append(ob)
     E.giz = Gizmos(col)
     # the cast
@@ -246,9 +268,8 @@ def build(tl, assets, res, samples):
     E.Pt = build_patch_char(sc, size=0.4)
     E.X = build_null_char(sc, assets, height=10.0)
     null_lights(sc, E.X)
-    from noob import noob_hold
     E.tool = _btool(col)
-    noob_hold(E.N, E.tool, "sl", up=-5, face=0)
+    hold_tool(E.N, E.tool, "sl")
     # lights: a warm key from the camera side, the void's cool fill comes from the sky
     E.key = char_light(sc, "key", (0, -3, 3), 260, (1.0, 0.9, 0.8), cone=40, size=1.0)
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
@@ -277,31 +298,95 @@ def build(tl, assets, res, samples):
 
 
 def _btool(col):
-    """His building tool (Roblox's F3X look): a grey handle, a glowing blue cube head."""
+    """His building tool, designed in metres along +z (the grip at 0, the head at the top):
+    a rubber grip with a white band, a white collar, a steel neck, and a glass cube head
+    glowing selection blue inside a white edge frame (Studio's part icon), with its own light."""
+    import bmesh
+    from roblox import lin as rl, SELECT
     root = bpy.data.objects.new("btool", None)
     col.objects.link(root)
-    from roblox import lin as rl, SELECT
-    for name, size, loc, rgb, glow in (("btool_grip", (0.1, 0.1, 0.55), (0, 0, -0.2), (60, 62, 70), 0.0),
-                                       ("btool_head", (0.3, 0.3, 0.3), (0, 0, 0.18), SELECT, 3.0),
-                                       ("btool_ring", (0.36, 0.36, 0.06), (0, 0, 0.03), (240, 240, 250), 0.6)):
-        bpy.ops.mesh.primitive_cube_add(size=1)
-        ob = bpy.context.active_object
-        for c_ in list(ob.users_collection):
-            c_.objects.unlink(ob)
-        col.objects.link(ob)
-        ob.name = name
-        ob.scale = size
-        ob.location = loc
-        ob.parent = root
+
+    def mat(name, rgb, glow=0.0, rough=0.4, metal=0.0, glass=0.0):
         m = bpy.data.materials.new(name)
         m.use_nodes = True
         b = m.node_tree.nodes["Principled BSDF"]
         b.inputs["Base Color"].default_value = (*rl(rgb), 1)
         b.inputs["Emission Color"].default_value = (*rl(rgb), 1)
         b.inputs["Emission Strength"].default_value = glow
-        b.inputs["Roughness"].default_value = 0.3
-        ob.data.materials.append(m)
+        b.inputs["Roughness"].default_value = rough
+        b.inputs["Metallic"].default_value = metal
+        b.inputs["Transmission Weight"].default_value = glass
+        return m
+
+    def cyl(name, r, z0, z1, m, seg=20):
+        bm = bmesh.new()
+        bmesh.ops.create_cone(bm, cap_ends=True, segments=seg, radius1=r, radius2=r, depth=z1 - z0)
+        me = bpy.data.meshes.new(name)
+        bm.to_mesh(me)
+        bm.free()
+        for p_ in me.polygons:
+            p_.use_smooth = True
+        me.materials.append(m)
+        ob = bpy.data.objects.new(name, me)
+        col.objects.link(ob)
+        ob.parent = root
+        ob.location = (0, 0, (z0 + z1) / 2)
+        bv = ob.modifiers.new("bevel", "BEVEL")
+        bv.width, bv.segments = min(0.01, r * 0.3), 2
+        return ob
+
+    def box(name, size, loc, m):
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=1.0)
+        bmesh.ops.scale(bm, vec=size, verts=bm.verts)
+        me = bpy.data.meshes.new(name)
+        bm.to_mesh(me)
+        bm.free()
+        me.materials.append(m)
+        ob = bpy.data.objects.new(name, me)
+        col.objects.link(ob)
+        ob.parent = root
+        ob.location = loc
+        return ob
+    grip = mat("btool_grip_m", (38, 40, 46), rough=0.75)
+    white = mat("btool_white_m", (236, 238, 244), rough=0.35)
+    steel = mat("btool_steel_m", (170, 176, 186), rough=0.25, metal=1.0)
+    glass = mat("btool_glass_m", SELECT, glow=2.2, rough=0.08, glass=0.6)
+    edge = mat("btool_edge_m", (255, 255, 255), glow=3.0)
+    cyl("btool_grip", 0.042, -0.13, 0.17, grip)
+    cyl("btool_band", 0.047, 0.03, 0.06, white)
+    cyl("btool_cap", 0.05, -0.15, -0.12, white)
+    cyl("btool_collar", 0.058, 0.17, 0.21, white)
+    cyl("btool_neck", 0.022, 0.21, 0.31, steel, seg=12)
+    hz, hs = 0.42, 0.2
+    box("btool_head", (hs, hs, hs), (0, 0, hz), glass)
+    e, h = 0.014, hs / 2 + 0.007
+    for a in (-h, h):
+        for b in (-h, h):
+            box(f"btool_edge_x{a}{b}", (hs + 2 * e, e, e), (0, a, hz + b), edge)
+            box(f"btool_edge_y{a}{b}", (e, hs + 2 * e, e), (a, 0, hz + b), edge)
+            box(f"btool_edge_z{a}{b}", (e, e, hs + 2 * e), (a, b, hz), edge)
+    L = bpy.data.lights.new("btool_light", "POINT")
+    L.color, L.energy, L.shadow_soft_size = (0.35, 0.72, 1.0), 18.0, 0.08
+    lo = bpy.data.objects.new("btool_light", L)
+    col.objects.link(lo)
+    lo.parent = root
+    lo.location = (0, 0, hz)
+    root["head_z"] = hz
     return root
+
+
+def hold_tool(n, tool, side="sl", tilt=55.0):
+    """Grip the tool in the Noob's fist: its grip runs through the hand, across the arm,
+    so with the arm raised forward the tool stands up out of the fist, tipped forward
+    by `tilt` degrees toward where he aims."""
+    piv = n.arms[side]
+    tool.parent = piv
+    k = 1.0 / n.root.scale.x                                   # metres -> the arm's units
+    d = Vector((0, -math.cos(math.radians(tilt)), -math.sin(math.radians(tilt))))
+    q = Vector((0, 0, 1)).rotation_difference(d)
+    fist = Vector((0, 0, -1.28))                               # inside the end of the arm
+    tool.matrix_basis = Matrix.Translation(fist) @ q.to_matrix().to_4x4() @ Matrix.Diagonal((k, k, k, 1))
 
 
 # ------------------------------------------------------------ the cast's paths
@@ -336,43 +421,63 @@ def null_at(E, t):
     return Vector((q.x - 10.0, q.y + 4.0, plan.deck - 7.5)), d
 
 
-PATCH_AT = Vector((-2.0, -78.0, 74.0))
+PATCH_AT = Vector((-2.0, -66.0, 60.0))
 
 
 # --------------------------------------------------------------- the camera
 def camera(E, t):
     """-> loc, look, lens, fstop, focus (None = look point), shake (deg), roll"""
     nb, nd, nv = noob_at(E, t)
+    if os.environ.get("TOOLCAM") and getattr(E, "tool_head", None) is not None:     # look-dev: the tool, close
+        h = E.tool_head
+        side = Vector((-nd.y, nd.x, 0))
+        return h + side * 0.9 + Vector((nd.x, nd.y, 0)) * 0.7 + Vector((0, 0, -0.2)), h - Vector((0, 0, 0.25)), 45, 4.0, None, 0.0, 0.0
     if t < T["b"]:                                           # A: low and ahead, he runs at us
         u = ss(T["a"], T["b"], t)
         side = Vector((-nd.y, nd.x, 0))
         loc = nb + Vector((nd.x, nd.y, 0)) * lerp(5.2, 4.2, u) + side * 0.9 + Vector((0, 0, 0.55))
         look = nb + Vector((0, 0, 1.25))
         return loc, look, 22, 3.5, None, 0.35, 0.0
-    if t < T["c"]:                                           # B: beside him, tracking
-        u = ss(T["b"], T["c"], t)
+    if t < T["b2"]:                                          # B1: his moment: low, in front, the tool raised
+        u = ss(T["b"], T["b2"], t)
+        side = Vector((-nd.y, nd.x, 0))
+        loc = nb + Vector((nd.x, nd.y, 0)) * lerp(2.9, 2.4, u) + side * lerp(1.5, 1.2, u) + Vector((0, 0, 0.75))
+        look = nb + Vector((0, 0, 1.55)) + Vector((nd.x, nd.y, 0)) * 0.3
+        return loc, look, 24, 2.6, (nb + Vector((0, 0, 1.5)) - loc).length, 0.35, 0.0
+    if t < T["c"]:                                           # B2: beside him, tracking; he runs under the arch
+        u = ss(T["b2"], T["c"], t)
         side = Vector((-nd.y, nd.x, 0))                      # his left: the island spreading out behind him
-        loc = nb + side * 4.4 + Vector((nd.x, nd.y, 0)) * lerp(1.6, 0.6, u) + Vector((0, 0, 1.9))
-        look = nb + Vector((nd.x, nd.y, 0)) * 0.8 + Vector((0, 0, 1.0))
-        return loc, look, 28, 4.0, (nb - loc).length, 0.3, 0.0
+        fwd = Vector((nd.x, nd.y, 0))                         # ahead of him: he runs at us, under the arch
+        loc = nb + fwd * lerp(7.0, 6.0, u) + side * 2.6 + Vector((0, 0, 1.8))
+        look = nb + Vector((0, 0, 1.9)) + fwd * 1.0
+        return loc, look, 24, 4.0, (nb + Vector((0, 0, 1.2)) - loc).length, 0.3, 0.0
     if t < T["d"]:                                           # C: Patch's eyes, high in the wind, searching
         u = (t - T["c"]) / (T["d"] - T["c"])
-        loc = PATCH_AT + Vector((2.0 * math.sin(t * 1.3), 1.5 * math.sin(t * 0.9 + 1), 0.8 * math.sin(t * 1.7)))
-        look = Vector((-1.0 + 9.0 * math.sin(u * math.pi * 1.6 - 0.6) * (1 - 0.8 * ss(0.6, 1.0, u)), -6.0, 0.0))
-        # sweeping left, right, settling on the chasm; the focus hunts: in, out, in, then finds it
+        loc = PATCH_AT + Vector((1.5 * math.sin(t * 1.3), 1.0 * math.sin(t * 0.9 + 1), 0.8 * math.sin(t * 1.7)))
+        # the search: on the Noob's half, a whip across to the Minecraft half, back, and it settles on the chasm
+        x = -18.0
+        x = lerp(x, 16.0, ss(0.12, 0.3, u))
+        x = lerp(x, -10.0, ss(0.42, 0.6, u))
+        x = lerp(x, -3.0, ss(0.68, 0.9, u))
+        look = Vector((x, -10.0 + 4.0 * math.sin(u * 5.0), 2.0))
         d = (look - loc).length
-        hunt = 0.6 * (1 - ss(0.55, 0.9, u)) * (0.5 + 0.5 * math.sin(t * 6.2))
-        return loc, look, 21, 1.0, d * (1 - hunt), 0.9, 0.0
+        # the focus hunts (soft, sharp, soft) and finds it as the view settles
+        hunt = (0.65 * math.exp(-((u - 0.08) / 0.08) ** 2) + 0.55 * math.exp(-((u - 0.36) / 0.07) ** 2)
+                + 0.5 * math.exp(-((u - 0.64) / 0.07) ** 2))
+        return loc, look, 24, 0.8, d * (1 - hunt), 0.8, 0.0
     if t < T["e"]:                                           # D: over his shoulder, at the chasm, the bridge going out
         u = ss(T["d"], T["e"], t)
         lip, end = E.plan.lip, E.plan.bridge_end
         loc = lip + Vector((-3.6 + 0.8 * u, -2.6 + 0.5 * u, 1.9 - 0.2 * u))
         look = lip.lerp(end, 0.4 + 0.5 * ss(0.15, 0.85, u)) + Vector((0, 0, 0.3))
         return loc, look, 26, 5.0, None, 0.35, 0.0
-    # E: Patch, close; he looks down at what has happened
+    # E: Patch, close, from below his eye line: he sees it, and his eye goes wide
     fwd = (E.plan.bridge_end - PATCH_AT).normalized()
-    loc = PATCH_AT + fwd * 1.9 + Vector((0.5, 0, 0.5))
-    return loc, PATCH_AT + Vector((0, 0, 0.02)), 38, 2.0, None, 0.25, 0.0
+    u = ss(T["e"], T["e"] + 1.2, t)
+    jolt = 0.12 * math.exp(-((t - T["e"] - 0.22) / 0.06) ** 2)
+    fh = Vector((fwd.x, fwd.y, 0)).normalized()                  # level with his screen
+    loc = PATCH_AT + fh * lerp(1.6, 1.35, u) + Vector((0.3, 0, 0.12)) - fh * jolt
+    return loc, PATCH_AT + Vector((0, 0, 0.02)), 40, 2.0, None, 0.25, 0.0
 
 
 # ------------------------------------------------------------ apply a frame
@@ -399,6 +504,13 @@ def apply(E, t):
             continue
         ob.hide_render = False
         ob["flash"] = 0.0
+        if p["kind"] == "riser":                         # shoots up out of the deck, overshoots, settles
+            k = back_out(u / 0.32, 1.6)
+            h = p["size"][2]
+            ob.scale = (1.0, 1.0, max(0.02, k))
+            ob.location = p["at"] - Vector((0, 0, h / 2 * (1 - k)))
+            ob["flash"] = 1.0 * max(0.0, 1 - u / 0.2)
+            continue
         if p["kind"] == "under":                         # rises out of the void into place
             k = ss(0, 0.3, u)
             ob.location = p["at"] - Vector((0, 0, 2.5 * (1 - k)))
@@ -408,7 +520,7 @@ def apply(E, t):
             k = back_out(u / dur, 2.2)
             ob.location = p["at"]
             ob.scale = (max(0.01, k),) * 3
-            ob["flash"] = 3.0 * max(0.0, 1 - u / 0.3)
+            ob["flash"] = 0.6 * max(0.0, 1 - u / 0.25)
             continue
         f = u / dur
         if f < 1.0:                                      # move, resize, snap: Roblox Studio
@@ -428,7 +540,7 @@ def apply(E, t):
                 sz = 1.0
                 mode = "snap"
             ob.scale = (sz, sz, max(sz, 0.7)) if p["kind"] != "obby" else (sz, sz, sz)
-            mw = Matrix.Translation(ob.location)
+            mw = Matrix.Translation(ob.location) @ ob.rotation_quaternion.to_matrix().to_4x4()
             tool = p["kind"] in ("obby", "bridge")             # the full Studio tool on the pieces that matter;
             if tool or mode == "move":                          # the ground tiles just get the outline as they slide
                 specs.append({"m": mw, "size": tuple(v * s_ for v, s_ in zip(p["size"], ob.scale)),
@@ -436,16 +548,18 @@ def apply(E, t):
         else:
             ob.location = p["at"]
             ob.scale = (1, 1, 1)
-            ob["flash"] = 2.5 * max(0.0, 1 - (u - dur) / 0.1)
+            ob["flash"] = 1.2 * max(0.0, 1 - (u - dur) / 0.1)
             if u - dur < 0.06 and p["kind"] in ("obby", "bridge"):
-                specs.append({"m": Matrix.Translation(ob.location), "size": p["size"], "mode": "snap", "k": 1.0})
+                specs.append({"m": Matrix.Translation(ob.location) @ ob.rotation_quaternion.to_matrix().to_4x4(),
+                              "size": p["size"], "mode": "snap", "k": 1.0})
     # ------------------------------------------------ the Noob: running, the tool out ahead
     N = E.N
     running = t < T["d"] + 0.1
     if running:
         ph = 2 * math.pi * 2.9 * (t - T["a"])
         sw = math.sin(ph)
-        npz = {"chest_lean": 14, "head_nod": -4, "arm_sl": {"fwd": 92 + 6 * math.sin(ph * 0.5), "out": 6},
+        aim = 120 if T["b"] <= t < T["b2"] else 92                 # his moment: the tool held high
+        npz = {"chest_lean": 14, "head_nod": -4 if aim < 100 else -10, "arm_sl": {"fwd": aim + 6 * math.sin(ph * 0.5), "out": 6},
                "arm_sr": {"fwd": 62 * sw, "out": 12}, "leg_sl": {"fwd": 46 * sw}, "leg_sr": {"fwd": -46 * sw}}
         bob = 0.08 * abs(math.sin(ph))
     else:                                                   # at the lip: plants his feet, the tool aimed across
@@ -516,7 +630,11 @@ def apply(E, t):
     pf = dict(PD)
     pf.update({"look_y": 0.6})
     if t >= T["e"]:
-        pf["wide"] = ss(T["e"] + 0.15, T["e"] + 0.35, t)
+        pf["wide"] = ss(T["e"] + 0.15, T["e"] + 0.3, t)
+        pf["look_y"] = lerp(0.6, 0.85, ss(T["e"] + 0.15, T["e"] + 0.3, t))
+        g = t - T["e"] - 0.18
+        pf["glitch"] = 1.0 if (0 <= g < 0.08 or 0.16 <= g < 0.22) else 0.0
+        Pt.root.location = Pt.root.location - fwd.normalized() * 0.18 * ss(T["e"] + 0.15, T["e"] + 0.28, t)
     set_patch(Pt, pf)
     for o in Pt.col.objects:                                 # his own view: he is not in it
         o.hide_render = (T["c"] <= t < T["d"]) or o.name.endswith("_beam")
@@ -588,7 +706,7 @@ def finish(path, mist_path):
 # ------------------------------------------------------------------ main
 def align(tl):
     b = tl.get("beats", {})
-    for k in ("a", "b", "c", "c2", "d", "e"):
+    for k in ("a", "b", "b2", "c", "c2", "d", "e"):
         if k in b:
             T[k] = b[k][0]
     for ln in tl.get("lines", []):

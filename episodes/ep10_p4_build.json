@@ -142,12 +142,6 @@
   },
   {
    "kind": "whoosh",
-   "at": "c",
-   "dur": 1.2,
-   "gain": 0.35
-  },
-  {
-   "kind": "whoosh",
    "at": "d",
    "dur": 0.5,
    "gain": 0.3
@@ -223,6 +217,51 @@
    "at": "e+0.15",
    "dur": 0.15,
    "gain": 0.15
+  },
+  {
+   "kind": "whoosh",
+   "at": "c",
+   "dur": 0.8,
+   "gain": 0.35
+  },
+  {
+   "kind": "whoosh",
+   "at": "c+0.45",
+   "dur": 0.35,
+   "gain": 0.3
+  },
+  {
+   "kind": "whoosh",
+   "at": "c+0.95",
+   "dur": 0.35,
+   "gain": 0.25
+  },
+  {
+   "kind": "burst",
+   "at": "b+0.25",
+   "gain": 0.3
+  },
+  {
+   "kind": "burst",
+   "at": "b+0.7",
+   "gain": 0.3
+  },
+  {
+   "kind": "thump",
+   "at": "b2+0.2",
+   "freq": 80,
+   "gain": 0.35
+  },
+  {
+   "kind": "thump",
+   "at": "b2+0.38",
+   "freq": 75,
+   "gain": 0.35
+  },
+  {
+   "kind": "pop",
+   "at": "e+0.18",
+   "gain": 0.3
   }
  ],
  "overlays": [
@@ -251,11 +290,15 @@
   },
   {
    "beat": "b",
-   "dur": 1.8
+   "dur": 0.9
+  },
+  {
+   "beat": "b2",
+   "dur": 0.9
   },
   {
    "beat": "c",
-   "dur": 0.6
+   "dur": 0.35
   },
   {
    "line": "patch",
@@ -270,7 +313,7 @@
   },
   {
    "beat": "c2",
-   "dur": 0.7
+   "dur": 0.5
   },
   {
    "beat": "d",
