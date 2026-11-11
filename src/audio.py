@@ -1347,29 +1347,64 @@ def void_wind(length):
     return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
 
 
-def whisperize(x, keep=0.12, n=1024, hop=256):
-    """Turn a spoken take into a whisper. A whisper is breath through the same
-    mouth shapes, with no voice under it: keep each moment's spectrum (the
-    words) and throw away its phase (the pitch), so the vocal cords are gone
-    and only the breath is left. `keep` mixes a trace of the real voice back in
-    for clarity. A little extra air on top, the low end thinned."""
+def _lpc(frame, order):
+    """Linear prediction coefficients (Levinson-Durbin): the shape of the mouth
+    in this frame, as an all-pole filter 1 / A(z). -> (a[0..order], gain)."""
+    r = np.correlate(frame, frame, "full")[len(frame) - 1:len(frame) + order]
+    if r[0] <= 1e-9:
+        return np.r_[1.0, np.zeros(order)], 0.0
+    r = r.copy()
+    r[0] *= 1.0001                                          # a hair of noise floor: always stable
+    a = np.zeros(order + 1)
+    a[0] = 1.0
+    e = r[0]
+    for i in range(1, order + 1):
+        k = -(r[i] + np.dot(a[1:i], r[i - 1:0:-1])) / e
+        a[1:i + 1] = a[1:i + 1] + k * np.r_[a[i - 1:0:-1], 1.0]
+        e *= (1 - k * k)
+        if e <= 0:
+            break
+    return a, float(np.sqrt(max(e, 0.0)))
+
+
+def whisperize(x, keep=0.0, order=20, frame=0.025, hop=0.0125, air=0.35):
+    """A whisper made the way a whisper is made: the same mouth shapes, moved
+    by breath instead of voice. Each 25 ms frame's mouth shape (linear
+    prediction) filters soft noise at the frame's own energy; the pieces are
+    overlapped smoothly. `air` adds the breathy hiss on the consonants and
+    edges; `keep` mixes back a trace of the real voice (0 = a pure whisper)."""
+    n, h = int(frame * SR), int(hop * SR)
     win = np.hanning(n)
-    pad = np.concatenate([np.zeros(n), x, np.zeros(n)])
-    frames = [pad[i:i + n] * win for i in range(0, len(pad) - n, hop)]
-    S = np.fft.rfft(np.array(frames), axis=1)
-    mag = np.abs(S)
-    f = np.fft.rfftfreq(n, 1 / SR)
-    shape = np.clip((f - 120) / 500, 0, 1) * (1 + 0.6 * np.clip((f - 2500) / 3000, 0, 1))   # thin lows, air on top
-    ph = np.exp(1j * rng.uniform(0, 2 * np.pi, mag.shape))
-    Y = np.fft.irfft(mag * shape * ph, n=n, axis=1)
-    out = np.zeros(len(pad))
-    wsum = np.zeros(len(pad))
-    for k, fr in enumerate(Y):
-        out[k * hop:k * hop + n] += fr * win
-        wsum[k * hop:k * hop + n] += win ** 2
-    out = (out / np.maximum(wsum, 1e-6))[n:n + len(x)]
-    out = norm(out, 0.9)
-    return norm((1 - keep) * out + keep * norm(x, 0.9), 0.9)
+    pre = np.r_[x[0], x[1:] - 0.94 * x[:-1]]                 # pre-emphasis: the mouth's shape, not the throat's tilt
+    out = np.zeros(len(x) + n)
+    wsum = np.zeros(len(x) + n)
+    noise = rng.standard_normal(len(x) + 2 * n)
+    zi = np.zeros(order)
+    for s0 in range(0, len(x) - n, h):
+        seg = pre[s0:s0 + n] * win
+        a, g = _lpc(seg, order)
+        exc = noise[s0:s0 + n] * g
+        y = np.zeros(n)                                     # the all-pole filter, run by hand (no scipy here)
+        for t_ in range(n):
+            acc = exc[t_]
+            m = min(order, t_)
+            if m:
+                acc -= np.dot(a[1:m + 1], y[t_ - 1::-1][:m])
+            y[t_] = acc
+        out[s0:s0 + n] += y * win
+        wsum[s0:s0 + n] += win ** 2
+    out = out[:len(x)] / np.maximum(wsum[:len(x)], 1e-6)
+    de = np.zeros_like(out)                                 # undo the pre-emphasis
+    acc = 0.0
+    for t_ in range(len(out)):
+        acc = out[t_] + 0.94 * acc
+        de[t_] = acc
+    hiss = band(rng.standard_normal(len(x)), 2500, 9000) * _env(x, int(0.01 * SR))   # breath on the edges of words
+    de = norm(de, 0.9) + air * norm(hiss, 0.9) * 0.25
+    de = band(de, 140, 10000)
+    if keep > 0:
+        de = (1 - keep) * norm(de, 0.9) + keep * norm(x, 0.9)
+    return norm(de, 0.9)
 
 
 def null_voice(s, light=False, punch=False):
@@ -1493,7 +1528,7 @@ def build(episode_path, out_dir, keep=None):
             if c.get("fx") == "null":
                 audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
             if ev.get("whisper"):                       # a real whisper: the words without the voice's pitch
-                audio = whisperize(audio, keep=ev.get("whisper_keep", 0.12))
+                audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
             for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
