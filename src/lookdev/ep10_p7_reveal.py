@@ -380,6 +380,17 @@ def cast(E, t):
     deck, XE = E.deck, E.XE
     f_render = int(round(t * FPS))
     lib = json.load(open(os.path.join(HERE, "poses_lib.json")))
+    # ------------------------------------------------ Null
+    X.root.scale = (1.6,) * 3
+    X.root.location = (XE - 26.0, E.Y0 + 7.0, deck - 8.0)
+    X.root.rotation_euler = (math.radians(12), 0, math.radians(-90 + 180 + 15))
+    X.arms["sl"].rotation_euler = (math.radians(-95), math.radians(10), 0)
+    X.forearms["sl"].rotation_euler = (math.radians(-15), 0, 0)
+    X.arms["sr"].rotation_euler = (math.radians(-70), math.radians(-10), 0)
+    X.orbit.rotation_euler = (math.radians(-10), math.radians(-16), 0.9 * (t + 20))
+    X.orbit2.rotation_euler = (math.radians(-12), math.radians(14), -0.6 * (t + 20))
+    place_null_lights(X, fade=1.0)
+    null_smile(1.0)
     see = ss(T["see"] - 0.05, T["see"] + 0.75, t)
     # ------------------------------------------------ Steve: one hand on the stub, turned out; he turns to Null
     sp = flat(lib["idle (Benly 2.2)"])
@@ -462,6 +473,9 @@ def cast(E, t):
             dpitch = math.asin(max(-1, min(1, v.z))) - math.asin(max(-1, min(1, nrm.z)))
             npz["root_yaw"] += math.degrees(dyaw)
             npz["head_nod"] = max(-40.0, min(30.0, npz["head_nod"] - math.degrees(dpitch)))
+            if os.environ.get("AIMDBG"):
+                print("AIM", round(npz["root_yaw"], 1), round(math.degrees(N.root.rotation_euler.z), 1),
+                      tuple(round(x_, 2) for x_ in nrm), tuple(round(x_, 2) for x_ in v), flush=True)
         pose_noob(N, npz)
         bpy.context.view_layer.update()
         N.root.location = N.root.location + (P_eye - noob_eye(E))
@@ -499,17 +513,6 @@ def cast(E, t):
     for side in ("l", "r"):
         Pt.fins[side].rotation_euler = (math.radians(14 * math.sin(t * 12.0)), 0, 0)
     E.patch_at = loc
-    # ------------------------------------------------ Null
-    X.root.scale = (1.6,) * 3
-    X.root.location = (XE - 26.0, E.Y0 + 7.0, deck - 8.0)
-    X.root.rotation_euler = (math.radians(12), 0, math.radians(-90 + 180 + 15))
-    X.arms["sl"].rotation_euler = (math.radians(-95), math.radians(10), 0)
-    X.forearms["sl"].rotation_euler = (math.radians(-15), 0, 0)
-    X.arms["sr"].rotation_euler = (math.radians(-70), math.radians(-10), 0)
-    X.orbit.rotation_euler = (math.radians(-10), math.radians(-16), 0.9 * (t + 20))
-    X.orbit2.rotation_euler = (math.radians(-12), math.radians(14), -0.6 * (t + 20))
-    place_null_lights(X, fade=1.0)
-    null_smile(1.0)
 
 
 def null_head(E):
@@ -635,7 +638,7 @@ def camera(E, t, shot):
         off = side * lerp(0.28, 0.006, k) + Vector((0, 0, lerp(-0.05, 0.004, k)))
         loc = eye + d * dist + off
         look = eye.lerp(hn, 0.6 * (1 - k))
-        return loc, look, lerp(40, 70, k), lerp(2.8, 5.6, k), (eye - loc).length, 0.15 * (1 - k), 0.0
+        return loc, look, lerp(40, 70, k), lerp(2.8, 22.0, k ** 2), (eye - loc).length, 0.15 * (1 - k), 0.0
     if shot == "N1":
         # out of the mirror: at Null, faster and faster, into his chest
         eye = noob_eye(E)

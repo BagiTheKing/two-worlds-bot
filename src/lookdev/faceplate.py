@@ -292,7 +292,7 @@ def face_material(skin_image, name="steve_face", style="steve"):
             nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
             # and a real mirror over the pupils (a dark dielectric alone reflects too little head-on)
             gl = nt.nodes.new("ShaderNodeBsdfGlossy")
-            gl.inputs["Color"].default_value = (0.62, 0.6, 0.66, 1)
+            gl.inputs["Color"].default_value = (0.42, 0.4, 0.46, 1)
             gl.inputs["Roughness"].default_value = 0.03
             nt.links.new(bump.outputs["Normal"], gl.inputs["Normal"])
             out_ = nt.nodes["Material Output"]
