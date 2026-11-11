@@ -32,6 +32,7 @@ FPS = 24
 PORTAL_AT = Vector((0.0, 5.0, 0.0))        # the portal faces -y (the camera side); +y is "the other side"
 NULL_K = 0.6                               # Null's scale here: his head is about 2.7 m wide, the opening 2 m
 LENGTH = 6.6
+EXTRA_CLEAR = []                           # more places kept free of plants (later parts stand there)
 
 # The moments (seconds). With a voice, they follow Null's line "HI!".
 T = {"s2": 1.75, "s3": 3.45, "grip_r": 1.2, "grip_l": 2.0, "strain": 1.9, "rip": 2.62, "press": 3.45,
@@ -505,7 +506,7 @@ def build(tl, assets, res, samples):
            "keep_clear": [(0, -14, 8), (0, 16, 5), (0, 24, 5), (15, -0.5, 8), (8, 1, 6)],
            "feature_trees": [(-6, 13, "big_oak"), (5, 17, "oak"), (-9, 19, "oak"), (9, 18, "big_oak"), (-4, 22, "birch"),
                              (4, 23, "oak"), (-11, 9, "oak"), (-7, 27, "oak"), (8, 28, "oak")],
-           "clear_plants": [(0.0, 3.6, 2.4), (16.5, 0.6, 4.0), (10.0, 1.5, 3.0)], "particle_box": (-9, 9, 9.0, 24, 0.3, 7.0)}
+           "clear_plants": [(0.0, 3.6, 2.4), (16.5, 0.6, 4.0), (10.0, 1.5, 3.0)] + EXTRA_CLEAR, "particle_box": (-9, 9, 9.0, 24, 0.3, 7.0)}
     E.W = W = build_world(sc, assets, cfg)
     add_world_fx(W)
     from world import fx_set
