@@ -4,6 +4,7 @@ The Noob's bridge has just met the old one. Steve stands on the Minecraft
 planks; the Noob is at the far end of the rainbow bridge, Null behind him.
 
   A  Steve, close from the Noob's side: "Noob! Run!" (Episode 0's own recording).
+     (Steve's whisper, "I went through this... 412 times...", is heard inside B, the memory.)
   B  Through Steve's eyes: the Noob runs at us. "I am running!" (Episode 0's own
      recording). On "running" time slows to a quarter: the picture drains of
      colour, grain and a split of colours creep in, the image softens, and the
@@ -11,8 +12,8 @@ planks; the Noob is at the far end of the rainbow bridge, Null behind him.
      him (the old Episode 0 model, plain plastic, a box head, a fading ghost),
      running a little out of step. Then they are sucked back into one: a flash,
      colour, now.
-  C  Steve, close, front: "I went through this... 412 times!"
-  D  Steve, close, from the side, lower; his eyes drop: "I built a trap."
+  C  Back now: Steve, close; the camera arcs to his side and down as his head
+     drops: "I built a trap."
 
     python src/lookdev/ep10_p5_dejavu.py TIMELINE VOICE TEX ASSETS OUT [--shard k/n] [--res 1080]
         [--samples 32] [--times ...]
@@ -33,8 +34,8 @@ sys.path.insert(0, os.path.join(HERE, ".."))
 import ep10_p4_build as P4                                           # noqa: E402
 from ep10_entrance import FPS, lerp, ss, back_out                    # noqa: E402
 
-T = {"a": 0.0, "steve_noob_run": 0.2, "noob_running": 1.57, "word": 1.99, "snap": 3.94, "steve_412": 4.14,
-     "hush": 6.4, "steve_trap": 6.95, "end": 8.0, "length": 9.3}
+T = {"a": 0.0, "steve_noob_run": 0.2, "noob_running": 1.52, "word": 1.94, "steve_412": 2.6, "snap": 5.4,
+     "hush": 5.65, "steve_trap": 6.0, "end": 7.3, "length": 8.3}
 SLOW = 0.25
 
 
@@ -306,13 +307,13 @@ def camera(E, t, tc, hs):
         d = (look - eye).length
         soft = dv(t)
         return eye, look, 30 + 6 * soft, 2.0, d * (1 + 0.35 * soft * (0.5 + 0.5 * math.sin(t * 5))), 0.35
-    if t < T["hush"]:                                        # C: Steve, front, a slow push
-        u = ss(T["snap"], T["hush"], t)
-        loc = hs + Vector((-1.45 + 0.3 * u, 0.15, -0.08))
-        return loc, hs + Vector((0, 0, -0.04)), lerp(40, 46, u), 2.0, None, 0.25
-    u = ss(T["hush"], T["end"] + 0.5, t)                     # D: from his left, lower, as his head drops
-    loc = hs + Vector((-0.55, -1.25 + 0.15 * u, -0.35))
-    return loc, hs + Vector((0, 0, -0.12)), lerp(42, 48, u), 1.8, None, 0.2
+    # C: back in the present, Steve close: from the front, the camera arcs slowly to his left
+    # and down as his head drops on "I built a trap."
+    u = ss(T["snap"], T["end"] + 0.5, t)
+    ang = math.radians(lerp(8, 58, ss(0.15, 1.0, u)))          # 0 = straight in front of him (he faces -x)
+    r = lerp(1.5, 1.25, u)
+    loc = hs + Vector((-r * math.cos(ang), -r * math.sin(ang), lerp(-0.06, -0.32, ss(0.3, 1.0, u))))
+    return loc, hs + Vector((0, 0, lerp(-0.04, -0.12, u))), lerp(40, 47, u), 2.0, None, 0.22
 
 
 # ----------------------------------------------------------- the deja vu look

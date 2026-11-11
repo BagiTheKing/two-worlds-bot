@@ -70,7 +70,7 @@ def pitch(x, semis):
     return A.stretch(y, len(y) / len(x)) if abs(p - 1) > 1e-3 else x
 
 
-def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav", first=False):
+def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav", first=False, tail=False):
     x = read(mp4, 17.66, 0.86)                     # "I am running!" with a breath of room on each side
     split = int((18.08 - 17.66) * SR)              # "I am" | "running"
     head, word = x[:split], x[split:]
@@ -80,7 +80,7 @@ def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav"
         slow = np.concatenate([pitch(A.stretch(seg, 1.0 - 0.75 * (k / 9) ** 1.3), -6.0 * (k / 9) ** 1.2)
                                for k, seg in enumerate(sl)])
         voice = np.concatenate([head, slow])
-        return _finish(voice, split, out_dir, name)
+        return _finish(voice, split, out_dir, name, tail)
     slow = vstretch(word, lambda u: 1.0 - (1.0 - final) * min(1.0, u * 2.4) ** 0.9)
     k = 8                                           # the sinking: in a few overlapping pieces, deeper each time
     pieces = np.array_split(np.arange(len(slow)), k)
@@ -111,10 +111,10 @@ def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav"
         sf.write(p, A.norm(voice, 0.9), SR)
         print(p, round(len(voice) / SR, 2), "s")
         return
-    _finish(voice, split, out_dir, name)
+    _finish(voice, split, out_dir, name, tail)
 
 
-def _finish(voice, split, out_dir, name):
+def _finish(voice, split, out_dir, name, tail_out=False):
     """The other loops' echoes, the smear, and the suck back into one."""
     # the other loops: echoes of the line, later and lower, piling up as it slows
     ghosts = np.zeros(len(voice) + int(1.2 * SR))
@@ -130,6 +130,15 @@ def _finish(voice, split, out_dir, name):
     wet = np.convolve(mix, tail * 0.015)[:len(mix)]
     ramp = np.clip((np.arange(len(mix)) - split) / (0.6 * SR), 0, 1)
     mix = mix + wet * ramp
+    if tail_out:                                    # no suck: the echoes ring on and fade (under Steve's whisper)
+        mix = mix[:len(voice) + int(1.6 * SR)]
+        n_f = int(1.4 * SR)
+        mix[-n_f:] *= np.linspace(1, 0, n_f) ** 1.5
+        os.makedirs(out_dir, exist_ok=True)
+        p = os.path.join(out_dir, name)
+        sf.write(p, A.norm(mix, 0.9), SR)
+        print(p, round(len(mix) / SR, 2), "s")
+        return
     # then sucked back into one: a reversed swell, cut dead
     swell = A.sfx_suck(0.5) if hasattr(A, "sfx_suck") else np.zeros(int(0.5 * SR))
     end = len(voice) + int(0.25 * SR)
@@ -151,5 +160,6 @@ if __name__ == "__main__":
     ap.add_argument("--dry", action="store_true", help="only the slow-down, no echoes or smear")
     ap.add_argument("--name", default="ep0_noob_running_dejavu.wav")
     ap.add_argument("--first", action="store_true", help="the chosen take (see the top of this file)")
+    ap.add_argument("--tail", action="store_true", help="no suck at the end: the echoes ring on and fade")
     a = ap.parse_args()
-    main(a.mp4, a.out_dir, a.final, a.dry, a.name, a.first)
+    main(a.mp4, a.out_dir, a.final, a.dry, a.name, a.first, a.tail)
