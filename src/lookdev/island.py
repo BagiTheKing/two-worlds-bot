@@ -230,6 +230,8 @@ def build_island(sc, assets, seed=11):
     bsdf.inputs["Emission Strength"].default_value = 1.4
     v.data.materials.append(vm)
     v.visible_shadow = False
+    v.visible_diffuse = False                               # it glows; it doesn't light the island from below
+    v.visible_glossy = False
     I.void = v
     # light and sky: the void's glow
     I.sun, I.to_sun = sun_object(sc, 120, 34, energy=3.6, color=(1.0, 0.86, 0.95))

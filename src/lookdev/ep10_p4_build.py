@@ -358,11 +358,11 @@ def camera(E, t):
     if t < T["d"]:                                           # C: Patch's eyes, high in the wind, searching
         u = (t - T["c"]) / (T["d"] - T["c"])
         loc = PATCH_AT + Vector((2.0 * math.sin(t * 1.3), 1.5 * math.sin(t * 0.9 + 1), 0.8 * math.sin(t * 1.7)))
-        look = Vector((-1.0 + 16.0 * math.sin(u * math.pi * 1.6 - 0.6) * (1 - 0.8 * ss(0.6, 1.0, u)), -6.0, 0.0))
+        look = Vector((-1.0 + 9.0 * math.sin(u * math.pi * 1.6 - 0.6) * (1 - 0.8 * ss(0.6, 1.0, u)), -6.0, 0.0))
         # sweeping left, right, settling on the chasm; the focus hunts: in, out, in, then finds it
         d = (look - loc).length
         hunt = 0.6 * (1 - ss(0.55, 0.9, u)) * (0.5 + 0.5 * math.sin(t * 6.2))
-        return loc, look, 18, 1.0, d * (1 - hunt), 0.9, 0.0
+        return loc, look, 21, 1.0, d * (1 - hunt), 0.9, 0.0
     if t < T["e"]:                                           # D: over his shoulder, at the chasm, the bridge going out
         u = ss(T["d"], T["e"], t)
         lip, end = E.plan.lip, E.plan.bridge_end
@@ -429,13 +429,15 @@ def apply(E, t):
                 mode = "snap"
             ob.scale = (sz, sz, max(sz, 0.7)) if p["kind"] != "obby" else (sz, sz, sz)
             mw = Matrix.Translation(ob.location)
-            specs.append({"m": mw, "size": tuple(v * s_ for v, s_ in zip(p["size"], ob.scale)), "mode": mode,
-                          "k": 1.0 if mode == "snap" else 0.0})
+            tool = p["kind"] in ("obby", "bridge")             # the full Studio tool on the pieces that matter;
+            if tool or mode == "move":                          # the ground tiles just get the outline as they slide
+                specs.append({"m": mw, "size": tuple(v * s_ for v, s_ in zip(p["size"], ob.scale)),
+                              "mode": mode if tool else "outline", "k": 0.0, "w": 0.035 if tool else 0.02})
         else:
             ob.location = p["at"]
             ob.scale = (1, 1, 1)
-            ob["flash"] = 5.0 * max(0.0, 1 - (u - dur) / 0.18)
-            if u - dur < 0.12:
+            ob["flash"] = 2.5 * max(0.0, 1 - (u - dur) / 0.1)
+            if u - dur < 0.06 and p["kind"] in ("obby", "bridge"):
                 specs.append({"m": Matrix.Translation(ob.location), "size": p["size"], "mode": "snap", "k": 1.0})
     # ------------------------------------------------ the Noob: running, the tool out ahead
     N = E.N

@@ -119,9 +119,9 @@ def plastic_material():
     L(oi.outputs["Color"], col.inputs[0])
     L(s3.outputs[0], col.inputs["Scale"])
     L(col.outputs[0], b.inputs["Base Color"])
-    b.inputs["Roughness"].default_value = 0.42
-    b.inputs["Specular IOR Level"].default_value = 0.45
-    b.inputs["Coat Weight"].default_value = 0.1
+    b.inputs["Roughness"].default_value = 0.58
+    b.inputs["Specular IOR Level"].default_value = 0.3
+    b.inputs["Coat Weight"].default_value = 0.0
     b.inputs["Coat Roughness"].default_value = 0.15
     # a flash when it snaps: emission from the object's alpha (pass_index unused); see set_flash
     em = N("ShaderNodeAttribute")
