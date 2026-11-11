@@ -421,7 +421,7 @@ def _schedule(E, rng):
     wave from the broken end that catches up with the two of them at the lip."""
     deck, XE = E.deck, E.XE
     # where they stand and run (lanes on the bridge)
-    E.lane = {"S": E.Y0 - 0.55 + 0.5, "N": E.Y0 + 0.55 + 0.5}       # y of Steve and the Noob, side by side
+    E.lane = {"S": E.Y0 - 0.75 + 0.5, "N": E.Y0 + 0.75 + 0.5}       # y of Steve and the Noob, side by side
     E.grip_x = XE - 0.03                                                 # their hands: hooked over the stub's edge
     E.x_hit = {"S": E.grip_x - E.hs_hang.x, "N": E.grip_x - E.hn_hang.x}  # their roots, hanging (fronts on the stub)
     # their leap: from the deck, at their running speed, a little hop
@@ -806,10 +806,18 @@ def body(E, k, t, tau):
         ph = s * 10.0
         p["leg_sl"] = {"fwd": 4 + 30 * scr * math.sin(ph)}
         p["leg_sr"] = {"fwd": -4 - 30 * scr * math.sin(ph + 1.7)}
-        look = ss(T["patch_omg"] - 0.3, T["patch_omg"] + 0.4, tau)
         up = ss(0.0, 0.25, s) * (1 - ss(1.2, 1.8, s))
-        p["head_turn"] = 34 * look
         p["head_nod"] = -20 - 24 * up
+        # Patch drops in: he swings round on his left hand to see him (as Steve does)
+        nt = ss(T["hang"] + 0.55, T["hang"] + 1.15, tau)
+        if nt > 0:
+            qn = back_out(nt) if nt < 1 else 1.0
+            p["arm_sl"] = {"fwd": lerp(172, 12, qn), "out": lerp(4, 16, qn)}
+            p["arm_sr"] = {"fwd": 172, "out": 4}
+            p["head_nod"] = lerp(p["head_nod"], -8, qn)
+            p["chest_lean"] = lerp(-8, -4, qn)
+            out["grip_sides"] = ("sr",)
+            out["yaw"] = 90 + 150 * qn
         out["pose"] = p
         out["face"] = dict(NF["scared"]) if tau < T["steve_delete"] + 0.3 else dict(NF["shock"])
         out["loc"] = Vector((XE - 0.3, y_l, deck - 2.0))
@@ -823,8 +831,8 @@ def shake(tau):
 
 
 def steve_turn(tau):
-    t0 = T["patch_omg_end"] + 0.08
-    return ss(t0, t0 + 0.55, tau)
+    t0 = T["hang"] + 0.45                                     # Patch drops in: they swing round to see him
+    return ss(t0, t0 + 0.6, tau)
 
 
 def steve_one_hand(E, tau, u, p):
@@ -849,7 +857,7 @@ def steve_one_hand(E, tau, u, p):
     face = dict(flat_)
     if tau >= dl - 0.1:
         mad = {"both_to": 0.0, "both_tm": 0.0, "both_ti": 0.1, "both_ps": 0.55, "both_py": 0.0,
-               "bb_tilt": 0.75, "bb_raise": -0.3, "m_arch": -0.1}
+               "bb_tilt": 0.75, "bb_raise": -0.3, "m_arch": -0.1, "m_w": 2.1}
         face = _mixf(flat_, mad, build)
     return p, face, -125 * q
 
@@ -863,16 +871,18 @@ def _mix(a, b, u):
 
 def _mixf(a, b, u):
     keys = set(a) | set(b)
-    return {k: lerp(a.get(k, 0.0), b.get(k, 0.0), u) for k in keys}
+    return {k: lerp(a.get(k, b.get(k)), b.get(k, a.get(k)), u) for k in keys}
 
 
 # ------------------------------------------------------------------ Patch
 def patch(E, t, tau):
+    """Patch drops in from above, already scanning Null with his beam (the beam sweeping
+    him); it clicks (his eye goes wide), and still scanning he says it."""
     from patch import DEFAULTS as PD, set_patch
     Pt = E.Pt
     XE, deck = E.XE, E.deck
-    t_in = T["hang"] + 0.55
-    if tau < t_in - 0.2:
+    t_in = T["hang"] - 0.15
+    if tau < t_in:
         Pt.root.location = (0, 0, -500)
         for o in Pt.col.objects:
             o.hide_render = True
@@ -880,33 +890,37 @@ def patch(E, t, tau):
     for o in Pt.col.objects:
         o.hide_render = False
     Pt.beam.hide_render = True
-    # he rises out of the void and stops in front of them, bobbing, thrilled
-    u = ss(t_in - 0.2, t_in + 0.75, tau)
+    u = ss(t_in, T["hang"] + 0.7, tau)
     home = Vector((XE - 1.75, E.Y0 + 0.5 - 0.2, deck - 0.75))
-    loc = home + Vector((-0.4 * (1 - u), -0.3 * (1 - u), -4.5 * (1 - back_out(u) if u < 1 else 0.0)))
-    loc.z += 0.06 * math.sin(tau * 4.0) + 0.05 * math.sin(tau * 9.0) * ss(T["patch_omg"], T["patch_omg"] + 0.2, tau)
-    # facing them (+x), then, on "Look!", round to Null (-x) and the beam
-    t_look = T["patch_omg_end"] - 0.45
-    turn = ss(t_look, t_look + 0.25, tau) * (1 - ss(T["steve_seen"] + 0.1, T["steve_seen"] + 0.5, tau))
-    face_dir = Vector((1, 0.15, 0)).lerp(Vector((-1, -0.35, 0.0)), turn).normalized()
+    drop = 1 - back_out(u) if u < 1 else 0.0
+    loc = home + Vector((0.25 * drop, -0.2 * drop, 5.5 * drop))
+    loc.z += 0.05 * math.sin(tau * 4.0)
+    null_at = Vector((XE - 26.0, E.Y0 + 7.0, deck + 4.0))
+    f = (null_at - loc)
+    f = Vector((f.x, f.y, 0)).normalized()
+    realize = ss(T["patch_omg"] - 0.4, T["patch_omg"] - 0.1, tau)
     Pt.root.location = loc
-    Pt.root.rotation_euler = (math.radians(-8 + 14 * turn), 0, math.atan2(-face_dir.x, face_dir.y) + math.pi)
+    Pt.root.rotation_euler = (math.radians(-6 - 6 * realize), 0, math.atan2(-f.x, f.y) + math.pi)
     vals = dict(PD)
-    vals.update({"open": 1.0, "smile": 0.0, "wide": 0.0})
-    talking = T["patch_omg"] <= tau < T["patch_omg_end"]
-    if talking:
-        vals.update({"smile": 0.9, "wide": 0.0, "look_y": 0.1})
-    if turn > 0.5:
-        vals.update({"smile": 0.0, "wide": 1.0, "scan": 1.0 if tau < T["steve_seen"] + 0.1 else 0.0})
+    scanning = T["hang"] + 0.25 <= tau < T["steve_seen"] + 0.1
+    vals.update({"open": 1.0, "smile": 0.0, "wide": 0.0, "squint": 0.45 * (1 - realize)})
+    if realize > 0.5:
+        vals.update({"wide": 1.0, "squint": 0.0})
+    if T["patch_omg"] <= tau < T["patch_omg_end"]:
+        vals.update({"smile": 0.7, "wide": 0.8})
+    if scanning:
+        vals["scan"] = 1.0
     if tau >= T["steve_seen"] + 0.3:                           # Steve's answer: he blinks at him
-        b = ss(T["steve_delete"] + 1.2, T["steve_delete"] + 1.35, tau)
-        vals.update({"smile": 0.0, "wide": 0.6 * (1 - b), "open": 1.0 - 0.9 * math.exp(-((tau - T["steve_delete"] - 1.6) / 0.05) ** 2)})
-    for side, sg in (("l", 1), ("r", -1)):
+        vals.update({"smile": 0.0, "wide": 0.4, "scan": 0.0,
+                     "open": 1.0 - 0.9 * math.exp(-((tau - T["steve_delete"] - 1.6) / 0.05) ** 2)})
+    for side in ("l", "r"):
         Pt.fins[side].rotation_euler = (math.radians(25 * math.sin(tau * 18.0)), 0, 0)
     set_patch(Pt, vals)
-    if vals.get("scan", 0) > 0.5:
+    if scanning:
         Pt.beam.hide_render = False
-        Pt.beam.rotation_euler = (math.radians(E.beam_pitch), 0, 0)
+        sweep = 1 - realize
+        Pt.beam.rotation_euler = (math.radians(E.beam_pitch + 12 * math.sin(tau * 3.1) * sweep), 0,
+                                  math.radians(14 * math.sin(tau * 2.3) * sweep))
     E.patch_at = loc
 
 
@@ -947,7 +961,8 @@ def _head(ob_face, holder=None):
 
 
 def shots():
-    return [("S1", T["run"] - 1.5), ("S2", T["run"]), ("S3", T["run"] + 0.32), ("S4", T["catch"] + 0.18),
+    return [("S1", T["run"] - 1.5), ("S2", T["run"] - 0.45), ("S3", T["run"] + 0.12), ("S4", T["drop"] + 0.25),
+            ("S4b", T["catch"] + 0.18),
             ("S5", T["hang"]), ("S5b", T["hang"] + 0.6), ("S6", T["steve_seen"]), ("S7", 1e9)]
 
 
@@ -982,15 +997,22 @@ def camera(E, t, tau):
         return loc, mid + Vector((-0.2, 0, 0.3)), 24, 8.0, (hs - loc).length, 0.4, 0.0
     if name == "S3":
         # Steve snaps out of it: close from in front (the -x side), he sees it
-        loc = hs + Vector((-1.0, -0.75, -0.05))
-        return loc, hs + Vector((0, 0, -0.03)), 40, 2.0, None, 0.5, 0.0
+        loc = hs + Vector((-0.6, 1.1, 0.0))
+        return loc, hs + Vector((0, 0, -0.03)), 40, 2.0, None, 0.15, 0.0
+    if name == "S4b":
+        # at the very edge: they come down at it, and their hands slam on it in front of us
+        land = W["land"]
+        jolt = math.exp(-((tau - land) / 0.05) ** 2) if tau > land - 0.1 else 0.0
+        loc = Vector((XE + 0.85, yc - 0.1, deck + 0.42))
+        look = Vector((XE - 0.9, yc, deck - 0.35))
+        return loc, look, 22, 6.0, (Vector((XE, yc, deck)) - loc).length, 0.3 + 2.4 * jolt, 0.0
     if name == "S4":
         # low on the island behind the stub, looking back along the bridge: they run at us, the deck goes, they leap,
         # their hands slam down in front of the lens
         land = W["land"]
         jolt = math.exp(-((tau - land) / 0.05) ** 2) if tau > land - 0.1 else 0.0
-        dolly = ss(W["leap"] - 0.3, land, tau)
-        loc = Vector((XE + 1.75 - 0.55 * dolly, yc - 0.1, deck + 0.5 - 0.12 * dolly))
+        dolly = 0.0
+        loc = Vector((XE + 2.6, yc - 0.1, deck + 0.55))
         look = Vector((XE - 2.5, yc, deck + 0.35 - 1.5 * dolly))
         return loc, look, 20, 5.0, (Vector((XE, yc, deck)) - loc).length, 0.35 + 2.0 * jolt, 0.0
     if name == "S5":
@@ -1007,10 +1029,15 @@ def camera(E, t, tau):
         return loc, look, 28, 5.6, (look - loc).length, 0.25, 0.0
     if name == "S6":
         # beside them against the stub, looking out: Patch rises into view, Null far behind him
-        loc = hs + Vector((-0.3, -0.75, 0.02))
         pa = getattr(E, "patch_at", Vector((XE - 1.75, yc - 0.2, deck - 0.75)))
-        look = pa.lerp(Vector((XE - 26.0, Y0 + 7.0, deck + 3.0)), 0.06) + Vector((0, 0.25, 0))
-        return loc, look, 28, 3.5, (pa - loc).length, 0.25, -3.0
+        f = Vector((XE - 26.0, Y0 + 7.0, 0)) - Vector((pa.x, pa.y, 0))
+        f.normalize()
+        a = math.radians(66)
+        c = Vector((f.x * math.cos(a) - f.y * math.sin(a), f.x * math.sin(a) + f.y * math.cos(a), 0))
+        loc = pa + c * lerp(2.3, 2.0, u) + Vector((0, 0, 0.25))
+        hm = 0.5 * (hs + hn)
+        look = pa.lerp(hm, 0.55) + Vector((0, 0, -0.1))
+        return loc, look, 30, 4.0, (pa - loc).length, 0.22, 0.0
     # S7: from Patch's side: Steve, one hand, turned to us; deadpan, then the build, the push-in on DELETE
     dl = T["steve_delete"]
     push = ss(dl + 0.6, dl + 1.4, t)

@@ -107,6 +107,8 @@ TONGUE = (0.55, 0.16, 0.16)
 LIDLINE = (0.12, 0.05, 0.03)
 
 
+GLOSSY_EYES = False                               # the Noob's eyes as wet glass domes that mirror the world (part 7)
+EYEMASK = []
 GLOW = []                                         # (mask, colour) pairs the face adds as a faint glow
 
 
@@ -189,6 +191,8 @@ def _eye_noob(X, Y, e, inner_dir, base):
     shine = mx(shine, lt(h2x * h2x + h2y * h2y, 1.0))
     col = mix(shine, col, (0.95, 0.95, 0.95))
     GLOW.append(inside * shine)
+    if GLOSSY_EYES:
+        EYEMASK.append((inside, dx, dy))
     out = mix(inside, base, col)
     # closed: a thin dark curve
     shut = lt(P["open"], 0.12) * lt(ab(dx), 0.95) * lt(ab(Y - (cy - ry * 0.35) - 0.12 * (1 - dx * dx)), 0.06)
@@ -272,6 +276,33 @@ def face_material(skin_image, name="steve_face", style="steve"):
     if style == "noob":                               # smooth plastic; the eyes and mouth glossier still
         bsdf.inputs["Roughness"].default_value = 0.32
         bsdf.inputs["Specular IOR Level"].default_value = 0.5
+        if EYEMASK:                                   # the eyes: mirror-smooth domes (the world curves across them)
+            m_ = None
+            h_ = None
+            for ins, dx_, dy_ in EYEMASK:
+                dome = N.math("SQRT", clamp01(1.0 - dx_ * dx_ - dy_ * dy_)) * ins
+                m_ = ins if m_ is None else mx(m_, ins)
+                h_ = dome if h_ is None else mx(h_, dome)
+            nt.links.new((0.32 - 0.31 * m_).s, bsdf.inputs["Roughness"])
+            nt.links.new((0.5 + 0.5 * m_).s, bsdf.inputs["Specular IOR Level"])
+            bump = nt.nodes.new("ShaderNodeBump")
+            bump.inputs["Strength"].default_value = 0.25
+            bump.inputs["Distance"].default_value = 0.06
+            nt.links.new(h_.s, bump.inputs["Height"])
+            nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+            # and a real mirror over the pupils (a dark dielectric alone reflects too little head-on)
+            gl = nt.nodes.new("ShaderNodeBsdfGlossy")
+            gl.inputs["Color"].default_value = (0.62, 0.6, 0.66, 1)
+            gl.inputs["Roughness"].default_value = 0.03
+            nt.links.new(bump.outputs["Normal"], gl.inputs["Normal"])
+            out_ = nt.nodes["Material Output"]
+            mxs = nt.nodes.new("ShaderNodeMixShader")
+            nt.links.new((m_ * 0.7).s, mxs.inputs[0])
+            nt.links.new(bsdf.outputs["BSDF"], mxs.inputs[1])
+            nt.links.new(gl.outputs["BSDF"], mxs.inputs[2])
+            nt.links.new(mxs.outputs[0], out_.inputs["Surface"])
+            EYEMASK.clear()
+    EYEMASK.clear()
     return m
 
 
