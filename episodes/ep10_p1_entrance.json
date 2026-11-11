@@ -67,7 +67,7 @@
   {"beat": "press", "dur": 0.53},
   {"beat": "tear", "dur": 0.12},
   {"line": "null", "name": "null_hi", "text": "HI!", "direction_text": "[a huge, delighted, cheerful shout] HI!",
-   "pad": 0.0, "solo_only": true, "solo_text": "HI!", "null_punch": true},
+   "pad": 0.0, "solo_only": true, "solo_text": "HI!", "null_punch": true, "caption_size": 200},
   {"beat": "hold", "dur": 0.42},
   {"beat": "rise", "dur": 1.65}
  ]

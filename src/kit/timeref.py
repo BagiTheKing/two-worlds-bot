@@ -65,6 +65,10 @@ if __name__ == "__main__":
     import sys
     ep, tl = json.load(open(sys.argv[1])), json.load(open(sys.argv[2]))
     tl["overlays"] = resolve_overlays(ep.get("overlays", []), tl["beats"], tl["length"])
+    sizes = {e["name"]: e["caption_size"] for e in ep.get("events", []) if e.get("line") and e.get("caption_size")}
+    for ln in tl["lines"]:                                   # caption looks set in the episode file since
+        if ln["name"] in sizes:
+            ln["caption_size"] = sizes[ln["name"]]
     with open(sys.argv[2], "w") as f:
         json.dump(tl, f, indent=1)
     print(f"{len(tl['overlays'])} overlays re-resolved")

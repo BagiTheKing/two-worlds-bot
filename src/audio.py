@@ -1472,7 +1472,7 @@ def build(episode_path, out_dir, keep=None):
                     print(f"  {name}: sped up x{ratio:.2f} to fit its {room:.2f}s")
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
-                          "caption": ev.get("caption", True),
+                          "caption": ev.get("caption", True), **({"caption_size": ev["caption_size"]} if ev.get("caption_size") else {}),
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))

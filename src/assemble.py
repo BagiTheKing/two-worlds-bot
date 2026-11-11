@@ -767,7 +767,7 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         if not ln.get("caption", True):
             continue
         color = tl["cast"][ln["who"]]["caption"]
-        caps += [(a, b, txt, color) for a, b, txt in chunks(ln)]
+        caps += [(a, b, txt, color, ln.get("caption_size", 92)) for a, b, txt in chunks(ln)]
     font = ImageFont.truetype(FONT, 92)
     fonts = {"mono": ImageFont.truetype(MONO, 54), "mono_small": ImageFont.truetype(MONO, 40),
              "big": ImageFont.truetype(FONT, 80), "mid": ImageFont.truetype(FONT, 50),
@@ -821,15 +821,21 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
             if o["type"] in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)
         row = 0
-        for a, b, txt, color in caps:
+        for a, b, txt, color, base in caps:
             if a <= t < b:
                 y = CAPTION_Y + 115 * row                  # lines said together stack
                 row += 1
                 pop = min(1.0, (t - a) / 0.08)
-                size = int(92 * (0.82 + 0.18 * pop))
+                shout = base > 120                         # a shout punches in from bigger, and shakes
+                size = int(base * ((1.35 - 0.35 * pop) if shout else (0.82 + 0.18 * pop)))
                 fnt = fitted(txt, size, W - 140)
-                ImageDraw.Draw(img).text((W // 2, y), txt, font=fnt, fill=color,
-                                         anchor="mm", stroke_width=10, stroke_fill=(0, 0, 0))
+                x = W // 2
+                if shout:
+                    k = max(0.0, 1 - (t - a) / 0.6)
+                    x += int(14 * k * math.sin(t * 61))
+                    y += int(10 * k * math.sin(t * 47 + 1))
+                ImageDraw.Draw(img).text((x, y), txt, font=fnt, fill=color,
+                                         anchor="mm", stroke_width=max(10, base // 9), stroke_fill=(0, 0, 0))
         for o in overlays:
             if o["type"] not in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)
