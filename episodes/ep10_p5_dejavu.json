@@ -123,7 +123,9 @@
    "text": "Noob! Run!",
    "voice_file": "assets/clips/ep10/ep0_steve_noob_run.wav",
    "pad": 0.0,
-   "caption_y": 1420
+   "caption_y": 1420,
+   "trim": 1.32,
+   "trim_fade": 0.1
   },
   {
    "line": "noob",
@@ -146,11 +148,12 @@
    "pad": 0.0,
    "solo_only": true,
    "solo_text": "I went through this four hundred and twelve times!",
-   "tighten": 0.3
+   "tighten": 0.3,
+   "speed": 1.1
   },
   {
    "beat": "hush",
-   "dur": 0.55
+   "dur": 0.4
   },
   {
    "line": "steve",
@@ -164,7 +167,7 @@
   },
   {
    "beat": "end",
-   "dur": 0.9
+   "dur": 0.6
   }
  ]
 }
