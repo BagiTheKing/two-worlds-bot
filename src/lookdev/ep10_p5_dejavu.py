@@ -70,7 +70,7 @@ def build(tl, tex_dir, assets, res, samples):
     sc = E.sc
     plan = E.plan
     for p, ob in zip(plan.parts, E.objs):                   # his world, finished
-        ob.hide_render = False
+        ob.hide_render = bool(ob.get("keep_hidden"))
         ob.location = p["at"]
         ob.scale = (1, 1, 1)
         ob["flash"] = 0.0
@@ -98,6 +98,14 @@ def build(tl, tex_dir, assets, res, samples):
     E.old = old
     _ghostify([o for o in col.objects if o.name.startswith("loop_ghost") and o.type == "MESH"])
     E.Sp = Vector((1.7, plan.bridge_end.y, plan.deck))       # Steve, on the old planks, facing the Noob (-x)
+    # his bridge reaches on over the old one's broken planks (no holes underfoot now)
+    from roblox import make_part, plastic_material
+    pa = make_part(col, "rbx_bridge_reach", (3.3, 3.0, 0.5), "Bright violet", plastic_material())
+    for p_, ob_ in zip(plan.parts, E.objs):                  # (his last rainbow part lies under it)
+        if p_["kind"] == "bridge" and p_["colour"] == "Bright violet":
+            ob_.hide_render = True
+            ob_["keep_hidden"] = 1
+    pa.location = (plan.bridge_end.x + 0.6, plan.bridge_end.y, plan.deck - 0.25 + 0.045)   # over the planks and his last part
     E.Np0 = Vector((plan.lip.x - 0.4, plan.lip.y, plan.deck))
     sc.render.motion_blur_shutter = 0.5
     return E
@@ -284,6 +292,9 @@ def apply(E, t):
 
 def camera(E, t, tc, hs):
     Sp = E.Sp
+    if os.environ.get("TOPCAM"):                             # look-dev: the bridge joint from above
+        c = Vector((E.plan.bridge_end.x + 0.5, E.plan.bridge_end.y, E.plan.deck))
+        return c + Vector((0.01, -0.5, 7.0)), c, 24, 8.0, None, 0.0
     if t < T["noob_running"]:                                # A: Steve, close, from the Noob's side
         u = ss(T["a"], T["noob_running"], t)
         loc = hs + Vector((-1.6 + 0.2 * u, -0.9 + 0.1 * u, -0.15))
@@ -317,8 +328,8 @@ def finish(path, mist_path, d, flash):
     if d > 0:
         rnd = np.random.default_rng(int(d * 1000) + int(os.path.basename(path)[:-4]))
         # the memory's softness: a glow of itself, blurred
-        soft = np.asarray(im.filter(ImageFilter.GaussianBlur(4 + 6 * d)), np.float32) / 255.0
-        a = a * (1 - 0.45 * d) + soft * 0.45 * d
+        soft = np.asarray(im.filter(ImageFilter.GaussianBlur(3 + 4 * d)), np.float32) / 255.0
+        a = a * (1 - 0.35 * d) + soft * 0.35 * d
         # colour drains toward an old print's warmth
         lum = a @ np.array([0.3, 0.59, 0.11], np.float32)
         sep = np.stack([lum * 1.08 + 0.04, lum * 0.95 + 0.02, lum * 0.78], -1)
@@ -329,7 +340,7 @@ def finish(path, mist_path, d, flash):
             a[:, :, 0] = np.roll(a[:, :, 0], sh, 1)
             a[:, :, 2] = np.roll(a[:, :, 2], -sh, 1)
         # grain
-        a += rnd.normal(0, 0.06 * d, (h, w, 1)).astype(np.float32)
+        a += rnd.normal(0, 0.04 * d, (h, w, 1)).astype(np.float32)
         # a few torn lines, more as it deepens
         for _ in range(int(6 * d)):
             y0 = int(rnd.integers(0, h - 8))
