@@ -1289,8 +1289,26 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
        "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
        "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
-       "heart": lambda e: sfx_thump(e.get("freq", 48), 0.55, 0.0),     # a heartbeat: the thump without its crack
+       "heart": lambda e: sfx_heart(e.get("dub", False)),
        "ring": lambda e: sfx_ring(e.get("dur", 4.0))}
+
+
+def sfx_heart(dub=False):
+    """A heartbeat that a phone speaker can play ("bom"): the deep thump (60 Hz) for
+    headphones, and for small speakers its upper harmonics and a muffled knock
+    (140-420 Hz), driven so the beat stays round; "dub" is the softer second beat."""
+    n = 0.42
+    x = t(n)
+    f0 = 66 if dub else 58
+    e = env(len(x), 0.004, 0.1 if dub else 0.13)
+    sweep = 1 - 0.3 * x
+    body = np.sin(2 * np.pi * f0 * x * sweep)
+    harm = 0.8 * np.sin(2 * np.pi * 2 * f0 * x * sweep) + 0.6 * np.sin(2 * np.pi * 3 * f0 * x * sweep) \
+        + 0.35 * np.sin(2 * np.pi * 4 * f0 * x * sweep)
+    knock = band(rng.standard_normal(len(x)), 140, 420) * env(len(x), 0.002, 0.06)
+    y = (body + harm) * e + 1.1 * norm(knock)
+    y = np.tanh(2.6 * y) / np.tanh(2.6)
+    return norm(y, 0.95 if not dub else 0.75)
 
 
 def sfx_ring(dur):

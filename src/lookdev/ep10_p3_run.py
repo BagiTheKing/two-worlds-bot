@@ -49,7 +49,38 @@ def build(tl, assets, res, samples):
     from stage import build_patch_char
     E.Pt = build_patch_char(E.sc, size=0.4)
     _boulder(E, assets)
+    _dust(E)
     return E
+
+
+def _dust(E, n=70):
+    """Specks hanging in the air around them in the slow motion (it makes the slowness visible):
+    near-black chips, a few magenta and cyan sparks, ash."""
+    import random
+    rnd = random.Random(23)
+    E.dust = []
+    mats = []
+    for name, rgb, power in (("dust_dark", (14, 10, 18), 0.0), ("dust_pink", (255, 60, 230), 6.0),
+                             ("dust_cyan", (60, 230, 255), 5.0), ("dust_ash", (150, 130, 160), 0.0)):
+        m = bpy.data.materials.new(name)
+        m.use_nodes = True
+        b = m.node_tree.nodes["Principled BSDF"]
+        b.inputs["Base Color"].default_value = (*EN.lin(rgb), 1)
+        b.inputs["Emission Color"].default_value = (*EN.lin(rgb), 1)
+        b.inputs["Emission Strength"].default_value = power
+        mats.append(m)
+    for i in range(n):
+        bpy.ops.mesh.primitive_cube_add(size=1)
+        ob = bpy.context.active_object
+        ob.name = f"dust_{i}"
+        k = rnd.random()
+        ob.data.materials.append(mats[0] if k < 0.55 else mats[3] if k < 0.8 else mats[1] if k < 0.92 else mats[2])
+        ob["off"] = (rnd.uniform(-1.6, 1.6), rnd.uniform(-1.6, 1.6), rnd.uniform(-1.1, 1.3))
+        ob["vel"] = (rnd.uniform(-0.25, 0.25), rnd.uniform(-0.25, 0.25), rnd.uniform(-0.05, 0.3))
+        ob["spin"] = (rnd.uniform(-3, 3), rnd.uniform(-3, 3), rnd.uniform(-3, 3))
+        ob["size"] = rnd.uniform(0.012, 0.05) * (2.2 if k < 0.55 else 1.0)
+        ob.hide_render = True
+        E.dust.append(ob)
 
 
 def _boulder(E, assets):
@@ -100,12 +131,12 @@ def turn_layers(t, t0, dur):
     -> (head, chest, hips) progress 0..1, the step 0..1 (a foot lifts and plants),
        the flinch 0..1..0 (the arms come up, then drop into the run), the dip 0..1..0."""
     u = (t - t0) / dur
-    head = ss(0.0, 0.5, u)
-    chest = ss(0.1, 0.72, u)
-    hips = ss(0.22, 0.95, u)
-    step = ss(0.3, 0.8, u)
-    flinch = ss(0.05, 0.4, u) * (1 - ss(0.62, 1.0, u))
-    dip = math.sin(math.pi * min(1.0, max(0.0, (u - 0.15) / 0.75)))
+    head = ss(0.0, 0.62, u)
+    chest = ss(0.06, 0.9, u)
+    hips = ss(0.15, 1.12, u)                          # still turning at the cut: no hold, no pause
+    step = ss(0.28, 1.05, u)
+    flinch = ss(0.04, 0.42, u) * (1 - 0.6 * ss(0.65, 1.1, u))
+    dip = math.sin(math.pi * min(1.0, max(0.0, (u - 0.12) / 0.95)))
     return head, chest, hips, step, flinch, dip, min(1.0, max(0.0, u))
 
 
@@ -186,7 +217,8 @@ def camera(t, hs, hn, hx=None):
         loc = hn + Vector((math.sin(a), -math.cos(a), 0.0)) * lerp(2.3, 2.0, u) + Vector((0, 0, -0.2))
         return loc, hn, 46 + 6 * u, 1.6, None, 0.3, 0.02
     if t < T["run"]:                                        # c3: through Steve's eyes: Null, then the way out
-        u = ss(T["pov"] + 0.15, T["run"] - 0.05, t)
+        u = min(1.0, max(0.0, (t - T["pov"] - 0.1) / (T["run"] - T["pov"] - 0.05)))
+        u = u * u * (2.2 - 1.2 * u)                         # starts slow, still moving at the cut
         eye = STEVE_AT + Vector((0.0, -0.05, 1.78))
         a = math.radians(lerp(0, 180, u))                   # swings round, away from him
         up = lerp(66, 2, ss(0.1, 0.8, u))                   # from his face down to the path
@@ -403,6 +435,17 @@ def apply(E, t):
     E.face_fill.rotation_euler = (look - E.face_fill.location).to_track_quat("-Z", "Y").to_euler()
     E.key.data.energy = 0.0
     E.sc.render.motion_blur_shutter = 0.15 if slow else 0.5             # slow motion: crisp
+    centre_ = look if T["pov"] > t else None
+    for ob in E.dust:                                                    # the specks, at a crawl
+        ob.hide_render = not (slow and centre_ is not None)
+        if ob.hide_render:
+            continue
+        el = 0.2 * (t - T["turn_s"])                                     # their own time: five times slower
+        o, v, w = Vector(ob["off"]), Vector(ob["vel"]), Vector(ob["spin"])
+        ob.location = centre_ + o + v * el * 4.0
+        ob.rotation_euler = tuple(w * el * 3.0)
+        z = ob["size"]
+        ob.scale = (z, z, z)
     return {"g": 0.0, "s": 1.0}
 
 
