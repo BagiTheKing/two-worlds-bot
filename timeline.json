@@ -1,0 +1,115 @@
+{
+ "id": "ep10_p5_dejavu",
+ "fps": 24,
+ "length": 12.271,
+ "beats": {
+  "a": [
+   0.0,
+   0.2
+  ],
+  "steve_noob_run": [
+   0.2,
+   1.52
+  ],
+  "noob_running": [
+   1.52,
+   3.404
+  ],
+  "steve_412": [
+   3.754,
+   9.608
+  ],
+  "snap": [
+   9.758,
+   10.008
+  ],
+  "hush": [
+   10.008,
+   10.358
+  ],
+  "steve_trap": [
+   10.358,
+   11.671
+  ],
+  "end": [
+   11.671,
+   12.271
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_noob_run",
+   "who": "steve",
+   "text": "Noob! Run!",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 0.2,
+   "end": 1.52
+  },
+  {
+   "name": "noob_running",
+   "who": "noob",
+   "text": "I am running!",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 1.52,
+   "end": 3.404
+  },
+  {
+   "name": "steve_412",
+   "who": "steve",
+   "text": "I went through it all. Again and again. 412 times.",
+   "vo": true,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 3.754,
+   "end": 9.608
+  },
+  {
+   "name": "steve_trap",
+   "who": "steve",
+   "text": "I built a trap.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 10.358,
+   "end": 11.671
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, calm and dry, hit by a terrible realization: stunned and shaken, then quietly broken"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the cheerful Noob"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 12.671
+  }
+ ]
+}
