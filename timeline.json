@@ -1,0 +1,91 @@
+{
+ "id": "ep10_p2_omg",
+ "fps": 24,
+ "length": 6.517,
+ "beats": {
+  "breath": [
+   0.0,
+   0.45
+  ],
+  "steve_omg": [
+   0.45,
+   3.404
+  ],
+  "hold": [
+   3.404,
+   3.604
+  ],
+  "legs": [
+   3.604,
+   4.954
+  ],
+  "noob": [
+   4.954,
+   5.154
+  ],
+  "noob_steve": [
+   5.154,
+   6.017
+  ],
+  "end": [
+   6.017,
+   6.517
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_omg",
+   "who": "steve",
+   "text": "Oh... My... God...",
+   "vo": false,
+   "caption": true,
+   "start": 0.45,
+   "end": 3.404,
+   "caption_y": 1420
+  },
+  {
+   "name": "noob_steve",
+   "who": "noob",
+   "text": "...Steve?",
+   "vo": false,
+   "caption": true,
+   "start": 5.154,
+   "end": 6.017,
+   "caption_y": 1420
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.7,
+   "pace": 0.3,
+   "stability": 0.4,
+   "gemini_voice": "Charon",
+   "acting": "Steve, calm and dry, now frozen in shock and fear at something enormous in the sky: breathless, a stunned whisper on the first word, shakier on the second, and the last word cracks; long pauses between the words"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.4,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the cheerful Noob, terrified for once: a tiny, high, trembling whimper, barely a voice, asking his friend for help"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 6.917
+  }
+ ]
+}
