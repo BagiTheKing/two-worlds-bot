@@ -1290,7 +1290,17 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
        "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
        "heart": lambda e: sfx_heart(e.get("dub", False)),
-       "ring": lambda e: sfx_ring(e.get("dur", 4.0))}
+       "ring": lambda e: sfx_ring(e.get("dur", 4.0)),
+       "clip": lambda e: _clip_file(e["path"])}
+
+
+def _clip_file(path):
+    """A ready-made sound from the repo (mono, at SR), placed like any effect."""
+    x, r = sf.read(path)
+    x = x.mean(axis=1) if x.ndim > 1 else x
+    if r != SR:
+        x = np.interp(np.linspace(0, len(x) - 1, int(len(x) * SR / r)), np.arange(len(x)), x)
+    return x
 
 
 def sfx_heart(dub=False):

@@ -1,0 +1,174 @@
+{
+ "id": "ep10_p7_reveal",
+ "number": 10,
+ "title": "The First Portal Was a Trap: what he is made of",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, annoyed at first, then frozen in horror as he understands"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.4,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, a small floating robot, suddenly quiet and serious for once"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, panicked, yelling, shaking his friend awake"
+  }
+ },
+ "music": [
+  {
+   "cue": "null",
+   "from": "see",
+   "to": "end",
+   "gain": 0.2,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": 0,
+   "to": "dive",
+   "gain": 0.3
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "scan",
+   "at": "a",
+   "dur": 2.4,
+   "gain": 0.2
+  },
+  {
+   "kind": "heart",
+   "at": "see+0.35",
+   "gain": 0.6
+  },
+  {
+   "kind": "heart",
+   "at": "see+0.75",
+   "dub": true,
+   "gain": 0.45
+  },
+  {
+   "kind": "sub_drop",
+   "at": "steve_you.end-1.2",
+   "gain": 0.45
+  },
+  {
+   "kind": "whoosh",
+   "at": "steve_you.end-1.0",
+   "dur": 1.0,
+   "gain": 0.3
+  },
+  {
+   "kind": "suck",
+   "at": "steve_you.end-0.15",
+   "dur": 0.4,
+   "gain": 0.35
+  },
+  {
+   "kind": "clip",
+   "path": "assets/clips/ep10/cells_chorus.wav",
+   "at": "steve_you.end-1.0",
+   "gain": 0.75
+  },
+  {
+   "kind": "glitch",
+   "at": "dive+1.0",
+   "dur": 0.25,
+   "gain": 0.25
+  },
+  {
+   "kind": "heart",
+   "at": "dive+1.6",
+   "gain": 0.5
+  },
+  {
+   "kind": "heart",
+   "at": "dive+2.0",
+   "dub": true,
+   "gain": 0.4
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "a",
+   "dur": 0.25
+  },
+  {
+   "line": "patch",
+   "name": "patch_look",
+   "caption_y": 1420,
+   "text": "No, look at what he is made of...",
+   "direction_text": "[quiet, serious for once, slow, almost sad] No... look at what he is made of...",
+   "pad": 0.1,
+   "solo_only": true,
+   "solo_text": "No... look at what he is made of..."
+  },
+  {
+   "beat": "see",
+   "dur": 1.4
+  },
+  {
+   "line": "steve",
+   "name": "steve_you",
+   "caption_y": 1420,
+   "text": "Noob... that's you. Every time you respawn...",
+   "direction_text": "[shocked, breathless, horrified, the words barely coming out] Noob... that's you... Every time you respawn...",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "Noob... that's you... Every time you respawn..."
+  },
+  {
+   "beat": "dive",
+   "dur": 4.05
+  },
+  {
+   "beat": "end",
+   "dur": 0.2
+  }
+ ]
+}
