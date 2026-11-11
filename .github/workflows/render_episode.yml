@@ -139,6 +139,7 @@ jobs:
     if: ${{ always() && !inputs.voices_only && inputs.parts != 'new' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '') }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     steps:
@@ -153,12 +154,15 @@ jobs:
           name: prep
           path: build/
       - if: inputs.prep_from != ''
-        uses: actions/download-artifact@v4
-        with:
-          name: prep
-          path: build/
-          run-id: ${{ inputs.prep_from }}
-          github-token: ${{ github.token }}
+        name: The approved sound and timing, from the earlier run (retried; the artifact service can blink)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            rm -rf /tmp/prep && gh run download ${{ inputs.prep_from }} -R ${{ github.repository }} -n prep -D /tmp/prep && break
+            echo "download failed, retry $i"; sleep $((5 * i))
+          done
+          mkdir -p build && cp -r /tmp/prep/. build/ && test -f build/timeline.json
       - name: Render this shard's frames
         run: |
           N=$(python -c "import json; t=json.load(open('build/timeline.json')); print(int(round((t['length'] + 0.4) * t['fps'])) + 1)")
@@ -184,6 +188,7 @@ jobs:
     if: ${{ always() && !inputs.voices_only && inputs.new_look != '' && inputs.parts != 'old' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '') }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
                 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
@@ -199,12 +204,15 @@ jobs:
           name: prep
           path: build/
       - if: inputs.prep_from != ''
-        uses: actions/download-artifact@v4
-        with:
-          name: prep
-          path: build/
-          run-id: ${{ inputs.prep_from }}
-          github-token: ${{ github.token }}
+        name: The approved sound and timing, from the earlier run (retried; the artifact service can blink)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            rm -rf /tmp/prep && gh run download ${{ inputs.prep_from }} -R ${{ github.repository }} -n prep -D /tmp/prep && break
+            echo "download failed, retry $i"; sleep $((5 * i))
+          done
+          mkdir -p build && cp -r /tmp/prep/. build/ && test -f build/timeline.json
       - name: The MCprep pack (block and item textures)
         run: |
           for i in 1 2 3 4; do
@@ -243,12 +251,15 @@ jobs:
           name: prep
           path: build/
       - if: inputs.prep_from != '' && inputs.assemble_from == ''
-        uses: actions/download-artifact@v4
-        with:
-          name: prep
-          path: build/
-          run-id: ${{ inputs.prep_from }}
-          github-token: ${{ github.token }}
+        name: The approved sound and timing, from the earlier run (retried; the artifact service can blink)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for i in 1 2 3 4 5 6; do
+            rm -rf /tmp/prep && gh run download ${{ inputs.prep_from }} -R ${{ github.repository }} -n prep -D /tmp/prep && break
+            echo "download failed, retry $i"; sleep $((5 * i))
+          done
+          mkdir -p build && cp -r /tmp/prep/. build/ && test -f build/timeline.json
       - if: inputs.assemble_from == ''
         uses: actions/download-artifact@v4
         with:
