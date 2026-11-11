@@ -1,0 +1,84 @@
+{
+ "id": "ep10_p3_run",
+ "number": 10,
+ "title": "The First Portal Was a Trap: Run",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.5,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "Steve, calm and dry, frozen in front of a giant monster: a tight, low whisper through his teeth, not moving, every word careful"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.5,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, scared but genuinely curious, whispering back an honest question, a little too loud for a whisper"
+  }
+ },
+ "music": [
+  {"cue": "null", "from": 0, "to": "turn_s", "gain": 0.2, "hard_end": true},
+  {"cue": "chase", "from": "run", "to": "end", "gain": 0.26, "hard_end": true},
+  {"cue": "null", "from": "null_look", "to": "end", "gain": 0.22, "hard_end": true}
+ ],
+ "ambience": [],
+ "sfx": [
+  {"kind": "thump", "at": "turn_s+0.05", "freq": 48, "gain": 0.7},
+  {"kind": "thump", "at": "turn_s+0.27", "freq": 44, "gain": 0.5},
+  {"kind": "thump", "at": "turn_n+0.25", "freq": 48, "gain": 0.75},
+  {"kind": "thump", "at": "turn_n+0.47", "freq": 44, "gain": 0.55},
+  {"kind": "thump", "at": "pov+0.4", "freq": 48, "gain": 0.8},
+  {"kind": "thump", "at": "pov+0.62", "freq": 44, "gain": 0.6},
+  {"kind": "whoosh", "at": "pov+0.2", "dur": 1.0, "gain": 0.25},
+  {"kind": "burst", "at": "run", "gain": 0.45},
+  {"kind": "run", "at": "run", "dur": 3.6, "step": 0.15, "gain": 0.3},
+  {"kind": "rumble_rise", "at": "run", "dur": 2.2, "gain": 0.4},
+  {"kind": "glitch", "at": "run+0.4", "dur": 0.5, "gain": 0.2},
+  {"kind": "whoosh", "at": "fork+0.5", "dur": 0.6, "gain": 0.35},
+  {"kind": "glitch", "at": "null_look+0.25", "dur": 0.18, "gain": 0.4},
+  {"kind": "crunch", "at": "null_look+0.25", "gain": 0.35},
+  {"kind": "glitch", "at": "null_look+0.95", "dur": 0.18, "gain": 0.4},
+  {"kind": "crunch", "at": "null_look+0.95", "gain": 0.35},
+  {"kind": "sub_drop", "at": "null_look+1.7", "dur": 1.4, "gain": 0.6},
+  {"kind": "roar", "at": "null_look+1.8", "dur": 1.0, "gain": 0.4}
+ ],
+ "overlays": [
+  {"type": "watermark", "text": "@GLITCHBOUND2469", "from": 0, "to": "end"}
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [[0, "end.end+1"]],
+ "events": [
+  {"beat": "freeze", "dur": 0.4},
+  {"line": "steve", "name": "steve_signal", "text": "On my signal... we split.",
+   "direction_text": "[a tight whisper through his teeth] On my signal... we split.", "pad": 0.0,
+   "solo_only": true, "solo_text": "On my signal... we split."},
+  {"line": "noob", "name": "noob_signal", "text": "What's the signal?",
+   "direction_text": "[whispering back, honestly curious] What's the signal?", "pad": 0.15,
+   "solo_only": true, "solo_text": "What's the signal?"},
+  {"beat": "beat", "dur": 0.3},
+  {"line": "steve", "name": "steve_run", "text": "RUN!", "direction_text": "[urgent, sharp] RUN!", "pad": 0.0,
+   "solo_only": true, "solo_text": "RUN!", "caption_size": 170},
+  {"beat": "turn_s", "dur": 1.0},
+  {"beat": "turn_n", "dur": 1.0},
+  {"beat": "pov", "dur": 1.3},
+  {"beat": "run", "dur": 2.3},
+  {"beat": "fork", "dur": 1.6},
+  {"beat": "null_look", "dur": 2.6},
+  {"beat": "end", "dur": 0.5}
+ ]
+}
