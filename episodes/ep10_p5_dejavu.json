@@ -1,0 +1,169 @@
+{
+ "id": "ep10_p5_dejavu",
+ "number": 10,
+ "title": "The First Portal Was a Trap: deja vu",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, calm and dry, hit by a terrible realization: stunned and shaken, then quietly broken"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the cheerful Noob"
+  }
+ },
+ "music": [
+  {
+   "cue": "chase",
+   "from": 0,
+   "to": "noob_running+0.42",
+   "gain": 0.2,
+   "hard_end": true
+  },
+  {
+   "cue": "theme_soft",
+   "from": "hush",
+   "to": "end",
+   "gain": 0.16,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": "noob_running+0.42",
+   "to": "snap",
+   "gain": 0.35
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "glitch",
+   "at": "noob_running+0.42",
+   "dur": 0.35,
+   "gain": 0.3
+  },
+  {
+   "kind": "whoosh",
+   "at": "noob_running+0.4",
+   "dur": 1.2,
+   "gain": 0.25
+  },
+  {
+   "kind": "heart",
+   "at": "noob_running+0.9",
+   "gain": 0.7
+  },
+  {
+   "kind": "heart",
+   "at": "noob_running+1.26",
+   "dub": true,
+   "gain": 0.55
+  },
+  {
+   "kind": "burst",
+   "at": "snap",
+   "gain": 0.45
+  },
+  {
+   "kind": "glitch",
+   "at": "snap",
+   "dur": 0.2,
+   "gain": 0.3
+  },
+  {
+   "kind": "sub_drop",
+   "at": "steve_412+0.9",
+   "dur": 1.6,
+   "gain": 0.55
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "a",
+   "dur": 0.2
+  },
+  {
+   "line": "steve",
+   "name": "steve_noob_run",
+   "text": "Noob! Run!",
+   "voice_file": "assets/clips/ep10/ep0_steve_noob_run.wav",
+   "pad": 0.0,
+   "caption_y": 1420
+  },
+  {
+   "line": "noob",
+   "name": "noob_running",
+   "text": "I am running!",
+   "voice_file": "assets/clips/ep10/ep0_noob_running_dejavu.wav",
+   "pad": -0.25,
+   "caption_y": 1420
+  },
+  {
+   "beat": "snap",
+   "dur": 0.2
+  },
+  {
+   "line": "steve",
+   "name": "steve_412",
+   "text": "I went through this... 412 times!",
+   "caption_y": 1420,
+   "direction_text": "[stunned, shaken, the realization rising] I went through this... four hundred and twelve times!",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "I went through this... four hundred and twelve times!"
+  },
+  {
+   "beat": "hush",
+   "dur": 0.55
+  },
+  {
+   "line": "steve",
+   "name": "steve_trap",
+   "text": "I built a trap.",
+   "caption_y": 1420,
+   "direction_text": "[quiet, sad, guilty, almost a whisper] I built a trap.",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "I built a trap."
+  },
+  {
+   "beat": "end",
+   "dur": 0.9
+  }
+ ]
+}
