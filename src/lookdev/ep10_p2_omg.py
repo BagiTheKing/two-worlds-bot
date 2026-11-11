@@ -55,7 +55,7 @@ WORD_SHAPES = [
     [(0.0, "A"), (0.14, "A"), (0.26, "D"), (0.62, "D"), (0.86, "B")],  # "My..."  lips, wide "ah", into "ee"
     [(0.0, "B"), (0.14, "C"), (0.3, "E"), (0.72, "E"), (0.9, "C")],    # "God..." "g", round "o", "d"
 ]
-SHOCK_MOUTH = {"m_o": 0.22, "m_w": 1.35, "m_up": 0.9, "m_r": 1.0, "m_vee": 0.3, "m_arch": 0.0, "m_tu": 0.4}
+SHOCK_MOUTH = {"m_o": 0.36, "m_w": 1.45, "m_up": 0.9, "m_r": 1.0, "m_vee": 0.3, "m_arch": 0.0, "m_tu": 0.5}
 
 
 def mix(a, b, k):
@@ -92,13 +92,14 @@ def steve_mouth(t, env):
             k = ss(0, 1, (u - cur[0]) / span) if nxt is not cur else 0.0
             m = mix(_shape(cur[1]), _shape(nxt[1]), k)
             loud = min(1.0, env(t) / 0.8)
-            if "m_o" in m:
-                m["m_o"] = m["m_o"] * (0.55 + 0.55 * loud)
+            if "m_o" in m:                                       # big enough to read at this framing
+                m["m_o"] = m["m_o"] * (0.8 + 0.6 * loud)
+            m["m_w"] = m.get("m_w", 1.9) * 1.12
             # ease in and out of the word from the hanging-open rest
             e_in, e_out = ss(a - 0.06, a + 0.04, t), 1 - ss(b - 0.02, b + 0.08, t)
             return mix(rest, m, min(e_in, e_out))
     # between words and after: open, trembling
-    rest["m_o"] = rest["m_o"] + 0.04 * math.sin(t * 31) + 0.025 * math.sin(t * 53)
+    rest["m_o"] = rest["m_o"] + 0.05 * math.sin(t * 31) + 0.03 * math.sin(t * 53)
     rest["m_tl"] = 0.3
     return rest
 
@@ -206,8 +207,10 @@ def steve_face(t):
 def noob_face(t):
     from ep09_new import NF
     f = dict(NF["scared"])
-    trem = 0.05 * math.sin(t * 33) + 0.03 * math.sin(t * 57)
-    f.update({"both_py": 0.45 + trem, "both_px": 0.6 * trem, "both_ps": 0.7 + trem})
+    trem = 0.07 * math.sin(t * 33) + 0.04 * math.sin(t * 57)
+    look = ss(T["noob_line"] - 0.1, T["noob_line"] + 0.25, t)          # on "Steve?" his eyes dart to his friend
+    f.update({"both_py": lerp(0.45, 0.2, look) + trem, "both_px": lerp(0.0, -0.55, look) + 0.6 * trem,
+              "both_ps": 0.68 + trem})
     return f
 
 
@@ -229,8 +232,8 @@ def camera(t, hs, hn):
         return loc, feet, lerp(38, 60, u), 3.5, 0.0
     head = hn                                                    # C: the Noob's face, from the side
     u = ss(T["noob"], T["end"] + 0.4, t)
-    loc = head + Vector((1.2 - 0.1 * u, 1.05 - 0.08 * u, -0.3))
-    return loc, head + Vector((0.0, 0.0, 0.05)), lerp(50, 54, u), 1.8, 0.0
+    loc = head + Vector((1.15 - 0.25 * u, 1.1 - 0.25 * u, -0.28))
+    return loc, head + Vector((0.0, 0.0, 0.05)), lerp(52, 64, u), 1.8, 0.0
 
 
 def trauma(t):
@@ -292,7 +295,10 @@ def apply(E, t):
                 fn[f"{e}_{k[5:]}"] = v
         else:
             fn[k] = v
-    talk(fn, E.noob_mouth.get(int(round(t * FPS))))
+    mo = E.noob_mouth.get(int(round(t * FPS)))
+    if mo:
+        mo = dict(mo, m_o=min(1.1, mo["m_o"] * 1.5))
+    talk(fn, mo)
     set_face(N.face, fn)
     # ------------------------------------------------ camera
     bpy.context.view_layer.update()
