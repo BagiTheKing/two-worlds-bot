@@ -622,6 +622,8 @@ def apply(E, t):
     X.orbit.rotation_euler = (math.radians(-10), math.radians(-16), 0.9 * t)
     X.orbit2.rotation_euler = (math.radians(-12), math.radians(14), -0.6 * t)
     place_null_lights(X, fade=1.0)
+    from null import null_smile
+    null_smile(1.0)                                          # the Noob's copied smile, as in every shot of him
     # ------------------------------------------------ Patch, high above
     Pt = E.Pt
     Pt.root.location = PATCH_AT + Vector((0, 0, 0.1 * math.sin(t * 3)))
