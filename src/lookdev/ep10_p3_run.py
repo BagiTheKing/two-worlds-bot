@@ -109,6 +109,17 @@ def turn_layers(t, t0, dur):
     return head, chest, hips, step, flinch, dip, min(1.0, max(0.0, u))
 
 
+def face_yaw(t, who):
+    """Which way the face looks (degrees, 180 = at Null, 0/360 = away) during the turn."""
+    if who == "steve":
+        hd, ch, hp, st, fl, dp, u = turn_layers(t, T["turn_s"], T["turn_n"] - T["turn_s"])
+        Yh, Yc = 180 * hd, 180 * ch
+    else:
+        hd, ch, hp, st, fl, dp, u = turn_layers(t, T["turn_n"], T["pov"] - T["turn_n"])
+        Yh, Yc = -180 * hd, -180 * ch
+    return 180 + Yc + max(-65, min(65, Yh - Yc))
+
+
 def facing(t, turn_at, to=0.0):
     """Yaw (degrees): 180 = toward Null (+y); 0 or 360 = away (-y). The turn, in slow motion
     (to: which way round, so the face passes the camera)."""
@@ -165,13 +176,15 @@ def camera(t, hs, hn, hx=None):
         rum = 0.06 + 0.7 * math.exp(-((t - T["steve_run"] - 0.1) / 0.12) ** 2)
         return loc, look, lens, 1.6, None, 0.5, rum
     if t < T["turn_n"]:                                     # c1: Steve turns in slow motion, through facing us
-        u = ss(T["turn_s"], T["turn_n"], t)
-        loc = hs + Vector((-2.0 + 0.2 * u, -0.25, -0.2))
-        return loc, hs + Vector((0, 0, -0.05)), 52 + 6 * u, 1.6, None, 0.3, 0.02
+        u = ss(T["turn_s"], T["turn_n"], t)                 # the camera arcs with his face (three-quarter)
+        a = math.radians(face_yaw(t, "steve") + 42)
+        loc = hs + Vector((math.sin(a), -math.cos(a), 0.0)) * lerp(2.1, 1.8, u) + Vector((0, 0, -0.25))
+        return loc, hs + Vector((0, 0, -0.05)), 50 + 6 * u, 1.6, None, 0.3, 0.02
     if t < T["pov"]:                                        # c2: the Noob turns
-        u = ss(T["turn_n"], T["pov"], t)
-        loc = hn + Vector((1.35 - 0.15 * u, -0.1, -0.15))
-        return loc, hn, 50 + 6 * u, 1.4, None, 0.3, 0.02
+        u = ss(T["turn_n"], T["pov"], t)                    # the other way round
+        a = math.radians(face_yaw(t, "noob") - 42)
+        loc = hn + Vector((math.sin(a), -math.cos(a), 0.0)) * lerp(2.3, 2.0, u) + Vector((0, 0, -0.2))
+        return loc, hn, 46 + 6 * u, 1.6, None, 0.3, 0.02
     if t < T["run"]:                                        # c3: through Steve's eyes: Null, then the way out
         u = ss(T["pov"] + 0.15, T["run"] - 0.05, t)
         eye = STEVE_AT + Vector((0.0, -0.05, 1.78))
@@ -253,9 +266,9 @@ def apply(E, t):
                       "chest_side": -6 * dp, "head_tilt": 5 * dp,
                       "hips_drop": lerp(0.18, 0.24, hp) + 0.06 * dp,
                       # the flinch: his left arm (screen right) comes up across, the other swings back
-                      "arm_sr": {"out": lerp(16, 20, fl), "fwd": lerp(9, 75, fl) - 30 * ss(0.7, 1.0, u),
-                                 "elbow": lerp(34, 95, fl), "twist": 25 * fl},
-                      "arm_sl": {"out": lerp(18, 26, fl), "fwd": lerp(12, -38, ch), "elbow": lerp(30, 55, fl)},
+                      "arm_sl": {"out": lerp(18, 28, fl), "fwd": lerp(12, 70, fl) - 30 * ss(0.7, 1.0, u),
+                                 "elbow": lerp(30, 90, fl), "twist": 20 * fl},
+                      "arm_sr": {"out": lerp(16, 22, fl), "fwd": lerp(9, -35, ch), "elbow": lerp(34, 50, fl)},
                       # the step: the back foot lifts, swings round and plants, the other pivots
                       "foot_sr": {"y": lerp(0.7, -0.45, st), "x": 0.15 * math.sin(math.pi * st),
                                   "z": 0.22 * math.sin(math.pi * st), "yaw": lerp(10, -20, st)},
