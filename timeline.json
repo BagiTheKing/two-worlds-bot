@@ -1,0 +1,74 @@
+{
+ "id": "ep10_p4_build",
+ "fps": 24,
+ "length": 8.604,
+ "beats": {
+  "a": [
+   0.0,
+   1.4
+  ],
+  "b": [
+   1.4,
+   2.3
+  ],
+  "b2": [
+   2.3,
+   3.2
+  ],
+  "c": [
+   3.2,
+   3.55
+  ],
+  "patch_bad": [
+   3.55,
+   4.904
+  ],
+  "c2": [
+   4.904,
+   5.404
+  ],
+  "d": [
+   5.404,
+   7.604
+  ],
+  "e": [
+   7.604,
+   8.604
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "patch_bad",
+   "who": "patch",
+   "text": "This is bad.",
+   "vo": true,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 3.55,
+   "end": 4.904
+  }
+ ],
+ "cast": {
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, a small floating robot, calm and literal, slightly too quiet; announces disasters politely"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 9.004
+  }
+ ]
+}
