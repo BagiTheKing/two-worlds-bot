@@ -99,7 +99,6 @@ def steve_mouth(t, env):
             e_in, e_out = ss(a - 0.06, a + 0.04, t), 1 - ss(b - 0.02, b + 0.08, t)
             return mix(rest, m, min(e_in, e_out))
     # between words and after: open, trembling
-    rest["m_o"] = rest["m_o"] + 0.05 * math.sin(t * 31) + 0.03 * math.sin(t * 53)
     rest["m_tl"] = 0.3
     return rest
 
@@ -174,77 +173,101 @@ def build(tl, assets, res, samples):
 
 # ---------------------------------------------------------- the choreography
 def steve_pose(t):
-    """Shock: he pulls back, the pickaxe hand drops; his head rises with the words;
-    his feet: one slides back, knees bend (the legs shot)."""
-    lift = 0.0
-    for w, (a, b) in enumerate(WORDS):                         # the head rises in three jerks, one per word
-        lift += ss(a - 0.05, a + 0.35, t) * (0.36, 0.33, 0.31)[w]
+    """Frozen by what he sees: nothing shakes. His head rises slowly, all through
+    the line; his hands lift a little, held still. Then the step back, slow and
+    careful, a gazelle ready to bolt: the heel lifts, the foot slides back and is
+    set down without a sound, the knees sink into a crouch."""
+    lift = ss(T["line"] - 0.25, WORDS[2][1] + 0.35, t)          # one slow rise, no jerks
     nod = lerp(4, -24, lift)
-    tremble = 1.3 * math.sin(t * 27) + 0.8 * math.sin(t * 41)
-    back = ss(T["legs"] + 0.1, T["legs"] + 0.6, t)
-    crouch = ss(T["legs"] + 0.35, T["legs"] + 0.95, t)
-    P = {"chest_lean": lerp(-2, -7, lift) + 5 * crouch, "head_nod": nod + 0.6 * tremble, "head_tilt": 2 * lift,
-         "head_turn": -3 * lift,
-         "arm_sl": {"out": lerp(8, 16, lift), "fwd": lerp(6, 14, lift), "elbow": lerp(10, 26, lift)},
-         "arm_sr": {"out": lerp(8, 14, lift), "fwd": lerp(4, 10, lift), "elbow": lerp(12, 30, lift)},
-         "hips_drop": 0.18 * crouch,
-         "foot_sr": {"y": 0.75 * back, "z": 0.18 * math.sin(math.pi * back), "yaw": 12 * back},
-         "foot_sl": {"y": 0.15 * crouch, "yaw": -6 * crouch}}
+    L0 = T["legs"]
+    heel = ss(L0 + 0.05, L0 + 0.45, t) * (1 - ss(L0 + 0.85, L0 + 1.15, t))     # the foot leaves the ground, barely
+    back = ss(L0 + 0.15, L0 + 1.05, t)                                         # and travels back, slowly
+    crouch = ss(L0 + 0.1, L0 + 1.3, t)
+    P = {"chest_lean": lerp(-2, -6, lift) + 6 * crouch, "head_nod": nod - 3 * crouch, "head_tilt": 1.5 * lift,
+         "head_turn": -2 * lift,
+         "arm_sl": {"out": lerp(8, 15, lift) + 4 * crouch, "fwd": lerp(6, 12, lift), "elbow": lerp(10, 24, lift) + 10 * crouch},
+         "arm_sr": {"out": lerp(8, 13, lift) + 4 * crouch, "fwd": lerp(4, 9, lift), "elbow": lerp(12, 28, lift) + 10 * crouch},
+         "hips_drop": 0.22 * crouch,
+         "foot_sr": {"y": 0.7 * back, "z": 0.1 * heel, "yaw": 10 * back},
+         "foot_sl": {"y": 0.1 * crouch, "yaw": -5 * crouch}}
     return P
 
 
 def steve_face(t):
-    lift = ss(T["line"] - 0.35, WORDS[2][1], t)
-    trem = 0.03 * math.sin(t * 29) + 0.02 * math.sin(t * 47)
-    f = {"both_to": lerp(0.05, 0.38, ss(T["line"] - 0.4, WORDS[0][0], t)), "both_tm": lerp(0.05, 0.42, lift),
-         "both_ti": lerp(0.0, 0.32, lift), "both_ps": lerp(0.95, 0.6, lift) + trem,
-         "both_py": lerp(0.0, 0.6, lift) + trem, "both_px": trem * 0.6,
-         "bb_raise": lerp(0.1, 0.65, ss(T["line"] - 0.35, WORDS[1][1], t)) + trem,
+    """Wide, still eyes that roll up slowly; brows rising; nothing twitches."""
+    lift = ss(T["line"] - 0.35, WORDS[2][1] + 0.2, t)
+    f = {"both_to": lerp(0.05, 0.38, ss(T["line"] - 0.4, WORDS[0][0] + 0.2, t)), "both_tm": lerp(0.05, 0.42, lift),
+         "both_ti": lerp(0.0, 0.32, lift), "both_ps": lerp(0.95, 0.58, lift),
+         "both_py": lerp(0.0, 0.6, lift), "both_px": 0.0,
+         "bb_raise": lerp(0.1, 0.65, ss(T["line"] - 0.35, WORDS[1][1], t)),
          "bb_tilt": lerp(0.0, -0.75, lift), "bb_arch": 0.3 * lift}
     return f
 
 
 def noob_face(t):
+    """Frozen; on "Steve?" his eyes slide slowly to his friend."""
     from ep09_new import NF
     f = dict(NF["scared"])
-    trem = 0.07 * math.sin(t * 33) + 0.04 * math.sin(t * 57)
-    look = ss(T["noob_line"] - 0.1, T["noob_line"] + 0.25, t)          # on "Steve?" his eyes dart to his friend
-    f.update({"both_py": lerp(0.45, 0.2, look) + trem, "both_px": lerp(0.0, -0.55, look) + 0.6 * trem,
-              "both_ps": 0.68 + trem})
+    look = ss(T["noob_line"] - 0.3, T["noob_line"] + 0.45, t)
+    f.update({"both_py": lerp(0.45, 0.22, look), "both_px": lerp(0.0, -0.5, look), "both_ps": 0.66})
     return f
 
 
+# --------------------------------------------------------------- the camera
+def crash(t, at, dur=0.14):
+    """A crash zoom: 0 -> 1, fast in, settling."""
+    return ss(at - 0.02, at + dur, t)
+
+
 def camera(t, hs, hn):
-    """hs, hn: where Steve's and the Noob's faces are now. -> loc, look, lens, fstop, focus offset"""
-    if t < T["legs"]:                                            # A: Steve's face, anime side view
-        head = hs
+    """All the fear is in the camera. -> loc, look, lens, fstop, focus distance (None = on the look
+    point), handheld amount (degrees), rumble amount (degrees)"""
+    O, M, G = (w[0] for w in WORDS)
+    if t < T["legs"]:                                            # A: Steve's face, a side view from below
         u = ss(0, T["legs"], t)
-        loc = head + Vector((-1.15 + 0.15 * u, 1.05 - 0.1 * u, -0.42))          # his side, low: his face rises into the storm
-        look = head + Vector((0.0, 0.0, 0.08))
-        blur = 0.0
-        for c in (WORDS[0][1] + 0.1, WORDS[1][1] + 0.12):        # the focus slips, twice
-            blur = max(blur, math.exp(-((t - c) / 0.09) ** 2))
-        return loc, look, lerp(55, 62, u), 1.6, 0.35 * blur
-    if t < T["noob"]:                                            # B: low, at his feet, pushing in
-        u = ss(T["legs"], T["noob"], t)
-        feet = STEVE_AT + Vector((-0.05, 0.05 - 0.35 * ss(T["legs"] + 0.1, T["legs"] + 0.6, t), 0.18))   # on the foot sliding back
-        loc = feet + Vector((-1.15 + 0.4 * u, 1.3 - 0.45 * u, 0.0))
-        return loc, feet, lerp(38, 60, u), 3.5, 0.0
-    head = hn                                                    # C: the Noob's face, from the side
-    u = ss(T["noob"], T["end"] + 0.4, t)
-    loc = head + Vector((1.15 - 0.25 * u, 1.1 - 0.25 * u, -0.28))
-    return loc, head + Vector((0.0, 0.0, 0.05)), lerp(52, 64, u), 1.8, 0.0
+        loc = hs + Vector((-1.15 + 0.12 * u, 1.05 - 0.08 * u, -0.42))
+        look = hs + Vector((0.0, 0.0, 0.08))
+        lens = 44 + 13 * crash(t, O) + 5 * ss(O + 0.2, M + 0.4, t) + 16 * crash(t, G)   # crash in on Oh, creep, crash on God
+        d = (look - loc).length
+        focus = d
+        focus = lerp(7.0, d, ss(0.15, O - 0.1, t))               # it opens out of focus and finds his face
+        focus *= 1 + 0.45 * math.exp(-((t - (O + M) / 2) / 0.16) ** 2)       # breathes out between the words
+        focus *= 1 + 0.3 * math.exp(-((t - (M + G) / 2 - 0.05) / 0.14) ** 2)
+        rumble = 0.08 + sum(0.55 * math.exp(-((t - w) / 0.1) ** 2) for w in (O, M, G))
+        return loc, look, lens, 1.4, focus, 0.7, rumble
+    if t < T["noob"]:                                            # B: low at his feet; slow push, then a crash in as the foot lands
+        L0 = T["legs"]
+        u = ss(L0, T["noob"], t)
+        feet = STEVE_AT + Vector((-0.05, 0.05 - 0.32 * ss(L0 + 0.15, L0 + 1.05, t), 0.17))
+        loc = feet + Vector((-1.1 + 0.25 * u, 1.25 - 0.3 * u, 0.02))
+        lens = 36 + 8 * u + 20 * crash(t, L0 + 1.0, 0.16)
+        d = (feet - loc).length
+        focus = lerp(d * 0.55, d, ss(L0, L0 + 0.35, t))          # racks from the grass to his foot
+        rumble = 0.2 + 0.6 * math.exp(-((t - L0) / 0.12) ** 2) + 0.5 * math.exp(-((t - L0 - 1.0) / 0.1) ** 2)
+        return loc, feet, lens, 2.2, focus, 0.9, rumble
+    u = ss(T["noob"], T["end"] + 0.4, t)                         # C: the Noob's face
+    loc = hn + Vector((1.15 - 0.2 * u, 1.1 - 0.2 * u, -0.28))
+    look = hn + Vector((0.0, 0.0, 0.05))
+    lens = 48 + 7 * u + 14 * crash(t, T["noob_line"] + 0.05, 0.18)
+    d = (look - loc).length
+    focus = d * (1 + 0.4 * (1 - ss(T["noob"], T["noob"] + 0.3, t)))          # finds him as we cut in
+    rumble = 0.1 + 0.4 * math.exp(-((t - T["noob_line"]) / 0.12) ** 2)
+    return loc, look, lens, 1.4, focus, 0.65, rumble
 
 
-def trauma(t):
-    if t < T["legs"]:
-        k = 0.22 + 0.1 * ss(T["line"], T["line_end"], t)
-        for a, b in WORDS:
-            k = max(k, 0.42 * math.exp(-((t - a) / 0.12) ** 2))
-        return k
-    if t < T["noob"]:
-        return 0.55 * math.exp(-(t - T["legs"]) / 0.5) + 0.3
-    return 0.2
+def handheld(t, amp):
+    """A frightened operator: slow drift (yaw, pitch, roll in degrees)."""
+    y = amp * (0.6 * math.sin(1.3 * t + 0.4) + 0.4 * math.sin(2.9 * t + 1.7) + 0.2 * math.sin(5.3 * t + 0.9))
+    p = amp * (0.5 * math.sin(1.1 * t + 2.1) + 0.35 * math.sin(3.4 * t + 0.2) + 0.15 * math.sin(6.7 * t + 1.0))
+    r = amp * 0.7 * (0.6 * math.sin(0.9 * t + 1.0) + 0.4 * math.sin(2.3 * t + 2.0))
+    return y, p, r
+
+
+def rumble(t, amp):
+    """The ground shaking under the camera (fast)."""
+    y = amp * (0.5 * math.sin(23.1 * t) + 0.3 * math.sin(37.7 * t + 1.1) + 0.2 * math.sin(53.3 * t + 2.3))
+    p = amp * (0.5 * math.sin(19.7 * t + 0.6) + 0.3 * math.sin(41.9 * t + 1.9) + 0.2 * math.sin(61.1 * t + 0.4))
+    return y, p, 0.4 * y
 
 
 def apply(E, t):
@@ -281,8 +304,8 @@ def apply(E, t):
     set_brows(S.brows, {k: v for k, v in sf.items() if k.startswith("bb_")})
     # ------------------------------------------------ the Noob
     npz = flat(NOOB_POSES["scared"])
-    trem = math.sin(t * 25) * 1.2
-    npz.update({"head_nod": -26 + trem, "head_tilt": 4, "chest_lean": -4, "root_yaw": 180,
+    turn = ss(T["noob_line"] - 0.2, T["noob_line"] + 0.7, t)            # a slow, small turn toward Steve
+    npz.update({"head_nod": -26 + 4 * turn, "head_turn": -9 * turn, "head_tilt": 4, "chest_lean": -4, "root_yaw": 180,
                 "arm_sl.fwd": 55, "arm_sr.fwd": 55})
     pose_noob(N, unflat(npz))
     N.root.location = NOOB_AT
@@ -307,15 +330,17 @@ def apply(E, t):
         return (m @ ob.matrix_world @ c) if m is not None else ob.matrix_world @ c
     hs = centre(S.face, S.holder.matrix_world)            # the middle of his face plate
     hn = centre(N.head_mesh)
-    loc, look, lens, fstop, defocus = camera(t, hs, hn)
-    off, roll = shake(t, trauma(t))
-    loc = loc + off * 0.6
-    q = (look - loc).to_track_quat("-Z", "Y") @ Quaternion((0, 0, 1), roll * 0.6)
+    loc, look, lens, fstop, focus, hand, rum = camera(t, hs, hn)
+    y1, p1, r1 = handheld(t, hand)
+    y2, p2, r2 = rumble(t, rum)
+    q = (look - loc).to_track_quat("-Z", "Y")
+    q = q @ Quaternion((0, 1, 0), math.radians(y1 + y2)) @ Quaternion((1, 0, 0), math.radians(p1 + p2)) \
+        @ Quaternion((0, 0, 1), math.radians(r1 + r2))
     E.cam.location = loc
     E.cam.rotation_mode = "QUATERNION"
     E.cam.rotation_quaternion = q
     E.cam.data.lens = lens
-    E.cam.data.dof.focus_distance = (look - loc).length * (1 + defocus)
+    E.cam.data.dof.focus_distance = focus
     E.cam.data.dof.aperture_fstop = fstop
     who = look
     E.face_fill.location = loc + (who - loc).normalized().cross(Vector((0, 0, 1))) * 0.8 + Vector((0, 0, 0.9))
