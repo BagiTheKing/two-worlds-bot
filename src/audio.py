@@ -1289,7 +1289,16 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
        "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
        "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
-       "heart": lambda e: sfx_thump(e.get("freq", 48), 0.55, 0.0)}      # a heartbeat: the thump without its crack
+       "heart": lambda e: sfx_thump(e.get("freq", 48), 0.55, 0.0),     # a heartbeat: the thump without its crack
+       "ring": lambda e: sfx_ring(e.get("dur", 4.0))}
+
+
+def sfx_ring(dur):
+    """The ringing of total silence (anime slow motion): a thin high tone, swelling in and out."""
+    x = t(dur)
+    tone = np.sin(2 * np.pi * 3900 * x) + 0.4 * np.sin(2 * np.pi * 3907 * x)
+    shape = np.minimum(1, x / 0.8) * np.minimum(1, (dur - x) / 0.5)
+    return norm(tone * shape, 0.5)
 
 
 def sfx_bird():

@@ -94,6 +94,21 @@ def split(t):
     return ss(T["fork"] + 0.35, T["fork"] + 1.35, t)
 
 
+def turn_layers(t, t0, dur):
+    """A human turn, in slow motion, over dur seconds from t0. Each part starts
+    later and settles later than the one above it (overlap, follow-through):
+    -> (head, chest, hips) progress 0..1, the step 0..1 (a foot lifts and plants),
+       the flinch 0..1..0 (the arms come up, then drop into the run), the dip 0..1..0."""
+    u = (t - t0) / dur
+    head = ss(0.0, 0.5, u)
+    chest = ss(0.1, 0.72, u)
+    hips = ss(0.22, 0.95, u)
+    step = ss(0.3, 0.8, u)
+    flinch = ss(0.05, 0.4, u) * (1 - ss(0.62, 1.0, u))
+    dip = math.sin(math.pi * min(1.0, max(0.0, (u - 0.15) / 0.75)))
+    return head, chest, hips, step, flinch, dip, min(1.0, max(0.0, u))
+
+
 def facing(t, turn_at, to=0.0):
     """Yaw (degrees): 180 = toward Null (+y); 0 or 360 = away (-y). The turn, in slow motion
     (to: which way round, so the face passes the camera)."""
@@ -196,7 +211,7 @@ def apply(E, t):
     from world import fx_set
     from ep09_new import flat, unflat, talk, SF, NF
     slow = T["turn_s"] <= t < T["run"]
-    EN.apply(E, EN.T["s4"] + 2.0 + (t if not slow else T["turn_s"] + 0.25 * (t - T["turn_s"])))
+    EN.apply(E, EN.T["s4"] + 2.0 + (t if not slow else T["turn_s"] + 0.2 * (t - T["turn_s"])))
     S, N, Pt, G = E.S, E.N, E.Pt, E.G
     ry = run_y(t)
     sp_ = split(t)
@@ -228,12 +243,25 @@ def apply(E, t):
     if not running:
         frozen = {"chest_lean": -5, "head_nod": -20, "hips_drop": 0.18, "arm_sl": {"out": 18, "fwd": 12, "elbow": 30},
                   "arm_sr": {"out": 16, "fwd": 9, "elbow": 34}, "foot_sr": {"y": 0.7, "yaw": 10}, "foot_sl": {"y": 0.1}}
-        if t >= T["turn_s"]:                               # the turn: head first, then the body, slowly
-            u = ss(T["turn_s"] + 0.05, T["turn_s"] + 0.95, t)
-            frozen.update(head_nod=lerp(-20, 4, u), chest_lean=lerp(-5, 12, u), hips_drop=lerp(0.18, 0.22, u))
+        syaw = 180.0
+        if t >= T["turn_s"]:                               # the turn: head, then shoulders, then hips; a flinch; a step
+            hd, ch, hp, st, fl, dp, u = turn_layers(t, T["turn_s"], T["turn_n"] - T["turn_s"])
+            Yh, Yc, Yb = 180 * hd, 180 * ch, 180 * hp             # how far each part has turned (degrees)
+            syaw = 180.0 + Yb
+            frozen = {"chest_twist": Yc - Yb, "head_turn": max(-65, min(65, Yh - Yc)),
+                      "head_nod": lerp(-20, -2, hd) + 6 * dp, "chest_lean": lerp(-5, 14, ch) + 4 * dp,
+                      "chest_side": -6 * dp, "head_tilt": 5 * dp,
+                      "hips_drop": lerp(0.18, 0.24, hp) + 0.06 * dp,
+                      # the flinch: his left arm (screen right) comes up across, the other swings back
+                      "arm_sr": {"out": lerp(16, 20, fl), "fwd": lerp(9, 75, fl) - 30 * ss(0.7, 1.0, u),
+                                 "elbow": lerp(34, 95, fl), "twist": 25 * fl},
+                      "arm_sl": {"out": lerp(18, 26, fl), "fwd": lerp(12, -38, ch), "elbow": lerp(30, 55, fl)},
+                      # the step: the back foot lifts, swings round and plants, the other pivots
+                      "foot_sr": {"y": lerp(0.7, -0.45, st), "x": 0.15 * math.sin(math.pi * st),
+                                  "z": 0.22 * math.sin(math.pi * st), "yaw": lerp(10, -20, st)},
+                      "foot_sl": {"y": lerp(0.1, 0.35, hp), "yaw": -25 * hp}}
         for kk, v in flat(frozen).items():
             sp[kk] = v
-        syaw = facing(t, T["turn_s"], 360.0)
         sx, sy, bob = STEVE_AT.x, STEVE_AT.y, 0.0
     else:
         ph = 2 * math.pi * 2.9 * (t - T["run"])
@@ -278,10 +306,18 @@ def apply(E, t):
         npz.update({"head_nod": -24, "head_tilt": 4, "chest_lean": -4, "arm_sl.fwd": 55, "arm_sr.fwd": 55})
         if T["noob_signal"] - 0.1 <= t < T["beat"] + 0.3:     # he leans to Steve to whisper
             npz["head_turn"] = -14 * ss(T["noob_signal"] - 0.1, T["noob_signal"] + 0.3, t)
-        if t >= T["turn_n"]:
-            u = ss(T["turn_n"] + 0.05, T["turn_n"] + 0.95, t)
-            npz.update({"head_nod": lerp(-24, 2, u), "chest_lean": lerp(-4, 10, u)})
-        nyaw = facing(t, T["turn_n"])
+        nyaw = 180.0
+        if t >= T["turn_n"]:                                # the same human turn, the other way round
+            hd, ch, hp, st, fl, dp, u = turn_layers(t, T["turn_n"], T["pov"] - T["turn_n"])
+            Yh, Yc, Yb = -180 * hd, -180 * ch, -180 * hp
+            nyaw = 180.0 + Yb
+            npz.update({"chest_twist": Yc - Yb, "head_turn": max(-65, min(65, Yh - Yc)),
+                        "head_nod": lerp(-24, 0, hd) + 5 * dp, "chest_lean": lerp(-4, 12, ch) + 4 * dp,
+                        "chest_side": 6 * dp, "head_tilt": lerp(4, -4, hd),
+                        "arm_sl.fwd": lerp(55, 80, fl) - 50 * ss(0.65, 1.0, u), "arm_sl.out": lerp(-8, 35, fl),
+                        "arm_sr.fwd": lerp(55, -30, ch), "arm_sr.out": lerp(-8, 15, fl),
+                        "leg_sl.fwd": 40 * math.sin(math.pi * st), "leg_sl.out": 8 * math.sin(math.pi * st),
+                        "leg_sr.fwd": -12 * hp})
         nx, ny, nbob = NOOB_AT.x, NOOB_AT.y, 0.0
     else:
         ph = 2 * math.pi * 2.9 * (t - T["run"]) + 0.9
@@ -338,7 +374,7 @@ def apply(E, t):
     hn = centre(N.head_mesh)
     hx = centre(G.head)
     loc, look, lens, fstop, focus, hand, rum = camera(t, hs, hn, hx)
-    tt = T["turn_s"] + 0.25 * (t - T["turn_s"]) if slow else t           # the shake slows down too
+    tt = T["turn_s"] + 0.2 * (t - T["turn_s"]) if slow else t           # the shake slows down too
     y1, p1, r1 = P2.handheld(tt, hand)
     y2, p2, r2 = P2.rumble(tt, rum)
     q = (look - loc).to_track_quat("-Z", "Y")
