@@ -223,7 +223,7 @@ def _soul(E, tex_dir):
     me.materials.append(_cell_material())
     E.soul_objs.append(cubes)
     for i, p in enumerate(pts):
-        st = rng.choices(range(len(E.styles)), weights=(4, 2, 2, 1.2, 2.2))[0]
+        st = rng.choices(range(len(E.styles)), weights=(4, 2, 2, 0.6, 2.4))[0]
         if i == E.first_cell:
             st = 0
         em = bpy.data.objects.new(f"cellhead_{i}", None)
