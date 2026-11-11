@@ -1,0 +1,63 @@
+{
+ "id": "ep10_p2_omg",
+ "number": 10,
+ "title": "The First Portal Was a Trap: Oh my God",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.7,
+   "pace": 0.3,
+   "stability": 0.4,
+   "gemini_voice": "Charon",
+   "acting": "Steve, calm and dry, now frozen in shock and fear at something enormous in the sky: breathless, a stunned whisper on the first word, shakier on the second, and the last word cracks; long pauses between the words"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.4,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the cheerful Noob, terrified for once: a tiny, high, trembling whimper, barely a voice, asking his friend for help"
+  }
+ },
+ "music": [
+  {"cue": "null", "from": 0, "to": "end", "gain": 0.24, "hard_end": true},
+  {"cue": "dread", "from": 0, "to": "noob", "gain": 0.2, "minimal": true, "hit_at": "legs", "hard_end": true}
+ ],
+ "ambience": [],
+ "sfx": [
+  {"kind": "rumble_rise", "at": "breath", "dur": 3.2, "gain": 0.3},
+  {"kind": "break", "at": "steve_omg+1.1", "gain": 0.12},
+  {"kind": "crunch", "at": "legs+0.28", "gain": 0.22},
+  {"kind": "crunch", "at": "legs+0.72", "gain": 0.18},
+  {"kind": "whoosh", "at": "legs", "dur": 0.4, "gain": 0.2}
+ ],
+ "overlays": [
+  {"type": "watermark", "text": "@GLITCHBOUND2469", "from": 0, "to": "end"}
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [[0, "end.end+1"]],
+ "events": [
+  {"beat": "breath", "dur": 0.45},
+  {"line": "steve", "name": "steve_omg", "text": "Oh... My... God...",
+   "direction_text": "[a breathless, shocked whisper, rising, cracking on the last word] Oh... My... God...",
+   "pad": 0.0, "solo_only": true, "solo_text": "Oh... My... God..."},
+  {"beat": "hold", "dur": 0.2},
+  {"beat": "legs", "dur": 1.35},
+  {"beat": "noob", "dur": 0.2},
+  {"line": "noob", "name": "noob_steve", "text": "...Steve?",
+   "direction_text": "[a tiny, terrified whimper] ...Steve?", "pad": 0.0, "solo_only": true, "solo_text": "...Steve?"},
+  {"beat": "end", "dur": 0.5}
+ ]
+}
