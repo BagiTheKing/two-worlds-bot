@@ -5,7 +5,12 @@ underneath, then everything is sucked back into one.
 
     python tools/ep10_dejavu_audio.py EP0_MP4 OUT_DIR
 
-Writes OUT_DIR/ep0_noob_running_dejavu.wav (24 kHz). Times are in Episode 0's
+Writes OUT_DIR/ep0_noob_running_dejavu.wav (24 kHz).
+
+The take in the episode is the first one this tool made (commit 6533b14), chosen
+by the creator over the slower ones: "running" sinks in pitch rather than really
+slowing (its slices were too short to stretch), with the echoes and the suck at
+the end. --first remakes it exactly that way. Times are in Episode 0's
 published soundtrack: the line is at 17.73-18.46 s there ("running" from 18.13).
 """
 import os
@@ -65,11 +70,17 @@ def pitch(x, semis):
     return A.stretch(y, len(y) / len(x)) if abs(p - 1) > 1e-3 else x
 
 
-def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav"):
+def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav", first=False):
     x = read(mp4, 17.66, 0.86)                     # "I am running!" with a breath of room on each side
     split = int((18.08 - 17.66) * SR)              # "I am" | "running"
     head, word = x[:split], x[split:]
     # "running": time slows through the word, from as recorded down to `final`, and sinks a little
+    if first:                                       # the chosen take: short slices, each lower
+        sl = np.array_split(word, 10)
+        slow = np.concatenate([pitch(A.stretch(seg, 1.0 - 0.75 * (k / 9) ** 1.3), -6.0 * (k / 9) ** 1.2)
+                               for k, seg in enumerate(sl)])
+        voice = np.concatenate([head, slow])
+        return _finish(voice, split, out_dir, name)
     slow = vstretch(word, lambda u: 1.0 - (1.0 - final) * min(1.0, u * 2.4) ** 0.9)
     k = 8                                           # the sinking: in a few overlapping pieces, deeper each time
     pieces = np.array_split(np.arange(len(slow)), k)
@@ -100,6 +111,11 @@ def main(mp4, out_dir, final=0.25, dry=False, name="ep0_noob_running_dejavu.wav"
         sf.write(p, A.norm(voice, 0.9), SR)
         print(p, round(len(voice) / SR, 2), "s")
         return
+    _finish(voice, split, out_dir, name)
+
+
+def _finish(voice, split, out_dir, name):
+    """The other loops' echoes, the smear, and the suck back into one."""
     # the other loops: echoes of the line, later and lower, piling up as it slows
     ghosts = np.zeros(len(voice) + int(1.2 * SR))
     for k, (d, g, st) in enumerate(((0.18, 0.35, -2), (0.33, 0.28, 3), (0.5, 0.24, -5), (0.7, 0.2, 2))):
@@ -134,5 +150,6 @@ if __name__ == "__main__":
     ap.add_argument("--final", type=float, default=0.25, help="the speed it slows to (0.25 = a quarter)")
     ap.add_argument("--dry", action="store_true", help="only the slow-down, no echoes or smear")
     ap.add_argument("--name", default="ep0_noob_running_dejavu.wav")
+    ap.add_argument("--first", action="store_true", help="the chosen take (see the top of this file)")
     a = ap.parse_args()
-    main(a.mp4, a.out_dir, a.final, a.dry, a.name)
+    main(a.mp4, a.out_dir, a.final, a.dry, a.name, a.first)
