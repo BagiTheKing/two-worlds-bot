@@ -58,7 +58,7 @@
  "clips": [],
  "fx": [],
  "shots": [],
- "skip_render": [[0, "end.end+1"]],
+ "skip_render": [[0, "rise.end+1"]],
  "events": [
   {"beat": "claws", "dur": 1.2},
   {"beat": "grip", "dur": 0.8},
