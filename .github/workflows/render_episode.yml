@@ -242,7 +242,7 @@ jobs:
         with:
           name: prep
           path: build/
-      - if: inputs.prep_from != ''
+      - if: inputs.prep_from != '' && inputs.assemble_from == ''
         uses: actions/download-artifact@v4
         with:
           name: prep
@@ -254,13 +254,13 @@ jobs:
         with:
           pattern: frames-*
           path: build/fr/
-      - name: Assemble only - the earlier run's sound, timing and frames
+      - name: Assemble only - the earlier run's sound and timing (or the run that run took them from) and its frames
         if: inputs.assemble_from != ''
         uses: actions/download-artifact@v4
         with:
           name: prep
           path: build/
-          run-id: ${{ inputs.assemble_from }}
+          run-id: ${{ inputs.prep_from || inputs.assemble_from }}
           github-token: ${{ github.token }}
       - if: inputs.assemble_from != ''
         uses: actions/download-artifact@v4
