@@ -121,15 +121,15 @@ def _ghostify(obs):
     b = nt.nodes["Principled BSDF"]
     b.inputs["Base Color"].default_value = (0.75, 0.85, 1.0, 1)
     b.inputs["Emission Color"].default_value = (0.55, 0.75, 1.0, 1)
-    b.inputs["Emission Strength"].default_value = 0.12
+    b.inputs["Emission Strength"].default_value = 0.6
     fr = nt.nodes.new("ShaderNodeLayerWeight")
     fr.inputs["Blend"].default_value = 0.35
     tr = nt.nodes.new("ShaderNodeBsdfTransparent")
     mx = nt.nodes.new("ShaderNodeMixShader")
     inv = nt.nodes.new("ShaderNodeMath")
     inv.operation = "MULTIPLY_ADD"
-    inv.inputs[1].default_value = 0.55
-    inv.inputs[2].default_value = 0.3
+    inv.inputs[1].default_value = 0.7
+    inv.inputs[2].default_value = 0.25
     nt.links.new(fr.outputs["Facing"], inv.inputs[0])
     nt.links.new(inv.outputs[0], mx.inputs[0])
     nt.links.new(tr.outputs[0], mx.inputs[1])
@@ -345,19 +345,8 @@ def finish_frame(E, t, tc, d):
     E.cam.data.dof.aperture_fstop = fstop
     E.key.location = loc + Vector((0.8, 0.6, 1.4))
     E.key.rotation_euler = (look - E.key.location).to_track_quat("-Z", "Y").to_euler()
-    E.sc.render.motion_blur_shutter = 0.4
-    return {"dv": d, "flash": max(0.0, 1 - abs(t - T["snap"]) / 0.09) if t >= T["snap"] - 0.02 else 0.0,
-            "glitch": glitch(t)}
-
-
-def glitch(t):
-    """Short bursts of tearing, only on the turns of the memory: falling in, the cut
-    behind him, and just before the snap."""
-    g = 0.0
-    for at, dur in ((T["word"] + 0.1, 0.22), (T["steve_412"], 0.18), (T["snap"] - 0.28, 0.28)):
-        if at - 0.02 <= t <= at + dur:
-            g = max(g, math.sin(math.pi * (t - at + 0.02) / (dur + 0.02)))
-    return g
+    E.sc.render.motion_blur_shutter = 0.5 if d < 0.5 else 0.9                   # the memory smears
+    return {"dv": d, "flash": max(0.0, 1 - abs(t - T["snap"]) / 0.09) if t >= T["snap"] - 0.02 else 0.0}
 
 
 def camera(E, t, tc, hs):
@@ -371,16 +360,16 @@ def camera(E, t, tc, hs):
         return loc, hs + Vector((0, 0, -0.05)), 36, 2.2, None, 0.4
     if T["steve_412"] <= t < T["snap"]:                     # B2: behind Steve, in the memory, pulling slowly back
         u = ss(T["steve_412"], T["snap"], t)
-        loc = Sp + Vector((3.1 + 0.9 * u, 1.75 + 0.25 * u, 2.2 + 0.3 * u))
-        look = Sp + Vector((-3.6, -0.45, 0.95))
-        return loc, look, lerp(31, 28, u), 6.0, (Sp + Vector((-1.6, 0, 1.0)) - loc).length, 0.12
+        loc = Sp + Vector((1.5 + 1.3 * u, 0.75 + 0.2 * u, 1.85 + 0.35 * u))
+        look = Sp + Vector((-4.5, -0.1, 1.15))
+        return loc, look, lerp(30, 27, u), 3.5, (Sp - loc).length + 0.4, 0.15
     if t < T["snap"]:                                        # B: through Steve's eyes
         eye = Sp + Vector((-0.2, 0.0, 1.72))
         nx = noob_x(tc)
         look = Vector((nx, E.plan.lip.y, E.plan.deck + 1.3))
         d = (look - eye).length
         soft = dv(t)
-        return eye, look, 30 + 6 * soft, 3.2, d * (1 + 0.06 * soft * (0.5 + 0.5 * math.sin(t * 5))), 0.3
+        return eye, look, 30 + 6 * soft, 2.0, d * (1 + 0.35 * soft * (0.5 + 0.5 * math.sin(t * 5))), 0.35
     # C: back in the present, Steve close: from the front, the camera arcs slowly to his left
     # and down as his head drops on "I built a trap."
     u = ss(T["snap"], T["end"] + 0.5, t)
@@ -391,49 +380,40 @@ def camera(E, t, tc, hs):
 
 
 # ----------------------------------------------------------- the deja vu look
-def finish(path, mist_path, d, flash, g=0.0):
-    """The memory: one clean, warm, dreamlike look (soft bloom on the lights, colour
-    warmed and a little faded, a gentle edge), and tearing only in short bursts."""
+def finish(path, mist_path, d, flash):
     import numpy as np
     from PIL import Image, ImageFilter
     P4.finish(path, mist_path)
-    if d <= 0.001 and flash <= 0.001 and g <= 0.001:
+    if d <= 0.001 and flash <= 0.001:
         return
     im = Image.open(path).convert("RGB")
     a = np.asarray(im, np.float32) / 255.0
     h, w = a.shape[:2]
-    rnd = np.random.default_rng(int(d * 1000) + int(os.path.basename(path)[:-4]))
     if d > 0:
-        # bloom: only the bright parts glow (the picture itself stays sharp)
-        hi = np.clip((a - 0.62) / 0.38, 0, 1)
-        hi_im = Image.fromarray((hi * 255).astype(np.uint8))
-        bloom = np.asarray(hi_im.filter(ImageFilter.GaussianBlur(max(2, w // 60))), np.float32) / 255.0
-        a = a + 0.45 * d * bloom
-        # warm and a little faded, keeping the contrast (an old memory, not mud)
+        rnd = np.random.default_rng(int(d * 1000) + int(os.path.basename(path)[:-4]))
+        # the memory's softness: a glow of itself, blurred
+        soft = np.asarray(im.filter(ImageFilter.GaussianBlur(3 + 4 * d)), np.float32) / 255.0
+        a = a * (1 - 0.35 * d) + soft * 0.35 * d
+        # colour drains toward an old print's warmth
         lum = a @ np.array([0.3, 0.59, 0.11], np.float32)
-        warm = np.stack([lum * 1.06 + 0.02, lum * 0.97 + 0.01, lum * 0.82], -1)
-        a = a * (1 - 0.5 * d) + warm * 0.5 * d
-        a = a * (1 - 0.06 * d) + 0.05 * d                       # lifted blacks
-        a = 0.5 + (a - 0.5) * (1 + 0.08 * d)
-        # a faint split of colours at the edges of the frame only
-        sh = int(round(2 * d * w / 480))
+        sep = np.stack([lum * 1.08 + 0.04, lum * 0.95 + 0.02, lum * 0.78], -1)
+        a = a * (1 - 0.8 * d) + sep * 0.8 * d
+        # a split of colours: red one way, blue the other
+        sh = int(round(6 * d))
         if sh:
-            yy, xx = np.mgrid[0:h, 0:w]
-            edge = np.clip((np.hypot((xx - w / 2) / (w / 2), (yy - h / 2) / (h / 2)) - 0.5) / 0.6, 0, 1)
-            a[:, :, 0] = a[:, :, 0] * (1 - edge) + np.roll(a[:, :, 0], sh, 1) * edge
-            a[:, :, 2] = a[:, :, 2] * (1 - edge) + np.roll(a[:, :, 2], -sh, 1) * edge
-        a += rnd.normal(0, 0.012 * d, (h, w, 1)).astype(np.float32)
+            a[:, :, 0] = np.roll(a[:, :, 0], sh, 1)
+            a[:, :, 2] = np.roll(a[:, :, 2], -sh, 1)
+        # grain
+        a += rnd.normal(0, 0.04 * d, (h, w, 1)).astype(np.float32)
+        # a few torn lines, more as it deepens
+        for _ in range(int(6 * d)):
+            y0 = int(rnd.integers(0, h - 8))
+            hh = int(rnd.integers(2, 10))
+            a[y0:y0 + hh] = np.roll(a[y0:y0 + hh], int(rnd.integers(-30, 30)), 1)
+        # a darker edge
         yy, xx = np.mgrid[0:h, 0:w]
         r = np.hypot((xx - w / 2) / (w / 2), (yy - h / 2) / (h / 2))
-        a *= (1 - 0.32 * d * np.clip((r - 0.55) / 0.7, 0, 1) ** 1.4)[..., None]
-    if g > 0:                                                   # a burst: torn lines and a colour split
-        sh = int(round(7 * g * w / 480))
-        a[:, :, 0] = np.roll(a[:, :, 0], sh, 1)
-        a[:, :, 2] = np.roll(a[:, :, 2], -sh, 1)
-        for _ in range(int(3 + 9 * g)):
-            y0 = int(rnd.integers(0, h - 12))
-            hh = int(rnd.integers(3, 14))
-            a[y0:y0 + hh] = np.roll(a[y0:y0 + hh], int(rnd.integers(-40, 40) * g * w / 480), 1)
+        a *= (1 - 0.45 * d * np.clip((r - 0.45) / 0.7, 0, 1) ** 1.3)[..., None]
     if flash > 0:
         a = a + (1 - a) * 0.85 * flash
     Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).save(path)
@@ -505,7 +485,7 @@ def main():
         sc.render.filepath = dst
         bpy.ops.render.render(write_still=True)
         cand = sorted((os.path.join(mist_dir, x) for x in os.listdir(mist_dir)), key=os.path.getmtime)
-        finish(dst, cand[-1] if cand else "", look["dv"], look["flash"], look.get("glitch", 0.0))
+        finish(dst, cand[-1] if cand else "", look["dv"], look["flash"])
         for x in cand:
             os.remove(x)
         print("FRAME", f, flush=True)
