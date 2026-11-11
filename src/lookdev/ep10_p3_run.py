@@ -34,10 +34,9 @@ import ep10_p2_omg as P2                                           # noqa: E402
 from ep10_entrance import FPS, PORTAL_AT, lerp, ss                  # noqa: E402
 
 STEVE_AT, NOOB_AT = P2.STEVE_AT, P2.NOOB_AT
-FORK = Vector((0.0, -19.0, 0.0))                                   # the oak the path splits around
-EN.EXTRA_FEATURES.append((0, -19, "big_oak"))
-EN.EXTRA_KEEP.extend([(0.0, -34.0, 6.0), (-12.0, -24.0, 5.0)])     # the fork's cameras
-EN.EXTRA_CLEAR.extend([(0.0, -9.0, 3.0), (0.0, -14.0, 3.0), (0.0, -18.0, 3.0), (-5.0, -24.0, 3.0), (5.0, -24.0, 3.0)])
+FORK = Vector((0.0, -19.0, 0.0))                                   # the boulder the path splits around
+EN.EXTRA_KEEP.extend([(0.0, -31.5, 6.0), (-12.0, -24.0, 5.0), (0.0, -19.0, 4.0), (6.2, -3.1, 3.0)])   # the cameras, the boulder
+EN.EXTRA_CLEAR.extend([(4.8, -3.2, 2.2), (0.0, -9.0, 3.0), (0.0, -14.0, 3.0), (0.0, -18.0, 3.0), (-5.0, -24.0, 3.0), (5.0, -24.0, 3.0)])
 SPEED = 3.6                                                        # running (m/s)
 LENGTH = 13.5
 T = {"freeze": 0.0, "steve_signal": 0.4, "noob_signal": 2.35, "beat": 3.4, "steve_run": 3.7, "turn_s": 4.25,
@@ -49,7 +48,36 @@ def build(tl, assets, res, samples):
     E = P2.build(tl, assets, res, samples)
     from stage import build_patch_char
     E.Pt = build_patch_char(E.sc, size=0.4)
+    _boulder(E, assets)
     return E
+
+
+def _boulder(E, assets):
+    """A mossy boulder of stone blocks at the fork: the path splits around it,
+    and from above nothing hides who goes where."""
+    import random
+    from world import material
+    B = os.path.join(assets, "mcprep", "resourcepacks", "mcprep_default", "assets", "minecraft", "textures", "block")
+    mats = {n: bpy.data.materials.get("w_" + n) or material("w_" + n, os.path.join(B, n + ".png"), rough=0.9)
+            for n in ("stone", "andesite", "cobblestone", "mossy_cobblestone", "moss_block", "tuff")}
+    rnd = random.Random(19)
+    ground = E.W.layout.height(FORK.x, FORK.y)
+    cells = set()
+    for z, (rx, ry) in enumerate(((2.6, 1.8), (2.1, 1.5), (1.5, 1.1), (0.9, 0.7))):
+        for x in range(-3, 4):
+            for y in range(-2, 3):
+                if (x / rx) ** 2 + (y / ry) ** 2 <= 1.0 + 0.35 * rnd.random():
+                    cells.add((x, y, z))
+    for (x, y, z) in sorted(cells):
+        if (x, y, z + 1) in cells and rnd.random() < 0.7:
+            kind = rnd.choice(("stone", "andesite", "tuff", "cobblestone"))
+        else:
+            kind = "moss_block" if z >= 2 and rnd.random() < 0.6 else rnd.choice(("mossy_cobblestone", "stone", "andesite"))
+        bpy.ops.mesh.primitive_cube_add(size=1)
+        ob = bpy.context.active_object
+        ob.name = f"boulder_{x}_{y}_{z}"
+        ob.location = (FORK.x + x, FORK.y + y, ground + z + 0.5)
+        ob.data.materials.append(mats[kind])
 
 
 # ------------------------------------------------------------ where they are
@@ -111,10 +139,10 @@ def camera(t, hs, hn, hx=None):
     """-> loc, look, lens, fstop, focus distance (None: on the look point), handheld (deg), rumble (deg)"""
     ry = run_y(t)
     if t < T["beat"]:                                       # a: the frozen two-shot, Null over them
-        u = ss(0, T["beat"], t)
-        loc = Vector((4.6 - 0.4 * u, -6.2 + 0.2 * u, 0.85))
-        look = Vector((-0.2, -2.4, 3.6))
-        return loc, look, 23, 4.0, (Vector((1.0, -3.8, 1.5)) - loc).length, 0.45, 0.06
+        u = ss(0, T["beat"], t)                              # low, from their side and a little ahead: both faces, Null over them
+        loc = Vector((0.1, -0.5 - 0.25 * u, 1.45))                      # from where Null stands: both faces, lit by him
+        look = Vector((0.05, -4.0, 1.9))
+        return loc, look, 27, 3.2, None, 0.45, 0.06
     if t < T["turn_s"]:                                     # b: close on Steve; RUN!
         loc = hs + Vector((-1.1, 1.0, -0.3))
         look = hs + Vector((0.0, 0.0, 0.05))
@@ -145,9 +173,9 @@ def camera(t, hs, hn, hx=None):
         return loc, look, 21, 5.0, 4.6, 0.8, 0.18
     if t < T["null_look"]:                                  # e: high and wide: the fork
         u = ss(T["fork"], T["null_look"], t)            # high, from ahead: the oak in the middle, they split around it
-        loc = Vector((0.0, -34.0 + 0.8 * u, 6.4 - 0.3 * u))
-        look = Vector((0.0, -17.0, 4.8))
-        return loc, look, 27, 14.0, None, 0.35, 0.06
+        loc = Vector((0.0, -31.5 + 0.8 * u, 10.5 - 0.4 * u))             # high, from ahead: over the boulder as they split
+        look = Vector((0.0, -14.5, 1.2))
+        return loc, look, 26, 14.0, None, 0.35, 0.06
     u = ss(T["null_look"], T["end"] + 0.5, t)               # f: up at Null, at the fork
     n, k, lean, yaw, head, grin = null_state(t)
     loc = Vector((-12.0 + 0.6 * u, -24.0 + 0.4 * u, 2.0))                # in front of him, to the side
