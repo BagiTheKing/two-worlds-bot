@@ -132,19 +132,20 @@
    "name": "noob_running",
    "text": "I am running!",
    "voice_file": "assets/clips/ep10/ep0_noob_running_dejavu_tail.wav",
-   "pad": -1.04,
+   "pad": -0.7,
    "caption_y": 1420
   },
   {
    "line": "steve",
    "name": "steve_412",
-   "text": "I went through this... 412 times...",
+   "text": "I went through it all. Again and again. 412 times.",
    "caption_y": 1420,
-   "direction_text": "[a hushed, breathless whisper, realizing something terrible] I went through this... four hundred and twelve times...",
-   "pad": 0.0,
+   "direction_text": "[whispering, barely a breath, horrified, realizing it as he speaks] I went through it all... Again and again... Four hundred and twelve times.",
+   "pad": 0.15,
    "solo_only": true,
-   "solo_text": "I went through this... four hundred and twelve times...",
-   "vo": true
+   "solo_text": "I went through it all... Again and again... Four hundred and twelve times.",
+   "vo": true,
+   "whisper": true
   },
   {
    "beat": "snap",
