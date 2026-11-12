@@ -184,10 +184,11 @@
    "name": "null_survive",
    "caption_y": 1420,
    "text": "You weren't supposed to survive.",
-   "direction_text": "[bitter, broken, upset, slow, dying] You weren't supposed to survive.",
+   "direction_text": "[bitter, broken, upset, dying, every word clear] You weren't supposed to survive.",
    "pad": 0.2,
    "solo_only": true,
-   "solo_text": "You weren't supposed to survive."
+   "solo_text": "You weren't supposed to survive.",
+   "null_light": true
   },
   {
    "beat": "fall_end",
