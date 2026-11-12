@@ -205,14 +205,14 @@
    "line": "null",
    "name": "null_end",
    "caption_y": 1420,
-   "text": "All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
-   "direction_text": "[broken, bitter, cold, a promise of revenge, steady pace, short pauses] All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
+   "text": "All I wanted was to fix this world. I'll be back. And next time, I'll finish it.",
+   "direction_text": "[cold, bitter, firm, a quick steady pace, no long pauses] All I wanted was to fix this world. I'll be back. And next time, I'll finish it.",
    "pad": 0.3,
    "solo_only": true,
-   "solo_text": "All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
+   "solo_text": "All I wanted was to fix this world. I'll be back. And next time, I'll finish it.",
    "null_light": true,
    "caption_color": "#FF3BD4",
-   "tighten": 0.35
+   "tighten": 0.25
   },
   {
    "beat": "end",
