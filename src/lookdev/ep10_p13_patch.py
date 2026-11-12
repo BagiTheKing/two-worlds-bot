@@ -34,7 +34,8 @@ from ep10_entrance import FPS, lerp, ss, back_out                    # noqa: E40
 
 T = {"watch": 0.0, "patch_allow": 0.7, "patch_allow_end": 2.3, "dive": 2.45, "upgrade": 4.05, "catch": 5.05,
      "climb": 6.25, "grab_steve": 8.45, "land": 9.35, "end": 12.35, "length": 13.3}
-SEG = 0.5                                                     # each arm segment (m)
+SEG = 0.62                                                    # each arm segment (m)
+CARRY_OUT, CARRY_DOWN = 0.82, 0.75                            # where each hand holds its one: out to the side, down (apart)
 
 
 def shots():
@@ -222,6 +223,16 @@ def apply(E, t):
     shot = which(t)[0]
     # Steve: hanging from the stub as part 12 left him (until Patch has him)
     faces(E, t)
+    ts_ = T["grab_steve"] + 0.3
+    if t >= ts_:
+        a_, b_ = patch_at(E, t), patch_at(E, t + 0.08)
+        hv = Vector(((b_ - a_).x, (b_ - a_).y, 0))
+        head = math.degrees(math.atan2(-hv.x, hv.y) + math.pi) if hv.length > 1e-3 else getattr(E, "_last_head", 0.0)
+        E._last_head = head
+        # Steve's rig faces -y at yaw 0 (as the Noob's): the same heading; part 7's base yaw is -57
+        E.steve_yaw_add = (head - (90 - 125 - 22)) * ss(ts_, ts_ + 0.5, t)
+    else:
+        E.steve_yaw_add = 0.0
     E.force_shot = "R1"
     E.lip_frame = int(round(t * FPS))
     P7.cast(E, P7.T["dive"] - 2.6)
@@ -283,7 +294,8 @@ def apply(E, t):
         pose_noob(N, dict(limp, root_yaw=0))
         sw = 7 * math.exp(-(t - tc) * 1.4) * math.sin((t - tc) * 4.5)
         N.root.rotation_euler = (math.radians(sw), math.radians(sw * 0.5), math.atan2(-fwd.x, fwd.y) + math.pi)
-        hand_r = arm(E, "r", shoulder["r"], shoulder["r"] + Vector((0.12, 0, -0.95)), outv["r"], ext)
+        side_r = Vector((outv["r"].x, outv["r"].y, 0)).normalized()
+        hand_r = arm(E, "r", shoulder["r"], shoulder["r"] + side_r * CARRY_OUT + Vector((0, 0, -CARRY_DOWN)), outv["r"], ext)
         bpy.context.view_layer.update()
         N.root.location = N.root.location + (hand_r - noob_neck(E)) + Vector((0, 0, -0.08))
     # his faint glow
@@ -293,7 +305,8 @@ def apply(E, t):
     ts = T["grab_steve"] + 0.3
     if t >= ts:
         S = E.S
-        hand_l = arm(E, "l", shoulder["l"], shoulder["l"] + Vector((-0.12, 0, -0.95)), outv["l"], ext)
+        side_l = Vector((outv["l"].x, outv["l"].y, 0)).normalized()
+        hand_l = arm(E, "l", shoulder["l"], shoulder["l"] + side_l * CARRY_OUT + Vector((0, 0, -CARRY_DOWN)), outv["l"], ext)
         bpy.context.view_layer.update()
         S.holder.location = S.holder.location + (hand_l - steve_neck(E)) + Vector((0, 0, -0.06))
     else:
