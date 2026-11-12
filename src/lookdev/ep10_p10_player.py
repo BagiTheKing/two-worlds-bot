@@ -111,8 +111,9 @@ def build(tl, tex_dir, assets, res, samples):
                            Vector((rng.uniform(-0.3, 0.3), rng.uniform(-0.3, 0.3), rng.uniform(-0.15, 0.1))),
                            Vector((rng.uniform(-1, 1), rng.uniform(-1, 1), rng.uniform(-1, 1)))))
     # the cell's path: from out over the void, down and in, to just out of the Noob's reach
-    E.cell_end = Vector((E.XE - 3.1, E.lane["N"] + 0.35, E.deck - 0.95))
-    E.cell_start = E.cell_end + Vector((-13.0, 5.0, 3.2))
+    # from where Null was (his chest, where it all flew apart), falling the whole way to just in front of the Noob
+    E.cell_start = Vector((E.XE - 26.0, E.Y0 + 7.0, E.deck + 4.0))
+    E.cell_end = Vector((E.XE - 1.7, E.lane["N"] - 0.2, E.deck - 1.7))
     return E
 
 
@@ -130,25 +131,25 @@ def _peace(f):
 
 # ------------------------------------------------------------------ the cell
 def cell_at(E, t):
-    """(centre, rotation of the cube, how far along 0..1)"""
-    u = max(0.0, min(1.0, t / T["sees"]))
-    k = 1 - (1 - u) ** 2.4                                    # rolling in, bleeding off speed, stopping
-    path = E.cell_end - E.cell_start
-    c = E.cell_start + path * k
-    c.z += 0.6 * math.sin(math.pi * k) * (1 - k)            # a gentle arc
-    if t > T["sees"]:
-        c.z += 0.05 * math.sin((t - T["sees"]) * 2.1)       # hanging there, bobbing
-    # rolling: a ball's roll (angle = distance / radius) about the axis across its way, plus a wobble at the stop
+    """(centre, rotation of the cube, how far along 0..1): one long fall from where Null was toward
+    the Noob, never stopping: it drifts at first, then the fall takes it (faster, lower), tumbling."""
+    t_arrive = T["steve_dont"] + 0.55                        # it would reach him just after the cut
+    u = max(0.0, min(1.05, t / t_arrive))
+    S_, A_ = E.cell_start, E.cell_end
+    h = S_.lerp(A_, 0.25 * u + 0.75 * u ** 1.5)              # across: slow out there, quicker as it comes
+    top = S_.z + 5.0                                          # up and clear of his builds, over them, then the fall
+    if u < 0.4:
+        z = lerp(S_.z, top, math.sin(0.5 * math.pi * u / 0.4))
+    else:
+        z = lerp(top, A_.z, ss(0.45, 1.0, u) ** 1.25)
+    c = Vector((h.x, h.y, z))
+    # tumbling end over end (a rolling ball's turn for the way it has come), a slow wobble across it
+    path = A_ - S_
     d = path.normalized()
     axis = d.cross(Vector((0, 0, -1))).normalized()
-    ang = path.length * k / R_CELL
-    wob = 0.18 * math.exp(-max(0.0, t - T["sees"] + 0.2) * 2.2) * math.sin(max(0.0, t - T["sees"] + 0.2) * 7.0) \
-        if t > T["sees"] - 0.2 else 0.0
-    q = Quaternion(axis, ang + wob)
-    # it settles flat (an obby block): snap the roll to the nearest quarter turn as it stops
-    rest = round(ang / (math.pi / 2)) * (math.pi / 2)
-    q = Quaternion(axis, lerp(ang, rest, ss(0.75, 1.0, u)) + wob)
-    return c, q, k
+    dist = (h - S_).length + abs(z - S_.z) * 0.3
+    q = Quaternion(axis, 0.55 * dist / R_CELL) @ Quaternion(d, 0.35 * math.sin(t * 0.8))
+    return c, q, u
 
 
 def apply(E, t):
@@ -174,9 +175,7 @@ def apply(E, t):
     hn = P7.P6._head(E.N.face)
     look = (hn - c)
     yaw_to = math.atan2(look.y, look.x) + math.pi / 2       # the head faces -y
-    camv = E.cam.location - c
-    yaw_cam = math.atan2(camv.y, camv.x) + math.pi / 2
-    yaw = lerp(yaw_cam + 0.25 * math.sin(t * 0.9), yaw_to, ss(T["sees"] - 0.6, T["sees"] + 0.4, t))
+    yaw = yaw_to + 0.5 * math.sin(t * 0.7)                   # afloat, turning a little on its own
     E.cell_head.location = c
     E.cell_head.rotation_quaternion = Quaternion((0, 0, 1), yaw) @ Quaternion((1, 0, 0), 0.08 * math.sin(t * 1.3))
     E.cell_glow.location = c + Vector((0, 0, 0.15))
@@ -259,31 +258,32 @@ def camera(E, t, shot):
     t0, t1 = which(t)[1:]
     u = ss(t0, t1, t) if t1 < 1e8 else ss(t0, T["end"], t)
     if shot == "ROLL":
-        # with it: from behind and beside, swinging round as it slows until the Noob is there behind it
+        # a chase from a distance: alongside and a little behind, the cell in the void, the island far ahead
+        lag = cell_at(E, max(0.0, t - 0.35))[0]
         path = (E.cell_end - E.cell_start).normalized()
         side = path.cross(Vector((0, 0, 1))).normalized()
-        a = ss(0.1, 1.0, k)
-        off_far = -path * 1.6 + side * 2.0 + Vector((0, 0, -0.75))
-        to_cell = (c - hn)
-        to_cell = Vector((to_cell.x, to_cell.y, 0)).normalized()
-        off_near = to_cell * 2.3 + side * 0.6 + Vector((0, 0, -0.1))
-        loc = c + off_far.lerp(off_near, a)
-        foc = (c - loc).length
-        return loc, c + Vector((0, 0, 0.02)), lerp(55, 45, a), 1.8, foc, 0.06, 0.0
+        loc = lag - path * lerp(6.5, 4.5, u) + side * lerp(3.4, 2.6, u) + Vector((0, 0, lerp(1.6, 0.6, u)))
+        ahead = c + path * 1.2
+        look = c.lerp(ahead, 0.25).lerp(hn, 0.18 * ss(0.55, 1.0, u))     # at the end, him far ahead of it
+        return loc, look, lerp(42, 46, u), 4.0, (c - loc).length, 0.04, 0.0
     if shot == "SEES":
-        # past the cell (soft, near) onto him: he sees it
-        d = (c - hn).normalized()
-        side = d.cross(Vector((0, 0, 1))).normalized()
-        loc = c + d * 0.6 + side * 1.0 + Vector((0, 0, 0.35))
-        return loc, hn + Vector((0, 0, 0.0)), 55, 2.2, (hn - loc).length, 0.05, 0.0
+        # his face, from the front: he catches sight of it (it is in his eyes, mirrored, far off, coming)
+        fw = P7.noob_eye_normal(E)
+        fw = Vector((fw.x, fw.y, 0)).normalized()
+        side = fw.cross(Vector((0, 0, 1))).normalized()
+        loc = hn + fw * lerp(0.95, 0.75, u) + side * 0.18 + Vector((0, 0, 0.02))
+        return loc, hn + Vector((0, 0, -0.02)), 50, 2.6, None, 0.04, 0.0
     if shot == "PLAYER":
-        # him: proud of himself, grinning, the cell's glow on him
-        fw = P7.noob_eye_normal(E)                          # his face, from the front, a touch toward the cell
-        tc = (c - hn).normalized()
-        d = (fw * 0.75 + tc * 0.25)
-        d = Vector((d.x, d.y, 0.1 * d.z)).normalized()
-        loc = hn + d * lerp(1.05, 0.9, u) + Vector((0, 0, -0.02))
-        return loc, hn + Vector((0, 0, -0.04)), 48, 2.2, None, 0.1, 0.0
+        # his face three-quarters, the cell behind and beside him, coming, bigger and bigger (soft)
+        fw = P7.noob_eye_normal(E)
+        fw = Vector((fw.x, fw.y, 0)).normalized()
+        to_c = Vector(((c - hn).x, (c - hn).y, 0)).normalized()
+        sgn = 1 if fw.cross(to_c).z > 0 else -1
+        a = math.radians(-58 * sgn)
+        d = Vector((fw.x * math.cos(a) - fw.y * math.sin(a), fw.x * math.sin(a) + fw.y * math.cos(a), 0))
+        loc = hn + d * lerp(1.15, 1.0, u) + Vector((0, 0, -0.02))
+        look = hn.lerp(c, 0.06)
+        return loc, look, 40, 2.4, (hn - loc).length, 0.08, 0.0
     # DONT: Steve, close, turning to him, panicking; we cut on his word
     d = (hn - hs).normalized()
     d = Vector((d.x, d.y, 0)).normalized()
