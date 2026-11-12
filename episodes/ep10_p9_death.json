@@ -14,6 +14,18 @@
    "stability": 0.4,
    "gemini_voice": "Puck",
    "acting": "the Noob, quiet, ashamed, a tear in his eye, his voice breaking"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.8,
+   "pace": 0.5,
+   "stability": 0.3,
+   "gemini_voice": "Puck",
+   "acting": "the monster's last words as he dies: bitter, broken, upset, slow, a hurt child underneath"
   }
  },
  "music": [
@@ -165,7 +177,21 @@
   },
   {
    "beat": "fall",
-   "dur": 3.4
+   "dur": 0.7
+  },
+  {
+   "line": "null",
+   "name": "null_survive",
+   "caption_y": 1420,
+   "text": "You weren't supposed to survive.",
+   "direction_text": "[bitter, broken, upset, slow, dying] You weren't supposed to survive.",
+   "pad": 0.2,
+   "solo_only": true,
+   "solo_text": "You weren't supposed to survive."
+  },
+  {
+   "beat": "fall_end",
+   "dur": 1.6
   },
   {
    "beat": "end",

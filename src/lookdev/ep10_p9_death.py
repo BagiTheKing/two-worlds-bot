@@ -35,7 +35,7 @@ import ep10_p4_build as P4                                           # noqa: E40
 from ep10_entrance import FPS, lerp, ss, back_out                    # noqa: E402
 
 T = {"cells_cry": 0.0, "null_glitch": 2.6, "heroes": 5.8, "boom": 6.8, "drift": 7.6, "fall": 10.2,
-     "end": 13.6, "length": 14.6}
+     "null_survive": 10.9, "null_survive_end": 13.0, "fall_end": 13.2, "end": 14.8, "length": 15.8}
 P7_TL = {"beats": {"a": [0.0, 0.25], "patch_look": [0.25, 3.23], "see": [3.33, 4.73], "steve_you": [4.73, 8.75],
                    "dive": [8.75, 12.8], "end": [12.8, 13.0]}, "lines": [], "length": 13.0}
 UPSET = ["..##....##..", "..##....##..", "..##....##..", "..##....##..", "............", "...######...",
@@ -232,7 +232,9 @@ def null(E, t):
     else:
         up = 1.0
     null_upset(up)
-    smile = 1.0 if t < T["boom"] + 2.0 else 1.0 - ss(T["fall"], T["end"] - 0.6, t)
+    smile = 1.0 - ss(T["null_survive_end"] + 0.2, T["end"] - 0.2, t)
+    if T["null_survive"] <= t < T["null_survive_end"]:       # his words, glitching out of the face
+        smile *= 0.82 + 0.18 * (1 if (t * 23.0) % 1.0 > 0.3 else 0)
     null_smile(smile)
     if t >= T["boom"]:
         cells_look(near=70.0, far=170.0, power=2.6)
@@ -340,9 +342,18 @@ def _head_fall(E, t):
     m0 = E.head_m0
     loc, rot, scl = m0.decompose()
     drop = 1.7 * s * s / (1 + 0.22 * s)                     # it gathers speed, the void slows it
-    tilt = Quaternion((1, 0, 0), -0.32 * (1 - math.exp(-s / 2.0))) @ Quaternion((0, 1, 0), 0.18 * math.sin(s * 0.9))
+    tilt = Quaternion((1, 0, 0), -0.22 * (1 - math.exp(-s / 2.0))) @ Quaternion((0, 1, 0), 0.12 * math.sin(s * 0.9))
     out = 24.0 * (1 - math.exp(-s / 2.6))                  # out over the void (past the island's edge)
-    X.head.matrix_world = Matrix.LocRotScale(loc + Vector((0.3 * s, -out, -drop)), tilt @ rot, scl)
+    p = loc + Vector((0.3 * s, -out, -drop))
+    # turn the face (-y of the head) toward the fall's camera, slowly
+    cam = fall_cam_loc(E, t)
+    f0 = rot @ Vector((0, -1, 0))
+    want = cam - p
+    a0 = math.atan2(f0.y, f0.x)
+    a1 = math.atan2(want.y, want.x)
+    da = (a1 - a0 + math.pi) % (2 * math.pi) - math.pi
+    turn = Quaternion((0, 0, 1), da * ss(0.0, 1.6, s))
+    X.head.matrix_world = Matrix.LocRotScale(p, turn @ tilt @ rot, scl)
 
 
 def cells(E, t):
@@ -437,11 +448,17 @@ def camera(E, t, shot):
         c = Vector((XE - 26.0, E.Y0 + 7.0, deck + 1.0))
         loc = c + Vector((-26.0 + 3.0 * u, -52.0 + 5.0 * u, 17.0))
         return loc, c + Vector((0, 0, 3.0 - 2.5 * u)), 38, 16.0, None, 0.05 + 1.2 * math.exp(-((t - T["boom"]) / 0.25) ** 2), 0.0
-    # FALL: the head, falling away from us into the void; we tilt down after it and let it go
+    # FALL: the head, falling away from us into the void, its face to us for his last words; we let it go
     hc = E.X.head.matrix_world @ Vector((0, 0, 1.9))
-    c0 = Vector((XE - 26.0, E.Y0 + 7.0, deck + 1.0))
-    loc = c0 + Vector((-14.0, -44.0, 8.0 - 10.0 * u))
-    return loc, hc, lerp(50, 70, u), 16.0, (hc - loc).length, 0.04, 0.0
+    loc = fall_cam_loc(E, t)
+    talk = ss(T["null_survive"] - 0.4, T["null_survive"] + 0.4, t) * (1 - ss(T["null_survive_end"], T["end"], t))
+    return loc, hc, lerp(50, 80, talk), 16.0, (hc - loc).length, 0.04, 0.0
+
+
+def fall_cam_loc(E, t):
+    u = ss(T["fall"], T["end"] + 0.6, t)
+    c0 = Vector((E.XE - 26.0, E.Y0 + 7.0, E.deck + 1.0))
+    return c0 + Vector((-14.0, -44.0, 8.0 - 10.0 * u))
 
 
 # ------------------------------------------------------------------ the look
@@ -485,9 +502,11 @@ def finish(path, mist_path, shot, t):
 # ------------------------------------------------------------------ main
 def align(tl):
     b = tl.get("beats", {})
-    for k in ("cells_cry", "null_glitch", "heroes", "boom", "drift", "fall", "end"):
+    for k in ("cells_cry", "null_glitch", "heroes", "boom", "drift", "fall", "fall_end", "end"):
         if k in b:
             T[k] = b[k][0]
+    if "null_survive" in b:
+        T["null_survive"], T["null_survive_end"] = b["null_survive"]
     if b:
         T["length"] = tl["length"] + 0.4
 
