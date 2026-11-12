@@ -1,0 +1,162 @@
+{
+ "id": "ep10_p13_patch",
+ "number": 10,
+ "title": "The First Portal Was a Trap: Patch",
+ "cut_loose": false,
+ "cast": {
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.7,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, the small calm robot, for once firm and fierce: quiet, determined anger"
+  }
+ },
+ "music": [
+  {
+   "cue": "chase",
+   "from": "dive",
+   "to": "land",
+   "gain": 0.2,
+   "hard_end": false
+  },
+  {
+   "cue": "theme_full",
+   "from": "land",
+   "to": "end",
+   "gain": 0.2,
+   "hard_end": true
+  }
+ ],
+ "ambience": [],
+ "sfx": [
+  {
+   "kind": "whoosh",
+   "at": "dive",
+   "dur": 1.6,
+   "gain": 0.45
+  },
+  {
+   "kind": "whir",
+   "at": "dive",
+   "dur": 1.6,
+   "gain": 0.3
+  },
+  {
+   "kind": "charge",
+   "at": "upgrade",
+   "dur": 0.8,
+   "gain": 0.35
+  },
+  {
+   "kind": "click",
+   "at": "upgrade+0.35",
+   "gain": 0.45
+  },
+  {
+   "kind": "click",
+   "at": "upgrade+0.5",
+   "gain": 0.45
+  },
+  {
+   "kind": "chime",
+   "at": "upgrade+0.75",
+   "gain": 0.3,
+   "pitch": 1.3
+  },
+  {
+   "kind": "punch",
+   "at": "catch+0.35",
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "climb",
+   "dur": 2.0,
+   "gain": 0.3
+  },
+  {
+   "kind": "punch",
+   "at": "grab_steve+0.3",
+   "gain": 0.6
+  },
+  {
+   "kind": "whir",
+   "at": "land",
+   "dur": 2.6,
+   "gain": 0.2
+  },
+  {
+   "kind": "thump",
+   "at": "land+2.4",
+   "gain": 0.45
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "watch",
+   "dur": 0.7
+  },
+  {
+   "line": "patch",
+   "name": "patch_allow",
+   "caption_y": 1420,
+   "text": "I will not allow this.",
+   "direction_text": "[firm, fierce, quiet determination, for once not calm at all] I will not allow this.",
+   "pad": 0.15,
+   "solo_only": true,
+   "solo_text": "I will not allow this."
+  },
+  {
+   "beat": "dive",
+   "dur": 1.6
+  },
+  {
+   "beat": "upgrade",
+   "dur": 1.0
+  },
+  {
+   "beat": "catch",
+   "dur": 1.2
+  },
+  {
+   "beat": "climb",
+   "dur": 2.2
+  },
+  {
+   "beat": "grab_steve",
+   "dur": 0.9
+  },
+  {
+   "beat": "land",
+   "dur": 3.0
+  },
+  {
+   "beat": "end",
+   "dur": 0.6
+  }
+ ]
+}
