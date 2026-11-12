@@ -1,0 +1,98 @@
+{
+ "id": "ep10_p7_reveal",
+ "fps": 24,
+ "length": 12.998,
+ "beats": {
+  "a": [
+   0.0,
+   0.25
+  ],
+  "patch_look": [
+   0.25,
+   3.234
+  ],
+  "see": [
+   3.334,
+   4.734
+  ],
+  "steve_you": [
+   4.734,
+   8.748
+  ],
+  "dive": [
+   8.748,
+   12.798
+  ],
+  "end": [
+   12.798,
+   12.998
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "patch_look",
+   "who": "patch",
+   "text": "No, look at what he is made of...",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 0.25,
+   "end": 3.234
+  },
+  {
+   "name": "steve_you",
+   "who": "steve",
+   "text": "Noob... that is you!! Every time you respawned...",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 4.734,
+   "end": 8.748
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, annoyed at first, then frozen in horror as he understands"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.4,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, a small floating robot, suddenly quiet and serious for once"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, panicked, yelling, shaking his friend awake"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 13.398
+  }
+ ]
+}
