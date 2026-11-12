@@ -83,7 +83,34 @@ def build(tl, tex_dir, assets, res, samples):
     b.inputs["Roughness"].default_value = 0.02
     b.inputs["Transmission Weight"].default_value = 1.0
     b.inputs["IOR"].default_value = 1.33
+    b.inputs["Specular IOR Level"].default_value = 1.0
+    b.inputs["Coat Weight"].default_value = 1.0
+    b.inputs["Coat Roughness"].default_value = 0.0
+    # a bright rim of light round its edge (catches the eye like real water does)
+    nt = m.node_tree
+    lw = nt.nodes.new("ShaderNodeLayerWeight")
+    lw.inputs["Blend"].default_value = 0.3
+    em = nt.nodes.new("ShaderNodeEmission")
+    em.inputs["Color"].default_value = (0.9, 0.96, 1.0, 1)
+    em.inputs["Strength"].default_value = 2.5
+    add = nt.nodes.new("ShaderNodeMixShader")
+    pw = nt.nodes.new("ShaderNodeMath")
+    pw.operation = "POWER"
+    pw.inputs[1].default_value = 2.2
+    nt.links.new(lw.outputs["Fresnel"], pw.inputs[0])
+    nt.links.new(pw.outputs[0], add.inputs[0])
+    nt.links.new(b.outputs["BSDF"], add.inputs[1])
+    nt.links.new(em.outputs[0], add.inputs[2])
+    nt.links.new(add.outputs[0], nt.nodes["Material Output"].inputs["Surface"])
     tr.data.materials.append(m)
+    # its glint: a tiny light just off it, toward the camera and up (the sparkle that makes it read)
+    L = bpy.data.lights.new("tear_glint", "POINT")
+    L.energy = 0.0
+    L.shadow_soft_size = 0.004
+    L.color = (1.0, 0.97, 0.94)
+    gl = bpy.data.objects.new("tear_glint", L)
+    E.sc.collection.objects.link(gl)
+    E.tear_glint = gl
     for p in tr.data.polygons:
         p.use_smooth = True
     E.tear = tr
@@ -103,6 +130,7 @@ def apply(E, t, shot=None):
         noob_after(E, t, t7, shot)
     else:
         E.tear.hide_render = True
+        E.tear_glint.data.energy = 0.0
     return look
 
 
@@ -141,9 +169,10 @@ def noob_after(E, t, t7, shot):
     dn = (dn - nrm * dn.dot(nrm)).normalized()
     t0 = T["tear"] + 0.05
     grow = ss(t0, t0 + 0.55, t)
-    run = ss(t0 + 0.55, t0 + 2.4, t) ** 1.3
+    run = ss(t0 + 0.55, t0 + 3.8, t) ** 1.3
     if grow <= 0:
         E.tear.hide_render = True
+        E.tear_glint.data.energy = 0.0
         return
     r = 0.017 * grow * (1 - 0.2 * run) * (1 - ss(0.8, 1.0, run))
     E.tear.hide_render = False
@@ -151,8 +180,13 @@ def noob_after(E, t, t7, shot):
     E.tear.rotation_mode = "QUATERNION"
     E.tear.rotation_quaternion = Vector((0, 0, -1)).rotation_difference(dn)
     E.tear.location = eye + dn * (0.055 + 0.115 * run) + nrm * (0.004 + 0.5 * r)
+    cam = E.cam.matrix_world.translation
+    to_cam = (cam - E.tear.location).normalized()
+    E.tear_glint.location = E.tear.location + (to_cam * 0.6 - dn * 0.5).normalized() * 0.14
+    E.tear_glint.data.energy = 0.12 * grow
     if r < 1e-4:
         E.tear.hide_render = True
+        E.tear_glint.data.energy = 0.0
 
 
 def camera_cu(E, t):
