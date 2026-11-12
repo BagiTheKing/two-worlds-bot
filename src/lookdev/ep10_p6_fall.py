@@ -813,8 +813,8 @@ def body(E, k, t, tau):
         if nt > 0:
             qn = back_out(nt) if nt < 1 else 1.0
             p["arm_sl"] = {"fwd": lerp(172, 12, qn), "out": lerp(4, 16, qn)}
-            p["arm_sr"] = {"fwd": 172, "out": 4}
-            p["head_nod"] = lerp(p["head_nod"], -8, qn)
+            p["arm_sr"] = {"fwd": lerp(172, 218, qn), "out": lerp(4, 6, qn)}   # as part 7: the arm up and back over his head,
+            p["head_nod"] = lerp(p["head_nod"], -8, qn)                          # so turned out he hangs clear of the wall
             p["chest_lean"] = lerp(-8, -4, qn)
             out["grip_sides"] = ("sr",)
             out["yaw"] = 90 + 150 * qn
@@ -843,7 +843,7 @@ def steve_one_hand(E, tau, u, p):
     p = dict(p)
     p["arm_sr"] = {"fwd": 172, "out": 4, "elbow": 4}
     flat_ = {"both_to": 0.42, "both_tm": 0.45, "both_ti": 0.4, "both_bo": 0.12, "both_ps": 0.8, "both_py": 0.0,
-             "bb_tilt": -0.2, "bb_raise": -0.1, "m_arch": 0.12, "m_w": 1.6}
+             "bb_tilt": -0.2, "bb_raise": -0.1, "bb_squeeze": 0.0, "m_arch": 0.12, "m_w": 1.6}
     seen = T["steve_seen"]
     dl = T["steve_delete"]
     build = ss(dl - 0.1, dl + 1.4, tau)
@@ -857,7 +857,7 @@ def steve_one_hand(E, tau, u, p):
     face = dict(flat_)
     if tau >= dl - 0.1:
         mad = {"both_to": 0.0, "both_tm": 0.0, "both_ti": 0.1, "both_ps": 0.55, "both_py": 0.0,
-               "bb_tilt": 0.75, "bb_raise": -0.3, "m_arch": -0.1, "m_w": 2.1}
+               "bb_tilt": 0.95, "bb_raise": -0.3, "bb_squeeze": 1.5, "m_arch": -0.1, "m_w": 2.1}   # brows knit together
         face = _mixf(flat_, mad, build)
     return p, face, -125 * q
 
