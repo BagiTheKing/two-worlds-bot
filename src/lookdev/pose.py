@@ -10,7 +10,7 @@ screen's left / right when he faces the camera, i.e. his right / his left).
         "head_turn": 8, "head_tilt": 6, "head_nod": 0,   # nod + = down
         "arm_sl": {"out": 9, "fwd": 6, "twist": 0, "elbow": 12},
         "arm_sr": {...},
-        "foot_sl": {"x": 0, "y": 0, "z": 0, "yaw": 0},   # offsets from under the hip
+        "foot_sl": {"x": 0, "y": 0, "z": 0, "yaw": 0, "pitch": 0},   # offsets from under the hip; pitch + = toes up
         "foot_sr": {...},
     })
 
@@ -87,6 +87,6 @@ def pose(arm, P):
     for side, name in FOOT.items():
         f = P.get("foot_" + side, {})
         _loc_world(pb[name], (f.get("x", 0), f.get("y", 0), f.get("z", 0)))
-        if f.get("yaw"):
-            _apply(arm, name, _q(Z, f["yaw"]))
+        if f.get("yaw") or f.get("pitch"):
+            _apply(arm, name, _q(Z, f.get("yaw", 0)) @ _q(X, f.get("pitch", 0)))   # pitch + = toes up
     _upd()

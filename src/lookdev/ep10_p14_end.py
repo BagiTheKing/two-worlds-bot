@@ -132,7 +132,28 @@ def build(tl, tex_dir, assets, res, samples):
 
 
 # ------------------------------------------------------------------ the meadow
+# the Noob bending down for the duck (rigid legs: a staggered stance, the hips a little down)
+PICKUP = {"chest_lean": 72, "head_nod": -38, "hips_drop": 0.12, "arm_sl": {"fwd": 88, "out": -6},
+          "arm_sr": {"fwd": 88, "out": -6}, "leg_sl": {"fwd": 20}, "leg_sr": {"fwd": -20}}
+
+
+def pickup_spot(E):
+    """Where his hands come down in front of him when he bends (the duck walks to there), and how high."""
+    if getattr(E, "_pick", None) is None:
+        from noob import pose_noob
+        N = E.N
+        pose_noob(N, dict(PICKUP, root_yaw=-90))
+        N.root.location = E.spot["N"]
+        N.root.rotation_euler = (0, 0, math.radians(-90))
+        bpy.context.view_layer.update()
+        m = 0.5 * (P7.P6._noob_hand(N, "sl") + P7.P6._noob_hand(N, "sr"))
+        E._pick = Vector((m.x, m.y, E.ground.z))
+        E._pick_dz = m.z - E.ground.z
+    return E._pick
+
+
 def cast(E, t):
+    pickup_spot(E)
     from pose import pose
     from noob import pose_noob
     from faceplate import set_face, EYES, EYE_DEFAULTS, MOUTH_DEFAULTS, NOOB_EYES, NOOB_EYE_DEFAULTS, NOOB_MOUTH
@@ -143,16 +164,22 @@ def cast(E, t):
     S, N, Pt = E.S, E.N, E.Pt
     f_render = int(round(t * FPS))
     lib = json.load(open(os.path.join(HERE, "poses_lib.json")))
-    sit = ss(T["sunset"] - 0.2, T["sunset"] + 0.6, t)
-    hug = ss(T["noob_duck"] - 0.15, T["noob_duck"] + 0.3, t)
+    sit = 1.0 if t >= T["sunset"] else 0.0                   # sitting already when the sunset shot opens (a time cut)
+    # the duck: he bends down, scoops it up, hugs it
+    nd = T["noob_duck"]
+    bend = ss(nd - 0.4, nd + 0.05, t) * (1 - ss(nd + 0.2, nd + 0.65, t))
+    hug = ss(nd + 0.2, nd + 0.65, t)
     # ---- where they stand (facing each other), then sit side by side facing the sun (+x -y)
     sun_dir = Vector((0.55, -0.83, 0)).normalized()
     # Steve
     sp = flat(lib["idle (Benly 2.2)"])
     stand_pose = {"head_nod": -2 + 4 * ss(T["steve_jumped"] + 1.2, T["noob_bridge"], t),
                   "arm_sl": {"fwd": 6, "out": 12, "elbow": 14}, "arm_sr": {"fwd": 6, "out": 12, "elbow": 16}}
-    sit_pose = {"hips_drop": 1.05, "chest_lean": 12, "head_nod": -4, "arm_sl": {"fwd": 40, "out": 18, "elbow": 40},
-                "arm_sr": {"fwd": 40, "out": 18, "elbow": 40}, "foot_sl": {"y": -0.85, "z": 0.0}, "foot_sr": {"y": -0.8, "z": 0.0}}
+    # on the grass, legs out in front, leaning back on his hands
+    sit_pose = {"hips_drop": 0.93, "chest_lean": -6, "head_nod": -2, "arm_sl": {"fwd": -22, "out": 14, "elbow": 4},
+                "arm_sr": {"fwd": -22, "out": 14, "elbow": 4},
+                "foot_sl": {"x": -0.06, "y": -0.97, "z": 0.08, "pitch": 70},
+                "foot_sr": {"x": 0.1, "y": -0.8, "z": 0.06, "pitch": 55, "yaw": 8}}
     for k_, v in flat(P13.P12.P10.P7.P6._mix(stand_pose, sit_pose, sit)).items():
         sp[k_] = v
     pose(S.arm, unflat(sp))
@@ -187,7 +214,7 @@ def cast(E, t):
             "arm_sr": {"fwd": lerp(6, 62, hug), "out": lerp(8, -14, hug)}}
     stand_n = {"chest_lean": 4, "head_nod": 6 * (1 - hug) - 4 * hug, **hold}
     sit_n = {"hips_drop": 1.0, "chest_lean": 8, "head_nod": -2, "leg_sl": {"fwd": 80}, "leg_sr": {"fwd": 80}, **hold}
-    npz = P13.P12.P10.P7.P6._mix(stand_n, sit_n, sit)
+    npz = P13.P12.P10.P7.P6._mix(P13.P12.P10.P7.P6._mix(stand_n, PICKUP, bend), sit_n, sit)
     npz["root_yaw"] = lerp(-90, yaw_sun, sit)
     pose_noob(N, npz)
     N.root.location = E.spot["N"] + (Vector((0, 0, 0.0)))
@@ -208,21 +235,26 @@ def cast(E, t):
             fn[k] = v
     talk(fn, E.mouth.get("noob", {}).get(f_render))
     set_face(N.face, fn)
-    # ---- the duck: out of the grass, to his feet; up into his arms
+    # ---- the duck: out of the grass, up to him; he bends down and scoops it up into his arms
     bpy.context.view_layer.update()
+    d1 = E._pick
     d0 = E.ground + Vector((2.4, -2.2, 0.0))
-    d1 = E.spot["N"] + Vector((0.3, -0.75, 0.0))
-    u = ss(T["duck"], T["noob_duck"] - 0.05, t)
+    u = ss(T["duck"], nd - 0.45, t)
     waddle = math.sin(t * 14.0) * (1 - ss(0.95, 1.0, u)) * (u > 0)
-    if t < T["noob_duck"]:
+    dv = (d1 - d0).normalized()
+    yaw_walk = math.atan2(-dv.x, dv.y) + math.pi
+    grab = nd + 0.08                                           # his hands close on it
+    if t < grab:
         E.duck.location = d0.lerp(d1, u) + Vector((0, 0, 0.03 * abs(waddle)))
-        dv = (d1 - d0).normalized()
-        E.duck.rotation_euler = (0, math.radians(6 * waddle), math.atan2(-dv.x, dv.y) + math.pi)
+        E.duck.rotation_euler = (0, math.radians(6 * waddle), yaw_walk)
     else:
         hl, hr = P7.P6._noob_hand(N, "sl"), P7.P6._noob_hand(N, "sr")
-        E.duck.location = 0.5 * (hl + hr) + Vector((0, 0, -0.15))
+        lift = ss(grab, nd + 0.65, t)
+        E.duck.location = 0.5 * (hl + hr) + Vector((0, 0, -lerp(E._pick_dz, 0.15, lift)))
         fwd = N.root.matrix_world.to_3x3() @ Vector((0, -1, 0))
-        E.duck.rotation_euler = (0, 0, math.atan2(-fwd.x, fwd.y) + math.pi)
+        yaw_hug = math.atan2(-fwd.x, fwd.y) + math.pi
+        dy = (yaw_hug - yaw_walk + math.pi) % (2 * math.pi) - math.pi     # turned round in his hands, the short way
+        E.duck.rotation_euler = (math.radians(-10 * math.sin(math.pi * lift)), 0, yaw_walk + dy * lift)
     E.duck.hide_render = t < T["duck"] - 0.05
     for ch in E.duck.children:
         ch.hide_render = E.duck.hide_render
@@ -235,24 +267,15 @@ def cast(E, t):
     for o in Pt.col.objects:
         o.hide_render = False
     Pt.beam.hide_render = True
-    fold = ss(0.0, 1.2, t)
-    for side, A in E.arms.items():
-        for k_, ob in A.items():
-            if k_ == "fingers":
-                for f in ob:
-                    f.hide_render = fold > 0.95
-            else:
-                ob.hide_render = fold > 0.95
-    if fold < 0.95:
-        bpy.context.view_layer.update()
-        m = Pt.root.matrix_world
-        for side, sx in (("l", -1), ("r", 1)):
-            sh = m @ Vector((sx * 0.24, 0.02, 0.0))
-            out = (m.to_3x3() @ Vector((sx, 0, 0.4))).normalized()
-            P13.arm(E, side, sh, sh + out * 0.3 + Vector((0, 0, -0.5)), out, 1 - fold)
+    # his arms go back in: the transformation of part 13, in reverse (pads and guards off, the fingers
+    # fold, the forearm folds back, the sleeves slide home, the plates close up into fins again)
+    fold = ss(0.2, 2.0, t)
     for side in ("l", "r"):
-        Pt.fins[side].scale = (max(0.001, fold),) * 3
-        Pt.fins[side].rotation_euler = (math.radians(20 * math.sin(t * 12.0)), 0, 0)
+        Pt.fins[side].rotation_euler = (math.radians(20 * math.sin(t * 12.0) * ss(1.9, 2.3, t)), 0, 0)
+    bpy.context.view_layer.update()
+    m = Pt.root.matrix_world.copy()
+    for side in ("l", "r"):
+        P13.chain(E, side, m, *P13.rest_pose(side), 1.0 - fold, sparks=False)
     vals = dict(PD)
     vals.update({"open": 1.0, "smile": ss(T["noob_duck"] + 0.3, T["noob_duck"] + 0.8, t), "wide": 0.0})
     set_patch(Pt, vals)
@@ -374,8 +397,9 @@ def camera(E, t, shot):
         return loc, dk.lerp(mid, 0.25), 28, 3.0, (dk - loc).length, 0.03, 0.0
     if shot == "HUG":
         # "MY DUCK!": the Noob squeezing it; Steve beside him, smiling despite himself
-        loc = mid + Vector((0.2, -2.6, -0.1))
-        return loc, mid + Vector((0.15, 0, -0.2)), 36, 3.5, None, 0.04, 0.0
+        m0 = 0.5 * (E.spot["S"] + E.spot["N"]) + Vector((0, 0, 1.25))
+        loc = m0 + Vector((0.5, -3.9 + 0.5 * u, -0.25))
+        return loc, m0 + Vector((0.2, 0, -0.35 + 0.15 * u)), 32, 4.0, None, 0.04, 0.0
     if shot == "PATCH":
         # Patch, the two of them below him
         loc = pc + Vector((0.4, -1.8, -0.4))

@@ -47,26 +47,105 @@
    "gain": 0.3
   },
   {
-   "kind": "charge",
-   "at": "upgrade",
-   "dur": 0.8,
+   "kind": "hiss",
+   "at": "upgrade+0.10",
+   "dur": 0.35,
    "gain": 0.35
   },
   {
-   "kind": "click",
-   "at": "upgrade+0.35",
-   "gain": 0.45
+   "kind": "servo",
+   "at": "upgrade+0.20",
+   "dur": 0.55,
+   "pitch": 1.0,
+   "gain": 0.4
+  },
+  {
+   "kind": "clunk",
+   "at": "upgrade+0.77",
+   "gain": 0.55
+  },
+  {
+   "kind": "servo",
+   "at": "upgrade+0.80",
+   "dur": 0.6,
+   "pitch": 1.3,
+   "gain": 0.35
+  },
+  {
+   "kind": "clunk",
+   "at": "upgrade+0.96",
+   "gain": 0.4,
+   "pitch": 1.1
+  },
+  {
+   "kind": "clunk",
+   "at": "upgrade+1.16",
+   "gain": 0.45,
+   "pitch": 1.05
+  },
+  {
+   "kind": "clunk",
+   "at": "upgrade+1.35",
+   "gain": 0.5
+  },
+  {
+   "kind": "servo",
+   "at": "upgrade+1.35",
+   "dur": 0.4,
+   "pitch": 0.8,
+   "gain": 0.35
+  },
+  {
+   "kind": "clunk",
+   "at": "upgrade+1.73",
+   "gain": 0.6,
+   "pitch": 0.9
+  },
+  {
+   "kind": "servo",
+   "at": "upgrade+1.85",
+   "dur": 0.25,
+   "pitch": 1.8,
+   "gain": 0.25
   },
   {
    "kind": "click",
-   "at": "upgrade+0.5",
-   "gain": 0.45
+   "at": "upgrade+2.16",
+   "gain": 0.3
+  },
+  {
+   "kind": "click",
+   "at": "upgrade+2.24",
+   "gain": 0.3
+  },
+  {
+   "kind": "click",
+   "at": "upgrade+2.31",
+   "gain": 0.3
+  },
+  {
+   "kind": "clunk",
+   "at": "upgrade+2.43",
+   "gain": 0.6,
+   "pitch": 0.85
+  },
+  {
+   "kind": "hiss",
+   "at": "upgrade+2.45",
+   "dur": 0.6,
+   "gain": 0.3
   },
   {
    "kind": "chime",
-   "at": "upgrade+0.75",
+   "at": "upgrade+2.50",
    "gain": 0.3,
    "pitch": 1.3
+  },
+  {
+   "kind": "whoosh",
+   "at": "upgrade+2.35",
+   "dur": 0.6,
+   "gain": 0.4
   },
   {
    "kind": "punch",
@@ -92,7 +171,7 @@
   },
   {
    "kind": "thump",
-   "at": "land+2.4",
+   "at": "land+2.3",
    "gain": 0.45
   }
  ],
@@ -136,7 +215,7 @@
   },
   {
    "beat": "upgrade",
-   "dur": 1.0
+   "dur": 2.6
   },
   {
    "beat": "catch",

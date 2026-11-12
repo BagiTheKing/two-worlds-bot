@@ -1272,6 +1272,40 @@ def sfx_quack(n=2):
     return norm(np.concatenate(out), 0.8)
 
 
+def sfx_servo(dur=0.5, pitch=1.0):
+    """A robot joint moving (Patch's arms unfolding): a geared motor whine that rises
+    and settles, with the fine ratchet of its teeth."""
+    x = t(dur)
+    u = x / dur
+    f = pitch * (220 + 260 * np.sin(np.pi * u) ** 0.7)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    whine = np.sin(ph) + 0.5 * np.sin(2 * ph + 0.3) + 0.25 * np.sign(np.sin(3 * ph))
+    teeth = (np.sin(2 * np.pi * np.cumsum(f * 0.18) / SR) > 0.6).astype(float)
+    grit = band(rng.standard_normal(len(x)), 1500, 6000) * teeth * 0.5
+    e = np.minimum(1, x / 0.03) * np.minimum(1, (dur - x) / 0.06 + 1e-3)
+    return norm((whine * 0.35 + grit) * e, 0.5)
+
+
+def sfx_clunk(pitch=1.0):
+    """A heavy part locking into place: a hard low knock and a short metal ring."""
+    out = np.zeros(int(0.6 * SR))
+    place(out, sfx_thump(85 * pitch, 0.3, 0.9), 0.0, 1.0)
+    n = int(0.45 * SR)
+    x = np.arange(n) / SR
+    ring = sum(a * np.sin(2 * np.pi * f * pitch * x) for f, a in ((1240, 0.5), (1873, 0.35), (2690, 0.2))) * np.exp(-x / 0.08)
+    place(out, ring * 0.5, 0.004, 1.0)
+    n2 = int(0.02 * SR)
+    place(out, band(rng.standard_normal(n2), 2000, 8000) * env(n2, 0.0005, 0.006), 0.0, 0.6)
+    return norm(out, 0.85)
+
+
+def sfx_hiss(dur=0.4):
+    """Air let out of a piston: a sharp start, falling away."""
+    x = t(dur)
+    h = band(rng.standard_normal(len(x)), 3000, 11000) * np.exp(-x / (dur * 0.45)) * np.minimum(1, x / 0.005)
+    return norm(h, 0.45)
+
+
 def sfx_chime(pitch=1.0):
     """An upgrade chime: a bright bell (inharmonic partials) with a sparkle tail."""
     out = np.zeros(int(1.4 * SR))
@@ -1310,7 +1344,9 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
        "heart": lambda e: sfx_heart(e.get("dub", False)),
        "ring": lambda e: sfx_ring(e.get("dur", 4.0)),
-       "clip": lambda e: _clip_file(e["path"]), "quack": lambda e: sfx_quack(e.get("n", 2))}
+       "clip": lambda e: _clip_file(e["path"]), "quack": lambda e: sfx_quack(e.get("n", 2)),
+       "servo": lambda e: sfx_servo(e.get("dur", 0.5), e.get("pitch", 1.0)), "clunk": lambda e: sfx_clunk(e.get("pitch", 1.0)),
+       "hiss": lambda e: sfx_hiss(e.get("dur", 0.4))}
 
 
 def _clip_file(path):
