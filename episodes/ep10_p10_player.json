@@ -24,7 +24,7 @@
    "pace": 0.45,
    "stability": 0.45,
    "gemini_voice": "Charon",
-   "acting": "Steve, panicking, cutting in"
+   "acting": "Steve, panicking, then pleading with his friend"
   }
  },
  "music": [
@@ -101,24 +101,23 @@
    "direction_text": "[proud of himself, a cocky grin, confident, almost smug] Steve, remember... I am a Roblox player.",
    "pad": 0.15,
    "solo_only": true,
-   "solo_text": "Steve, remember... I am a Roblox player."
+   "solo_text": "Steve, remember... I am a Roblox player.",
+   "voice_file": "assets/clips/ep10/p10_noob_player.wav"
   },
   {
    "line": "steve",
    "name": "steve_dont",
    "caption_y": 1420,
-   "text": "DON'T\u2014",
-   "caption_size": 150,
-   "direction_text": "[panicked, shouting, cut off mid-word] Don't\u2014",
+   "text": "DON'T\u2014 We can find another way!",
+   "caption_size": 130,
+   "direction_text": "[panicked, cutting him off, then pleading, desperate] Don't\u2014 we can find another way!",
    "pad": 0.0,
    "solo_only": true,
-   "solo_text": "Don't!",
-   "trim": 0.42,
-   "trim_fade": 0.02
+   "solo_text": "Don't! We can find another way!"
   },
   {
    "beat": "end",
-   "dur": 0.05
+   "dur": 0.3
   }
  ]
 }

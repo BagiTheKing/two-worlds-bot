@@ -1569,6 +1569,11 @@ def build(episode_path, out_dir, keep=None):
                     audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
             if ev.get("fx") == "falling":
                 audio = norm(falling(audio), 0.95)
+            if ev.get("slowmo"):                        # slow motion: the tape slowed (lower, longer), a dark room on it
+                k = float(ev["slowmo"])
+                audio = np.interp(np.linspace(0, len(audio) - 1, int(len(audio) / k)), np.arange(len(audio)), audio)
+                tail = rng.standard_normal(int(0.8 * SR)) * np.exp(-np.arange(int(0.8 * SR)) / (0.22 * SR))
+                audio = norm(audio + np.convolve(audio, tail * 0.01)[:len(audio)], 0.95)
             for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
                 i0, i1 = int(b0 * SR), min(len(audio), int(b1 * SR))
                 ramp = min(int(0.03 * SR), (i1 - i0) // 2)

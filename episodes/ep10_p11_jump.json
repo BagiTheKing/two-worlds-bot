@@ -1,0 +1,131 @@
+{
+ "id": "ep10_p11_jump",
+ "number": 10,
+ "title": "The First Portal Was a Trap: the jump",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, desperate, reaching for his friend, screaming his name"
+  }
+ },
+ "music": [
+  {
+   "cue": "theme_soft",
+   "from": "jump+0.3",
+   "to": "end",
+   "gain": 0.14,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": 0,
+   "to": "end",
+   "gain": 0.22
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "thump",
+   "at": "jump+0.15",
+   "gain": 0.4
+  },
+  {
+   "kind": "whoosh",
+   "at": "jump+0.3",
+   "dur": 2.4,
+   "gain": 0.22
+  },
+  {
+   "kind": "heart",
+   "at": "jump+0.6",
+   "gain": 0.55
+  },
+  {
+   "kind": "heart",
+   "at": "jump+1.05",
+   "dub": true,
+   "gain": 0.4
+  },
+  {
+   "kind": "heart",
+   "at": "cell+0.3",
+   "gain": 0.5
+  },
+  {
+   "kind": "heart",
+   "at": "cell+0.75",
+   "dub": true,
+   "gain": 0.38
+  },
+  {
+   "kind": "chime",
+   "at": "hand+0.55",
+   "gain": 0.25,
+   "pitch": 0.8
+  },
+  {
+   "kind": "heart",
+   "at": "hand+0.3",
+   "gain": 0.5
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "jump",
+   "dur": 2.3
+  },
+  {
+   "beat": "cell",
+   "dur": 1.0
+  },
+  {
+   "beat": "hand",
+   "dur": 1.1
+  },
+  {
+   "line": "steve",
+   "name": "steve_noob",
+   "caption_y": 1420,
+   "text": "NOOB!",
+   "caption_size": 160,
+   "direction_text": "[screaming his friend's name, desperate, reaching for him] NOOB!",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "NOOB!",
+   "slowmo": 0.55
+  },
+  {
+   "beat": "end",
+   "dur": 0.5
+  }
+ ]
+}
