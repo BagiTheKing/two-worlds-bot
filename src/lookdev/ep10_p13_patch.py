@@ -224,6 +224,8 @@ def apply(E, t):
     # Steve: hanging from the stub as part 12 left him (until Patch has him)
     faces(E, t)
     ts_ = T["grab_steve"] + 0.3
+    if t >= ts_ and E.steve_hang is None:
+        apply(E, 0.0)          # a shard that starts late: find Steve's hanging neck first
     if t >= ts_:
         a_, b_ = patch_at(E, t), patch_at(E, t + 0.08)
         hv = Vector(((b_ - a_).x, (b_ - a_).y, 0))
