@@ -399,7 +399,7 @@ def cast(E, t):
     from null import null_smile
     S, N, X, Pt = E.S, E.N, E.X, E.Pt
     deck, XE = E.deck, E.XE
-    f_render = int(round(t * FPS))
+    f_render = int(round(t * FPS)) if getattr(E, "lip_frame", None) is None else E.lip_frame
     lib = json.load(open(os.path.join(HERE, "poses_lib.json")))
     # ------------------------------------------------ Null
     X.root.scale = (1.6,) * 3
@@ -419,7 +419,9 @@ def cast(E, t):
     p["arm_sr"] = {"fwd": 172, "out": 4, "elbow": 4}
     p["arm_sl"] = {"fwd": lerp(30, 8, ss(0.0, 1.0, t)), "out": 14, "elbow": 20}
     p["head_nod"] = lerp(-4, -14, see)
-    p["head_turn"] = lerp(0, -34, see)
+    p["head_turn"] = lerp(0, -34, see) if getattr(E, "steve_head", None) is None else E.steve_head[0]
+    if getattr(E, "steve_head", None) is not None:
+        p["head_nod"] = E.steve_head[1]
     p["chest_lean"] = -6
     p["foot_sl"] = {"y": 0.03 * math.sin(t * 1.3), "z": 0.0}
     p["foot_sr"] = {"y": -0.1, "z": 0.05}
@@ -442,6 +444,8 @@ def cast(E, t):
     horror = {"both_to": -0.25, "both_tm": -0.3, "both_ti": -0.2, "both_ps": 0.5, "both_py": 0.05,
               "bb_tilt": -0.7, "bb_raise": 0.9, "bb_arch": 0.4, "m_arch": 0.32, "m_w": 1.5, "m_o": 0.35}
     face = P6._mixf(annoyed, horror, ss(T["see"] + 0.15, T["see"] + 0.75, t))
+    if getattr(E, "steve_face", None) is not None:          # a later part's own face for him
+        face = E.steve_face
     fs = {f"{e}_{k}": v for e in EYES for k, v in EYE_DEFAULTS.items()}
     fs.update(MOUTH_DEFAULTS)
     for k, v in face.items():
@@ -464,9 +468,9 @@ def cast(E, t):
     q = 1.0                                                # turned out already (part 6), on his left hand
     npz = json.loads(json.dumps(P6.HANG_N))
     npz["arm_sl"] = {"fwd": lerp(172, 10, q), "out": lerp(4, 14, q)}
-    npz["arm_sr"] = {"fwd": 172, "out": 4}
-    npz["head_turn"] = lerp(0, -20, q)
-    npz["head_nod"] = lerp(-20, -10, q)
+    npz["arm_sr"] = {"fwd": lerp(172, 218, q), "out": 6}            # turned out: the arm up and back over his head
+    npz["head_turn"] = lerp(0, -20, q) if getattr(E, "noob_head", None) is None else E.noob_head[0]
+    npz["head_nod"] = lerp(-20, -10, q) if getattr(E, "noob_head", None) is None else E.noob_head[1]
     npz["chest_lean"] = lerp(-8, -4, q)
     npz["leg_sl"] = {"fwd": 4 * math.sin(t * 1.9)}
     npz["leg_sr"] = {"fwd": -4 * math.sin(t * 1.9 + 1)}
@@ -521,6 +525,8 @@ def cast(E, t):
     for e in NOOB_EYES:                                    # looking up at Null
         fn[f"{e}_py"] = 0.25 * q
         fn[f"{e}_px"] = 0.15 * q
+    if getattr(E, "noob_face_hook", None) is not None:      # a later part's own face for him
+        fn = E.noob_face_hook(fn)
     set_face(N.face, fn)
     # ------------------------------------------------ Patch: by them, his beam on Null
     XEv = Vector((XE, 0, 0))
