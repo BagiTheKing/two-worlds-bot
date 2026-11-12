@@ -118,7 +118,8 @@
    "direction_text": "[sheepish, awkward, small voice] ...So. I'm back?",
    "pad": 0.5,
    "solo_only": true,
-   "solo_text": "...So. I'm back?"
+   "solo_text": "...So. I'm back?",
+   "voice_file": "assets/clips/ep10/p14_noob_back.wav"
   },
   {
    "line": "steve",
@@ -128,7 +129,8 @@
    "direction_text": "[flat, dry, staring at him] You jumped off a cliff.",
    "pad": 0.35,
    "solo_only": true,
-   "solo_text": "You jumped off a cliff."
+   "solo_text": "You jumped off a cliff.",
+   "voice_file": "assets/clips/ep10/p14_steve_jumped.wav"
   },
   {
    "line": "noob",
@@ -138,7 +140,8 @@
    "direction_text": "[tiny, awkward, sheepish] ...Technically, a bridge.",
    "pad": 0.3,
    "solo_only": true,
-   "solo_text": "...Technically, a bridge."
+   "solo_text": "...Technically, a bridge.",
+   "voice_file": "assets/clips/ep10/p14_noob_bridge.wav"
   },
   {
    "beat": "duck",
@@ -153,7 +156,8 @@
    "pad": 0.5,
    "solo_only": true,
    "solo_text": "MY DUCK!",
-   "caption_size": 150
+   "caption_size": 150,
+   "voice_file": "assets/clips/ep10/p14_noob_duck.wav"
   },
   {
    "line": "patch",
@@ -163,7 +167,8 @@
    "direction_text": "[calm, warm, quietly proud] We did it, guys.",
    "pad": 0.8,
    "solo_only": true,
-   "solo_text": "We did it, guys."
+   "solo_text": "We did it, guys.",
+   "voice_file": "assets/clips/ep10/p14_patch_did.wav"
   },
   {
    "beat": "sunset",
@@ -177,7 +182,8 @@
    "direction_text": "[quiet, thoughtful, looking at the horizon] What do you think happens to Null... in the void?",
    "pad": 0.3,
    "solo_only": true,
-   "solo_text": "What do you think happens to Null... in the void?"
+   "solo_text": "What do you think happens to Null... in the void?",
+   "voice_file": "assets/clips/ep10/p14_steve_null.wav"
   },
   {
    "line": "noob",
@@ -188,7 +194,8 @@
    "pad": 0.2,
    "solo_only": true,
    "solo_text": "What do you think happens to anyone in the void?",
-   "vo": true
+   "vo": true,
+   "voice_file": "assets/clips/ep10/p14_noob_void.wav"
   },
   {
    "beat": "swim",
@@ -199,12 +206,13 @@
    "name": "null_end",
    "caption_y": 1420,
    "text": "All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
-   "direction_text": "[broken, bitter, cold, a promise of revenge] All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
+   "direction_text": "[broken, bitter, cold, a promise of revenge, steady pace, short pauses] All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
    "pad": 0.3,
    "solo_only": true,
    "solo_text": "All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
    "null_light": true,
-   "caption_color": "#FF3BD4"
+   "caption_color": "#FF3BD4",
+   "tighten": 0.35
   },
   {
    "beat": "end",
