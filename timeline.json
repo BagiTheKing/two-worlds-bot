@@ -1,0 +1,58 @@
+{
+ "id": "ep10_p8_sorry",
+ "fps": 24,
+ "length": 8.51,
+ "beats": {
+  "pull": [
+   0.0,
+   3.0
+  ],
+  "tear": [
+   3.0,
+   3.9
+  ],
+  "noob_sorry": [
+   3.9,
+   7.71
+  ],
+  "end": [
+   7.71,
+   8.51
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_sorry",
+   "who": "noob",
+   "text": "I never came back for you guys... sorry.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 3.9,
+   "end": 7.71
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.7,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, quiet, ashamed, a tear in his eye, his voice breaking"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 8.91
+  }
+ ]
+}
