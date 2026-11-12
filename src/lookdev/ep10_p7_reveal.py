@@ -664,12 +664,13 @@ def camera(E, t, shot):
         # the mirror's camera: Null in the eye is Null in front of him; then like a bee, faster and faster,
         # weaving a little, straight into his chest
         M = E.mirror
-        chest = E.X.root.matrix_world @ Vector((0, -0.4, 6.0))
+        chest = E.X.root.matrix_world @ Vector((0, -0.4, 7.2))
         s_ = max(0.0, (t - t_m()) / (t_f() - t_m()))
         e = s_ ** 1.75
         start = M["loc"]
         end = chest + (chest - start).normalized() * 1.2
-        loc = start.lerp(end, e)
+        mid = start.lerp(end, 0.5) + Vector((0, 0, 4.0))          # up and over his builds
+        loc = (1 - e) ** 2 * start + 2 * (1 - e) * e * mid + e * e * end
         side = (end - start).normalized().cross(Vector((0, 0, 1))).normalized()
         loc = loc + side * (0.55 * math.sin(math.pi * s_) * math.sin(2.6 * math.pi * s_)) \
             + Vector((0, 0, 0.3 * math.sin(math.pi * s_) * math.sin(1.8 * math.pi * s_ + 0.6)))
