@@ -146,7 +146,8 @@
    "direction_text": "[quiet, serious for once, slow, almost sad] No... look at what he is made of...",
    "pad": 0.1,
    "solo_only": true,
-   "solo_text": "No... look at what he is made of..."
+   "solo_text": "No... look at what he is made of...",
+   "voice_file": "assets/clips/ep10/p7_patch_look.wav"
   },
   {
    "beat": "see",
@@ -156,11 +157,11 @@
    "line": "steve",
    "name": "steve_you",
    "caption_y": 1420,
-   "text": "Noob... that's you. Every time you respawn...",
-   "direction_text": "[shocked, breathless, horrified, the words barely coming out] Noob... that's you... Every time you respawn...",
+   "text": "Noob... that is you!! Every time you respawned...",
+   "direction_text": "[surprised, shocked, the realization hitting him, rising] Noob... that is YOU!! Every time you respawned...",
    "pad": 0.0,
    "solo_only": true,
-   "solo_text": "Noob... that's you... Every time you respawn..."
+   "solo_text": "Noob... that is you!! Every time you respawned..."
   },
   {
    "beat": "dive",
