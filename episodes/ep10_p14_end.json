@@ -1,0 +1,243 @@
+{
+ "id": "ep10_p14_end",
+ "number": 10,
+ "title": "The First Portal Was a Trap: the end",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, dry and deadpan, moved despite himself, then quiet and thoughtful"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, sheepish and awkward, then overjoyed, then quiet"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.6,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, calm, warm, quietly proud"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.9,
+   "pace": 0.5,
+   "stability": 0.3,
+   "gemini_voice": "Puck",
+   "acting": "Null in the void: broken, bitter, cold, a promise of revenge"
+  }
+ },
+ "music": [
+  {
+   "cue": "theme_soft",
+   "from": "duck",
+   "to": "steve_null",
+   "gain": 0.15,
+   "hard_end": false
+  },
+  {
+   "cue": "null",
+   "from": "noob_void",
+   "to": "end",
+   "gain": 0.2,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": "noob_void",
+   "to": "end",
+   "gain": 0.35
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "quack",
+   "at": "duck+0.15",
+   "gain": 0.6
+  },
+  {
+   "kind": "quack",
+   "at": "noob_duck.end+0.2",
+   "n": 1,
+   "gain": 0.5
+  },
+  {
+   "kind": "whoosh",
+   "at": "noob_void",
+   "dur": 3.5,
+   "gain": 0.2
+  },
+  {
+   "kind": "glitch",
+   "at": "null_end-0.3",
+   "dur": 0.25,
+   "gain": 0.3
+  },
+  {
+   "kind": "glitch",
+   "at": "null_end.end",
+   "dur": 0.3,
+   "gain": 0.35
+  }
+ ],
+ "events": [
+  {
+   "beat": "land",
+   "dur": 1.4
+  },
+  {
+   "line": "noob",
+   "name": "noob_back",
+   "caption_y": 1420,
+   "text": "...So. I'm back?",
+   "direction_text": "[sheepish, awkward, small voice] ...So. I'm back?",
+   "pad": 0.5,
+   "solo_only": true,
+   "solo_text": "...So. I'm back?"
+  },
+  {
+   "line": "steve",
+   "name": "steve_jumped",
+   "caption_y": 1420,
+   "text": "You jumped off a cliff.",
+   "direction_text": "[flat, dry, staring at him] You jumped off a cliff.",
+   "pad": 0.35,
+   "solo_only": true,
+   "solo_text": "You jumped off a cliff."
+  },
+  {
+   "line": "noob",
+   "name": "noob_bridge",
+   "caption_y": 1420,
+   "text": "...Technically, a bridge.",
+   "direction_text": "[tiny, awkward, sheepish] ...Technically, a bridge.",
+   "pad": 0.3,
+   "solo_only": true,
+   "solo_text": "...Technically, a bridge."
+  },
+  {
+   "beat": "duck",
+   "dur": 1.0
+  },
+  {
+   "line": "noob",
+   "name": "noob_duck",
+   "caption_y": 1420,
+   "text": "MY DUCK!",
+   "direction_text": "[overjoyed, squealing with happiness] MY DUCK!",
+   "pad": 0.5,
+   "solo_only": true,
+   "solo_text": "MY DUCK!",
+   "caption_size": 150
+  },
+  {
+   "line": "patch",
+   "name": "patch_did",
+   "caption_y": 1420,
+   "text": "We did it, guys.",
+   "direction_text": "[calm, warm, quietly proud] We did it, guys.",
+   "pad": 0.8,
+   "solo_only": true,
+   "solo_text": "We did it, guys."
+  },
+  {
+   "beat": "sunset",
+   "dur": 0.8
+  },
+  {
+   "line": "steve",
+   "name": "steve_null",
+   "caption_y": 1420,
+   "text": "What do you think happens to Null... in the void?",
+   "direction_text": "[quiet, thoughtful, looking at the horizon] What do you think happens to Null... in the void?",
+   "pad": 0.3,
+   "solo_only": true,
+   "solo_text": "What do you think happens to Null... in the void?"
+  },
+  {
+   "line": "noob",
+   "name": "noob_void",
+   "caption_y": 1420,
+   "text": "What do you think happens to anyone in the void?",
+   "direction_text": "[quiet, a little haunted] What do you think happens to anyone in the void?",
+   "pad": 0.2,
+   "solo_only": true,
+   "solo_text": "What do you think happens to anyone in the void?",
+   "vo": true
+  },
+  {
+   "beat": "swim",
+   "dur": 1.6
+  },
+  {
+   "line": "null",
+   "name": "null_end",
+   "caption_y": 1420,
+   "text": "All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
+   "direction_text": "[broken, bitter, cold, a promise of revenge] All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
+   "pad": 0.3,
+   "solo_only": true,
+   "solo_text": "All I wanted... was to fix this world. I'll be back. And next time... I'll finish it.",
+   "null_light": true,
+   "caption_color": "#FF3BD4"
+  },
+  {
+   "beat": "end",
+   "dur": 3.2
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  },
+  {
+   "type": "endnote",
+   "from": "end+0.3",
+   "to": "end+3.2",
+   "next_label": "SEASON 2",
+   "next_title": "WHAT IS THE CUBE?",
+   "question": "WILL NULL COME BACK?",
+   "question_sub": "Comment your theory",
+   "highlight": true
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ]
+}

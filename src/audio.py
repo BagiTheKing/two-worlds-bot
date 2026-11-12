@@ -1253,6 +1253,25 @@ def sfx_flaps(dur=2.0, rate=1.3):
     return out
 
 
+def sfx_quack(n=2):
+    """A duck: a nasal, falling buzz, twice (a Roblox build of a duck can still quack)."""
+    out = []
+    for k in range(n):
+        d = 0.17 if k == 0 else 0.21
+        tt = np.arange(int(d * SR)) / SR
+        f = 520 - 140 * tt / d - 30 * k
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        saw = 2 * ((ph / (2 * np.pi)) % 1.0) - 1
+        x = saw + 0.15 * rng.standard_normal(len(tt))
+        X = np.fft.rfft(x)
+        fr = np.fft.rfftfreq(len(x), 1 / SR)
+        g = np.exp(-((fr - 1150) / 420) ** 2) + 0.6 * np.exp(-((fr - 2500) / 600) ** 2) + 0.15
+        x = np.fft.irfft(X * g, n=len(x))
+        env = np.minimum(1, tt / 0.012) * np.exp(-tt / (d * 0.6))
+        out += [x * env, np.zeros(int(0.09 * SR))]
+    return norm(np.concatenate(out), 0.8)
+
+
 def sfx_chime(pitch=1.0):
     """An upgrade chime: a bright bell (inharmonic partials) with a sparkle tail."""
     out = np.zeros(int(1.4 * SR))
@@ -1291,7 +1310,7 @@ SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble
        "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
        "heart": lambda e: sfx_heart(e.get("dub", False)),
        "ring": lambda e: sfx_ring(e.get("dur", 4.0)),
-       "clip": lambda e: _clip_file(e["path"])}
+       "clip": lambda e: _clip_file(e["path"]), "quack": lambda e: sfx_quack(e.get("n", 2))}
 
 
 def _clip_file(path):
