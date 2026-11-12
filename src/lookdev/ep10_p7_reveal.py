@@ -425,11 +425,13 @@ def cast(E, t):
     p["chest_lean"] = -6
     p["foot_sl"] = {"y": 0.03 * math.sin(t * 1.3), "z": 0.0}
     p["foot_sr"] = {"y": -0.1, "z": 0.05}
+    if getattr(E, "steve_pose_hook", None) is not None:    # a later part's own pose for him
+        p = E.steve_pose_hook(p)
     for k, v in flat(p).items():
         sp[k] = v
     pose(S.arm, unflat(sp))
     sway = 0.012 * math.sin(t * 1.7)
-    yaw = 90 - 125 - 22 * see
+    yaw = 90 - 125 - 22 * see + getattr(E, "steve_yaw_add", 0.0)
     S.holder.rotation_euler = (0, 0, math.radians(yaw))
     grip = Vector((E.grip_x, E.lane["S"], deck + 0.07))
     S.holder.location = Vector((XE - 0.3, E.lane["S"], deck - 2.0))
