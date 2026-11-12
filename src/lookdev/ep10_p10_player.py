@@ -274,16 +274,12 @@ def camera(E, t, shot):
         loc = hn + fw * lerp(0.95, 0.75, u) + side * 0.18 + Vector((0, 0, 0.02))
         return loc, hn + Vector((0, 0, -0.02)), 50, 2.6, None, 0.04, 0.0
     if shot == "PLAYER":
-        # his face three-quarters, the cell behind and beside him, coming, bigger and bigger (soft)
+        # his face, three-quarters from the front, proud; a slow push
         fw = P7.noob_eye_normal(E)
         fw = Vector((fw.x, fw.y, 0)).normalized()
-        to_c = Vector(((c - hn).x, (c - hn).y, 0)).normalized()
-        sgn = 1 if fw.cross(to_c).z > 0 else -1
-        a = math.radians(-58 * sgn)
-        d = Vector((fw.x * math.cos(a) - fw.y * math.sin(a), fw.x * math.sin(a) + fw.y * math.cos(a), 0))
-        loc = hn + d * lerp(1.15, 1.0, u) + Vector((0, 0, -0.02))
-        look = hn.lerp(c, 0.06)
-        return loc, look, 40, 2.4, (hn - loc).length, 0.08, 0.0
+        side = fw.cross(Vector((0, 0, 1))).normalized()
+        loc = hn + fw * lerp(1.15, 0.95, u) - side * 0.2 + Vector((0, 0, 0.0))
+        return loc, hn + Vector((0, 0, -0.04)), 44, 2.4, None, 0.08, 0.0
     # DONT: Steve, close, turning to him, panicking; we cut on his word
     d = (hn - hs).normalized()
     d = Vector((d.x, d.y, 0)).normalized()
