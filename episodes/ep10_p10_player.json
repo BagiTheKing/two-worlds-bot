@@ -1,0 +1,124 @@
+{
+ "id": "ep10_p10_player",
+ "number": 10,
+ "title": "The First Portal Was a Trap: a Roblox player",
+ "cut_loose": false,
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, a spark of hope, proud of himself, a cocky grin"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, panicking, cutting in"
+  }
+ },
+ "music": [
+  {
+   "cue": "theme_soft",
+   "from": 0,
+   "to": "noob_player",
+   "gain": 0.16,
+   "hard_end": false
+  },
+  {
+   "cue": "chase",
+   "from": "noob_player.end",
+   "to": "end",
+   "gain": 0.12,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": 0,
+   "to": "end",
+   "gain": 0.3
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "whoosh",
+   "at": "roll",
+   "dur": 2.8,
+   "gain": 0.12
+  },
+  {
+   "kind": "chime",
+   "at": "sees+0.2",
+   "gain": 0.2,
+   "pitch": 1.2
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "roll",
+   "dur": 3.6
+  },
+  {
+   "beat": "sees",
+   "dur": 0.9
+  },
+  {
+   "line": "noob",
+   "name": "noob_player",
+   "caption_y": 1420,
+   "text": "Steve, remember... I am a Roblox player.",
+   "direction_text": "[proud of himself, a cocky grin, confident, almost smug] Steve, remember... I am a Roblox player.",
+   "pad": 0.15,
+   "solo_only": true,
+   "solo_text": "Steve, remember... I am a Roblox player."
+  },
+  {
+   "line": "steve",
+   "name": "steve_dont",
+   "caption_y": 1420,
+   "text": "DON'T\u2014",
+   "caption_size": 150,
+   "direction_text": "[panicked, shouting, cut off mid-word] Don't\u2014",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "Don't!",
+   "trim": 0.42,
+   "trim_fade": 0.02
+  },
+  {
+   "beat": "end",
+   "dur": 0.05
+  }
+ ]
+}
