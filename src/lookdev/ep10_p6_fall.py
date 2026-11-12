@@ -808,16 +808,19 @@ def body(E, k, t, tau):
         p["leg_sr"] = {"fwd": -4 - 30 * scr * math.sin(ph + 1.7)}
         up = ss(0.0, 0.25, s) * (1 - ss(1.2, 1.8, s))
         p["head_nod"] = -20 - 24 * up
-        # Patch drops in: he swings round on his left hand to see him (as Steve does)
+        # Patch drops in: he swings round on one hand to see him, the same way Steve does
+        # (hanging straight down from the raised arm; turning this way keeps him clear of the wall)
         nt = ss(T["hang"] + 0.55, T["hang"] + 1.15, tau)
         if nt > 0:
             qn = back_out(nt) if nt < 1 else 1.0
-            p["arm_sl"] = {"fwd": lerp(172, 12, qn), "out": lerp(4, 16, qn)}
-            p["arm_sr"] = {"fwd": lerp(172, 218, qn), "out": lerp(4, 6, qn)}   # as part 7: the arm up and back over his head,
-            p["head_nod"] = lerp(p["head_nod"], -8, qn)                          # so turned out he hangs clear of the wall
-            p["chest_lean"] = lerp(-8, -4, qn)
+            p["arm_sl"] = {"fwd": lerp(172, 10, qn), "out": lerp(4, 16, qn)}
+            p["arm_sr"] = {"fwd": 172, "out": 4}
+            p["head_nod"] = lerp(p["head_nod"], -8, qn)
+            p["chest_lean"] = lerp(-8, -3, qn)
+            p["leg_sl"] = {"fwd": lerp(p["leg_sl"]["fwd"], 3, qn)}
+            p["leg_sr"] = {"fwd": lerp(p["leg_sr"]["fwd"], -3, qn)}
             out["grip_sides"] = ("sr",)
-            out["yaw"] = 90 + 150 * qn
+            out["yaw"] = 90 - 125 * qn
         out["pose"] = p
         out["face"] = dict(NF["scared"]) if tau < T["steve_delete"] + 0.3 else dict(NF["shock"])
         out["loc"] = Vector((XE - 0.3, y_l, deck - 2.0))
