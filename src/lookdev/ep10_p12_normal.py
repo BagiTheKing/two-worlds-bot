@@ -221,17 +221,17 @@ def noob_fall(E, t):
     chest = N.torso.matrix_world @ Vector((0, 0, 1.2))
     held = 0.5 * (hl + hr)
     c = held.lerp(chest, ins)
-    k = 0.32 * (1 - ins) + 0.0001
+    k = (1 - ins) + 0.0001
     E.cell.location = c
-    E.cell.scale = (k / 0.5, k / 0.5, k / 0.5)
+    E.cell.scale = (k, k, k)
     E.cell.rotation_quaternion = Quaternion((0, 0, 1), yaw) @ Quaternion((1, 0, 0), math.radians(-78))
     E.cell_head.location = c
-    hs_ = E.style_scale[0] * k / 0.5
+    hs_ = E.style_scale[0] * P10.CELL_K * k
     E.cell_head.scale = (hs_, hs_, hs_)
     E.cell_head.rotation_quaternion = Quaternion((0, 0, 1), yaw) @ Quaternion((1, 0, 0), math.radians(-78 + 90))
     E.cell.hide_render = E.cell_head.hide_render = ins >= 0.999
     E.cell_glow.location = c
-    E.cell_glow.data.energy = 18.0 * (1 - ins)
+    E.cell_glow.data.energy = 5.0 * (1 - ins)
     # the light in him
     glow = ss(T["insert"] + 0.4, T["respawn"], t)
     E.heart.location = chest + Vector((0, 0, 0.2))

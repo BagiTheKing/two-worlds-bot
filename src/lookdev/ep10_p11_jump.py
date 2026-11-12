@@ -89,7 +89,7 @@ def build(tl, tex_dir, assets, res, samples):
     E.hand_off = P7.P6._noob_hand(N, "sl").copy()
     # the grab: the cell's near face, out and a little down from where he hangs
     E.grab_c = E.hn0 + E.fo * 2.3 + Vector((0, 0, -1.25))
-    E.grab_hand = E.grab_c - E.fo * 0.5 + Vector((0, 0, 0.18))
+    E.grab_hand = E.grab_c - E.fo * P10.R_CELL + Vector((0, 0, 0.04))
     root_g = E.grab_hand - E.hand_off
     d = W["grab"] - W["push"]
     E.v0 = (root_g - E.root0 - Vector((0, 0, -0.5 * G * d * d))) / d
@@ -146,7 +146,7 @@ def noob(E, t, tau):
     pose_noob(N, pz)
     bpy.context.view_layer.update()
     hand = P7.P6._noob_hand(N, "sl")
-    target = c - E.fo * 0.5 + Vector((0, 0, 0.18))
+    target = c - E.fo * P10.R_CELL + Vector((0, 0, 0.04))
     N.root.location = N.root.location + (target - hand)
 
 
@@ -259,7 +259,7 @@ def camera(E, t, tau, shot):
         return loc, mid.lerp(c, 0.25 * u), 30, 4.0, (mid - loc).length, 0.03, 0.0
     if shot == "CELL":
         # close on the cell: turning, coming; his hand, soft, behind it
-        loc = c + side * 1.15 - E.fo * 0.35 + Vector((0, 0, 0.12))
+        loc = c + side * 0.55 - E.fo * 0.18 + Vector((0, 0, 0.06))
         E.cell_head_look = loc
         return loc, c, 55, 2.0, (c - loc).length, 0.02, 0.0
     if shot == "HAND":

@@ -34,7 +34,8 @@ T = {"roll": 0.0, "sees": 3.6, "noob_player": 4.5, "noob_player_end": 7.0, "stev
      "length": 8.0}
 P7_TL = {"beats": {"a": [0.0, 0.25], "patch_look": [0.25, 3.23], "see": [3.33, 4.73], "steve_you": [4.73, 8.75],
                    "dive": [8.75, 12.8], "end": [12.8, 13.0]}, "lines": [], "length": 13.0}
-R_CELL = 0.5                                                  # half the cell's size (m): a 1 m cube
+R_CELL = 0.16                                                 # half the cell's size (m): a small block, one hand can hold it
+CELL_K = 2 * R_CELL                                           # its size against the 1 m cells inside Null
 
 
 def shots():
@@ -87,13 +88,13 @@ def build(tl, tex_dir, assets, res, samples):
     E.cell_head.instance_type = "COLLECTION"
     E.cell_head.instance_collection = E.styles[0]
     E.cell_head.rotation_mode = "QUATERNION"
-    k = E.style_scale[0]
+    k = E.style_scale[0] * CELL_K
     E.cell_head.scale = (k, k, k)
     col.objects.link(E.cell_head)
     for f in E.style_faces:                                   # at peace: the Noob's own face, a small smile
         _peace(f)
     L = bpy.data.lights.new("freed_glow", "POINT")
-    L.energy = 18.0
+    L.energy = 5.0
     L.color = (0.8, 0.9, 1.0)
     L.shadow_soft_size = 0.4
     E.cell_glow = bpy.data.objects.new("freed_glow", L)
@@ -104,7 +105,7 @@ def build(tl, tex_dir, assets, res, samples):
     for k_ in range(26):
         ob = bpy.data.objects.new(f"drift_{k_}", me)
         col.objects.link(ob)
-        s = rng.uniform(0.35, 0.9)
+        s = rng.uniform(0.7, 1.5)
         ob.scale = (s, s, s)
         ob.rotation_mode = "XYZ"
         E.drifters.append((ob, Vector((E.XE - rng.uniform(12, 60), E.Y0 + rng.uniform(-30, 30), E.deck + rng.uniform(-14, 10))),
@@ -148,7 +149,7 @@ def cell_at(E, t):
     d = path.normalized()
     axis = d.cross(Vector((0, 0, -1))).normalized()
     dist = (h - S_).length + abs(z - S_.z) * 0.3
-    q = Quaternion(axis, 0.55 * dist / R_CELL) @ Quaternion(d, 0.35 * math.sin(t * 0.8))
+    q = Quaternion(axis, 0.55 * dist / 0.5) @ Quaternion(d, 0.35 * math.sin(t * 0.8))
     return c, q, u
 
 
@@ -262,7 +263,7 @@ def camera(E, t, shot):
         lag = cell_at(E, max(0.0, t - 0.35))[0]
         path = (E.cell_end - E.cell_start).normalized()
         side = path.cross(Vector((0, 0, 1))).normalized()
-        loc = lag - path * lerp(6.5, 4.5, u) + side * lerp(3.4, 2.6, u) + Vector((0, 0, lerp(1.6, 0.6, u)))
+        loc = lag - path * lerp(3.0, 2.1, u) + side * lerp(1.6, 1.2, u) + Vector((0, 0, lerp(0.8, 0.3, u)))
         ahead = c + path * 1.2
         look = c.lerp(ahead, 0.25).lerp(hn, 0.18 * ss(0.55, 1.0, u))     # at the end, him far ahead of it
         return loc, look, lerp(42, 46, u), 4.0, (c - loc).length, 0.04, 0.0
