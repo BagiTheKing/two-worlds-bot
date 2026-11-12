@@ -398,8 +398,8 @@ def camera(E, t, shot):
     if shot == "HUG":
         # "MY DUCK!": the Noob squeezing it; Steve beside him, smiling despite himself
         m0 = 0.5 * (E.spot["S"] + E.spot["N"]) + Vector((0, 0, 1.25))
-        loc = m0 + Vector((0.5, -3.9 + 0.5 * u, -0.25))
-        return loc, m0 + Vector((0.2, 0, -0.35 + 0.15 * u)), 32, 4.0, None, 0.04, 0.0
+        loc = m0 + Vector((0.15, -4.1 + 0.5 * u, -0.25))
+        return loc, m0 + Vector((0.0, 0, -0.35 + 0.15 * u)), 30, 4.0, None, 0.04, 0.0
     if shot == "PATCH":
         # Patch, the two of them below him
         loc = pc + Vector((0.4, -1.8, -0.4))
