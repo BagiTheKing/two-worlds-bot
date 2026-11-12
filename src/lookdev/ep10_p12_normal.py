@@ -60,7 +60,7 @@ def build(tl, tex_dir, assets, res, samples):
     # the world that comes back (the upgrade episode's), far under everything, with its wave
     from world import build_world, add_world_fx, SKY_GOLDEN, set_sky, set_sun
     island_objs = set(bpy.data.objects)
-    cfg = {"seed": 7, "sun": (140, 16)}
+    cfg = {"seed": 7, "sun": (140, 16), "flat_box": [-7, 7, -40, 6], "plant_clear_box": [-4.5, 4.5, -42, 4]}
     E.W = W = build_world(sc, assets, cfg)
     E.world_objs = [o for o in bpy.data.objects if o not in island_objs and o.parent is None]
     for o in E.world_objs:
