@@ -13,7 +13,7 @@
    "pace": 0.45,
    "stability": 0.45,
    "gemini_voice": "Charon",
-   "acting": "Steve, annoyed at first, then frozen in horror as he understands"
+   "acting": "Steve, caught off guard: a stunned, gasping surprise, the words blurted out as he sees it"
   },
   "patch": {
    "voice": "am_puck",
@@ -158,7 +158,7 @@
    "name": "steve_you",
    "caption_y": 1420,
    "text": "Noob... that is you!! Every time you respawned...",
-   "direction_text": "[surprised, shocked, the realization hitting him, rising] Noob... that is YOU!! Every time you respawned...",
+   "direction_text": "[a sharp gasp, stunned, blurting it out in shock as he sees it, not explaining or persuading, horrified surprise] Noob... that is YOU!! Every time you respawned...",
    "pad": 0.0,
    "solo_only": true,
    "solo_text": "Noob... that is you!! Every time you respawned..."

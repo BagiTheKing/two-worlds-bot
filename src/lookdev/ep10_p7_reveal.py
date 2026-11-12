@@ -46,14 +46,24 @@ HI = 11.64                                   # every head: "Hi!" (the chorus's "
 
 
 # ------------------------------------------------------------------ shots
+def t_m():
+    """The match: the pupil fills the frame, and Null in it becomes Null in front of him."""
+    return T["dive"] + 0.05
+
+
+def t_f():
+    """Into his body (the dark), on into the cells."""
+    return t_m() + 1.15
+
+
 def shots():
     return [("R1", T["patch_look"] + 1.8), ("R2", T["see"] + 0.55), ("R3", T["steve_you"]),
-            ("R4", T["steve_you"] + 1.15), ("R5", T["dive"] - 0.02), ("N1", T["dive"] + 1.02),
+            ("R4", T["steve_you"] + 1.15), ("R5", t_m()), ("F", t_f()),
             ("S1", T["end"]), ("BLACK", 1e9)]
 
 
-DISSOLVES = [("R5", "N1", lambda: (T["dive"] - 0.14, T["dive"] + 0.1)),
-             ("N1", "S1", lambda: (T["dive"] + 0.92, T["dive"] + 1.14))]
+DISSOLVES = [("R5", "F", lambda: (t_m() - 0.1, t_m() + 0.12)),
+             ("F", "S1", lambda: (t_f() - 0.12, t_f() + 0.1))]
 
 
 def which(t):
@@ -99,6 +109,15 @@ def build(tl, tex_dir, assets, res, samples):
         ob.hide_render = True
     E.giz.draw([])
     E.island_world = E.sc.world
+    E.force_shot = "R5"
+    E.mouth = {}
+    cast(E, t_m() - 1e-3)
+    bpy.context.view_layer.update()
+    loc, look, lens, *_ = camera(E, t_m() - 1e-3, "R5")
+    P_, n_ = noob_eye(E), noob_eye_normal(E)
+    d_ = (look - loc).normalized()
+    E.mirror = {"loc": loc - 2 * (loc - P_).dot(n_) * n_, "dir": (d_ - 2 * d_.dot(n_) * n_).normalized(), "lens": lens}
+    E.force_shot = None
     _soul(E, tex_dir)
     return E
 
@@ -251,7 +270,9 @@ def _soul(E, tex_dir):
         col.objects.link(ob)
         ob.location = loc
         E.soul_lights.append(ob)
+        E.soul_light_base[name] = power
         return ob
+    E.soul_light_base = {}
     E.soul_key = lamp("soul_key", "POINT", SOUL, 240.0, (1.0, 0.88, 0.95), 0.5)
     E.soul_under = lamp("soul_under", "POINT", SOUL, 160.0, (1.0, 0.35, 0.8), 0.6)
     for k in range(8):
@@ -413,7 +434,7 @@ def cast(E, t):
     bpy.context.view_layer.update()
     hc = P6._steve_hand(S, "sr")
     S.holder.location = S.holder.location + (grip - hc) + Vector((0, sway, 0))
-    if E.force_shot == "R5" or (E.force_shot is None and which(t)[0] == "R5"):
+    if (E.force_shot or which(t)[0]) in ("R5", "F"):
         S.holder.location = S.holder.location + Vector((0, 0, -60))     # out of the eye's close-up (and its mirror)
     # his face: annoyed (Patch again), then it falls off him
     annoyed = {"both_to": 0.4, "both_tm": 0.42, "both_ti": 0.5, "both_ps": 0.78, "both_py": 0.0,
@@ -479,6 +500,8 @@ def cast(E, t):
         pose_noob(N, npz)
         bpy.context.view_layer.update()
         N.root.location = N.root.location + (P_eye - noob_eye(E))
+    if E.force_shot == "F" or (E.force_shot is None and which(t)[0] == "F"):
+        N.root.location = N.root.location + Vector((0, 0, -80))     # the mirror's own view: not in it
     fn = {f"{e}_{k}": v for e in NOOB_EYES for k, v in NOOB_EYE_DEFAULTS.items()}
     fn.update(MOUTH_DEFAULTS)
     fn.update(NOOB_MOUTH)
@@ -492,6 +515,9 @@ def cast(E, t):
                 fn[f"{e}_{k[5:]}"] = v
         else:
             fn[k] = v
+    if t > t_m() - 0.9:
+        for e in NOOB_EYES:
+            fn[f"{e}_ps"] = lerp(fn.get(f"{e}_ps", 0.35), 0.06, ss(t_m() - 0.9, t_m() - 0.4, t))
     for e in NOOB_EYES:                                    # looking up at Null
         fn[f"{e}_py"] = 0.25 * q
         fn[f"{e}_px"] = 0.15 * q
@@ -527,21 +553,13 @@ def null_chest(E):
 def soul_path(t):
     """The camera's way through him (in the soul's own space): in through the
     tunnel fast, slowing, out into the dome's middle, stopping."""
-    t0, t1 = T["dive"] + 0.92, T["end"]
-    u = max(0.0, min(1.0, (t - t0) / (t1 - t0)))
-    # distance along +y: quick, then easing to a stop at the dome's centre
-    y_end = 14 * 1.25 + 5.5
-    # first a held moment in front of the first head (it turns to look at us), then the rush, then the stop
-    hold = 0.55 / (t1 - t0)
-    if u < hold:
-        y = 1.15 + 0.25 * (u / hold)
-        return Vector((0.05, y, 0.12))
-    v = (u - hold) / (1 - hold)
-    k = v * v * (3 - 2 * v)
-    k = 0.5 * k + 0.5 * (1 - (1 - v) ** 3)
-    y = 1.4 + (y_end - 1.4) * k
-    x = 0.05 + 0.25 * math.sin(v * 5.0) * (1 - v)
-    z = 0.12 + 0.12 * math.sin(v * 3.0) * (1 - v)
+    t0, t1 = t_f() - 0.14, T["end"] - 0.3
+    v = max(0.0, min(1.0, (t - t0) / (t1 - t0)))
+    y0, y_end = -9.0, 14 * 1.25 + 5.5
+    k = 1 - (1 - v) ** 2.6                                   # the flight's speed, bleeding off to a stop
+    y = y0 + (y_end - y0) * k
+    x = 0.05 + 0.3 * math.sin(v * 6.0) * (1 - v) ** 1.5
+    z = 0.12 + 0.18 * math.sin(v * 4.2 + 0.5) * (1 - v) ** 1.5
     return Vector((x, y, z))
 
 
@@ -549,6 +567,9 @@ def soul(E, t):
     """The heads turn to watch the camera: each looks where the camera was a moment ago."""
     hi = math.exp(-((t - (HI + 0.12)) / 0.16) ** 2) if t < HI + 0.12 else math.exp(-((t - (HI + 0.12)) / 0.3) ** 2)
     _creepy_faces(E, hi)
+    up = ss(t_f() - 0.05, t_f() + 0.9, t)
+    for ob in E.soul_lights:
+        ob.data.energy = E.soul_light_base[ob.name] * (0.08 + 0.92 * up)
     for i, (em, p, ph, st) in enumerate(E.cells):
         d = p.length if False else 0.0
         lag = 0.28 + 0.12 * math.sin(ph)
@@ -639,25 +660,29 @@ def camera(E, t, shot):
         loc = eye + d * dist + off
         look = eye.lerp(hn, 0.6 * (1 - k))
         return loc, look, lerp(40, 70, k), lerp(2.8, 22.0, k ** 2), (eye - loc).length, 0.15 * (1 - k), 0.0
-    if shot == "N1":
-        # out of the mirror: at Null, faster and faster, into his chest
-        eye = noob_eye(E)
-        chest = E.X.root.matrix_world @ Vector((0, -0.4, 6.2))
-        k = ss(T["dive"] - 0.14, T["dive"] + 1.02, t) ** 2.2
-        loc = eye.lerp(chest, 0.04 + 0.97 * k)
-        look = chest.lerp(nh, 0.35 * (1 - k))
-        return loc, look, lerp(85, 26, k), 11.0, (look - loc).length, 0.0, 0.0
+    if shot == "F":
+        # the mirror's camera: Null in the eye is Null in front of him; then like a bee, faster and faster,
+        # weaving a little, straight into his chest
+        M = E.mirror
+        chest = E.X.root.matrix_world @ Vector((0, -0.4, 6.0))
+        s_ = max(0.0, (t - t_m()) / (t_f() - t_m()))
+        e = s_ ** 1.75
+        start = M["loc"]
+        end = chest + (chest - start).normalized() * 1.2
+        loc = start.lerp(end, e)
+        side = (end - start).normalized().cross(Vector((0, 0, 1))).normalized()
+        loc = loc + side * (0.55 * math.sin(math.pi * s_) * math.sin(2.6 * math.pi * s_)) \
+            + Vector((0, 0, 0.3 * math.sin(math.pi * s_) * math.sin(1.8 * math.pi * s_ + 0.6)))
+        dch = (chest - loc).normalized() if (chest - loc).length > 0.5 else (end - start).normalized()
+        d = M["dir"].lerp(dch, ss(0.0, 0.45, s_)).normalized()
+        return loc, loc + d * 5.0, lerp(M["lens"], 24, ss(0.0, 0.55, s_)), 16.0, 30.0, 0.0, 0.0
     if shot == "S1":
         p = SOUL + soul_path(t)
-        first = E.cells[E.first_cell][1]
-        t_go = span("S1")[0] + 0.55
-        ahead = SOUL + soul_path(t + 0.3) + Vector((0, 0.8, 0))
-        look = first.lerp(ahead, ss(t_go - 0.1, t_go + 0.35, t))
-        settle = ss(T["end"] - 1.1, T["end"] - 0.3, t)
-        look = look.lerp(p + Vector((0.0, 4.0, 0.35)), settle)
-        lens = lerp(lerp(34, 20, ss(t_go - 0.1, t_go + 0.4, t)), 28, settle)
-        foc = (first - p).length if t < t_go else lerp(3.0, 5.0, settle)
-        return p, look, lens, 4.5 if t < t_go else 9.0, foc, 0.0, 5.0 * (1 - settle) * math.sin(t * 1.4) * ss(t_go, t_go + 0.3, t)
+        ahead = SOUL + soul_path(t + 0.35) + Vector((0, 1.2, 0))
+        settle = ss(T["end"] - 1.2, T["end"] - 0.3, t)
+        look = ahead.lerp(p + Vector((0.0, 4.0, 0.3)), settle)
+        lens = lerp(24, 30, settle)
+        return p, look, lens, 8.0, lerp(3.0, 5.5, settle), 0.0, 4.0 * (1 - settle) * math.sin(t * 1.3)
     # black
     return SOUL + Vector((0, -50, 0)), SOUL + Vector((0, -60, 0)), 30, 9.0, None, 0.0, 0.0
 
@@ -694,8 +719,17 @@ def noob_eye(E):
 
 
 # ------------------------------------------------------------------ the look
-def finish(path, mist_path, shot):
-    if shot in ("S1",):
+def finish(path, mist_path, shot, t=0.0):
+    if shot == "F":
+        import numpy as np
+        from PIL import Image
+        P4.finish(path, mist_path)
+        im = Image.open(path).convert("RGB").transpose(Image.FLIP_LEFT_RIGHT)
+        a = np.asarray(im, np.float32) / 255.0
+        g = lerp(0.5, 1.0, ss(t_m(), t_m() + 0.55, t))
+        a = a * np.array([g * 0.95, g * 0.93, g * 1.02], np.float32)
+        Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).save(path)
+    elif shot in ("S1",):
         _finish_soul(path, mist_path)
     elif shot == "BLACK":
         from PIL import Image
@@ -814,7 +848,7 @@ def main():
             sc.render.filepath = p
             bpy.ops.render.render(write_still=True)
             cand = sorted((os.path.join(mist_dir, x) for x in os.listdir(mist_dir)), key=os.path.getmtime)
-            finish(p, cand[-1] if cand else "", shot)
+            finish(p, cand[-1] if cand else "", shot, t)
             for x in cand:
                 os.remove(x)
             parts.append((p, wgt))
