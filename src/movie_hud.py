@@ -4,8 +4,7 @@ It is only on screen while reality is changing (the creator: "if the bar
 isn't moving hide it with the number, and when it appears it should make a
 scene"). It glitches in when the first drop of a wave comes (torn into
 sliding scanlines, a hard colour split, a white flash, a pop), stays while
-the drops go on, and glitches out a moment after the last one. Its first
-appearance is at the freeze, REALITY 100%, when reality stops.
+the drops go on, and glitches out a moment after the last one.
 
 While it is up: REALITY, the percentage, and a bar of 20 cells. On every
 drop (an erasure tick in the soundtrack):
@@ -43,6 +42,8 @@ GAP = 1.6                  # drops closer than this are one wave (it stays up be
 LEAD = 0.30                # it glitches in this long before the wave's first drop
 HOLD = 1.6                 # and stays this long after the wave's last drop
 ENTER, EXIT = 0.45, 0.30   # the entrance and the exit
+FINAL = 2.0                # the last wave stays up this long after its last drop
+BLINK = 1.0                # under 10% it blinks this long after a drop, then holds steady
 
 
 def _ease_out(u):
@@ -56,7 +57,7 @@ class Meter:
         self.a, self.b = count_from, count_to
         self.fade = fade
         self._fonts = {}
-        # when it is on screen: one window per wave; the freeze's first appearance joins the first wave
+        # when it is on screen: one window per wave (nothing while the number is still)
         win = []
         for x in self.steps:
             if win and x - win[-1][1] < GAP:
@@ -64,12 +65,10 @@ class Meter:
             else:
                 win.append([x, x])
         self.windows = [[a - LEAD, b + HOLD] for a, b in win]
-        if self.steps and self.windows and self.windows[0][0] - start < 3.0:
-            self.windows[0][0] = start
-        elif not self.steps:
+        if not self.steps:
             self.windows = [[start, start + 2.5]]
         if self.windows:
-            self.windows[-1][1] = max(self.windows[-1][1], self.steps[-1] + 2.5 if self.steps else 0)
+            self.windows[-1][1] = max(self.windows[-1][1], self.steps[-1] + FINAL if self.steps else 0)
         self.windows = [[max(a, start), min(b, end)] for a, b in self.windows]
 
     def presence(self, t):
@@ -136,10 +135,10 @@ class Meter:
         pct = max(0, int(round(shown)))                  # the published meter's numbers (round), every rest value matches
         rnd = random.Random(int(t * 24))
         # a dying battery: under 10% it blinks
-        if pct < 10 and since < 2.5 and int(t * 4) % 2 == 1 and swell < 0.2:
+        if pct < 10 and since < BLINK and int(t * 4) % 2 == 1 and swell < 0.2:
             vis *= 0.45                                  # a few blinks, then it holds (the faces keep the attention)
         # the entrance: a pop that overshoots and settles; the exit: it shrinks a little as it tears away
-        pop = math.sin(math.pi * min(1.0, (1 - enter) / 0.6)) * 0.35 * (1 if enter > 0 else 0)
+        pop = math.sin(math.pi * min(1.0, (1 - enter) / 0.6)) * GROW * (1 if enter > 0 else 0)          # the entrance pops to 1.3x too
         scale = 1.0 + GROW * swell + pop - 0.15 * leave
         vis *= min(1.0, (1 - enter) / 0.12) * (1 - leave)
         col = self.colour(pct)
@@ -174,7 +173,7 @@ class Meter:
                 f = left - i
                 d.rectangle((x0, by + int(chh * (1 - f)), x0 + cw, by + chh), fill=(*col, a))
             else:
-                d.rectangle((x0, by, x0 + cw, by + chh), outline=(*col, int(a * 0.2)), width=max(1, int(u)))
+                d.rectangle((x0, by, x0 + cw, by + chh), outline=(*col, int(a * 0.12)), width=max(1, int(u)))
         # arriving or leaving: torn into scanlines that slide sideways, and a white flash as it lands
         tear = max(enter, leave)
         if tear > 0:
