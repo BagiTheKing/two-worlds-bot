@@ -1,0 +1,90 @@
+{
+ "id": "ep10_p9_death",
+ "fps": 24,
+ "length": 16.205,
+ "beats": {
+  "cells_cry": [
+   0.0,
+   2.6
+  ],
+  "null_glitch": [
+   2.6,
+   5.8
+  ],
+  "heroes": [
+   5.8,
+   6.8
+  ],
+  "boom": [
+   6.8,
+   7.6
+  ],
+  "drift": [
+   7.6,
+   10.2
+  ],
+  "fall": [
+   10.2,
+   10.9
+  ],
+  "null_survive": [
+   10.9,
+   13.805
+  ],
+  "fall_end": [
+   14.005,
+   15.605
+  ],
+  "end": [
+   15.605,
+   16.205
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "null_survive",
+   "who": "null",
+   "text": "You weren't supposed to survive.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 10.9,
+   "end": 13.805
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.7,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, quiet, ashamed, a tear in his eye, his voice breaking"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.8,
+   "pace": 0.5,
+   "stability": 0.3,
+   "gemini_voice": "Puck",
+   "acting": "the monster's last words as he dies: bitter, broken, upset, slow, a hurt child underneath"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 16.605
+  }
+ ]
+}
