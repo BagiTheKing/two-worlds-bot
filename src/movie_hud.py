@@ -104,7 +104,7 @@ class Meter:
         # the edge glow on big drops, and a red pulse every drop
         if since < 0.6:
             k = (1 - since / 0.6) ** 2
-            strength = (0.5 if drop >= 5 else 0.2) * k
+            strength = (0.5 if drop >= 10 else 0.2) * k        # strong only on the heaviest bursts
             self._edge_glow(img, strength)
         # the panel, drawn at 1x on its own layer, then scaled
         pw, ph = int(600 * u), int(150 * u)
@@ -119,7 +119,7 @@ class Meter:
         split = int((3 + 9 * swell) * u)
         for dx, c in ((-split, (255, 0, 200)), (split, (0, 230, 255))):
             d.text((nx + dx, ny), num, font=big, fill=(*c, int(a * (0.55 + 0.4 * swell))))
-        d.text((nx, ny), num, font=big, fill=(*col, a), stroke_width=int(3 * u), stroke_fill=(0, 0, 0, int(a * 0.7)))
+        d.text((nx, ny), num, font=big, fill=(*col, a), stroke_width=int(4 * u), stroke_fill=(0, 0, 0, int(a * 0.85)))
         # the bar: cells left, and the cell that just went, falling apart
         bx, by, cw, chh, gap = int(250 * u), int(76 * u), int(13 * u), int(30 * u), int(3 * u)
         left = shown / 100.0 * CELLS
@@ -142,15 +142,21 @@ class Meter:
         img.paste((0, 0, 0), (ox + int(3 * u), oy + int(3 * u)), shadow.point(lambda v: int(v * 0.5)))
         img.paste(layer, (ox, oy), layer)
         # the lost cells break off: pixels fly out of the bar and fall down the frame, fading
-        self._debris(img, t, ox, oy, scale, bx, by, cw, chh, gap, u, vis)
+        self._debris(img, t, bx, by, cw, chh, gap, u, vis)
 
-    def _debris(self, img, t, ox, oy, scale, bx, by, cw, chh, gap, u, vis):
+    def _debris(self, img, t, bx, by, cw, chh, gap, u, vis):
+        """Each drop's pixels leave the bar where it was at that drop (its own swell), then fly on their
+        own: a short hop and fall that stays in the top corner, fading out above the characters."""
         d = ImageDraw.Draw(img, "RGBA")
         k = sum(1 for x in self.steps if x <= t)
+        floor_y = 330 * u                                    # nothing falls below this (the faces are lower)
         for i in range(max(0, k - 12), k):
             s = t - self.steps[i]
-            if s > 1.1:
+            if s > 0.75:
                 continue
+            sw = self.state(self.steps[i] + 1e-4)[1]
+            scale = 1.0 + GROW * sw
+            ox, oy = 56 * u, 40 * u
             hi, lo = self.value(i) / 100.0 * CELLS, self.value(i + 1) / 100.0 * CELLS
             pr = random.Random(i * 7919)
             for _ in range(10):
@@ -158,11 +164,13 @@ class Meter:
                 # where it left the bar, in the frame, at the swell it had then
                 x0 = ox + (bx + cell * (cw + gap) + pr.uniform(0, cw)) * scale
                 y0 = oy + (by + pr.uniform(0, chh)) * scale
-                vx, vy = pr.uniform(-80, 160) * u, pr.uniform(-220, -40) * u
+                vx, vy = pr.uniform(-60, 140) * u, pr.uniform(-180, -40) * u
                 x = x0 + vx * s
-                y = y0 + vy * s + 0.5 * 1400 * u * s * s
+                y = y0 + vy * s + 0.5 * 600 * u * s * s
+                if y > floor_y:
+                    continue
                 sz = pr.uniform(6, 11) * u
-                fa = int(255 * vis * max(0.0, 1 - s / 1.1))
+                fa = int(255 * vis * max(0.0, 1 - s / 0.75) * min(1.0, (floor_y - y) / (60 * u)))
                 c = (255, 0, 200) if pr.random() < 0.55 else (14, 0, 20)
                 d.rectangle((x, y, x + sz, y + sz), fill=(*c, fa))
 
