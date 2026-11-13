@@ -68,6 +68,12 @@
  ],
  "ambience": [
   {
+   "kind": "meadow",
+   "from": "land",
+   "to": "noob_void",
+   "gain": 0.1
+  },
+  {
    "kind": "void",
    "from": "noob_void",
    "to": "end",

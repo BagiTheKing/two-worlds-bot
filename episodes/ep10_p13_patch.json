@@ -32,7 +32,14 @@
    "hard_end": true
   }
  ],
- "ambience": [],
+ "ambience": [
+  {
+   "kind": "meadow",
+   "from": 0,
+   "to": "end",
+   "gain": 0.08
+  }
+ ],
  "sfx": [
   {
    "kind": "whoosh",
