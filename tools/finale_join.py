@@ -52,6 +52,16 @@ def silent_tail(path, dur):
     return None
 
 
+def black_tail(path, dur):
+    """Where black at the very end of a part starts (None if it does not end on black)."""
+    err = subprocess.run(["ffmpeg", "-nostdin", "-i", path, "-vf", "blackdetect=d=0.05:pix_th=0.08", "-an", "-f", "null", "-"],
+                         capture_output=True, text=True).stderr
+    segs = [(float(a), float(b)) for a, b in re.findall(r"black_start:([0-9.]+) black_end:([0-9.]+)", err)]
+    if segs and segs[-1][1] > dur - 0.1:
+        return segs[-1][0]
+    return None
+
+
 def loudness(path):
     err = subprocess.run(["ffmpeg", "-nostdin", "-i", path, "-af", "ebur128", "-vn", "-f", "null", "-"],
                          capture_output=True, text=True).stderr
@@ -151,10 +161,14 @@ def main():
         dur = probe_duration(p)
         s = silent_tail(p, dur)
         end = min(dur, s + TAIL_KEEP) if s is not None and dur - s > 0.2 else dur
-        end = round(end * FPS) / FPS                       # on a frame
+        b = black_tail(p, dur) if i < len(a.parts) - 1 else None
         fade = s is None or dur - s <= 0.2                  # it ends on sound: a short fade
+        if b is not None and b < end:                       # no black screen between parts
+            fade = fade or (s is None or b < s)
+            end = b
+        end = round(end * FPS) / FPS                       # on a frame
         gain = TARGET - loudness(p)
-        cuts.append({"part": os.path.basename(p), "dur": round(dur, 3), "kept": round(end, 3), "faded": fade,
+        cuts.append({"part": os.path.basename(p), "dur": round(dur, 3), "kept": round(end, 3), "faded": fade, "black_cut": b,
                      "gain_db": round(gain, 2)})
         inputs += ["-i", p]
         filt.append(f"[{i}:v]trim=0:{end:.4f},setpts=PTS-STARTPTS,fps={FPS},format=yuv420p[v{i}]")
