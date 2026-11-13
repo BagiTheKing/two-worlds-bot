@@ -63,8 +63,10 @@ part (`src/lookdev/ep10_pN_*.py`), one episode file per part
 5. Creator's notes, fixes, a new preview if needed.
 6. **Full render** on approval (`res=1080`, `new_samples=64`,
    `prep_from=<the approved voices run>`).
-7. Check every shot's first and last frame and the whole length in a contact
-   sheet before sending.
+7. **The review gate** (see `CLAUDE.md`): `tools/review_part.py`, then the
+   `part-reviewer` agent with the creator's request word for word. Send only
+   on PASS, with the reviewer's summary; the creator gives the final
+   approval.
 
 **The creator's notes from the finale. Treat them as rules:**
 - **No sudden turns.** Characters turn like people: head, then shoulders, then
