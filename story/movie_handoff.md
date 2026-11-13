@@ -16,22 +16,42 @@ so a fresh session can work the same way.
 - **The beginning and the end belong together: "one core, two
   perspectives".** Episode 0 (the first portal, Null coming through, the
   chase, the bridge) and the finale's ending are the same story seen from two
-  sides. The movie should open and close on that pair, so the ending answers
-  the opening.
+  sides. That is already true of the episodes as made: the movie keeps
+  them as they are, in order, so the ending answers the opening.
 - **Work it part by part**, the creator giving notes on each part, as in the
   finale.
+- **A remake of what already exists**: same story, lines and sound; only the
+  picture changes (see below).
 
-Still to settle with the creator **before building** (ask, then wait):
-1. Which side is which perspective: for example, the opening seen by Steve and
-   the Noob (and the ending by Null), or the reverse. Is Patch's view part of
-   it?
-2. The target length (the raw series is about 10-11 minutes: Episodes 0-8
-   about 30 s each, Episode 9 2:59, the finale about 3:15). What goes: recaps,
-   end cards, "previously" lines, cliffhanger cards; what is new: the bridges
-   between episodes and the bookend scenes.
-3. Captions on or off for long form, and whether the music runs under the
-   whole movie.
-4. Chapter titles (on screen, and YouTube chapters in the description).
+**Decided by the creator: this is a remake, not a new story.** Nothing
+about the story, the script or the sound is open:
+- **Same story, same order, same lines.** Episodes 0 to the finale, as
+  published. No new scenes, no new bridges, no new bookends, no rewritten
+  lines, no new interpretation of the scenario.
+- **No new voices, no new sound.** Reuse each episode's finished soundtrack
+  and timing as they are (the final mix and `timeline.json` on each
+  `preview-<episode id>` branch, or the CI run that made them). Nothing is
+  re-recorded and nothing goes to the TTS.
+- **"One core, two perspectives" already exists.** Episode 0 is the bridge
+  moment seen the first time (Steve and the Noob running, the fall); the
+  finale lives the same moment again from inside the loop (the "Noob, RUN!"
+  deja vu, "412 times", "I built a trap"). The beginning and the ending are
+  already written and rendered; the movie only has to keep them as they are
+  so they answer each other.
+- **What changes is only the picture:** landscape 16:9 and the new look.
+  Episodes 0-8 are re-staged in the new look, shot for shot on their
+  existing timing and sound; Episode 9 and the finale are reframed for
+  landscape and re-rendered.
+- **The Shorts packaging is dropped** (it isn't content): "FINALE n/5"
+  badges, to-be-continued cards, end cards, "next episode" cards, episode
+  number cards. Everything inside the story stays, captions included (in a
+  landscape layout). The episode titles become YouTube chapters in the
+  description.
+
+So **don't ask the creator about story, perspectives, length, cuts, captions
+or music**: those are settled above. Ask only about something genuinely
+technical that this brief and the files can't answer, and propose your own
+answer with the question.
 
 ## Read these, in this order
 
@@ -143,19 +163,17 @@ Everything below assumes a vertical frame and needs a landscape mode:
   `ep08_steve_hiding.json`) still hold the lines, the timing and the sound
   design to start from.
 
-## Suggested plan (propose it to the creator, adjust, then follow)
+## The plan
 
-1. **Treatment first (no rendering):** the whole movie as chapters, beat by
-   beat: what each episode keeps, what is cut, the bridges between them, and
-   the two bookends (Episode 0 and the ending as one core, two perspectives).
-   Get it approved.
-2. **Landscape pipeline, proved on one finale part** (the renderer aspect
-   switch, assembly in 16:9, captions). Show the creator one reframed part.
-3. **Chapter by chapter**, in story order, with the loop above. The creator's
-   notes per part, as in the finale. Reuse the finale's parts for the ending
-   (reframed and re-rendered in 16:9, not rebuilt).
-4. **Join, sound pass over the whole** (music continuity across chapters,
-   loudness), YouTube chapters, thumbnail, upload text.
+1. **Landscape pipeline, proved on one finale part:** the renderer aspect
+   switch, the 16:9 assembly (captions, watermark), the part reframed shot
+   for shot on its existing sound. Show the creator that part.
+2. **Chapter by chapter, in story order** (Episode 0 first), each on its
+   existing soundtrack: stills, preview, the creator's notes, full render,
+   with the review gate before each send. Episodes 0-8 need new-look
+   staging of their existing shots; Episode 9 and the finale are reframed.
+3. **Join** the chapters in order (the Shorts packaging removed), one
+   loudness pass, YouTube chapters, thumbnail, upload text.
 
 Work one chapter per session where possible: each session reads this brief
 and the chapter's files, so it starts clean instead of carrying a long

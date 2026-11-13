@@ -79,9 +79,11 @@ the note wins. Add to it whenever the creator gives a new standing note.
 - **No new idea in the last seconds**, one premise per episode, and the
   jokes stay in when cutting: cut only what earlier episodes already said,
   keep the explanations a stranger needs.
-- **The movie** (long form, landscape, all in the new look): the first and
-  last episodes are **one core, two perspectives**; see
-  `story/movie_handoff.md`.
+- **The movie** (long form, landscape, all in the new look) is **a remake of
+  what already exists**: same story, same lines, same soundtracks, no new
+  voices and no new scenes; only the picture changes. The first and last
+  episodes are already "one core, two perspectives". Don't ask the creator
+  questions the files already answer; see `story/movie_handoff.md`.
 
 ## Voices and sound
 
