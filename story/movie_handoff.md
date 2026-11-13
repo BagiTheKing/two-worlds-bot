@@ -165,10 +165,13 @@ Everything below assumes a vertical frame and needs a landscape mode:
 
 ## The plan
 
-1. **Landscape pipeline, proved on one finale part:** the renderer aspect
-   switch, the 16:9 assembly (captions, watermark), the part reframed shot
-   for shot on its existing sound. Show the creator that part.
-2. **Chapter by chapter, in story order** (Episode 0 first), each on its
+**Start with Episode 0, now.** No pilot on a finale part, no proposal round:
+the creator wants the movie built in story order, Episode 0 first, then
+Episode 1, Episode 2 and so on to the finale. The landscape setup is built
+as part of Episode 0 itself.
+
+1. *(removed: there is no separate landscape test.)*
+2. **Episode by episode, in story order, starting with Episode 0**, each on its
    existing soundtrack. **Before building anything for an episode or part,
    study the published version frame by frame:**
    - get it from its `preview-<episode id>` branch (`git show
