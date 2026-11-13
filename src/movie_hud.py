@@ -28,7 +28,7 @@ FONT = os.path.join(HERE, "..", "fonts", "InterDisplay-Black.otf")
 MONO = os.path.join(HERE, "..", "fonts", "FreeMonoBold.ttf")
 
 CELLS = 20
-GROW = 1.3                 # extra scale at the peak of a drop (1 + GROW = 2.3x)
+GROW = 1.0                 # extra scale at the peak of a drop (1 + GROW = 2x)
 SWELL = 0.11               # seconds to swell up
 SETTLE = 0.9               # seconds to settle back
 
@@ -58,7 +58,7 @@ class Meter:
         last = self.steps[k - 1]
         s = t - last
         old, new = self.value(k - 1), self.value(k)
-        shown = old + (new - old) * _ease_out(min(1.0, s / 0.28))        # it drains, it doesn't jump
+        shown = old + (new - old) * _ease_out(min(1.0, s / 0.12))        # it drains, it doesn't jump (fast enough to keep up with a wave)
         swell = 0.0
         for x in self.steps[:k]:
             d = t - x
@@ -69,7 +69,9 @@ class Meter:
             else:
                 continue
             swell = max(swell, e)
-        return shown, swell, old - new, s
+        # the drops close together count as one big one (the waves hit harder)
+        burst = sum(self.value(i) - self.value(i + 1) for i, x in enumerate(self.steps[:k]) if t - 0.35 <= x <= t)
+        return shown, swell, burst, s
 
     # ---------------------------------------------------------------- drawing
     def font(self, path, size):
@@ -92,17 +94,17 @@ class Meter:
         u = H / 1080.0                                   # 1 at 1080p
         vis = min(1.0, (t - self.start) / self.fade, (self.end - t) / self.fade)
         shown, swell, drop, since = self.state(t)
-        pct = max(0, int(math.ceil(shown - 1e-6)))
+        pct = max(0, int(round(shown)))                  # the published meter's numbers (round), every rest value matches
         rnd = random.Random(int(t * 24))
         # a dying battery: under 10% it blinks
-        if pct < 10 and int(t * 4) % 2 == 1 and swell < 0.2:
-            vis *= 0.35
+        if pct < 10 and since < 2.5 and int(t * 4) % 2 == 1 and swell < 0.2:
+            vis *= 0.45                                  # a few blinks, then it holds (the faces keep the attention)
         scale = 1.0 + GROW * swell
         col = self.colour(pct)
         # the edge glow on big drops, and a red pulse every drop
         if since < 0.6:
             k = (1 - since / 0.6) ** 2
-            strength = (0.55 if drop >= 5 else 0.22) * k
+            strength = (0.5 if drop >= 5 else 0.2) * k
             self._edge_glow(img, strength)
         # the panel, drawn at 1x on its own layer, then scaled
         pw, ph = int(600 * u), int(150 * u)
@@ -129,23 +131,7 @@ class Meter:
                 f = left - i
                 d.rectangle((x0, by + int(chh * (1 - f)), x0 + cw, by + chh), fill=(*col, a))
             else:
-                d.rectangle((x0, by, x0 + cw, by + chh), outline=(*col, int(a * 0.35)), width=max(1, int(u)))
-        if since < 0.7 and drop > 0:
-            lost_from = (self.value(sum(1 for x in self.steps if x <= t)) / 100.0) * CELLS
-            lost_to = lost_from + drop / 100.0 * CELLS
-            pr = random.Random(int(lost_from * 100))
-            px = max(2, int(5 * u))
-            for _ in range(int(14 + 30 * min(1.0, drop / 5.0))):
-                cell = pr.uniform(lost_from, lost_to)
-                x = bx + cell * (cw + gap) + pr.uniform(0, cw)
-                y = by + pr.uniform(0, chh)
-                vx, vy = pr.uniform(-40, 60) * u, pr.uniform(-60, 10) * u
-                x += vx * since
-                y += vy * since + 0.5 * 900 * u * since * since
-                c = (255, 0, 200) if pr.random() < 0.5 else (12, 0, 16)
-                fa = int(a * max(0.0, 1 - since / 0.7))
-                if 0 <= y < ph:
-                    d.rectangle((x, y, x + px, y + px), fill=(*c, fa))
+                d.rectangle((x0, by, x0 + cw, by + chh), outline=(*col, int(a * 0.2)), width=max(1, int(u)))
         # grow out of the corner, shaking while it's swollen
         if scale > 1.001:
             layer = layer.resize((int(pw * scale), int(ph * scale)), Image.LANCZOS)
@@ -155,6 +141,30 @@ class Meter:
         shadow = layer.split()[3].filter(ImageFilter.GaussianBlur(6 * u * scale))
         img.paste((0, 0, 0), (ox + int(3 * u), oy + int(3 * u)), shadow.point(lambda v: int(v * 0.5)))
         img.paste(layer, (ox, oy), layer)
+        # the lost cells break off: pixels fly out of the bar and fall down the frame, fading
+        self._debris(img, t, ox, oy, scale, bx, by, cw, chh, gap, u, vis)
+
+    def _debris(self, img, t, ox, oy, scale, bx, by, cw, chh, gap, u, vis):
+        d = ImageDraw.Draw(img, "RGBA")
+        k = sum(1 for x in self.steps if x <= t)
+        for i in range(max(0, k - 12), k):
+            s = t - self.steps[i]
+            if s > 1.1:
+                continue
+            hi, lo = self.value(i) / 100.0 * CELLS, self.value(i + 1) / 100.0 * CELLS
+            pr = random.Random(i * 7919)
+            for _ in range(10):
+                cell = pr.uniform(lo, hi)
+                # where it left the bar, in the frame, at the swell it had then
+                x0 = ox + (bx + cell * (cw + gap) + pr.uniform(0, cw)) * scale
+                y0 = oy + (by + pr.uniform(0, chh)) * scale
+                vx, vy = pr.uniform(-80, 160) * u, pr.uniform(-220, -40) * u
+                x = x0 + vx * s
+                y = y0 + vy * s + 0.5 * 1400 * u * s * s
+                sz = pr.uniform(6, 11) * u
+                fa = int(255 * vis * max(0.0, 1 - s / 1.1))
+                c = (255, 0, 200) if pr.random() < 0.55 else (14, 0, 20)
+                d.rectangle((x, y, x + sz, y + sz), fill=(*c, fa))
 
     def _edge_glow(self, img, strength):
         W, H = img.size
