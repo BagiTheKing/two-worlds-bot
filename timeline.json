@@ -1,0 +1,84 @@
+{
+ "id": "ep10_p10_player",
+ "fps": 24,
+ "length": 10.478,
+ "beats": {
+  "roll": [
+   0.0,
+   3.6
+  ],
+  "sees": [
+   3.6,
+   4.5
+  ],
+  "noob_player": [
+   4.5,
+   7.654
+  ],
+  "steve_dont": [
+   7.804,
+   10.178
+  ],
+  "end": [
+   10.178,
+   10.478
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_player",
+   "who": "noob",
+   "text": "Steve, remember... I am a Roblox player.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 4.5,
+   "end": 7.654
+  },
+  {
+   "name": "steve_dont",
+   "who": "steve",
+   "text": "DON'T\u2014 We can find another way!",
+   "vo": false,
+   "caption": true,
+   "caption_size": 130,
+   "caption_y": 1420,
+   "start": 7.804,
+   "end": 10.178
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, a spark of hope, proud of himself, a cocky grin"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, panicking, then pleading with his friend"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 10.878
+  }
+ ]
+}
