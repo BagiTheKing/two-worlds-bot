@@ -1,9 +1,16 @@
 """The movie's REALITY meter (16:9): a readout that feels like something running out.
 
-At rest it sits small in the top-left corner: REALITY, the percentage, and a
-bar of 20 cells. On every drop (an erasure tick in the soundtrack):
-  - the readout GROWS: it swells up out of the corner (about 2x), shaking,
-    with a magenta/cyan colour split, then settles back over about a second;
+It is only on screen while reality is changing (the creator: "if the bar
+isn't moving hide it with the number, and when it appears it should make a
+scene"). It glitches in when the first drop of a wave comes (torn into
+sliding scanlines, a hard colour split, a white flash, a pop), stays while
+the drops go on, and glitches out a moment after the last one. Its first
+appearance is at the freeze, REALITY 100%, when reality stops.
+
+While it is up: REALITY, the percentage, and a bar of 20 cells. On every
+drop (an erasure tick in the soundtrack):
+  - the readout pops: a small swell (1.3x, the creator's choice), shaking,
+    with a magenta/cyan colour split, settling back over about a second;
   - the number drains: it counts down to its new value instead of jumping;
   - the bar's cells that are lost break off as black-and-magenta pixels that
     hop off the bar and fade in the top corner (never over the faces), the
@@ -29,9 +36,13 @@ FONT = os.path.join(HERE, "..", "fonts", "InterDisplay-Black.otf")
 MONO = os.path.join(HERE, "..", "fonts", "FreeMonoBold.ttf")
 
 CELLS = 20
-GROW = 1.0                 # extra scale at the peak of a drop (1 + GROW = 2x)
+GROW = 0.3                 # extra scale at the peak of a drop (1.3x, the creator's choice)
 SWELL = 0.11               # seconds to swell up
 SETTLE = 0.9               # seconds to settle back
+GAP = 1.6                  # drops closer than this are one wave (it stays up between them)
+LEAD = 0.30                # it glitches in this long before the wave's first drop
+HOLD = 1.6                 # and stays this long after the wave's last drop
+ENTER, EXIT = 0.45, 0.30   # the entrance and the exit
 
 
 def _ease_out(u):
@@ -45,6 +56,30 @@ class Meter:
         self.a, self.b = count_from, count_to
         self.fade = fade
         self._fonts = {}
+        # when it is on screen: one window per wave; the freeze's first appearance joins the first wave
+        win = []
+        for x in self.steps:
+            if win and x - win[-1][1] < GAP:
+                win[-1][1] = x
+            else:
+                win.append([x, x])
+        self.windows = [[a - LEAD, b + HOLD] for a, b in win]
+        if self.steps and self.windows and self.windows[0][0] - start < 3.0:
+            self.windows[0][0] = start
+        elif not self.steps:
+            self.windows = [[start, start + 2.5]]
+        if self.windows:
+            self.windows[-1][1] = max(self.windows[-1][1], self.steps[-1] + 2.5 if self.steps else 0)
+        self.windows = [[max(a, start), min(b, end)] for a, b in self.windows]
+
+    def presence(self, t):
+        """(on screen 0..1, entering 0..1 where 1 = just started, leaving 0..1) for the window holding t."""
+        for a, b in self.windows:
+            if a <= t < b:
+                e = max(0.0, 1 - (t - a) / ENTER)
+                x = max(0.0, 1 - (b - t) / EXIT)
+                return 1.0, e, x
+        return 0.0, 0.0, 0.0
 
     # ---------------------------------------------------------------- state
     def value(self, k):
@@ -91,6 +126,9 @@ class Meter:
     def draw(self, img, t):
         if t < self.start or t >= self.end:
             return
+        on, enter, leave = self.presence(t)
+        if on <= 0:
+            return
         W, H = img.size
         u = H / 1080.0                                   # 1 at 1080p
         vis = min(1.0, (t - self.start) / self.fade, (self.end - t) / self.fade)
@@ -100,11 +138,14 @@ class Meter:
         # a dying battery: under 10% it blinks
         if pct < 10 and since < 2.5 and int(t * 4) % 2 == 1 and swell < 0.2:
             vis *= 0.45                                  # a few blinks, then it holds (the faces keep the attention)
-        scale = 1.0 + GROW * swell
+        # the entrance: a pop that overshoots and settles; the exit: it shrinks a little as it tears away
+        pop = math.sin(math.pi * min(1.0, (1 - enter) / 0.6)) * 0.35 * (1 if enter > 0 else 0)
+        scale = 1.0 + GROW * swell + pop - 0.15 * leave
+        vis *= min(1.0, (1 - enter) / 0.12) * (1 - leave)
         col = self.colour(pct)
         # the edge glow on big drops, and a red pulse every drop
-        if since < 0.6:
-            k = (1 - since / 0.6) ** 2
+        if since < 0.6 or enter > 0:
+            k = max((1 - since / 0.6) ** 2 if since < 0.6 else 0.0, enter)
             strong = drop >= 10 and self._strong_ok(t - since)
             strength = (0.5 if strong else 0.2) * k            # strong only on the heaviest bursts, once a second at most
             self._edge_glow(img, strength)
@@ -117,8 +158,8 @@ class Meter:
         big = self.font(FONT, int(76 * u))
         num = f"{pct}%"
         nx, ny = int(4 * u), int(38 * u)
-        # the colour split grows with the swell
-        split = int((3 + 9 * swell) * u)
+        # the colour split grows with the swell, and is hard as it arrives or leaves
+        split = int((3 + 9 * swell + 26 * enter + 18 * leave) * u)
         for dx, c in ((-split, (255, 0, 200)), (split, (0, 230, 255))):
             d.text((nx + dx, ny), num, font=big, fill=(*c, int(a * (0.55 + 0.4 * swell))))
         d.text((nx, ny), num, font=big, fill=(*col, a), stroke_width=int(4 * u), stroke_fill=(0, 0, 0, int(a * 0.85)))
@@ -134,11 +175,19 @@ class Meter:
                 d.rectangle((x0, by + int(chh * (1 - f)), x0 + cw, by + chh), fill=(*col, a))
             else:
                 d.rectangle((x0, by, x0 + cw, by + chh), outline=(*col, int(a * 0.2)), width=max(1, int(u)))
+        # arriving or leaving: torn into scanlines that slide sideways, and a white flash as it lands
+        tear = max(enter, leave)
+        if tear > 0:
+            layer = self._tear(layer, tear, int(t * 24), u)
+        if 0 < enter and enter > 0.72:
+            flash = Image.new("RGBA", layer.size, (255, 255, 255, 0))
+            flash.putalpha(layer.split()[3].point(lambda v: int(v * 0.9)))
+            layer = Image.alpha_composite(layer, flash)
         # grow out of the corner, shaking while it's swollen
-        if scale > 1.001:
+        if abs(scale - 1.0) > 0.001:
             layer = layer.resize((int(pw * scale), int(ph * scale)), Image.LANCZOS)
-        jx = int(rnd.uniform(-1, 1) * 9 * u * swell)
-        jy = int(rnd.uniform(-1, 1) * 6 * u * swell)
+        jx = int(rnd.uniform(-1, 1) * 9 * u * max(swell, enter))
+        jy = int(rnd.uniform(-1, 1) * 6 * u * max(swell, enter))
         ox, oy = int(56 * u) + jx, int(40 * u) + jy
         shadow = layer.split()[3].filter(ImageFilter.GaussianBlur(6 * u * scale))
         img.paste((0, 0, 0), (ox + int(3 * u), oy + int(3 * u)), shadow.point(lambda v: int(v * 0.5)))
@@ -176,6 +225,18 @@ class Meter:
                 fa = int(255 * vis * max(0.0, 1 - s / 0.75) * min(1.0, (floor_y - y) / (60 * u)))
                 c = (255, 0, 200) if pr.random() < 0.55 else (14, 0, 20)
                 d.rectangle((x, y, x + sz, y + sz), fill=(*c, fa))
+
+    def _tear(self, layer, amount, seed, u):
+        """Cut the panel into horizontal strips and slide them sideways (a broken display)."""
+        out = Image.new("RGBA", layer.size, (0, 0, 0, 0))
+        r = random.Random(seed)
+        h = max(2, int(7 * u))
+        for y in range(0, layer.size[1], h):
+            if r.random() < 0.25 * amount:
+                continue                                         # a strip that drops out
+            dx = int(r.uniform(-1, 1) * 140 * u * amount)
+            out.paste(layer.crop((0, y, layer.size[0], min(layer.size[1], y + h))), (dx, y))
+        return out
 
     def _strong_ok(self, t_drop):
         """A strong flash at this drop only if none of the drops in the second before it had one."""
