@@ -35,6 +35,8 @@ Still to settle with the creator **before building** (ask, then wait):
 
 ## Read these, in this order
 
+0. **`story/creator_notes.md`: everything the creator has asked for and
+   insisted on, from the first episode to the finale. Follow it.**
 1. `story/bible.md`: the canon. Its rules override any draft.
 2. `story/playbook.md`: the creator's eye and YouTube's numbers. Most of it is
    about Shorts; the "creator's eye" rules (section 2) and the checklist still

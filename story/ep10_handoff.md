@@ -23,6 +23,8 @@ The working branch is **`lookdev-steve`** (repo `BagiTheKing/two-worlds-bot`).
 
 ## Read these, in this order
 
+0. `story/creator_notes.md`: everything the creator has asked for and
+   insisted on. Follow it.
 1. `story/bible.md`: the story canon (cast, the secret, the series devices,
    the Season 1 arc). Its rules override any draft.
 2. `story/playbook.md`: what YouTube's numbers and the creator's eye have
