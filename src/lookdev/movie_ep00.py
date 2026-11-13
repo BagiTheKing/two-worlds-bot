@@ -565,6 +565,8 @@ def apply(E, t):
         ob.rotation_euler = tuple(wv * t)
         if ob.name.startswith("void_block"):              # the void's debris: torn off as the world goes (from the bridge on)
             ob.hide_render = t < b("bridge_delete")
+    if t >= E.stub_gone:
+        _clear_fall(E, t)
     # the cast and the camera
     name, t0, t1 = which(t)
     cast(E, t, name)
@@ -573,6 +575,27 @@ def apply(E, t):
     E.X.glow_strength.default_value *= 0.35                 # his halo: a glow behind him, not a wall of light
     _avatars_at(E, t, name)
     camera(E, t, name, t0, t1)
+
+
+def _clear_fall(E, t):
+    """In the plunge, keep the void's debris off the two of them on screen (the camera looks down past them):
+    a block under either one is pushed out sideways until it clears them."""
+    s = t - E.stub_gone
+    z = E.deck - 2.0 - 0.5 * 7.0 * s * s
+    bodies = [Vector((E.grip_x - 0.6 - 0.6 * s, E.y_s)), Vector((E.grip_x - 2.4 - 0.9 * s, E.y_s + 2.1))]
+    for ob, c, v, wv in E.cells:
+        if not ob.name.startswith("void_block"):
+            continue
+        p = Vector(ob.location)
+        if p.z > z + 1.5:
+            continue
+        for q in bodies:
+            d = Vector((p.x, p.y)) - q
+            r = 2.0 + 0.9 * ob.scale.x
+            if d.length < r:
+                d = d.normalized() if d.length > 1e-3 else Vector((-1.0, 0.0))
+                p.x, p.y = q.x + d.x * r, q.y + d.y * r
+        ob.location = p
 
 
 def _swap(ob, mat):
@@ -687,6 +710,7 @@ STEVE_SPOT = (3.5, 3.5)                   # Steve's spot, from the stub (x) and 
 SKY_FACE = -35.0                          # shot 5: Steve's facing, degrees off straight at the camera
 SKY_CAM = (5.0, 2.0, 0.5)                 # shot 5's camera, from Steve's spot: he is small at the bottom left
 NOOB_GLANCE = -45.0                       # shot 10: the Noob turned this far toward the side camera (we see his face)
+STEVE_GLANCE = -40.0                      # shot 10: Steve, running back, turned toward the side camera too
 X_M = -1.0                                # where Steve meets the Noob on the bridge (x), before they run back
 
 
@@ -707,9 +731,9 @@ def noob_keys(E):
     a = E.noob_home
     off = Vector((a.x + 1.2, E.y_n, E.deck))
     end = Vector((E.rb_far - 0.3, E.y_n, E.deck))
-    meet = Vector((X_M + 1.6, E.y_n, E.deck))
+    meet = Vector((X_M - 1.4, E.y_n, E.deck))           # a step behind Steve (the Short's order: Steve leads to the Minecraft end)
     stop = Vector((E.x_meet_n, E.y_n, E.deck))
-    return [(b("noob_running") - 0.2, a), (b("noob_running") + 0.15, off), (19.0, end), (20.25, meet),
+    return [(b("noob_running") - 0.2, a), (b("noob_running") + 0.15, off), (19.0, end), (20.5, meet),
             (b("noob_bridge") - 0.05, stop)]
 
 
@@ -788,7 +812,7 @@ def cast(E, t, shot):
         keys = steve_keys(E)
         if running:
             p = run_cycle(ph)
-            yaw = -90.0 if t < keys[2][0] else 90.0
+            yaw = -90.0 if t < keys[2][0] else 90.0 + (STEVE_GLANCE if shot == "side" else 0.0)
             if keys[1][0] > t:                               # across his grass to the lip
                 d = keys[1][1] - keys[0][1]
                 yaw = math.degrees(math.atan2(d.x, -d.y))
@@ -930,7 +954,7 @@ def _falling(E, t, k):
     fl = math.sin(s * 9.0)
     if k == "S":
         p = {"chest_lean": -10, "head_nod": -20, "arm_sl": {"fwd": 150 + 20 * fl, "out": 40}, "arm_sr": {"fwd": 160 - 20 * fl, "out": 30},
-             "foot_sl": {"y": 0.4, "z": 0.3}, "foot_sr": {"y": -0.3, "z": 0.2}}
+             "foot_sl": {"y": 0.2, "z": 0.0}, "foot_sr": {"y": -0.15, "z": 0.0}}        # legs straight (no bent knee)
         set_steve(E, Vector((E.grip_x - 0.6 - 0.6 * s, E.y_s, z)), YAW_HANG, p, dict(SF["scared"]), t)
         E.S.holder.rotation_euler = (math.radians(-80) * tip + wob, 0.0, math.radians(YAW_HANG))
     else:
