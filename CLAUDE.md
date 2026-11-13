@@ -30,6 +30,8 @@ passed review when it didn't.
 
 ## Standing rules (short version; the notes have the full list)
 
+- For the movie remake: study each published episode frame by frame and
+  write its shot list before building any of it (see the movie brief).
 - Part by part; the sound preview before any render; ask when unsure; give
   your own opinion.
 - Fix only what the creator pointed at; keep earlier versions; reuse

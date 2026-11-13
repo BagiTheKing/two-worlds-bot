@@ -169,8 +169,24 @@ Everything below assumes a vertical frame and needs a landscape mode:
    switch, the 16:9 assembly (captions, watermark), the part reframed shot
    for shot on its existing sound. Show the creator that part.
 2. **Chapter by chapter, in story order** (Episode 0 first), each on its
-   existing soundtrack: stills, preview, the creator's notes, full render,
-   with the review gate before each send. Episodes 0-8 need new-look
+   existing soundtrack. **Before building anything for an episode or part,
+   study the published version frame by frame:**
+   - get it from its `preview-<episode id>` branch (`git show
+     FETCH_HEAD:episode.mp4`, and its `timeline.json`);
+   - look at every frame of it: contact sheets at 8 frames a second or more,
+     time-stamped (`tools/review_part.py <dir> <mp4> --every 0.125` makes
+     them, plus the first and last frame of every shot), and full-size frames
+     wherever the action is fast;
+   - write a **shot list** in the repo (`story/movie/<episode>_shots.md`):
+     for every shot, its start and end time, who is in frame and where, what
+     they do, the line being said, the faces, the camera (distance, angle,
+     movement), the props and effects, and the sound cues;
+   - build the remake to that shot list, shot for shot on the same timing,
+     and compare your stills with the original frames side by side before
+     sending anything.
+   Then: stills, preview, the creator's notes, full render, with the review
+   gate before each send (the reviewer gets the shot list and the original
+   frames too). Episodes 0-8 need new-look
    staging of their existing shots; Episode 9 and the finale are reframed.
 3. **Join** the chapters in order (the Shorts packaging removed), one
    loudness pass, YouTube chapters, thumbnail, upload text.
