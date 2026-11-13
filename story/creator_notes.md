@@ -94,6 +94,13 @@ the note wins. Add to it whenever the creator gives a new standing note.
   "PREVIOUSLY..." flash and the replay of the forest and "Whoa. Where am
   I?" go, because Episode 0 has just shown them. Episode 1 picks up at
   "Okay. A tree. One punch."
+- **The REALITY meter in the movie** (approved November 13, version 6,
+  `src/movie_hud.py`): it is hidden while the number isn't moving ("if the
+  bar isn't moving hide it with the number, and when it appears it should
+  make a scene"). It glitches in before each wave of drops and pops 1.3x on
+  each drop ("it grew too much" at 2x). The number drains, the bar's lost
+  cells break off as pixels, and the edges pulse red. It tears away after
+  the wave. The same meter in every episode.
 
 ## Voices and sound
 
