@@ -84,6 +84,16 @@ the note wins. Add to it whenever the creator gives a new standing note.
   voices and no new scenes; only the picture changes. The first and last
   episodes are already "one core, two perspectives". Don't ask the creator
   questions the files already answer; see `story/movie_handoff.md`.
+- **The movie, episode by episode** (November 13): "at the end one movie with
+  all parts, so synchronization and homogenisation is required, but to stay
+  consistent we will do ep by ep so I can confirm the quality and the
+  delivery." Each episode is approved on its own, and every episode is
+  built so the chapters match: the same places, light, grade, captions and
+  loudness.
+- **Episode 1 skips its repeat in the movie** (November 13): its
+  "PREVIOUSLY..." flash and the replay of the forest and "Whoa. Where am
+  I?" go, because Episode 0 has just shown them. Episode 1 picks up at
+  "Okay. A tree. One punch."
 
 ## Voices and sound
 
