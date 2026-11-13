@@ -1,0 +1,209 @@
+{
+ "id": "ep10_p14_end",
+ "fps": 24,
+ "length": 36.227,
+ "beats": {
+  "land": [
+   0.0,
+   1.4
+  ],
+  "noob_back": [
+   1.4,
+   3.88
+  ],
+  "steve_jumped": [
+   4.38,
+   6.434
+  ],
+  "noob_bridge": [
+   6.784,
+   8.834
+  ],
+  "duck": [
+   9.134,
+   10.134
+  ],
+  "noob_duck": [
+   10.134,
+   11.575
+  ],
+  "patch_did": [
+   12.075,
+   13.408
+  ],
+  "sunset": [
+   14.208,
+   15.008
+  ],
+  "steve_null": [
+   15.008,
+   18.249
+  ],
+  "noob_void": [
+   18.549,
+   21.227
+  ],
+  "swim": [
+   21.427,
+   23.027
+  ],
+  "null_end": [
+   23.027,
+   32.727
+  ],
+  "end": [
+   33.027,
+   36.227
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_back",
+   "who": "noob",
+   "text": "...So. I'm back?",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 1.4,
+   "end": 3.88
+  },
+  {
+   "name": "steve_jumped",
+   "who": "steve",
+   "text": "You jumped off a cliff.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 4.38,
+   "end": 6.434
+  },
+  {
+   "name": "noob_bridge",
+   "who": "noob",
+   "text": "...Technically, a bridge.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 6.784,
+   "end": 8.834
+  },
+  {
+   "name": "noob_duck",
+   "who": "noob",
+   "text": "MY DUCK!",
+   "vo": false,
+   "caption": true,
+   "caption_size": 150,
+   "caption_y": 1420,
+   "start": 10.134,
+   "end": 11.575
+  },
+  {
+   "name": "patch_did",
+   "who": "patch",
+   "text": "We did it, guys.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 12.075,
+   "end": 13.408
+  },
+  {
+   "name": "steve_null",
+   "who": "steve",
+   "text": "What do you think happens to Null... in the void?",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 15.008,
+   "end": 18.249
+  },
+  {
+   "name": "noob_void",
+   "who": "noob",
+   "text": "What do you think happens to anyone in the void?",
+   "vo": true,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 18.549,
+   "end": 21.227
+  },
+  {
+   "name": "null_end",
+   "who": "null",
+   "text": "All I wanted was to fix this world. I'll be back. And next time, I'll finish it.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 23.027,
+   "end": 32.727
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, dry and deadpan, moved despite himself, then quiet and thoughtful"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, sheepish and awkward, then overjoyed, then quiet"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.6,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, calm, warm, quietly proud"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.9,
+   "pace": 0.5,
+   "stability": 0.3,
+   "gemini_voice": "Puck",
+   "acting": "Null in the void: broken, bitter, cold, a promise of revenge"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 36.627
+  },
+  {
+   "type": "endnote",
+   "next_label": "SEASON 2",
+   "next_title": "WHAT IS THE CUBE?",
+   "question": "WILL NULL COME BACK?",
+   "question_sub": "Comment your theory",
+   "highlight": true,
+   "start": 33.327,
+   "end": 36.227
+  }
+ ]
+}
