@@ -684,7 +684,9 @@ def run_cycle(ph, k=1.0, steve=True):
 
 
 STEVE_SPOT = (3.5, 3.5)                   # Steve's spot, from the stub (x) and the bridge's line (y)
+SKY_FACE = -35.0                          # shot 5: Steve's facing, degrees off straight at the camera
 SKY_CAM = (5.0, 2.0, 0.5)                 # shot 5's camera, from Steve's spot: he is small at the bottom left
+NOOB_GLANCE = -45.0                       # shot 10: the Noob turned this far toward the side camera (we see his face)
 X_M = -1.0                                # where Steve meets the Noob on the bridge (x), before they run back
 
 
@@ -705,7 +707,7 @@ def noob_keys(E):
     a = E.noob_home
     off = Vector((a.x + 1.2, E.y_n, E.deck))
     end = Vector((E.rb_far - 0.3, E.y_n, E.deck))
-    meet = Vector((X_M + 0.4, E.y_n, E.deck))
+    meet = Vector((X_M + 1.6, E.y_n, E.deck))
     stop = Vector((E.x_meet_n, E.y_n, E.deck))
     return [(b("noob_running") - 0.2, a), (b("noob_running") + 0.15, off), (19.0, end), (20.25, meet),
             (b("noob_bridge") - 0.05, stop)]
@@ -805,12 +807,13 @@ def cast(E, t, shot):
             alarm = ss(b("erasure") + 0.2, b("erasure") + 0.8, t)
             face = dict(SF["neutral"]) if alarm < 0.5 else dict(SF["scared"])
             if b("vo_5") <= t < b("erasure"):
-                # shot 5: in profile to the camera, looking up at the square sun
-                c = Vector((E.to_sun.x, E.to_sun.y, 0)).normalized()
-                a_ = math.radians(-115)
+                # shot 5: three-quarter to the camera, face up to the sky (we see his face from below)
+                c = E.sky_cam - E.steve_home
+                c = Vector((c.x, c.y, 0)).normalized()
+                a_ = math.radians(SKY_FACE)
                 f = Vector((c.x * math.cos(a_) - c.y * math.sin(a_), c.x * math.sin(a_) + c.y * math.cos(a_), 0))
                 yaw = math.degrees(math.atan2(f.x, -f.y))
-                p = {"head_turn": 40, "head_nod": -28, "chest_lean": -6, "arm_sr": {"fwd": 8, "out": 6, "elbow": 20}}
+                p = {"head_nod": -26, "chest_lean": -5, "arm_sr": {"fwd": 8, "out": 6, "elbow": 20}, "arm_sl": {"fwd": 6, "out": 10, "elbow": 15}}
                 face = dict(SF["amazed"]) if t < b("freeze") else dict(SF["stunned"])
             if b("steve_run") - 0.1 <= t < b("steve_run", 1) + 0.2:
                 p = {"chest_lean": 6, "head_nod": -6, "head_turn": -20, "arm_sl": {"fwd": 40, "out": 30, "elbow": 30},
@@ -862,6 +865,8 @@ def cast(E, t, shot):
             keys = noob_keys(E)
             d = keys[2][1] - keys[1][1]
             yaw = 90.0 if t > keys[2][0] - 0.3 else math.degrees(math.atan2(d.x, -d.y))
+            if shot == "side":
+                yaw += NOOB_GLANCE                          # turned a little toward the side camera (we see his face)
             face = dict(NF["shout"]) if t < b("noob_running", 1) + 0.1 else dict(NF["scared"])
         elif t < b("noob_running"):
             # dancing on his plate (Episode 0's bounce); he stops dead when reality does
@@ -1034,7 +1039,7 @@ def _cam(E, t, shot, t0, t1):
         # from the Minecraft side of the chasm, low: the obby's towers below, the sun above them, Steve small
         foot = E.sky_cam + Vector((-0.5, -0.2, 0.25)) * u
         d = Vector((E.to_sun.x, E.to_sun.y, 0)).normalized()
-        look = foot + d * 10.0 + Vector((0, 0, 10.0 * math.tan(math.radians(24))))
+        look = foot + d * 10.0 + Vector((0, 0, 10.0 * math.tan(math.radians(20))))
         return foot, look, 17, 64.0, None, 0.0, up
     if shot == "obby":
         if E.course:
