@@ -1,0 +1,66 @@
+{
+ "id": "ep10_p12_normal",
+ "fps": 24,
+ "length": 13.754,
+ "beats": {
+  "pov": [
+   0.0,
+   3.2
+  ],
+  "cu": [
+   3.2,
+   3.6
+  ],
+  "noob_normal": [
+   3.6,
+   6.554
+  ],
+  "insert": [
+   6.754,
+   8.554
+  ],
+  "respawn": [
+   8.554,
+   13.154
+  ],
+  "end": [
+   13.154,
+   13.754
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_normal",
+   "who": "noob",
+   "text": "Now I can bring everything back to normal.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 3.6,
+   "end": 6.554
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, falling, calm and at peace, a soft smile in his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 14.154
+  }
+ ]
+}
