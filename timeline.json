@@ -1,0 +1,78 @@
+{
+ "id": "ep10_p13_patch",
+ "fps": 24,
+ "length": 14.9,
+ "beats": {
+  "watch": [
+   0.0,
+   0.7
+  ],
+  "patch_allow": [
+   0.7,
+   2.65
+  ],
+  "dive": [
+   2.8,
+   4.4
+  ],
+  "upgrade": [
+   4.4,
+   7.0
+  ],
+  "catch": [
+   7.0,
+   8.2
+  ],
+  "climb": [
+   8.2,
+   10.4
+  ],
+  "grab_steve": [
+   10.4,
+   11.3
+  ],
+  "land": [
+   11.3,
+   14.3
+  ],
+  "end": [
+   14.3,
+   14.9
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "patch_allow",
+   "who": "patch",
+   "text": "I will not allow this.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 0.7,
+   "end": 2.65
+  }
+ ],
+ "cast": {
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.7,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, the small calm robot, for once firm and fierce: quiet, determined anger"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 15.3
+  }
+ ]
+}
