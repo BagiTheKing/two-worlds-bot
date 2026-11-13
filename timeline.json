@@ -1,0 +1,63 @@
+{
+ "id": "ep10_p11_jump",
+ "fps": 24,
+ "length": 7.016,
+ "beats": {
+  "jump": [
+   0.0,
+   2.3
+  ],
+  "cell": [
+   2.3,
+   3.3
+  ],
+  "hand": [
+   3.3,
+   4.4
+  ],
+  "steve_noob": [
+   4.4,
+   6.516
+  ],
+  "end": [
+   6.516,
+   7.016
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_noob",
+   "who": "steve",
+   "text": "NOOB!",
+   "vo": false,
+   "caption": true,
+   "caption_size": 160,
+   "caption_y": 1420,
+   "start": 4.4,
+   "end": 6.516
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, desperate, reaching for his friend, screaming his name"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 7.416
+  }
+ ]
+}
