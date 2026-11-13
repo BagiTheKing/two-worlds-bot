@@ -1,0 +1,136 @@
+{
+ "id": "ep10_p6_fall",
+ "fps": 24,
+ "length": 14.085,
+ "beats": {
+  "a": [
+   0.0,
+   0.35
+  ],
+  "noob_wake": [
+   0.35,
+   3.104
+  ],
+  "run": [
+   3.104,
+   3.854
+  ],
+  "drop": [
+   3.854,
+   4.754
+  ],
+  "catch": [
+   4.754,
+   5.304
+  ],
+  "hang": [
+   5.304,
+   6.304
+  ],
+  "patch_omg": [
+   6.304,
+   9.227
+  ],
+  "steve_seen": [
+   9.727,
+   10.911
+  ],
+  "steve_delete": [
+   11.061,
+   13.585
+  ],
+  "end": [
+   13.585,
+   14.085
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_wake",
+   "who": "noob",
+   "text": "STEVE, WAKE UP! THE BRIDGE IS FALLING!",
+   "vo": false,
+   "caption": true,
+   "caption_size": 140,
+   "caption_y": 1420,
+   "start": 0.35,
+   "end": 3.104
+  },
+  {
+   "name": "patch_omg",
+   "who": "patch",
+   "text": "OMG, how did I miss this? Look!",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 6.304,
+   "end": 9.227
+  },
+  {
+   "name": "steve_seen",
+   "who": "steve",
+   "text": "I've seen enough.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 9.727,
+   "end": 10.911
+  },
+  {
+   "name": "steve_delete",
+   "who": "steve",
+   "text": "HE'S LITERALLY COMING TO DELETE US.",
+   "vo": false,
+   "caption": true,
+   "caption_size": 150,
+   "caption_y": 1420,
+   "start": 11.061,
+   "end": 13.585
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, dry and deadpan: hanging over the void, exhausted, done with all of it, then losing it"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, panicked, yelling, shaking his friend awake"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.6,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, a small floating robot, thrilled by a discovery, completely oblivious that his friends are hanging over the void"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 14.485
+  }
+ ]
+}
