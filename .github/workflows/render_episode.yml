@@ -44,6 +44,9 @@ on:
       assemble_from:
         description: "Only assemble again: an earlier run whose sound, timing and frames to use (overlays re-read from the episode file)"
         default: ""
+      new_range:
+        description: "Only re-render the new-look frames in this time range (seconds, e.g. 0-2.65); with reuse_run_id the rest come from that run"
+        default: ""
 
 permissions:
   contents: write
@@ -225,8 +228,26 @@ jobs:
       - name: Render this shard's new-look frames
         run: |
           mkdir -p build/frames
-          python src/lookdev/$(basename ${{ inputs.new_look }}) build/timeline.json build/voice.wav build/tex /tmp/assets build/frames \
-            --shard ${{ matrix.shard }}/40 --res ${{ inputs.res }} --samples ${{ inputs.new_samples }}
+          RANGE="${{ inputs.new_range }}"
+          if [ -n "$RANGE" ]; then
+            TIMES=$(python -c "
+          import json
+          t = json.load(open('build/timeline.json'))
+          fps = t['fps']
+          a, b = (float(x) for x in '$RANGE'.split('-'))
+          n = int(round((t['length'] + 0.4) * fps)) + 1
+          fr = [f for f in range(1, n + 1) if a - 1e-6 <= (f - 1) / fps <= b + 1e-6]
+          k = ${{ matrix.shard }}
+          per = (len(fr) + 39) // 40
+          print(','.join('%.5f' % ((f - 1) / fps) for f in fr[k * per:(k + 1) * per]))")
+            if [ -n "$TIMES" ]; then
+              python src/lookdev/$(basename ${{ inputs.new_look }}) build/timeline.json build/voice.wav build/tex /tmp/assets build/frames \
+                --times "$TIMES" --res ${{ inputs.res }} --samples ${{ inputs.new_samples }}
+            fi
+          else
+            python src/lookdev/$(basename ${{ inputs.new_look }}) build/timeline.json build/voice.wav build/tex /tmp/assets build/frames \
+              --shard ${{ matrix.shard }}/40 --res ${{ inputs.res }} --samples ${{ inputs.new_samples }}
+          fi
           rm -rf build/frames/_mist
       - uses: actions/upload-artifact@v4
         with:

@@ -63,6 +63,15 @@ def build(tl, tex_dir, assets, res, samples):
     E = P7.build(P7_TL, tex_dir, assets, res, samples)
     E.mouth = {}
     rng = random.Random(9)
+    # every cell can cry: Episode 0's heads (a painted smile, no face to fall) become today's and the
+    # plastic ones, so the crying faces fill the middle of the shot, not just its edges
+    for i, (em, p, ph, st) in enumerate(E.cells):
+        if st == 4:
+            st = i % 2
+            em.instance_collection = E.styles[st]
+            k = E.style_scale[st]
+            em.scale = (k, k, k)
+            E.cells[i] = (em, p, ph, st)
     _upset_face(E)
     _cell_tears(E, rng)
     _explosion_setup(E, rng)
@@ -390,7 +399,7 @@ def cells(E, t):
                 @ Quaternion((1, 0, 0), 0.12 * u + 0.03 * math.sin(t * 0.8 + ph))
     for ob in E.soul_lights:
         base = E.soul_light_base[ob.name]
-        ob.data.energy = base * (0.7 if "fill" in ob.name else 0.5)
+        ob.data.energy = base * (0.95 if "fill" in ob.name else 0.8)     # cold, but bright enough to read their faces
         if "rim" in ob.name:
             ob.data.color = (0.3, 0.75, 1.0)
 
