@@ -2,13 +2,14 @@
 
 At rest it sits small in the top-left corner: REALITY, the percentage, and a
 bar of 20 cells. On every drop (an erasure tick in the soundtrack):
-  - the readout GROWS: it swells up out of the corner (about 2.3x), shaking,
+  - the readout GROWS: it swells up out of the corner (about 2x), shaking,
     with a magenta/cyan colour split, then settles back over about a second;
   - the number drains: it counts down to its new value instead of jumping;
-  - the bar's cells that are lost break off as black-and-magenta pixels and
-    fall, the same erasure the world suffers;
-  - a red pulse, and on big drops (5 points or more) a red edge glow
-    across the frame.
+  - the bar's cells that are lost break off as black-and-magenta pixels that
+    hop off the bar and fade in the top corner (never over the faces), the
+    same erasure the world suffers;
+  - a faint red pulse at the frame's edges, stronger at most once a second
+    when a burst of drops adds up to 10 points or more.
 Quick drops in a row keep it swollen, so a wave of erasure reads as a drain.
 The colour goes white, then amber under 60%, then red under 30%; under 10%
 it blinks like a dying battery.
@@ -104,7 +105,8 @@ class Meter:
         # the edge glow on big drops, and a red pulse every drop
         if since < 0.6:
             k = (1 - since / 0.6) ** 2
-            strength = (0.5 if drop >= 10 else 0.2) * k        # strong only on the heaviest bursts
+            strong = drop >= 10 and self._strong_ok(t - since)
+            strength = (0.5 if strong else 0.2) * k            # strong only on the heaviest bursts, once a second at most
             self._edge_glow(img, strength)
         # the panel, drawn at 1x on its own layer, then scaled
         pw, ph = int(600 * u), int(150 * u)
@@ -151,10 +153,11 @@ class Meter:
         k = sum(1 for x in self.steps if x <= t)
         floor_y = 330 * u                                    # nothing falls below this (the faces are lower)
         for i in range(max(0, k - 12), k):
-            s = t - self.steps[i]
-            if s > 0.75:
+            born = self.steps[i] + SWELL                     # when the cell visibly goes (the swell has peaked)
+            s = t - born
+            if s < 0 or s > 0.75:
                 continue
-            sw = self.state(self.steps[i] + 1e-4)[1]
+            sw = self.state(born)[1]
             scale = 1.0 + GROW * sw
             ox, oy = 56 * u, 40 * u
             hi, lo = self.value(i) / 100.0 * CELLS, self.value(i + 1) / 100.0 * CELLS
@@ -173,6 +176,16 @@ class Meter:
                 fa = int(255 * vis * max(0.0, 1 - s / 0.75) * min(1.0, (floor_y - y) / (60 * u)))
                 c = (255, 0, 200) if pr.random() < 0.55 else (14, 0, 20)
                 d.rectangle((x, y, x + sz, y + sz), fill=(*c, fa))
+
+    def _strong_ok(self, t_drop):
+        """A strong flash at this drop only if none of the drops in the second before it had one."""
+        if not hasattr(self, "_strong"):
+            self._strong = []
+            for i, x in enumerate(self.steps):
+                burst = sum(self.value(j) - self.value(j + 1) for j, y in enumerate(self.steps[:i + 1]) if x - 0.35 <= y <= x)
+                if burst >= 10 and all(x - y >= 1.0 for y in self._strong):
+                    self._strong.append(x)
+        return any(abs(t_drop - y) < 1e-6 for y in self._strong)
 
     def _edge_glow(self, img, strength):
         W, H = img.size
