@@ -31,7 +31,7 @@ trees, where the Noob landed out of the portal.
 a repeat: the Noob looks round, notices the tree and walks to it. Without
 them he would jump from "Where am I?" (Episode 0's last frame) straight to
 standing at a tree saying "Okay". With them, the chapter runs **6.94-27.94
-(21.0 s)**. To ask the creator.
+(21.0 s)**. **Decided (November 14):** the creator said "Do what best for the video"; the chapter starts at 6.94.
 
 **The join:** Episode 0 ends at 55.96 on the Noob walking toward the camera
 past the near trunk. Episode 1 opens at 6.94 on him in the same place,

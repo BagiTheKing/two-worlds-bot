@@ -53,7 +53,7 @@ About 25.8 s becomes about 46 s.
 | Published | Time | Movie |
 |---|---|---|
 | The eye in the sky crack; the crack snaps shut | 0.00-1.40 | **kept**: it picks up exactly where Episode 1 ends (the eye) |
-| "EPISODE 2 / STEVE'S PLAN LASTED 3 SECONDS" label | 1.40-3.88 | **to ask**: it is an episode card (dropped in the movie), but its second line sets up the PLAN timer joke. My proposal: drop it; the timer tells the joke on its own |
+| "EPISODE 2 / STEVE'S PLAN LASTED 3 SECONDS" label | 1.40-3.88 | **dropped** (an episode card; the PLAN timer tells the joke on its own) |
 | PLAN timer (0.00s counting, then "PLAN FAILED: 3.00s" in red) | 4.99-9.54 | **kept**: a story gag, like the REALITY meter. Landscape layout |
 | "WOULD YOU PRESS IT? COMMENT ↓" | 6.91-8.94 | **dropped** (a Shorts comment prompt) |
 | Achievement "TEAMWORK! Build a portal together" | 8.64-10.94 | **kept** |
@@ -285,10 +285,8 @@ Times are the published ones. The 16:9 notes say how the shot is restaged.
   (7, 10), determined (11), exhausted (15); the Noob innocent (4), delighted
   (7, 9), uneasy (17).
 
-## To ask the creator
+## Decided (November 14, the creator: "Do what best for the video to deliver a convincing scene")
 
-1. The "EPISODE 2 / STEVE'S PLAN LASTED 3 SECONDS" label: drop it with the
-   other episode cards (my proposal; the PLAN timer carries the joke), or
-   keep its second line as a story card?
-2. Shot 18: keep Steve out of the last shot as published, or show him at
-   the edge, frozen in shock?
+1. The "EPISODE 2 / STEVE'S PLAN LASTED 3 SECONDS" label is dropped with the
+   other episode cards; the PLAN timer carries the joke.
+2. Shot 18 stays as published: Steve is not in the last shot.
