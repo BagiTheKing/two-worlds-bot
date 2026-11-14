@@ -177,9 +177,15 @@
    "swell": [
     {
      "from": 0,
-     "to": "noob_tree",
+     "to": "walk_to_tree",
      "gain": 3.5,
      "ramp": 0.35
+    },
+    {
+     "from": "walk_to_tree.end",
+     "to": "noob_tree",
+     "gain": 3.5,
+     "ramp": 0.3
     }
    ]
   },
@@ -954,27 +960,27 @@
   {
    "kind": "step",
    "at": "walk_to_tree+0.15",
-   "gain": 0.95
+   "gain": 1.3
   },
   {
    "kind": "step",
    "at": "walk_to_tree+0.55",
-   "gain": 0.95
+   "gain": 1.3
   },
   {
    "kind": "step",
    "at": "walk_to_tree+0.95",
-   "gain": 0.95
+   "gain": 1.3
   },
   {
    "kind": "step",
    "at": "walk_to_tree+1.35",
-   "gain": 0.95
+   "gain": 1.3
   },
   {
    "kind": "step",
    "at": "walk_to_tree+1.75",
-   "gain": 0.95
+   "gain": 1.3
   },
   {
    "kind": "break",
