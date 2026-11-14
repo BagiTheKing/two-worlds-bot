@@ -33,7 +33,7 @@
   },
   {
    "beat": "look_up",
-   "dur": 1.0
+   "dur": 0.7
   },
   {
    "line": "steve",
@@ -60,7 +60,7 @@
    "name": "noob_this",
    "text": "This one?",
    "direction_text": "[innocent, curious] This one?",
-   "pad": 0.25
+   "pad": 0.05
   },
   {
    "line": "steve",
@@ -136,7 +136,10 @@
   },
   {
    "beat": "approach",
-   "dur": 2.0
+   "dur": 2.0,
+   "sfx": "steps",
+   "step_every": 0.34,
+   "step_first": 0.15
   },
   {
    "line": "noob",
@@ -171,10 +174,11 @@
   {
    "cue": "dread",
    "from": 0,
-   "to": "eye.end",
+   "to": "steve_rule+1.2",
    "gain": 0.22,
    "hit_at": "eye+2.1",
-   "minimal": true
+   "minimal": true,
+   "fade_out": 1.6
   },
   {
    "cue": "theme_soft",
@@ -200,7 +204,7 @@
    "cue": "dread",
    "from": "suck.end",
    "to": "snap",
-   "gain": 0.25,
+   "gain": 0.2,
    "hit_at": "snap",
    "minimal": true
   },
@@ -221,7 +225,7 @@
   },
   {
    "kind": "meadow",
-   "from": "quiet",
+   "from": "suck.end-0.35",
    "to": "noob_hi",
    "gain": 0.05,
    "fade_in": 0.6
@@ -243,13 +247,13 @@
   {
    "kind": "snap",
    "at": "eye+2.1",
-   "gain": 0.8
+   "gain": 1.3
   },
   {
    "kind": "place",
    "from": "steve_plan",
-   "to": "steve_plan.end",
-   "count": 18,
+   "to": "build+2.3",
+   "count": 26,
    "gain": 0.5
   },
   {
@@ -351,7 +355,7 @@
   {
    "kind": "snap",
    "at": "snap",
-   "gain": 0.9
+   "gain": 1.6
   },
   {
    "kind": "pop",
@@ -375,6 +379,16 @@
    "kind": "groan",
    "at": "pour+3.2",
    "gain": 0.4
+  },
+  {
+   "kind": "step",
+   "at": "build+2.45",
+   "gain": 0.6
+  },
+  {
+   "kind": "step",
+   "at": "build+2.75",
+   "gain": 0.5
   }
  ],
  "overlays": [
@@ -1687,5 +1701,6 @@
   }
  ],
  "movie_note": "Movie version of Episode 2 (story/movie/ep02_shots.md): the same lines and voice takes, more room around them (the creator: no time limit in the movie, November 14). 16:9; the Shorts packaging is dropped (episode label, comment prompt, end card).",
- "voices_cache_only": true
+ "voices_cache_only": true,
+ "declick": 0.006
 }

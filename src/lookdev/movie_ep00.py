@@ -627,6 +627,13 @@ def _plunge_plan(E, gap=0.035):
             for ci, (r, a) in enumerate(cands):
                 d = (right * math.cos(a) + upv * math.sin(a)) * (r * depth)
                 table[ob.name][ci][si] = proj_box([q + d for q in corners])
+    # each character's whole sweep through the shot (its picture at every sampled moment, joined): a block
+    # clear of that is clear at every frame between the samples too
+    sweep = []
+    for k in range(max(len(x) for x in bodies)):
+        bs = [x[k] for x in bodies if len(x) > k]
+        sweep.append((min(q[0] for q in bs), min(q[1] for q in bs), max(q[2] for q in bs), max(q[3] for q in bs)))
+    bodies = [sweep] * len(times)
     # the camera's sideways directions at mid-shot (the offsets are fixed in the world)
     mid = times[len(times) // 2]
     cast(E, mid, "plunge")

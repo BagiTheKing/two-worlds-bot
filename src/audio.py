@@ -1338,7 +1338,7 @@ def sfx_scan(dur=1.2):
     return norm((tone + 0.25 * norm(shimmer)) * e, 0.6)
 
 
-SFX = {"run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
+SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
        "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
        "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
@@ -1699,6 +1699,10 @@ def build(episode_path, out_dir, keep=None):
                     ratio = min(ep.get("fit_max", 1.10), len(audio) / SR / room)
                     audio = stretch(audio, ratio)
                     print(f"  {name}: sped up x{ratio:.2f} to fit its {room:.2f}s")
+            if ep.get("declick"):                         # a take's first milliseconds faded in (a click at a cut)
+                n = int(ep["declick"] * SR)
+                audio = np.asarray(audio, dtype=np.float64).copy()
+                audio[:n] *= np.linspace(0, 1, n)
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
                           "caption": ev.get("caption", True), **{k: ev[k] for k in ("caption_size", "caption_y") if ev.get(k)},
@@ -1805,6 +1809,10 @@ def build(episode_path, out_dir, keep=None):
         if m.get("hard_end"):
             kw["hard_end"] = True
         x = music.render(m["cue"], m1 - m0, seed=k, **kw)
+        if m.get("fade_out"):                   # dies away under what follows (no hard stop)
+            n = min(len(x), int(m["fade_out"] * SR))
+            x = x.copy()
+            x[len(x) - n:] *= np.linspace(1, 0, n) ** 2
         for sw in m.get("swell", []):           # louder while nobody speaks, eased in and out
             s0, s1 = int((R(sw["from"]) - m0) * SR), int((R(sw["to"]) - m0) * SR)
             ramp = int(sw.get("ramp", 0.3) * SR)
