@@ -1832,6 +1832,12 @@ def build(episode_path, out_dir, keep=None):
     duck = np.clip(duck * 3, 0, 1)
     out = voice + keep_under(voice, mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck))
     out = master(out, voice)
+    if ep.get("end_fade"):                         # the chapter's own ending: everything fades out by its last beat
+        e1 = int(length * SR)
+        n = int(ep["end_fade"] * SR)
+        out = out.copy()
+        out[max(0, e1 - n):e1] *= np.linspace(1, 0, min(n, e1)) ** 2
+        out[e1:] = 0.0
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
     if os.getenv("VOICE_STEM"):                    # the voices alone, for checking dubs
         sf.write(os.path.join(out_dir, "voice.wav"), voice.astype(np.float32), SR)
