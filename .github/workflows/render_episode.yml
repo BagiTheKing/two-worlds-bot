@@ -47,6 +47,9 @@ on:
       new_range:
         description: "Only re-render the new-look frames in this time range (seconds, e.g. 0-2.65); with reuse_run_id the rest come from that run"
         default: ""
+      prep_dir:
+        description: "The movie: a folder in the repo with the chapter's timeline.json and audio.flac (instead of a prep job or an earlier run's)"
+        default: ""
       movie_end:
         description: "The movie: assemble in 16:9 (src/movie_assemble.py), the chapter ending at this second on the timeline"
         default: ""
@@ -66,7 +69,7 @@ env:
 
 jobs:
   prep:
-    if: ${{ inputs.assemble_from == '' && inputs.prep_from == '' }}
+    if: ${{ inputs.assemble_from == '' && inputs.prep_from == '' && inputs.prep_dir == '' }}
     runs-on: ubuntu-latest
     outputs:
       frames: ${{ steps.len.outputs.frames }}
@@ -157,7 +160,7 @@ jobs:
 
   render:
     needs: prep
-    if: ${{ always() && !inputs.voices_only && inputs.parts != 'new' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '') }}
+    if: ${{ always() && !inputs.voices_only && inputs.parts != 'new' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '' || inputs.prep_dir != '') }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -169,7 +172,7 @@ jobs:
         with:
           python-version: '3.13'
       - run: pip install bpy Pillow numpy
-      - if: inputs.prep_from == ''
+      - if: inputs.prep_from == '' && inputs.prep_dir == ''
         uses: actions/download-artifact@v4
         with:
           name: prep
@@ -206,7 +209,7 @@ jobs:
     # the new look (src/lookdev): Steve's rig, the Noob, Patch, Null and the world. Its block
     # textures come from the MCprep pack, fetched here and never committed (Minecraft's textures).
     needs: prep
-    if: ${{ always() && !inputs.voices_only && inputs.new_look != '' && inputs.parts != 'old' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '') }}
+    if: ${{ always() && !inputs.voices_only && inputs.new_look != '' && inputs.parts != 'old' && inputs.assemble_from == '' && (needs.prep.result == 'success' || inputs.prep_from != '' || inputs.prep_dir != '') }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -219,7 +222,7 @@ jobs:
         with:
           python-version: '3.13'
       - run: pip install bpy Pillow numpy soundfile
-      - if: inputs.prep_from == ''
+      - if: inputs.prep_from == '' && inputs.prep_dir == ''
         uses: actions/download-artifact@v4
         with:
           name: prep
@@ -234,6 +237,11 @@ jobs:
             echo "download failed, retry $i"; sleep $((5 * i))
           done
           mkdir -p build && cp -r /tmp/prep/. build/ && test -f build/timeline.json
+      - if: inputs.prep_dir != ''
+        name: The chapter's timeline and sound, from the repo (the movie)
+        run: |
+          mkdir -p build && cp ${{ inputs.prep_dir }}/timeline.json build/ && python src/textures.py build/tex > /dev/null
+          python -c "import soundfile as sf; x, sr = sf.read('${{ inputs.prep_dir }}/audio.flac'); sf.write('build/audio.wav', x, sr)"
       - name: The MCprep pack (block and item textures)
         run: |
           for i in 1 2 3 4; do
@@ -276,7 +284,7 @@ jobs:
 
   assemble:
     needs: [prep, render, render_new]
-    if: ${{ always() && !inputs.voices_only && (inputs.assemble_from != '' || ((needs.prep.result == 'success' || inputs.prep_from != '') && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled')) }}
+    if: ${{ always() && !inputs.voices_only && (inputs.assemble_from != '' || ((needs.prep.result == 'success' || inputs.prep_from != '' || inputs.prep_dir != '') && needs.render.result != 'failure' && needs.render_new.result != 'failure' && needs.render.result != 'cancelled' && needs.render_new.result != 'cancelled')) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -284,7 +292,7 @@ jobs:
         with:
           python-version: '3.13'
       - run: sudo apt-get update && sudo apt-get install -y ffmpeg && pip install Pillow numpy
-      - if: inputs.assemble_from == '' && inputs.prep_from == ''
+      - if: inputs.assemble_from == '' && inputs.prep_from == '' && inputs.prep_dir == ''
         uses: actions/download-artifact@v4
         with:
           name: prep
@@ -299,6 +307,11 @@ jobs:
             echo "download failed, retry $i"; sleep $((5 * i))
           done
           mkdir -p build && cp -r /tmp/prep/. build/ && test -f build/timeline.json
+      - if: inputs.prep_dir != ''
+        name: The chapter's timeline and sound, from the repo (the movie)
+        run: |
+          mkdir -p build && cp ${{ inputs.prep_dir }}/timeline.json build/
+          pip install soundfile -q && python -c "import soundfile as sf; x, sr = sf.read('${{ inputs.prep_dir }}/audio.flac'); sf.write('build/audio.wav', x, sr)"
       - if: inputs.assemble_from == ''
         uses: actions/download-artifact@v4
         with:
