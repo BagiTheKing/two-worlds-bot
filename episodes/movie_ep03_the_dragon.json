@@ -44,11 +44,11 @@
   {
    "cue": "dread",
    "from": "glitch",
-   "to": "end",
+   "to": "glitch.end",
    "gain": 0.24,
    "hit_at": "glitch",
    "minimal": true,
-   "fade_out": 0.9
+   "fade_out": 1.2
   }
  ],
  "ambience": [
