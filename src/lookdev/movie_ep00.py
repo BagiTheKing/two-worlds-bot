@@ -666,6 +666,26 @@ def _plunge_plan(E, gap=0.035):
         r, a = cands[best]
         off[ob.name] = (right * math.cos(a) + upv * math.sin(a)) * (r * depth)
         placed.append(table[ob.name][best])
+    # check it as the lens really sees it: every sampled moment, every block where it was put; a block whose
+    # picture still touches Steve or the Noob sits the shot out
+    for ts in times:
+        for ob, c, v, wv in E.cells:
+            d = off.get(ob.name)
+            ob.location = c + v * ts + (d if d is not None else Vector())
+            ob.rotation_euler = tuple(wv * ts)
+        cast(E, ts, "plunge")
+        camera(E, ts, "plunge", t0, t1)
+        bpy.context.view_layer.update()
+        sb = [proj_box([E.S.holder.matrix_world @ o.matrix_world @ Vector(q) for o in E.S.rig.all_objects
+                        if o.type == "MESH" and not o.hide_render for q in o.bound_box]),
+              proj_box([o.matrix_world @ Vector(q) for o in [E.N.root] + list(E.N.root.children_recursive)
+                        if o.type == "MESH" and not o.hide_render for q in o.bound_box])]
+        for ob, c, v in blocks:
+            if off.get(ob.name) is None:
+                continue
+            bx = proj_box([ob.matrix_world @ Vector(q) for q in ob.bound_box])
+            if any(over(bx, k) for k in sb if k):
+                off[ob.name] = None
     E.plunge_off = off
     return off
 
