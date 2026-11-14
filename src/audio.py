@@ -955,6 +955,10 @@ def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3, whole=False, pic
         if key and os.path.exists(key):
             clip, sr = sf.read(key)
             print(f"  solo {label} {text!r} take {k}: from the cache")
+        elif CACHE_ONLY and best is not None:
+            # the movie: a take the published run never made (it had fewer takes); keep to the recorded ones
+            print(f"  solo {label} {text!r} take {k}: not in the cache, skipped (cache only)")
+            continue
         else:
             clip, sr = gemini_speak([(label, text)], voice)
             print(f"  solo {label} {text!r} take {k}: NEW recording")
