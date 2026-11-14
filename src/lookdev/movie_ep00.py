@@ -565,11 +565,11 @@ def apply(E, t):
         ob.rotation_euler = tuple(wv * t)
         if ob.name.startswith("void_block"):              # the void's debris: torn off as the world goes (from the bridge on)
             ob.hide_render = t < b("bridge_delete")
-    if t >= E.stub_gone:
-        _clear_fall(E, t)
     # the cast and the camera
     name, t0, t1 = which(t)
     cast(E, t, name)
+    if t >= E.stub_gone:
+        _clear_fall(E, t)
     _null(E, t, name)
     place_null_lights(E.X, fade=ss(b("null_rise") - 0.4, b("null_rise") + 1.0, t) if name not in ("forest",) else 0.0)
     E.X.glow_strength.default_value *= 0.35                 # his halo: a glow behind him, not a wall of light
@@ -582,7 +582,12 @@ def _clear_fall(E, t):
     a block under either one is pushed out sideways until it clears them."""
     s = t - E.stub_gone
     z = E.deck - 2.0 - 0.5 * 7.0 * s * s
-    bodies = [Vector((E.grip_x - 0.6 - 0.6 * s, E.y_s)), Vector((E.grip_x - 2.4 - 0.9 * s, E.y_s + 2.1))]
+    bpy.context.view_layer.update()
+    # both ends of each body (they lie flat on the air): feet and head
+    pts = [Vector(E.S.holder.matrix_world.translation), P6._head(E.S.face, E.S.holder),
+           Vector(E.N.root.matrix_world.translation), P6._head(E.N.face)]
+    pts += [a.lerp(c, 0.5) for a, c in ((pts[0], pts[1]), (pts[2], pts[3]))]
+    bodies = [Vector((q.x, q.y)) for q in pts]
     for ob, c, v, wv in E.cells:
         if not ob.name.startswith("void_block"):
             continue
@@ -591,7 +596,7 @@ def _clear_fall(E, t):
             continue
         for q in bodies:
             d = Vector((p.x, p.y)) - q
-            r = 2.0 + 0.9 * ob.scale.x
+            r = 1.3 + 0.9 * ob.scale.x
             if d.length < r:
                 d = d.normalized() if d.length > 1e-3 else Vector((-1.0, 0.0))
                 p.x, p.y = q.x + d.x * r, q.y + d.y * r
@@ -731,7 +736,7 @@ def noob_keys(E):
     a = E.noob_home
     off = Vector((a.x + 1.2, E.y_n, E.deck))
     end = Vector((E.rb_far - 0.3, E.y_n, E.deck))
-    meet = Vector((X_M - 1.4, E.y_n, E.deck))           # a step behind Steve (the Short's order: Steve leads to the Minecraft end)
+    meet = Vector((X_M - 2.0, E.y_n, E.deck))           # a step behind Steve (the Short's order: Steve leads to the Minecraft end)
     stop = Vector((E.x_meet_n, E.y_n, E.deck))
     return [(b("noob_running") - 0.2, a), (b("noob_running") + 0.15, off), (19.0, end), (20.5, meet),
             (b("noob_bridge") - 0.05, stop)]
