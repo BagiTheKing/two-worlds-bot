@@ -1811,10 +1811,11 @@ def build(episode_path, out_dir, keep=None):
         if m.get("hard_end"):
             kw["hard_end"] = True
         x = music.render(m["cue"], m1 - m0, seed=k, **kw)
-        if m.get("fade_out"):                   # dies away under what follows (no hard stop)
-            n = min(len(x), int(m["fade_out"] * SR))
-            x = x.copy()
-            x[len(x) - n:] *= np.linspace(1, 0, n) ** 2
+        if m.get("fade_out"):                   # dies away by its own end (no hard stop), whatever tail the cue has
+            end = min(len(x), int((m1 - m0) * SR))
+            n = min(end, int(m["fade_out"] * SR))
+            x = x[:end].copy()
+            x[end - n:] *= np.linspace(1, 0, n) ** 2
         for sw in m.get("swell", []):           # louder while nobody speaks, eased in and out
             s0, s1 = int((R(sw["from"]) - m0) * SR), int((R(sw["to"]) - m0) * SR)
             ramp = int(sw.get("ramp", 0.3) * SR)

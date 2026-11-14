@@ -71,7 +71,7 @@
   {
    "kind": "crunch",
    "at": 0.0,
-   "gain": 1.1
+   "gain": 1.5
   },
   {
    "kind": "break",
@@ -141,12 +141,12 @@
   {
    "kind": "crunch",
    "at": "crash+0.2",
-   "gain": 1.6
+   "gain": 2.8
   },
   {
    "kind": "break",
    "at": "crash+0.25",
-   "gain": 0.7
+   "gain": 1.1
   },
   {
    "kind": "whoosh",
@@ -164,7 +164,7 @@
   {
    "kind": "break",
    "at": "free",
-   "gain": 1.2
+   "gain": 1.7
   },
   {
    "kind": "glitch",
@@ -187,19 +187,19 @@
   {
    "kind": "snap",
    "at": "freeze",
-   "gain": 1.2
+   "gain": 1.6
   },
   {
    "kind": "glitch",
    "at": "glitch",
    "dur": 0.5,
-   "gain": 1.0
+   "gain": 1.9
   },
   {
    "kind": "sub_drop",
    "at": "glitch",
    "dur": 2.2,
-   "gain": 0.7
+   "gain": 0.9
   },
   {
    "kind": "glitch",
