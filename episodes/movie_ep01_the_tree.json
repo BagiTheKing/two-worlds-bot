@@ -1,0 +1,937 @@
+{
+ "id": "movie_ep01_the_tree",
+ "number": 1,
+ "title": "The Noob Who Punched a Tree",
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "events": [
+  {
+   "line": "steve",
+   "name": "recap_steve",
+   "text": "Aaaaaaah!",
+   "direction_text": "Aaaaaaaaaaaahhhh!",
+   "nonverbal": true,
+   "fx": "falling",
+   "pad": 0.0,
+   "solo_text": "Aaaaaaaaaaaahhhh!",
+   "slot": 1.05,
+   "trim": 1.05,
+   "caption": false,
+   "unused": true
+  },
+  {
+   "line": "noob",
+   "name": "recap_noob",
+   "text": "Aaaaaaaah!",
+   "direction_text": "Aaaaaaaaaaaahhhh!",
+   "nonverbal": true,
+   "fx": "falling",
+   "together": true,
+   "pad": 0.0,
+   "solo_text": "Aaaaaaaaaaaahhhh!",
+   "slot": 1.05,
+   "trim": 1.05,
+   "caption": false,
+   "unused": true
+  },
+  {
+   "line": "noob",
+   "name": "noob_where",
+   "text": "Whoa. Where am I?",
+   "direction_text": "[amazed, a little dazed] Whoa. Where am I?",
+   "pad": 0.2,
+   "voice_from": {
+    "turns": [
+     [
+      "Noob",
+      "[amazed, a little dazed] Whoa. Where am I?"
+     ]
+    ],
+    "voices": {
+     "Noob": "Puck"
+    }
+   },
+   "unused": true
+  },
+  {
+   "beat": "look_around",
+   "dur": 3.0
+  },
+  {
+   "beat": "walk_to_tree",
+   "dur": 2.0,
+   "sfx": "steps",
+   "step_every": 0.4,
+   "step_first": 0.15
+  },
+  {
+   "line": "noob",
+   "name": "noob_tree",
+   "text": "Okay. A tree. One punch. Watch this.",
+   "direction_text": "[confident, showing off] Okay. A tree. One punch. Watch this.",
+   "pad": 0.3
+  },
+  {
+   "beat": "punch",
+   "dur": 1.2
+  },
+  {
+   "line": "steve",
+   "name": "steve_tool",
+   "text": "It's a tree. You need a tool.",
+   "direction_text": "[flatly] It's a tree. You need a tool.",
+   "pad": 0.4
+  },
+  {
+   "line": "noob",
+   "name": "noob_roblox",
+   "text": "I don't need tools. I'm a Roblox player.",
+   "direction_text": "[cocky] I don't need tools. I'm a Roblox player.",
+   "pad": 0.3
+  },
+  {
+   "beat": "flurry",
+   "dur": 2.4
+  },
+  {
+   "beat": "break",
+   "dur": 1.6,
+   "sfx": "break"
+  },
+  {
+   "line": "noob",
+   "name": "noob_float",
+   "text": "...Why is it floating?",
+   "direction_text": "[confused] ...Why is it floating?",
+   "pad": 0.4,
+   "solo_text": "...Why is it floating?"
+  },
+  {
+   "line": "steve",
+   "name": "steve_normal",
+   "text": "That's normal.",
+   "direction_text": "[deadpan] That's normal.",
+   "pad": 0.9
+  },
+  {
+   "beat": "crack",
+   "dur": 2.6,
+   "sfx": "glitch"
+  },
+  {
+   "line": "steve",
+   "name": "steve_not",
+   "text": "...That's not.",
+   "direction_text": "[quietly, worried] ...That's not.",
+   "pad": 0.3
+  },
+  {
+   "beat": "eye",
+   "dur": 2.2
+  }
+ ],
+ "music": [
+  {
+   "cue": "theme_soft",
+   "from": 0,
+   "to": "crack",
+   "gain": 0.12,
+   "swell": [
+    {
+     "from": 0,
+     "to": "noob_tree",
+     "gain": 3.5,
+     "ramp": 0.35
+    }
+   ]
+  },
+  {
+   "cue": "null",
+   "from": "crack",
+   "to": "eye.end",
+   "gain": 0.22,
+   "fade_out": 1.2
+  },
+  {
+   "cue": "dread",
+   "from": "steve_not",
+   "to": "eye.end",
+   "gain": 0.26,
+   "hit_at": "eye+0.4",
+   "minimal": true,
+   "fade_out": 1.0
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "meadow",
+   "from": 0,
+   "to": "crack",
+   "gain": 0.08,
+   "fade_in": 0.4
+  }
+ ],
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 100%",
+   "from": 0,
+   "to": "crack+0.4"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 99%",
+   "alert": true,
+   "from": "crack+0.4",
+   "to": "end"
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [
+  {
+   "kind": "forest_valley",
+   "origin": [
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "actors": {
+  "noob": {
+   "rig": "noob",
+   "at": [
+    0.2,
+    -0.4,
+    0
+   ],
+   "yaw": 0.0
+  },
+  "steve": {
+   "rig": "steve",
+   "at": [
+    -0.9,
+    0.5,
+    -30
+   ],
+   "yaw": 1.5708
+  }
+ },
+ "clips": [
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "look_around-0.15",
+   "to": "look_around+0.5",
+   "head": [
+    0,
+    0,
+    -0.75
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "look_around",
+   "to": "look_around+0.4",
+   "yaw": -0.35
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "look_around+0.7",
+   "to": "look_around+1.2",
+   "head": [
+    0,
+    0,
+    0.45
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "look_around+1.35",
+   "to": "look_around.end",
+   "head": [
+    -0.4,
+    0,
+    -0.25
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "walk",
+   "from": "walk_to_tree",
+   "to": "walk_to_tree.end",
+   "dest": [
+    1.15,
+    0.5
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "noob_tree",
+   "to": "noob_tree+0.3",
+   "yaw": 0.7
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "noob_tree.end-0.25",
+   "to": "punch",
+   "yaw": 1.5708
+  },
+  {
+   "who": "noob",
+   "do": "punch",
+   "from": "punch",
+   "to": "punch.end",
+   "arm": "arm_r"
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "steve_tool+0.3",
+   "to": "steve_tool+0.7",
+   "yaw": -1.1
+  },
+  {
+   "who": "noob",
+   "do": "pose",
+   "from": "noob_roblox",
+   "to": "noob_roblox.end",
+   "parts": {
+    "arm_r": [
+     0.3,
+     0.55,
+     0
+    ],
+    "arm_l": [
+     0.3,
+     -0.55,
+     0
+    ]
+   }
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "flurry-0.15",
+   "to": "flurry",
+   "yaw": 1.5708
+  },
+  {
+   "who": "noob",
+   "do": "flurry",
+   "from": "flurry",
+   "to": "flurry.end"
+  },
+  {
+   "who": "noob",
+   "do": "cheer",
+   "from": "break+0.08",
+   "to": "noob_float"
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "noob_float-0.1",
+   "to": "steve_normal",
+   "head": [
+    -0.45,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "steve_normal",
+   "to": "crack",
+   "head": [
+    0,
+    0,
+    -0.9
+   ]
+  },
+  {
+   "who": "noob",
+   "do": "face",
+   "from": "crack+0.25",
+   "to": "crack+0.8",
+   "yaw": 3.1416
+  },
+  {
+   "who": "noob",
+   "do": "look",
+   "from": "crack+0.25",
+   "to": "end",
+   "head": [
+    -0.5,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "pose",
+   "from": 0,
+   "to": "steve_tool+0.4",
+   "parts": {
+    "arm_l": [
+     -0.3,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "who": "steve",
+   "do": "set",
+   "from": "punch+0.3",
+   "to": "punch+0.3",
+   "at": [
+    -0.9,
+    0.5,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "raise_arm",
+   "from": "steve_tool+0.5",
+   "to": "steve_tool.end+0.2",
+   "arm": "arm_l"
+  },
+  {
+   "who": "steve",
+   "do": "pose",
+   "from": "steve_tool.end+0.2",
+   "to": "end",
+   "parts": {
+    "arm_l": [
+     -0.3,
+     0,
+     0
+    ]
+   }
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "noob_roblox",
+   "to": "noob_roblox.end",
+   "head": [
+    0,
+    0.15,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "break+0.3",
+   "to": "steve_normal-0.1",
+   "head": [
+    -0.35,
+    0,
+    0
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "steve_normal-0.1",
+   "to": "crack",
+   "head": [
+    0,
+    0,
+    -1.1
+   ]
+  },
+  {
+   "who": "steve",
+   "do": "face",
+   "from": "crack+0.1",
+   "to": "crack+0.6",
+   "yaw": 3.1416
+  },
+  {
+   "who": "steve",
+   "do": "look",
+   "from": "crack+0.1",
+   "to": "end",
+   "head": [
+    -0.55,
+    0,
+    0
+   ]
+  }
+ ],
+ "fx": [
+  {
+   "kind": "sky",
+   "below": "sky",
+   "sun_dir": [
+    0.3,
+    0.75,
+    -0.6
+   ],
+   "keys": [
+    [
+     0,
+     5.0,
+     1.25
+    ],
+    [
+     "crack",
+     5.0,
+     1.25
+    ],
+    [
+     "crack+0.6",
+     0.8,
+     0.25
+    ]
+   ]
+  },
+  {
+   "kind": "poc_tree"
+  },
+  {
+   "kind": "sky_tear",
+   "at": "crack",
+   "eye_at": "steve_not+0.15",
+   "end": "end",
+   "center": [
+    -10.0,
+    34.0,
+    21.0
+   ],
+   "scale": 2.6
+  }
+ ],
+ "shots": [
+  {
+   "name": "look_around",
+   "from": "noob_where+0.85",
+   "to": "walk_to_tree",
+   "lens": 24,
+   "dof": 4.0,
+   "look_actor": "noob",
+   "look_offset": [
+    0,
+    0,
+    1.3
+   ],
+   "path": [
+    [
+     "noob_where+0.85",
+     [
+      -2.4,
+      -3.9,
+      1.05
+     ]
+    ],
+    [
+     "walk_to_tree",
+     [
+      -2.1,
+      -3.7,
+      1.1
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "walk",
+   "from": "walk_to_tree",
+   "to": "noob_tree",
+   "lens": 26,
+   "dof": 4.0,
+   "look_actor": "noob",
+   "look_offset": [
+    0,
+    0,
+    1.3
+   ],
+   "path": [
+    [
+     "walk_to_tree",
+     [
+      1.2,
+      3.4,
+      1.3
+     ]
+    ],
+    [
+     "noob_tree",
+     [
+      1.1,
+      2.9,
+      1.35
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "to_tree",
+   "from": "noob_tree",
+   "to": "punch",
+   "lens": 24,
+   "dof": 4.0,
+   "path": [
+    [
+     "noob_tree",
+     [
+      3.4,
+      -1.6,
+      1.45
+     ]
+    ],
+    [
+     "punch",
+     [
+      3.4,
+      -1.2,
+      1.45
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_tree",
+     [
+      1.1,
+      0.35,
+      1.35
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "punch",
+   "from": "punch",
+   "to": "steve_tool",
+   "lens": 26,
+   "dof": 4.0,
+   "path": [
+    [
+     "punch",
+     [
+      1.4,
+      -3.1,
+      1.4
+     ]
+    ],
+    [
+     "steve_tool",
+     [
+      1.5,
+      -2.9,
+      1.4
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "punch",
+     [
+      1.75,
+      0.5,
+      1.4
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "steve",
+   "from": "steve_tool",
+   "to": "noob_roblox",
+   "lens": 38,
+   "dof": 2.8,
+   "path": [
+    [
+     "steve_tool",
+     [
+      0.7,
+      -1.35,
+      1.85
+     ]
+    ],
+    [
+     "noob_roblox",
+     [
+      0.55,
+      -1.15,
+      1.85
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_tool",
+     [
+      -0.9,
+      0.5,
+      1.72
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "wide",
+   "from": "noob_roblox",
+   "to": "flurry",
+   "lens": 22,
+   "path": [
+    [
+     "noob_roblox",
+     [
+      0.9,
+      -7.4,
+      2.0
+     ]
+    ],
+    [
+     "flurry",
+     [
+      0.9,
+      -6.9,
+      2.05
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_roblox",
+     [
+      0.9,
+      0.5,
+      2.4
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "flurry",
+   "from": "flurry",
+   "to": "break+0.45",
+   "lens": 20,
+   "shake": 0.03,
+   "path": [
+    [
+     "flurry",
+     [
+      1.5,
+      -2.5,
+      1.0
+     ]
+    ],
+    [
+     "break+0.45",
+     [
+      1.55,
+      -2.3,
+      0.95
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "flurry",
+     [
+      1.85,
+      0.5,
+      1.5
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "reveal",
+   "from": "break+0.45",
+   "to": "noob_float",
+   "lens": 22,
+   "path": [
+    [
+     "break+0.45",
+     [
+      0.9,
+      -6.9,
+      2.05
+     ]
+    ],
+    [
+     "noob_float",
+     [
+      0.9,
+      -6.4,
+      2.1
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "break+0.45",
+     [
+      0.9,
+      0.5,
+      2.4
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "floating",
+   "from": "noob_float",
+   "to": "crack",
+   "lens": 19,
+   "path": [
+    [
+     "noob_float",
+     [
+      4.4,
+      -2.7,
+      0.35
+     ]
+    ],
+    [
+     "crack",
+     [
+      4.2,
+      -2.5,
+      0.4
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "noob_float",
+     [
+      1.6,
+      0.5,
+      2.6
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "sky",
+   "from": "crack",
+   "to": "steve_not+0.1",
+   "lens": 17,
+   "shake": 0.035,
+   "path": [
+    [
+     "crack",
+     [
+      0.3,
+      -3.6,
+      0.55
+     ]
+    ],
+    [
+     "steve_not+0.1",
+     [
+      0.3,
+      -3.3,
+      0.52
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "crack",
+     [
+      -6.5,
+      12,
+      7.5
+     ]
+    ],
+    [
+     "steve_not+0.1",
+     [
+      -6.5,
+      12,
+      8.6
+     ]
+    ]
+   ]
+  },
+  {
+   "name": "eye",
+   "from": "steve_not+0.1",
+   "to": "end",
+   "lens": 32,
+   "shake": 0.02,
+   "path": [
+    [
+     "steve_not+0.1",
+     [
+      -3.2,
+      -3.4,
+      0.6
+     ]
+    ],
+    [
+     "end",
+     [
+      -3.6,
+      -1.8,
+      1.4
+     ]
+    ]
+   ],
+   "look": [
+    [
+     "steve_not+0.1",
+     [
+      -10.0,
+      34.0,
+      21.0
+     ]
+    ]
+   ]
+  }
+ ],
+ "skip_render": [
+  [
+   "flash",
+   "noob_where+0.85"
+  ]
+ ],
+ "movie_note": "Movie version of Episode 1 (story/movie/ep01_shots.md): it starts where Episode 0 leaves the Noob (after \"Whoa. Where am I?\"; the PREVIOUSLY flash and the replayed forest are dropped, the creator's call), the same lines and voice takes with more room (no time limit in the movie). 16:9.",
+ "voices_cache_only": true,
+ "declick": 0.004,
+ "declick_blank": 0.0025,
+ "end_fade": 1.0
+}
