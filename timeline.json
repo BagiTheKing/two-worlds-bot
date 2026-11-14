@@ -1,0 +1,176 @@
+{
+ "id": "movie_ep01_the_tree",
+ "fps": 24,
+ "length": 29.176,
+ "beats": {
+  "look_around": [
+   0.0,
+   3.0
+  ],
+  "walk_to_tree": [
+   3.0,
+   5.0
+  ],
+  "noob_tree": [
+   5.0,
+   8.319
+  ],
+  "punch": [
+   8.619,
+   9.819
+  ],
+  "steve_tool": [
+   9.819,
+   11.685
+  ],
+  "noob_roblox": [
+   12.085,
+   15.279
+  ],
+  "flurry": [
+   15.579,
+   17.979
+  ],
+  "break": [
+   17.979,
+   19.579
+  ],
+  "noob_float": [
+   19.579,
+   21.162
+  ],
+  "steve_normal": [
+   21.562,
+   22.446
+  ],
+  "crack": [
+   23.346,
+   25.946
+  ],
+  "steve_not": [
+   25.946,
+   26.676
+  ],
+  "eye": [
+   26.976,
+   29.176
+  ]
+ },
+ "impacts": [
+  8.799,
+  15.699,
+  15.889,
+  16.079,
+  16.269,
+  16.459,
+  16.649,
+  16.839,
+  17.029,
+  17.219,
+  17.409,
+  17.599,
+  17.789
+ ],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_tree",
+   "who": "noob",
+   "text": "Okay. A tree. One punch. Watch this.",
+   "vo": false,
+   "caption": true,
+   "start": 5.0,
+   "end": 8.319
+  },
+  {
+   "name": "steve_tool",
+   "who": "steve",
+   "text": "It's a tree. You need a tool.",
+   "vo": false,
+   "caption": true,
+   "start": 9.819,
+   "end": 11.685
+  },
+  {
+   "name": "noob_roblox",
+   "who": "noob",
+   "text": "I don't need tools. I'm a Roblox player.",
+   "vo": false,
+   "caption": true,
+   "start": 12.085,
+   "end": 15.279
+  },
+  {
+   "name": "noob_float",
+   "who": "noob",
+   "text": "...Why is it floating?",
+   "vo": false,
+   "caption": true,
+   "start": 19.579,
+   "end": 21.162
+  },
+  {
+   "name": "steve_normal",
+   "who": "steve",
+   "text": "That's normal.",
+   "vo": false,
+   "caption": true,
+   "start": 21.562,
+   "end": 22.446
+  },
+  {
+   "name": "steve_not",
+   "who": "steve",
+   "text": "...That's not.",
+   "vo": false,
+   "caption": true,
+   "start": 25.946,
+   "end": 26.676
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 100%",
+   "start": 0.0,
+   "end": 23.746
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 99%",
+   "alert": true,
+   "start": 23.746,
+   "end": 29.576
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 29.576
+  }
+ ]
+}

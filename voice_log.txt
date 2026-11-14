@@ -1,0 +1,88 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['noob_where', 'noob_tree', 'steve_tool', 'noob_roblox', 'noob_float', 'steve_normal', 'steve_not'] placed ['noob_where', 'noob_tree', 'steve_tool', 'noob_roblox', 'noob_float', 'steve_normal', 'steve_not']
+  noob_where: words at 1.70-2.22s of the scene
+  noob_tree: words at 2.82-5.82s of the scene
+  steve_tool: words at 6.86-8.38s of the scene
+  noob_roblox: words at 9.18-11.86s of the scene
+  noob_float: words at 12.86-14.46s of the scene
+  steve_normal: words at 15.62-16.12s of the scene
+  steve_not: words at 17.18-18.02s of the scene
+  noob_tree: pinned cut 2.95-6.27s
+  steve_tool: pinned cut 6.87-8.74s
+  noob_roblox: pinned cut 9.16-12.36s
+  steve_normal: pinned cut 15.66-16.55s
+  steve_not: pinned cut 17.11-18.09s
+  solo Steve 'Aaaaaaaaaaaahhhh!' take 0: from the cache
+  solo Noob 'Aaaaaaaaaaaahhhh!' take 0: from the cache
+  solo Noob '...Why is it floating?' take 0: from the cache
+  solo take 0 for '...Why is it floating?': 1.00 ' Why  is  it  floating?'
+  solo Noob '...Why is it floating?' take 1: from the cache
+  solo take 1 for '...Why is it floating?': 1.00 ' Why  is  it  floating?'
+  solo Noob '...Why is it floating?' take 2: from the cache
+  solo take 2 for '...Why is it floating?': 1.00 ' Why  is  it  floating?'
+  noob_where: reused an earlier recording
+{
+ "length": 29.176,
+ "beats": {
+  "look_around": [
+   0.0,
+   3.0
+  ],
+  "walk_to_tree": [
+   3.0,
+   5.0
+  ],
+  "noob_tree": [
+   5.0,
+   8.319
+  ],
+  "punch": [
+   8.619,
+   9.819
+  ],
+  "steve_tool": [
+   9.819,
+   11.685
+  ],
+  "noob_roblox": [
+   12.085,
+   15.279
+  ],
+  "flurry": [
+   15.579,
+   17.979
+  ],
+  "break": [
+   17.979,
+   19.579
+  ],
+  "noob_float": [
+   19.579,
+   21.162
+  ],
+  "steve_normal": [
+   21.562,
+   22.446
+  ],
+  "crack": [
+   23.346,
+   25.946
+  ],
+  "steve_not": [
+   25.946,
+   26.676
+  ],
+  "eye": [
+   26.976,
+   29.176
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    5.0s noob_tree          heard 'Okay, a tree? One punch. Watch this.'
+  ok    9.8s steve_tool         heard "It's a tree. You need a tool."
+  ok   12.1s noob_roblox        heard "I don't need tools. I'm a Roblox player."
+  ok   19.6s noob_float         heard 'Why is it floating?'
+  ok   21.6s steve_normal       heard "That's normal."
+  ok   25.9s steve_not          heard "That's not."
+hearing check: 0 of 6 lines flagged
