@@ -14,6 +14,40 @@ and 1: the same oak, which is still floating since Episode 1 (the episode
 file's `tree_broken` effect), and the same cherry trees. The portal is built
 beside the oak.
 
+## The movie's longer timing (the creator, November 14)
+
+"For ep2 it is too fast ... no restrictions on time." The lines stay the
+same words and the same voice takes. Only the room around them grows,
+with the music and effects re-laid to fit. The movie's episode file is
+`episodes/movie_ep02_the_plan.json`. It reads the voices only from the
+cache (`voices_cache_only`), so a missing take stops the run instead of
+recording a new one. The shot times below are still the published ones;
+the new times come from the sound preview.
+
+| Moment | Published | Movie | What the room is for |
+|---|---|---|---|
+| The eye | 1.4 s | 2.6 s | it looks round before the crack snaps (the hit moves to 2.1) |
+| *new beat* `look_up` | none | 1.0 s | the sky clears; the two still staring up, then at each other |
+| After "Today." | 0.15 s | 0.6 s | the line lands |
+| *new beat* `build` | none | 3.0 s | the frame finished block by block; Steve steps back, satisfied. The PLAN timer still runs exactly 3 s to the press: the joke stays tight |
+| After "This one?" | 0.05 s | 0.25 s | Steve sees the Noob's hand over the button |
+| The press | 0.35 s | 0.5 s | |
+| Portal opens | 0.8 s | 1.6 s | the flash, the swirl, the Noob cheering |
+| The pour | 1.9 s | 4.0 s | the junk and three zombies come out one by one; more pops and groans |
+| The hit / the respawn | 0.55 / 0.35 s | 0.8 / 0.8 s | the burst reads, then the pop |
+| After "New record!" | 0.1 s | 0.4 s | |
+| Chaos | 1.1 s | 3.0 s | the zombies loose in the meadow, Steve dodging |
+| Dash / smash | 0.45 / 0.75 s | 0.9 / 1.0 s | the wind-up |
+| The suck | 1.3 s | 2.6 s | everything pulled back in, the zombies lifted off their feet |
+| *new beat* `quiet` | none | 1.2 s | dust settling, the meadow quiet, Steve breathes out |
+| After "...Never again." | 0.25 s | 0.6 s | |
+| *new beat* `approach` | none | 2.0 s | the Noob wanders to the dark portal and notices something inside |
+| The mirror | 1.7 s | 3.0 s | the figure waves back, slowly |
+| After "It waved back." | 0.35 s | 0.6 s | |
+| The snap | 0.9 s | 2.5 s | the empty frame, the quiet, the Noob frozen |
+
+About 25.8 s becomes about 46 s.
+
 ## What stays and what goes
 
 | Published | Time | Movie |

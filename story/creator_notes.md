@@ -94,6 +94,14 @@ the note wins. Add to it whenever the creator gives a new standing note.
   "PREVIOUSLY..." flash and the replay of the forest and "Whoa. Where am
   I?" go, because Episode 0 has just shown them. Episode 1 picks up at
   "Okay. A tree. One punch."
+- **No time limit in the movie** (November 14): "For ep2 it is too fast, we
+  are going to make a long video so no restrictions on time we can make it as
+  long as we want as long as the quality is good and the story make sense."
+  It applies to every episode from Episode 1 on; Episode 0 keeps the Short's
+  timing as built. **Same lines, more room:** the same words and voice takes,
+  no new dialogue; longer actions, pauses and reactions between the lines,
+  with the music and effects re-laid to fit. So these episodes get a new
+  sound preview before any frame.
 - **The REALITY meter in the movie** (approved November 13, version 6,
   `src/movie_hud.py`): it is hidden while the number isn't moving ("if the
   bar isn't moving hide it with the number, and when it appears it should

@@ -506,11 +506,16 @@ def gemini_models():
     return list(_gemini_models)
 
 
+CACHE_ONLY = False
+
+
 def gemini_speak(turns, voices, notes=""):
     """turns: [(speaker, text)] (one or two speakers). voices: {speaker:
     voice name}. notes: acting notes for the whole scene. Returns
     (samples, 24000). Newer speech models take one part per line tagged with
     its speaker; older ones a "Name: line" script. Both are tried."""
+    if CACHE_ONLY:          # the movie: the same takes as the published episode, never a new recording
+        raise SystemExit(f"voices_cache_only: {turns!r} is not in the voice cache (it would be a NEW recording)")
     import base64
     import requests
     import time
@@ -1542,7 +1547,8 @@ def build(episode_path, out_dir, keep=None):
     already rendered). New voices are placed at the old line starts; a take
     that runs long is sped up slightly (at most 10%) to fit."""
     ep = json.load(open(episode_path))
-    global WHISPER_LANG, PIN_MODEL
+    global WHISPER_LANG, PIN_MODEL, CACHE_ONLY
+    CACHE_ONLY = bool(ep.get("voices_cache_only"))
     WHISPER_LANG = ep.get("language", "en")
     PIN_MODEL = ep.get("tts_model")
     old = json.load(open(keep)) if keep else None
