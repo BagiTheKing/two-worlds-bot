@@ -91,7 +91,11 @@
    "name": "noob_tree",
    "text": "Okay. A tree. One punch. Watch this.",
    "direction_text": "[confident, showing off] Okay. A tree. One punch. Watch this.",
-   "pad": 0.3
+   "pad": 0.3,
+   "cut_at": [
+    2.95,
+    6.27
+   ]
   },
   {
    "beat": "punch",
@@ -102,14 +106,22 @@
    "name": "steve_tool",
    "text": "It's a tree. You need a tool.",
    "direction_text": "[flatly] It's a tree. You need a tool.",
-   "pad": 0.4
+   "pad": 0.4,
+   "cut_at": [
+    6.87,
+    8.741
+   ]
   },
   {
    "line": "noob",
    "name": "noob_roblox",
    "text": "I don't need tools. I'm a Roblox player.",
    "direction_text": "[cocky] I don't need tools. I'm a Roblox player.",
-   "pad": 0.3
+   "pad": 0.3,
+   "cut_at": [
+    9.16,
+    12.356
+   ]
   },
   {
    "beat": "flurry",
@@ -133,7 +145,11 @@
    "name": "steve_normal",
    "text": "That's normal.",
    "direction_text": "[deadpan] That's normal.",
-   "pad": 0.9
+   "pad": 0.9,
+   "cut_at": [
+    15.66,
+    16.548
+   ]
   },
   {
    "beat": "crack",
@@ -145,7 +161,11 @@
    "name": "steve_not",
    "text": "...That's not.",
    "direction_text": "[quietly, worried] ...That's not.",
-   "pad": 0.3
+   "pad": 0.3,
+   "cut_at": [
+    17.11,
+    18.093
+   ]
   },
   {
    "beat": "eye",
