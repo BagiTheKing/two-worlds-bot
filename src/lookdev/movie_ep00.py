@@ -589,7 +589,7 @@ def _plunge_plan(E, gap=0.035):
     t0 = dict(shot_bounds())["plunge"]
     t1 = dict(shot_bounds())["black"]
     times = [t0 + (t1 - t0) * k / 16 for k in range(17)]
-    blocks = [(ob, c, v) for ob, c, v, wv in E.cells if ob.name.startswith("void_block")]
+    blocks = [(ob, c, v) for ob, c, v, wv in E.cells]           # the debris and Null's small cells alike
     angles = [2 * math.pi * k / 12 for k in range(12)]
     cands = [(0.0, 0.0)] + [(r, a) for r in [0.06 * i for i in range(1, 16)] for a in angles]
     E.plunge_off = {}                                  # (set now so the cast below doesn't recurse)
@@ -1431,6 +1431,9 @@ def main():
         E = (build if part == "island" else build_forest)(tl, a.tex_dir, a.assets, a.res, a.samples)
         E.force = bool(a.times)
         E.mouth = {}
+        if not os.path.exists(a.voice):                                         # no voices-only track: the mix
+            alt = os.path.join(os.path.dirname(a.voice), "audio.wav")
+            a.voice = alt if os.path.exists(alt) else a.voice
         if os.path.exists(a.voice):
             from ep09_new import _lipsync
             E.mouth = _lipsync(mouth_tl, a.voice)

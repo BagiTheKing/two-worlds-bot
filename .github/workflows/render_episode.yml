@@ -47,6 +47,12 @@ on:
       new_range:
         description: "Only re-render the new-look frames in this time range (seconds, e.g. 0-2.65); with reuse_run_id the rest come from that run"
         default: ""
+      movie_end:
+        description: "The movie: assemble in 16:9 (src/movie_assemble.py), the chapter ending at this second on the timeline"
+        default: ""
+      movie_id:
+        description: "The movie: publish to preview-<this> instead of the episode's own preview branch (never overwrite a published Short)"
+        default: ""
       voices_from:
         description: "The movie: an earlier run whose finished voice lines to reuse exactly (its prep's voices-only track); the timing is new"
         default: ""
@@ -317,9 +323,15 @@ jobs:
         if: inputs.assemble_from != ''
         run: python src/kit/timeref.py ${{ inputs.episode }} build/timeline.json
       - name: One frame folder (the kit's frames, the new look's inside skip_render)
+        if: inputs.movie_end == ''
         run: |
           python tools/merge_frames.py ${{ inputs.episode }} build/timeline.json build/fr build/frames
           rm -rf build/fr
+      - name: One frame folder (the movie - every frame is the new look's)
+        if: inputs.movie_end != ''
+        run: |
+          mkdir -p build/frames && cp build/fr/frames-new-*/*.png build/frames/ && rm -rf build/fr
+          ls build/frames | wc -l
       - name: Reuse the earlier render's other frames
         if: inputs.reuse_run_id != ''
         uses: actions/download-artifact@v4
@@ -335,7 +347,9 @@ jobs:
           cp -n build/frames_old/*.png build/frames/ 2>/dev/null || true
           ls build/frames | wc -l
       - id: ep
-        run: python -c "import json; print('id=' + json.load(open('build/timeline.json'))['id'])" >> $GITHUB_OUTPUT
+        run: |
+          if [ -n "${{ inputs.movie_id }}" ]; then echo "id=${{ inputs.movie_id }}" >> $GITHUB_OUTPUT
+          else python -c "import json; print('id=' + json.load(open('build/timeline.json'))['id'])" >> $GITHUB_OUTPUT; fi
       - name: Shots only, nothing to reuse - publish the clean shots instead of an episode
         if: inputs.shots != '' && inputs.reuse_run_id == ''
         run: |
@@ -346,8 +360,10 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A && git commit -q -m "Shots from run ${{ github.run_id }}"
           git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "preview-${{ steps.ep.outputs.id }}-shots"
-      - if: inputs.shots == '' || inputs.reuse_run_id != ''
+      - if: (inputs.shots == '' || inputs.reuse_run_id != '') && inputs.movie_end == ''
         run: python src/assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4
+      - if: (inputs.shots == '' || inputs.reuse_run_id != '') && inputs.movie_end != ''
+        run: python src/movie_assemble.py build/timeline.json build/frames build/audio.wav build/episode.mp4 --end ${{ inputs.movie_end }}
       - if: inputs.shots == '' || inputs.reuse_run_id != ''
         uses: actions/upload-artifact@v4
         with:

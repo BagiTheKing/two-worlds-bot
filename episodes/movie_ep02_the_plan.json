@@ -204,7 +204,7 @@
    "cue": "dread",
    "from": "suck.end",
    "to": "snap",
-   "gain": 0.2,
+   "gain": 0.16,
    "hit_at": "snap",
    "minimal": true
   },
@@ -355,7 +355,7 @@
   {
    "kind": "snap",
    "at": "snap",
-   "gain": 1.6
+   "gain": 2.4
   },
   {
    "kind": "pop",
