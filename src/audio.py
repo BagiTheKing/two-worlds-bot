@@ -1701,8 +1701,10 @@ def build(episode_path, out_dir, keep=None):
                     print(f"  {name}: sped up x{ratio:.2f} to fit its {room:.2f}s")
             if ep.get("declick"):                         # a take's first milliseconds faded in (a click at a cut)
                 n = int(ep["declick"] * SR)
+                z = int(ep.get("declick_blank", 0.0) * SR)     # a lone spike in the first samples: blanked, then the fade
                 audio = np.asarray(audio, dtype=np.float64).copy()
-                audio[:n] *= np.linspace(0, 1, n)
+                audio[:z] = 0.0
+                audio[z:z + n] *= np.linspace(0, 1, len(audio[z:z + n]))
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
                           "caption": ev.get("caption", True), **{k: ev[k] for k in ("caption_size", "caption_y") if ev.get(k)},
