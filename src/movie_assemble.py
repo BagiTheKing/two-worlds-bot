@@ -59,6 +59,42 @@ def meter_for(tl):
     return Meter(steps, start=huds[0]["start"], end=huds[-1]["end"], count_from=vals[0], count_to=vals[-1])
 
 
+def achievement(img, o, t, f, fonts, k=0.62, x0=48, y0=44):
+    """The achievement in landscape: the Shorts' panel drawn at 62% and slid in from the left at the top
+    left (the meter's corner is free then), clear of the middle of the picture where the action is."""
+    a, b = o["start"], o["end"]
+    slide = min(1.0, (t - a) / 0.25, (b - t) / 0.25)
+    if slide <= 0:
+        return
+    import random
+    w, h = 980, 250
+    panel = Image.new("RGBA", (w + 20, h + 20), (0, 0, 0, 0))
+    d = ImageDraw.Draw(panel)
+    for dx, col in ((-6, (255, 0, 200, 255)), (6, (0, 230, 255, 255))):
+        d.rectangle((10 + dx, 10, w + 10 + dx, h + 10), outline=col, width=4)
+    d.rectangle((10, 10, w + 10, h + 10), fill=(8, 6, 14, 238), outline=(255, 255, 255, 255), width=3)
+    cx, cy = 125, 10 + h // 2
+    d.polygon([(cx, cy - 62), (cx + 62, cy), (cx, cy + 62), (cx - 62, cy)], fill=(255, 0, 200, 255))
+    d.polygon([(cx, cy - 34), (cx + 34, cy), (cx, cy + 34), (cx - 34, cy)], fill=(8, 6, 14, 255))
+    d.text((220, 75), o["title"], font=fonts["mono_small"], fill=(0, 230, 255, 255), anchor="lm")
+    size = 62
+    while size > 26:
+        fnt = ImageFont.truetype(A.FONT, size)
+        if d.textlength(o["text"], font=fnt) <= w - 230:
+            break
+        size -= 2
+    d.text((220, 150), o["text"], font=fnt, fill=(255, 255, 255, 255), anchor="lm")
+    if o.get("sub"):
+        d.text((220, 212), o["sub"], font=fonts["small"], fill=(255, 120, 200, 255), anchor="lm")
+    panel = panel.resize((int(panel.width * k), int(panel.height * k)), Image.LANCZOS)
+    x = int(-panel.width + (panel.width + x0) * (1 - (1 - slide) ** 3))
+    x += random.Random(f).choice((0, 0, 0, 0, 3, -3))
+    img.paste(panel, (x, y0), panel)
+
+
+A.DRAW["achievement"] = achievement
+
+
 def captions(tl):
     caps = []
     for ln in tl["lines"]:

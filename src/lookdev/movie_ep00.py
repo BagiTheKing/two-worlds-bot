@@ -825,7 +825,7 @@ def noob_keys(E):
     end = Vector((E.rb_far - 0.3, E.y_n, E.deck))
     meet = Vector((X_M - 2.0, E.y_n, E.deck))           # a step behind Steve (the Short's order: Steve leads to the Minecraft end)
     stop = Vector((E.x_meet_n, E.y_n, E.deck))
-    return [(b("noob_running") - 0.2, a), (b("noob_running") + 0.15, off), (19.0, end), (20.5, meet),
+    return [(b("noob_running") - 0.2, a), (b("noob_running") + 0.15, off), (19.0, end), (20.75, meet),
             (b("noob_bridge") - 0.05, stop)]
 
 
@@ -859,7 +859,7 @@ def steve_track(E, t):
 YAW_HANG = -55.0
 HANG_S1 = {"chest_lean": -6, "head_nod": -14, "arm_sr": {"fwd": 196, "out": 6, "elbow": 3},
            "arm_sl": {"fwd": 22, "out": 24, "elbow": 28}, "foot_sl": {"y": 0.05, "z": 0.0}, "foot_sr": {"y": -0.12, "z": 0.06}}
-HANG_N1 = {"chest_lean": -6, "head_nod": -24, "head_tilt": -10, "arm_sr": {"fwd": 176, "out": 6},
+HANG_N1 = {"chest_lean": -6, "head_nod": -12, "head_tilt": -10, "arm_sr": {"fwd": 176, "out": 6},
            "arm_sl": {"fwd": 120, "out": 35}, "leg_sl": {"fwd": 4}, "leg_sr": {"fwd": -4}}
 HANG_N_ROLL = 16.0                         # degrees: hanging from his right hand, his body swings under it
 
@@ -1027,7 +1027,7 @@ def cast(E, t, shot):
                 face = dict(NF["worried"])
             if t >= b("look_down"):
                 face = dict(NF["scared"])
-                p["head_nod"] = lerp(-24, 26, ss(b("look_down"), b("look_down", 1), t))
+                p["head_nod"] = lerp(-12, 26, ss(b("look_down"), b("look_down", 1), t))
             p["leg_sl"] = {"fwd": 4 + 8 * math.exp(-0.8 * s) * math.sin(2.6 * s)}
             p["leg_sr"] = {"fwd": -4 - 8 * math.exp(-0.8 * s) * math.sin(2.6 * s + 1.0)}
             hang_noob(E, t, p, face, YAW_HANG)
@@ -1217,8 +1217,8 @@ def _cam(E, t, shot, t0, t1):
         return loc, head + Vector((0, 0, 2.0 - 4.0 * reach)) + Vector((4.0, 3.0, 0)) * reach, lerp(26, 29, u) - 8 * reach, 64.0, None, sh, up
     if shot == "ledge":
         c = Vector((XE - 0.4, E.y_s, deck - 2.2))
-        loc = c + Vector((-2.6, -2.2, -5.2))
-        return loc, c + Vector((-0.3 * ss(t0, t1, t), 0, -1.0 * ss(t0, t1, t))), 22, 8.0, None, 0.6, up
+        loc = c + Vector((-3.4, -3.4, -5.6))
+        return loc, c + Vector((-1.1 - 0.3 * ss(t0, t1, t), 0.9, -1.4 * ss(t0, t1, t))), 17, 8.0, None, 0.6, up
     if shot == "plunge":
         # falling with them, looking down past them into the void
         s = t - E.stub_gone
@@ -1387,6 +1387,18 @@ def finish_forest(path, mist_path):
 
 
 # ------------------------------------------------------------------ main
+def _no_cross(E, t):
+    """Motion blur samples times around the frame. Keep them on the frame's side of every cut and every
+    jump (a shot change, the ledge going): blur across one shows both sides at once, see-through."""
+    tf = getattr(E, "frame_t", None)
+    if tf is None:
+        return t
+    for c in getattr(E, "cuts", []):
+        if min(t, tf) < c <= max(t, tf):
+            t = c if tf >= c else c - 1e-4
+    return t
+
+
 def _render(E, frames, out, apply_fn, finish_fn):
     sc = E.sc
     mist_dir = os.path.join(out, "_mist")
@@ -1397,13 +1409,14 @@ def _render(E, frames, out, apply_fn, finish_fn):
     bpy.app.handlers.frame_change_pre.clear()
 
     def handler(scene, depsgraph=None):
-        apply_fn(E, (scene.frame_current + scene.frame_subframe - 1) / FPS)
+        apply_fn(E, _no_cross(E, (scene.frame_current + scene.frame_subframe - 1) / FPS))
 
     bpy.app.handlers.frame_change_pre.append(handler)
     for f in frames:
         dst = os.path.join(out, f"{f:04d}.png")
         if os.path.exists(dst) and not E.force:
             continue
+        E.frame_t = (f - 1) / FPS
         sc.frame_set(f)
         apply_fn(E, (f - 1) / FPS)
         sc.render.filepath = dst
@@ -1465,9 +1478,18 @@ def main():
         if os.path.exists(a.voice):
             from ep09_new import _lipsync
             E.mouth = _lipsync(mouth_tl, a.voice)
+            if part == "forest":                                   # "Whoa." amazed: the mouth held open on the word
+                w0 = b("noob_where")
+                for fr_ in range(int(w0 * FPS), int((w0 + 0.7) * FPS) + 1):
+                    d_ = E.mouth.get("noob", {}).get(fr_)
+                    if d_:
+                        d_["m_o"] = max(d_.get("m_o", 0.0), 0.85)
         if part == "island":
+            E.cuts = sorted([t0 for _, t0 in shot_bounds()] + [E.stub_gone])
             _render(E, fr, out, apply, finish)
         else:
+            f0 = b("forest")
+            E.cuts = [f0, f0 + 2.0, b("noob_where") + 0.95]
             _render(E, fr, out, apply_forest, finish_forest)
 
 
