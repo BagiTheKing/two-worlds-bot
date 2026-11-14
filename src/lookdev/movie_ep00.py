@@ -560,105 +560,99 @@ def apply(E, t):
         for w_ in root.children:
             w_.rotation_euler = (0.5 * flap * w_["side"], 0, 0)
         root.hide_render = dk > 0.5
+    name, t0, t1 = which(t)
+    off = _plunge_plan(E) if name == "plunge" else {}
     for ob, c, v, wv in E.cells:
-        ob.location = c + v * t
+        ob.location = c + v * t + off.get(ob.name, Vector())
         ob.rotation_euler = tuple(wv * t)
         if ob.name.startswith("void_block"):              # the void's debris: torn off as the world goes (from the bridge on)
             ob.hide_render = t < b("bridge_delete")
     # the cast and the camera
-    name, t0, t1 = which(t)
     cast(E, t, name)
-    if t >= E.stub_gone:
-        _clear_fall(E, t)
     _null(E, t, name)
     place_null_lights(E.X, fade=ss(b("null_rise") - 0.4, b("null_rise") + 1.0, t) if name not in ("forest",) else 0.0)
     E.X.glow_strength.default_value *= 0.35                 # his halo: a glow behind him, not a wall of light
     _avatars_at(E, t, name)
     camera(E, t, name, t0, t1)
-    if name == "plunge":
-        _clear_screen(E)
 
 
-def _clear_fall(E, t):
-    """In the plunge, keep the void's debris off the two of them on screen (the camera looks down past them):
-    a block under either one is pushed out sideways until it clears them."""
-    s = t - E.stub_gone
-    z = E.deck - 2.0 - 0.5 * 7.0 * s * s
-    bpy.context.view_layer.update()
-    # both ends of each body (they lie flat on the air): feet and head
-    pts = [Vector(E.S.holder.matrix_world.translation), P6._head(E.S.face, E.S.holder),
-           Vector(E.N.root.matrix_world.translation), P6._head(E.N.face)]
-    pts += [a.lerp(c, 0.5) for a, c in ((pts[0], pts[1]), (pts[2], pts[3]))]
-    bodies = [Vector((q.x, q.y)) for q in pts]
-    for ob, c, v, wv in E.cells:
-        if not ob.name.startswith("void_block"):
-            continue
-        p = Vector(ob.location)
-        if p.z > z + 1.5:
-            continue
-        for q in bodies:
-            d = Vector((p.x, p.y)) - q
-            r = 1.3 + 0.9 * ob.scale.x
-            if d.length < r:
-                d = d.normalized() if d.length > 1e-3 else Vector((-1.0, 0.0))
-                p.x, p.y = q.x + d.x * r, q.y + d.y * r
-        ob.location = p
-
-
-def _clear_screen(E, gap=0.025):
-    """The plunge as the lens sees it: any void block whose picture overlaps Steve or the Noob is slid
-    sideways (across the view, keeping its distance) until there is a clear gap on screen."""
+def _plunge_plan(E, gap=0.02):
+    """Where the void's blocks sit in the plunge, worked out once for the whole shot (the same at every
+    frame and every motion-blur subframe, so nothing jumps or ghosts). Each block keeps its own drift and is
+    given one fixed sideways offset across the view, the smallest that keeps its picture clear of Steve, the
+    Noob and the blocks already placed, at every moment of the shot."""
+    if getattr(E, "plunge_off", None) is not None:
+        return E.plunge_off
     from bpy_extras.object_utils import world_to_camera_view
-    bpy.context.view_layer.update()
     sc, cam = E.sc, E.cam
     aspect = sc.render.resolution_x / sc.render.resolution_y
+    t0 = dict(shot_bounds())["plunge"]
+    t1 = dict(shot_bounds())["black"]
+    times = [t0 + (t1 - t0) * k / 6 for k in range(7)]
+    blocks = [(ob, c, v) for ob, c, v, wv in E.cells if ob.name.startswith("void_block")]
+    angles = [2 * math.pi * k / 12 for k in range(12)]
+    cands = [(0.0, 0.0)] + [(r, a) for r in [0.06 * i for i in range(1, 16)] for a in angles]
+    E.plunge_off = {}                                  # (set now so the cast below doesn't recurse)
 
-    def box(obs, inst=None):
-        pts = []
-        for ob in obs:
-            if ob.type == "MESH" and not ob.hide_render:
-                mw = (inst @ ob.matrix_world) if inst is not None else ob.matrix_world
-                for c in ob.bound_box:
-                    q = world_to_camera_view(sc, cam, mw @ Vector(c))
-                    if q.z > 0:
-                        pts.append((q.x * aspect, q.y))
-        if not pts:
+    def proj_box(pts):
+        qs = [world_to_camera_view(sc, cam, q) for q in pts]
+        qs = [(q.x * aspect, q.y) for q in qs if q.z > 0]
+        if not qs:
             return None
-        xs, ys = [q[0] for q in pts], [q[1] for q in pts]
-        return min(xs), min(ys), max(xs), max(ys)
+        return min(q[0] for q in qs), min(q[1] for q in qs), max(q[0] for q in qs), max(q[1] for q in qs)
 
-    # Steve is a collection instance (his rig's objects live at the origin, placed by the holder)
-    bodies = [box(list(E.S.rig.all_objects), inst=E.S.holder.matrix_world),
-              box([E.N.root] + list(E.N.root.children_recursive))]
-    bodies = [bb for bb in bodies if bb]
-    if os.environ.get("CLEAR_DEBUG"):
-        print("CLEAR bodies", bodies, flush=True)
+    def over(a, c):
+        return a and c and a[0] < c[2] + gap and a[2] > c[0] - gap and a[1] < c[3] + gap and a[3] > c[1] - gap
+
+    table = {ob.name: [[None] * len(times) for _ in cands] for ob, _, _ in blocks}
+    bodies = []
+    for si, ts in enumerate(times):
+        for ob, c, v, wv in E.cells:
+            ob.location = c + v * ts
+            ob.rotation_euler = tuple(wv * ts)
+        cast(E, ts, "plunge")
+        camera(E, ts, "plunge", t0, t1)
+        bpy.context.view_layer.update()
+        m = cam.matrix_world.to_3x3()
+        right, upv = m @ Vector((1, 0, 0)), m @ Vector((0, 1, 0))
+        sb = [proj_box([E.S.holder.matrix_world @ o.matrix_world @ Vector(q) for o in E.S.rig.all_objects
+                        if o.type == "MESH" and not o.hide_render for q in o.bound_box]),
+              proj_box([o.matrix_world @ Vector(q) for o in [E.N.root] + list(E.N.root.children_recursive)
+                        if o.type == "MESH" and not o.hide_render for q in o.bound_box])]
+        bodies.append([x for x in sb if x])
+        camp = Vector(cam.matrix_world.translation)
+        for ob, c, v in blocks:
+            corners = [ob.matrix_world @ Vector(q) for q in ob.bound_box]
+            depth = (Vector(ob.matrix_world.translation) - camp).length
+            for ci, (r, a) in enumerate(cands):
+                d = (right * math.cos(a) + upv * math.sin(a)) * (r * depth)
+                table[ob.name][ci][si] = proj_box([q + d for q in corners])
+    # the camera's sideways directions at mid-shot (the offsets are fixed in the world)
+    mid = times[len(times) // 2]
+    cast(E, mid, "plunge")
+    camera(E, mid, "plunge", t0, t1)
+    bpy.context.view_layer.update()
     m = cam.matrix_world.to_3x3()
     right, upv = m @ Vector((1, 0, 0)), m @ Vector((0, 1, 0))
-    for ob, c, v, wv in E.cells:
-        if not ob.name.startswith("void_block") or ob.hide_render:
-            continue
-        for _ in range(12):
-            bb = box([ob])
-            if bb is None:
-                break
-            hit = None
-            for k in bodies:
-                if bb[0] < k[2] + gap and bb[2] > k[0] - gap and bb[1] < k[3] + gap and bb[3] > k[1] - gap:
-                    hit = k
-                    break
-            if hit is None:
-                break
-            if os.environ.get("CLEAR_DEBUG"):
-                print("CLEAR move", ob.name, bb, flush=True)
-            # slide away from the body's centre, across the view, a step proportional to its distance
-            dx = 0.5 * (bb[0] + bb[2]) - 0.5 * (hit[0] + hit[2])
-            dy = 0.5 * (bb[1] + bb[3]) - 0.5 * (hit[1] + hit[3])
-            n = math.hypot(dx, dy) or 1.0
-            depth = (Vector(ob.matrix_world.translation) - Vector(cam.matrix_world.translation)).length
-            step = 0.12 * depth
-            ob.location = Vector(ob.location) + (right * (dx / n) + upv * (dy / n)) * step
-            bpy.context.view_layer.update()
+    camp = Vector(cam.matrix_world.translation)
+    placed = []                                        # boxes per sample of blocks already placed
+    off = {}
+    for ob, c, v in blocks:
+        depth = (c + v * mid - camp).length
+        best = len(cands) - 1
+        for ci in range(len(cands)):
+            bx = table[ob.name][ci]
+            if any(over(bx[si], k) for si in range(len(times)) for k in bodies[si]):
+                continue
+            if any(over(bx[si], pb[si]) for pb in placed for si in range(len(times))):
+                continue
+            best = ci
+            break
+        r, a = cands[best]
+        off[ob.name] = (right * math.cos(a) + upv * math.sin(a)) * (r * depth)
+        placed.append(table[ob.name][best])
+    E.plunge_off = off
+    return off
 
 
 def _swap(ob, mat):
@@ -806,7 +800,7 @@ def steve_keys(E):
     lip = Vector((E.XE + 1.2, E.y_s, E.deck))
     meet = Vector((X_M - 0.2, E.y_s, E.deck))
     stop = Vector((E.x_meet_s, E.y_s, E.deck))
-    return [(18.3, a), (19.05, lip), (20.2, meet), (20.5, meet), (b("noob_bridge") - 0.1, stop)]
+    return [(18.3, a), (19.05, lip), (20.0, meet), (20.6, meet), (b("noob_bridge") - 0.1, stop)]
 
 
 def noob_track(E, t):
