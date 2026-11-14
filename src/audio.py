@@ -1560,7 +1560,24 @@ def build(episode_path, out_dir, keep=None):
     starts = sorted(a for a, _ in old["beats"].values()) if old else []
     cache_dir = os.getenv("VOICE_CACHE", os.path.join(out_dir, "voice_cache"))
     keeping = old is not None        # until an event says "retime"
-    pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
+    # the movie: every line exactly as an earlier run finished it (its voices-only track, cut at its line times)
+    prep = {}
+    vdir = os.getenv("VOICES_FROM")
+    if vdir and os.path.exists(os.path.join(vdir, "voice.wav")):
+        vw, vsr = sf.read(os.path.join(vdir, "voice.wav"))
+        if vw.ndim > 1:
+            vw = vw.mean(axis=1)
+        assert vsr == SR, vsr
+        for ln in json.load(open(os.path.join(vdir, "timeline.json")))["lines"]:
+            prep[ln["name"]] = np.asarray(vw[int(round(ln["start"] * SR)):int(round(ln["end"] * SR))], dtype=np.float64)
+        print(f"voices from {vdir}: {sorted(prep)}")
+    need = [ev.get("name") for ev in ep["events"] if "line" in ev and not ev.get("unused")]
+    if prep and all(n in prep for n in need):
+        pre = {}
+    else:
+        if prep:
+            raise SystemExit(f"VOICES_FROM is missing lines: {[n for n in need if n not in prep]}")
+        pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0
     beats, lines, clips, impacts = {}, [], [], []
@@ -1611,60 +1628,63 @@ def build(episode_path, out_dir, keep=None):
             who = ev["line"]
             c = ep["cast"][who]
             pre_name = ev.get("name", f"{who}_{counts.get(who, 0) + 1}")
-            if pre_name in pre:
-                s_, sr_ = pre[pre_name]
-                audio = finish(np.asarray(s_, dtype=np.float64), sr_, c["pitch"])
+            if pre_name in prep:                           # finished already: placed as it is
+                audio = prep[pre_name]
             else:
-                audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
-                        c["voice"], c["speed"], c["pitch"],
-                        emotion=ev.get("emotion", c.get("emotion", 0.5)),
-                        pace=ev.get("pace", c.get("pace", 0.5)),
-                        ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir,
-                        eleven_voice=c.get("eleven_voice"),
-                        stability=ev.get("stability", c.get("stability", 0.5)),
-                        sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
-            if ep.get("gate") is not None:              # breaths and mouth noise down
-                audio = gate(audio, ep["gate"])
-            if c.get("fx") == "null":
-                audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
-            if ev.get("whisper"):                       # a real whisper: the words without the voice's pitch
-                if ev.get("whisper") == "first":
-                    audio = whisperize_first(audio, keep=ev.get("whisper_keep", 0.12))
+                if pre_name in pre:
+                    s_, sr_ = pre[pre_name]
+                    audio = finish(np.asarray(s_, dtype=np.float64), sr_, c["pitch"])
                 else:
-                    audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
-            if ev.get("fx") == "falling":
-                audio = norm(falling(audio), 0.95)
-            if ev.get("slowmo"):                        # slow motion: the tape slowed (lower, longer), a dark room on it
-                k = float(ev["slowmo"])
-                audio = np.interp(np.linspace(0, len(audio) - 1, int(len(audio) / k)), np.arange(len(audio)), audio)
-                tail = rng.standard_normal(int(0.8 * SR)) * np.exp(-np.arange(int(0.8 * SR)) / (0.22 * SR))
-                audio = norm(audio + np.convolve(audio, tail * 0.01)[:len(audio)], 0.95)
-            for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
-                i0, i1 = int(b0 * SR), min(len(audio), int(b1 * SR))
-                ramp = min(int(0.03 * SR), (i1 - i0) // 2)
-                g = np.full(i1 - i0, 10 ** (db / 20))
-                g[:ramp] = np.linspace(1, g[0], ramp)
-                g[len(g) - ramp:] = np.linspace(g[0], 1, ramp)
-                audio = audio.copy()
-                audio[i0:i1] *= g
-            if ev.get("tighten"):                     # shorter pauses inside the line
-                audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
-            if ev.get("speed", 1.0) != 1.0:                 # a little faster, same pitch
-                audio = stretch(audio, ev["speed"])
-            if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
-                audio = audio[:int(ev["trim"] * SR)].copy()
-                f = int(ev.get("trim_fade", 0.25) * SR)
-                audio[-f:] *= np.linspace(1, 0, f)
-            if ev.get("mute_start"):                       # a click before the first word: silenced in place
-                m = int(ev["mute_start"] * SR)
-                f = int(0.01 * SR)
-                audio = audio.copy()
-                audio[:m - f] = 0.0
-                audio[m - f:m] *= np.linspace(0, 1, f)
-            if not ev.get("trim"):                         # a cut-off line ends where it was cut
-                audio = clean_tail(audio)
-            quiet = any(w in ev.get("direction_text", "").lower() for w in ("whisper", "very quiet"))
-            audio = level_line(audio, quiet=quiet)
+                    audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
+                            c["voice"], c["speed"], c["pitch"],
+                            emotion=ev.get("emotion", c.get("emotion", 0.5)),
+                            pace=ev.get("pace", c.get("pace", 0.5)),
+                            ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir,
+                            eleven_voice=c.get("eleven_voice"),
+                            stability=ev.get("stability", c.get("stability", 0.5)),
+                            sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
+                if ep.get("gate") is not None:              # breaths and mouth noise down
+                    audio = gate(audio, ep["gate"])
+                if c.get("fx") == "null":
+                    audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
+                if ev.get("whisper"):                       # a real whisper: the words without the voice's pitch
+                    if ev.get("whisper") == "first":
+                        audio = whisperize_first(audio, keep=ev.get("whisper_keep", 0.12))
+                    else:
+                        audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
+                if ev.get("fx") == "falling":
+                    audio = norm(falling(audio), 0.95)
+                if ev.get("slowmo"):                        # slow motion: the tape slowed (lower, longer), a dark room on it
+                    k = float(ev["slowmo"])
+                    audio = np.interp(np.linspace(0, len(audio) - 1, int(len(audio) / k)), np.arange(len(audio)), audio)
+                    tail = rng.standard_normal(int(0.8 * SR)) * np.exp(-np.arange(int(0.8 * SR)) / (0.22 * SR))
+                    audio = norm(audio + np.convolve(audio, tail * 0.01)[:len(audio)], 0.95)
+                for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
+                    i0, i1 = int(b0 * SR), min(len(audio), int(b1 * SR))
+                    ramp = min(int(0.03 * SR), (i1 - i0) // 2)
+                    g = np.full(i1 - i0, 10 ** (db / 20))
+                    g[:ramp] = np.linspace(1, g[0], ramp)
+                    g[len(g) - ramp:] = np.linspace(g[0], 1, ramp)
+                    audio = audio.copy()
+                    audio[i0:i1] *= g
+                if ev.get("tighten"):                     # shorter pauses inside the line
+                    audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
+                if ev.get("speed", 1.0) != 1.0:                 # a little faster, same pitch
+                    audio = stretch(audio, ev["speed"])
+                if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
+                    audio = audio[:int(ev["trim"] * SR)].copy()
+                    f = int(ev.get("trim_fade", 0.25) * SR)
+                    audio[-f:] *= np.linspace(1, 0, f)
+                if ev.get("mute_start"):                       # a click before the first word: silenced in place
+                    m = int(ev["mute_start"] * SR)
+                    f = int(0.01 * SR)
+                    audio = audio.copy()
+                    audio[:m - f] = 0.0
+                    audio[m - f:m] *= np.linspace(0, 1, f)
+                if not ev.get("trim"):                         # a cut-off line ends where it was cut
+                    audio = clean_tail(audio)
+                quiet = any(w in ev.get("direction_text", "").lower() for w in ("whisper", "very quiet"))
+                audio = level_line(audio, quiet=quiet)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1
