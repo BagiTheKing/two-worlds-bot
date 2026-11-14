@@ -576,7 +576,7 @@ def apply(E, t):
     camera(E, t, name, t0, t1)
 
 
-def _plunge_plan(E, gap=0.02):
+def _plunge_plan(E, gap=0.035):
     """Where the void's blocks sit in the plunge, worked out once for the whole shot (the same at every
     frame and every motion-blur subframe, so nothing jumps or ghosts). Each block keeps its own drift and is
     given one fixed sideways offset across the view, the smallest that keeps its picture clear of Steve, the
@@ -588,7 +588,7 @@ def _plunge_plan(E, gap=0.02):
     aspect = sc.render.resolution_x / sc.render.resolution_y
     t0 = dict(shot_bounds())["plunge"]
     t1 = dict(shot_bounds())["black"]
-    times = [t0 + (t1 - t0) * k / 6 for k in range(7)]
+    times = [t0 + (t1 - t0) * k / 16 for k in range(17)]
     blocks = [(ob, c, v) for ob, c, v, wv in E.cells if ob.name.startswith("void_block")]
     angles = [2 * math.pi * k / 12 for k in range(12)]
     cands = [(0.0, 0.0)] + [(r, a) for r in [0.06 * i for i in range(1, 16)] for a in angles]
