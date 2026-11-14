@@ -575,6 +575,8 @@ def apply(E, t):
     E.X.glow_strength.default_value *= 0.35                 # his halo: a glow behind him, not a wall of light
     _avatars_at(E, t, name)
     camera(E, t, name, t0, t1)
+    if name == "plunge":
+        _clear_screen(E)
 
 
 def _clear_fall(E, t):
@@ -601,6 +603,62 @@ def _clear_fall(E, t):
                 d = d.normalized() if d.length > 1e-3 else Vector((-1.0, 0.0))
                 p.x, p.y = q.x + d.x * r, q.y + d.y * r
         ob.location = p
+
+
+def _clear_screen(E, gap=0.025):
+    """The plunge as the lens sees it: any void block whose picture overlaps Steve or the Noob is slid
+    sideways (across the view, keeping its distance) until there is a clear gap on screen."""
+    from bpy_extras.object_utils import world_to_camera_view
+    bpy.context.view_layer.update()
+    sc, cam = E.sc, E.cam
+    aspect = sc.render.resolution_x / sc.render.resolution_y
+
+    def box(obs, inst=None):
+        pts = []
+        for ob in obs:
+            if ob.type == "MESH" and not ob.hide_render:
+                mw = (inst @ ob.matrix_world) if inst is not None else ob.matrix_world
+                for c in ob.bound_box:
+                    q = world_to_camera_view(sc, cam, mw @ Vector(c))
+                    if q.z > 0:
+                        pts.append((q.x * aspect, q.y))
+        if not pts:
+            return None
+        xs, ys = [q[0] for q in pts], [q[1] for q in pts]
+        return min(xs), min(ys), max(xs), max(ys)
+
+    # Steve is a collection instance (his rig's objects live at the origin, placed by the holder)
+    bodies = [box(list(E.S.rig.all_objects), inst=E.S.holder.matrix_world),
+              box([E.N.root] + list(E.N.root.children_recursive))]
+    bodies = [bb for bb in bodies if bb]
+    if os.environ.get("CLEAR_DEBUG"):
+        print("CLEAR bodies", bodies, flush=True)
+    m = cam.matrix_world.to_3x3()
+    right, upv = m @ Vector((1, 0, 0)), m @ Vector((0, 1, 0))
+    for ob, c, v, wv in E.cells:
+        if not ob.name.startswith("void_block") or ob.hide_render:
+            continue
+        for _ in range(12):
+            bb = box([ob])
+            if bb is None:
+                break
+            hit = None
+            for k in bodies:
+                if bb[0] < k[2] + gap and bb[2] > k[0] - gap and bb[1] < k[3] + gap and bb[3] > k[1] - gap:
+                    hit = k
+                    break
+            if hit is None:
+                break
+            if os.environ.get("CLEAR_DEBUG"):
+                print("CLEAR move", ob.name, bb, flush=True)
+            # slide away from the body's centre, across the view, a step proportional to its distance
+            dx = 0.5 * (bb[0] + bb[2]) - 0.5 * (hit[0] + hit[2])
+            dy = 0.5 * (bb[1] + bb[3]) - 0.5 * (hit[1] + hit[3])
+            n = math.hypot(dx, dy) or 1.0
+            depth = (Vector(ob.matrix_world.translation) - Vector(cam.matrix_world.translation)).length
+            step = 0.12 * depth
+            ob.location = Vector(ob.location) + (right * (dx / n) + upv * (dy / n)) * step
+            bpy.context.view_layer.update()
 
 
 def _swap(ob, mat):
