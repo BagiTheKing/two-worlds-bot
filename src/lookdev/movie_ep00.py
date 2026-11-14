@@ -563,10 +563,15 @@ def apply(E, t):
     name, t0, t1 = which(t)
     off = _plunge_plan(E) if name == "plunge" else {}
     for ob, c, v, wv in E.cells:
-        ob.location = c + v * t + off.get(ob.name, Vector())
+        d = off.get(ob.name, Vector())
+        ob.location = c + v * t + (d if d is not None else Vector())
         ob.rotation_euler = tuple(wv * t)
         if ob.name.startswith("void_block"):              # the void's debris: torn off as the world goes (from the bridge on)
             ob.hide_render = t < b("bridge_delete")
+        else:
+            ob.hide_render = False
+        if d is None:                                      # no clear place in this shot
+            ob.hide_render = True
     # the cast and the camera
     cast(E, t, name)
     _null(E, t, name)
@@ -646,7 +651,7 @@ def _plunge_plan(E, gap=0.035):
     off = {}
     for ob, c, v in blocks:
         depth = (c + v * mid - camp).length
-        best = len(cands) - 1
+        best = None                                    # no clear place: this block sits the shot out
         for ci in range(len(cands)):
             bx = table[ob.name][ci]
             if any(over(bx[si], k) for si in range(len(times)) for k in bodies[si]):
@@ -655,6 +660,9 @@ def _plunge_plan(E, gap=0.035):
                 continue
             best = ci
             break
+        if best is None:
+            off[ob.name] = None
+            continue
         r, a = cands[best]
         off[ob.name] = (right * math.cos(a) + upv * math.sin(a)) * (r * depth)
         placed.append(table[ob.name][best])
