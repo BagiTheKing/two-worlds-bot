@@ -81,10 +81,7 @@
   },
   {
    "beat": "walk_to_tree",
-   "dur": 2.0,
-   "sfx": "steps",
-   "step_every": 0.4,
-   "step_first": 0.15
+   "dur": 2.0
   },
   {
    "line": "noob",
@@ -129,8 +126,7 @@
   },
   {
    "beat": "break",
-   "dur": 1.6,
-   "sfx": "break"
+   "dur": 1.6
   },
   {
    "line": "noob",
@@ -953,5 +949,44 @@
  "voices_cache_only": true,
  "declick": 0.004,
  "declick_blank": 0.0025,
- "end_fade": 1.0
+ "end_fade": 1.0,
+ "sfx": [
+  {
+   "kind": "step",
+   "at": "walk_to_tree+0.15",
+   "gain": 0.95
+  },
+  {
+   "kind": "step",
+   "at": "walk_to_tree+0.55",
+   "gain": 0.95
+  },
+  {
+   "kind": "step",
+   "at": "walk_to_tree+0.95",
+   "gain": 0.95
+  },
+  {
+   "kind": "step",
+   "at": "walk_to_tree+1.35",
+   "gain": 0.95
+  },
+  {
+   "kind": "step",
+   "at": "walk_to_tree+1.75",
+   "gain": 0.95
+  },
+  {
+   "kind": "break",
+   "at": "break",
+   "gain": 1.4
+  },
+  {
+   "kind": "pop",
+   "from": "break+0.75",
+   "to": "break+1.5",
+   "count": 5,
+   "gain": 0.3
+  }
+ ]
 }

@@ -92,8 +92,10 @@ the note wins. Add to it whenever the creator gives a new standing note.
   loudness.
 - **Episode 1 skips its repeat in the movie** (November 13): its
   "PREVIOUSLY..." flash and the replay of the forest and "Whoa. Where am
-  I?" go, because Episode 0 has just shown them. Episode 1 picks up at
-  "Okay. A tree. One punch."
+  I?" go, because Episode 0 has just shown them. Episode 1 picks up right
+  after "Where am I?": the Noob looks round and walks to the tree (published
+  6.94 s; decided under "do what best", November 14), then "Okay. A tree.
+  One punch."
 - **No time limit in the movie** (November 14): "For ep2 it is too fast, we
   are going to make a long video so no restrictions on time we can make it as
   long as we want as long as the quality is good and the story make sense."
