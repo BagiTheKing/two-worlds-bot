@@ -296,13 +296,13 @@ def apply(E, t):
                       {"glow": (236, 190, 230), "power": 8.0, "horizon": (200, 150, 200), "mid": (110, 90, 170),
                        "zenith": (44, 34, 96), "fill": 0.8, "fill_col": (176, 150, 220)}, dk)
     set_sky(E.W, look)
-    E.sc.view_settings.exposure = lerp(-0.05, -0.55, dk)
+    E.sc.view_settings.exposure = lerp(-0.05, -0.35, dk)
     if not hasattr(E, "sun0"):
         E.sun0 = E.W.sun.data.energy
-    E.W.sun.data.energy = lerp(E.sun0, 0.25 * E.sun0, dk)
+    E.W.sun.data.energy = lerp(E.sun0, 0.4 * E.sun0, dk)
     if not hasattr(E, "key0"):
         E.key0 = (E.key.data.energy, tuple(E.key.data.color))
-    E.key.data.energy = E.key0[0] * (1 - 0.6 * dk)                  # the faces' key dims and cools with the day
+    E.key.data.energy = E.key0[0] * (1 - 0.35 * dk)                  # the faces' key dims and cools with the day
     E.key.data.color = tuple(lerp(c0, c1, dk) for c0, c1 in zip(E.key0[1], (0.72, 0.74, 1.0)))
     # the oak, the break, the bits
     broken = t >= b("break") + 0.05
