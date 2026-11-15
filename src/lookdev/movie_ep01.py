@@ -323,7 +323,8 @@ def _snap(u, ks, dur=0.07):
 
 # the eye's life, in seconds from when it appears: it opens, darts left and right, blinks, then fixes on
 # them and narrows; it goes on watching (a slow drift) into chapter 2
-EYE_X = [(0.0, 0.0), (0.45, -0.85), (1.05, 0.8), (1.7, 0.05), (2.6, -0.25), (3.4, 0.1), (4.4, -0.15), (5.2, 0.2)]
+EYE_X = [(0.0, 0.0), (0.45, -0.85), (1.05, 0.8), (1.7, 0.05), (2.6, -0.25), (3.4, 0.1), (3.95, 0.7), (4.4, -0.15),
+         (4.75, 0.55), (5.05, -0.6), (5.35, 0.2)]
 EYE_Y = [(0.0, 0.0), (1.7, -0.6)]
 
 

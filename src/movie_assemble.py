@@ -160,6 +160,8 @@ def main():
     for o in overlays:
         if o["type"] == "watermark":
             o["end"] = 1e9
+        if o["type"] == "timer":
+            o["y"] = 104                 # the PLAN stopwatch at the top centre in landscape, clear of the action
     meter = meter_for(tl)
     caps = captions(tl)
     fonts = {"mono": ImageFont.truetype(A.MONO, 54), "mono_small": ImageFont.truetype(A.MONO, 40),

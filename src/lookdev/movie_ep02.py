@@ -1195,6 +1195,7 @@ def _cam(E, t, shot, t0, t1):
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
         loc = sp + d * 1.6 - side * 1.8 + Vector((0, 0, 1.8))
+        loc = loc.lerp(E.crack_at, 0.06 * ss(0.0, 2.1, t))           # a slow push in on the eye (from chapter 1's frame)
         snap = b("eye") + 2.1
         return loc, E.crack_at, 28, 64.0, None, 0.04 + 0.5 * math.exp(-((t - snap - 0.03) / 0.08) ** 2)
     if shot == "lookup":
