@@ -89,8 +89,10 @@ the note wins. Add to it whenever the creator gives a new standing note.
   jokes stay in when cutting: cut only what earlier episodes already said,
   keep the explanations a stranger needs.
 - **The movie** (long form, landscape, all in the new look) is **a remake of
-  what already exists**: same story, same lines, same soundtracks, no new
-  voices and no new scenes; only the picture changes. The first and last
+  what already exists**: same story, same lines, same soundtracks, the same
+  voices; the picture is redone. (Since November 15, scenes and even lines
+  may be added where the story needs them to make sense: see "One movie"
+  below.) The first and last
   episodes are already "one core, two perspectives". Don't ask the creator
   questions the files already answer; see `story/movie_handoff.md`.
 - **The movie, episode by episode** (November 13): "at the end one movie with
@@ -113,6 +115,34 @@ the note wins. Add to it whenever the creator gives a new standing note.
   no new dialogue; longer actions, pauses and reactions between the lines,
   with the music and effects re-laid to fit. So these episodes get a new
   sound preview before any frame.
+- **One movie: every chapter picks up where the last one ends** (November 15):
+  "These series of episodes are going to be linked to each other to form one
+  full movie. So the end of the episode 0 should make sense to the start of
+  episode 1." A chapter opens on the previous chapter's last moment: the same
+  place, the characters where they were, doing what they were doing, with
+  the same expressions and light, and the camera continuing (or a cut that
+  clearly follows on). No jump in energy or mood at a join, and no silence
+  or fade between chapters (the join pass crossfades the sound). Checked
+  every time: `tools/review_part.py ... --join <previous chapter.mp4>`
+  (join.jpg) and the reviewer.
+- **Nobody comes from nowhere** (November 15): "Steve comes out of nowhere,
+  which doesn't make so much sense. Steve should come from a place where I
+  can see that he's coming from." Every character who enters a scene is
+  seen arriving from a place the viewer already knows (seen before, in the
+  background, walking in). The same goes for creatures and objects. Before
+  a character's first shot in a chapter, ask: where were they in the last
+  shot we saw them, and did we see them come here?
+- **Add scenes, even lines, to make sense** (November 15): "we have no
+  limitation on time ... you're allowed to add scenes to make sense, and I'm
+  going to allow this, which is make even lines if you need this." The extra
+  time exists so the story makes sense, not to roll the Short over as it was.
+  New lines are short and in the characters' voices (from the same voice
+  setup); say what was added when the piece is sent.
+- **Fixes keep what is already good** (November 15): "the quality was good
+  enough. So if we are redoing episode 1, we are conserving the quality and
+  most of the scenes ... but to fix the episode." A fix changes what doesn't
+  make sense and keeps the rest as approved (the same look, shots and
+  animation), re-rendering only what changed.
 - **The REALITY meter in the movie** (approved November 13, version 6,
   `src/movie_hud.py`): it is hidden while the number isn't moving ("if the
   bar isn't moving hide it with the number, and when it appears it should

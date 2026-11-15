@@ -63,6 +63,25 @@ review against the notes alone; never guess what the creator asked.
      after the voice stops), music under the voices, an effect on every
      action, loudness on target;
    - text: captions readable and not crowding, watermark present.
+   - **the movie** (a movie chapter, 16:9):
+     - **the join**: run the checks with `--join <the previous chapter.mp4>`
+       and look at `join.jpg`: this chapter opens where the last one ends
+       (the same place, everyone where they were, doing what they were
+       doing, the same expressions and light, the camera continuing or a
+       cut that clearly follows on); no jump in mood or energy, no silence
+       or fade at the join. If you weren't given the previous chapter, ask
+       for it;
+     - **nobody from nowhere**: for every character, creature and object,
+       when it first appears in the chapter, say where it comes from and
+       whether we saw it come (from a place the viewer already knows). A
+       character who is suddenly there is a must fix;
+     - **the story makes sense** to a stranger without the Shorts; where a
+       short added scene (or line) would make it make sense, propose it;
+     - **not graphically lazy**: every character and creature moves with
+       weight and life (anticipation, follow-through, secondary motion);
+       stiff or mechanical motion and dead holds are must fix;
+     - **a fix keeps what was good**: compare with `--previous`; anything
+       that changed but wasn't part of the fix is a must fix.
 6. Things you cannot check (how a voice sounds, a joke's timing, whether a
    whisper sounds like a whisper) are not passes: list them for the creator
    to judge, with the times.

@@ -73,6 +73,40 @@ def audio(path, sr=24000):
     return np.frombuffer(raw, np.float32).reshape(-1, 2), sr
 
 
+def join_check(prev, cur, out_dir, say):
+    """The movie is one film (creator, November 15): a chapter picks up where the previous one ends. Shows the
+    previous chapter's last second beside this one's first (join.jpg) and flags a jump in picture or loudness."""
+    pd = float(probe(prev)["format"]["duration"])
+    tmp = tempfile.mkdtemp(prefix="jn_")
+    k = 0
+    for src, t0 in ((prev, max(0.0, pd - 1.0)), (cur, 0.0)):
+        for j in range(5):
+            run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-ss", f"{min(t0 + 0.24 * j, (pd - 0.05) if src == prev else 99):.3f}",
+                 "-i", src, "-frames:v", "1", "-vf",
+                 f"scale=384:-2,drawtext=text='{'END of previous' if src == prev else 'START of this'} +{0.24 * j:.2f}s':"
+                 "x=6:y=6:fontsize=16:fontcolor=yellow:box=1:boxcolor=black@0.6", os.path.join(tmp, f"{k:02d}.png")])
+            k += 1
+    run(["ffmpeg", "-nostdin", "-v", "error", "-y", "-framerate", "1", "-i", os.path.join(tmp, "%02d.png"),
+         "-vf", "tile=5x2:padding=4", "-frames:v", "1", os.path.join(out_dir, "join.jpg")])
+    _, A = frames_luma(prev, fps=8)
+    _, B = frames_luma(cur, fps=8)
+    if len(A) and len(B) and A.shape[1:] == B.shape[1:]:
+        d = float(np.abs(A[-1] - B[0]).mean())
+        if d > 22:
+            say(FLAG, "join with the previous chapter", f"the first frame differs from the previous chapter's last by {d:.0f}/255:"
+                                                        " a cut at the join; check in join.jpg that the place, the positions,"
+                                                        " the light and the action continue")
+        else:
+            say(OK, "join with the previous chapter", f"the picture continues ({d:.0f}/255); see join.jpg")
+    levels = []
+    for src, ss_ in ((prev, max(0.0, pd - 1.0)), (cur, 0.0)):
+        err = run(["ffmpeg", "-nostdin", "-ss", f"{ss_:.3f}", "-t", "1", "-i", src, "-af", "volumedetect", "-vn", "-f", "null", "-"]).stderr
+        mv = re.findall(r"mean_volume: (-?[0-9.]+) dB", err)
+        levels.append(float(mv[-1]) if mv else None)
+    if None not in levels and abs(levels[0] - levels[1]) > 8:
+        say(FLAG, "join: sound level jump", f"{levels[0]:.0f} dB at the previous chapter's end, {levels[1]:.0f} dB at this one's start")
+
+
 def frames_luma(path, fps=4, w=96, h=None):
     """-> (times, frames as small grey arrays)."""
     if h is None:
@@ -192,6 +226,7 @@ def main():
     ap.add_argument("--aspect", default="9:16")
     ap.add_argument("--every", type=float, default=0.5)
     ap.add_argument("--lufs", type=float, default=-15.0)
+    ap.add_argument("--join", help="the movie's previous chapter (.mp4): checks this chapter picks up where it ends")
     a = ap.parse_args()
     os.makedirs(a.out_dir, exist_ok=True)
     R = []
@@ -337,6 +372,8 @@ def main():
                 say(FLAG, "sound changed outside the request", f"at {diffs[:12]}{' ...' if len(diffs) > 12 else ''} s")
             else:
                 say(OK, "sound outside the request", "unchanged")
+    if a.join:
+        join_check(a.join, m, a.out_dir, say)
     write(a.out_dir, R)
 
 

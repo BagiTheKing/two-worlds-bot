@@ -14,7 +14,9 @@ render, a joined Short or chapter, a thumbnail.
 1. Run the automatic checks:
    `python tools/review_part.py <out_dir> <media> --timeline <timeline.json>`
    (for a fix, add `--previous <the last version> --changed <the seconds
-   you were asked to change>`; for the movie, `--aspect 16:9`).
+   you were asked to change>`; for the movie, `--aspect 16:9 --join <the
+   previous chapter.mp4>`, which checks the chapter picks up where the last
+   one ends).
 2. Launch the **`part-reviewer`** agent (`.claude/agents/part-reviewer.md`)
    with the media path, the timeline, **the creator's request for this piece
    word for word**, their earlier notes on it, and what you changed.
@@ -36,6 +38,12 @@ passed review when it didn't.
   your own opinion.
 - Fix only what the creator pointed at; keep earlier versions; reuse
   earlier renders instead of re-rendering.
+- The movie is one film: every chapter picks up where the last one ends;
+  nobody and nothing appears from nowhere (we see where they come from);
+  scenes, even lines, may be added so the story makes sense; a fix keeps
+  what was already good.
+- Don't ask the creator to approve steps: build, review, decide, and send
+  the preview for them to validate.
 - Never put a model name or ID in commits, code or anything pushed. Work on
   `lookdev-steve`; commit and push your work.
 - Never commit the MCprep textures; never push to the MCprep repository.
