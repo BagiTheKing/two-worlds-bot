@@ -35,7 +35,7 @@ PUNCH_AT = Vector((1.42, 0.5, 0.0))        # where he stands to punch (west of t
 STAND_BACK = Vector((-0.75, 0.0, 0.0))     # a step back from it while talking, so his arms stay off the bark
 STEVE_AT = Vector((-1.8, 3.6, 0.0))        # Steve, a few blocks from the tree, pickaxe in hand
 STEVE2 = Vector((-0.8, 2.6, 0.0))          # after the break he comes a few steps closer to look at the tree
-NOOB_BACK = Vector((0.2, -0.9, 0.0))       # the Noob steps back from the log to look up at it (clear of Steve)
+NOOB_BACK = Vector((1.9, -1.5, 0.0))       # the Noob steps back from the log to look up at it (clear of Steve)
 CRACK = Vector((-14.0, -28.0, 40.0))         # the crack in the sky (south-west, high, clear of the crowns), from the tree foot
 
 
@@ -78,7 +78,7 @@ def build(tl, tex_dir, assets, res, samples):
     clear = [(STEVE_AT.x, STEVE_AT.y, 1.3), (PUNCH_AT.x, PUNCH_AT.y, 1.2), (NOOB0.x, NOOB0.y, 1.2),
              (0.5, -5.6, 2.2), (-0.4, -4.8, 1.6), (0.8, -1.8, 1.4), (-4.7, 2.5, 1.8), (4.2, -3.7, 1.8), (2.0, -1.0, 1.6), (3.9, -4.7, 1.8),
              (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0), (0.7, -4.3, 1.8), (0.1, 0.05, 1.3), (-0.4, -0.6, 1.3), (-0.8, 2.6, 1.3), (3.0, -4.4, 1.8),
-             (1.6, -2.0, 1.6), (3.2, 3.9, 1.6)]
+             (1.6, -2.0, 1.6), (-1.2, -4.6, 1.6), (-0.8, -4.1, 1.4), (4.8, -3.0, 1.6), (5.6, -3.8, 1.6), (1.9, -1.5, 1.2), (3.2, 3.9, 1.6)]
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     g = E.ground
@@ -649,7 +649,7 @@ def noob_anim(E, t, NF):
         face = dict(NF["shock"]) if u < 0.2 else dict(NF["happy"])
         if u >= 0.2:
             face.update({"both_bm": 0.45, "m_arch": -0.6, "m_o": 0.4})
-        M.set_noob(E, p, lerp(90.0, 55.0, ss(0.3, 1.2, u)), pz, face, t)
+        M.set_noob(E, p, lerp(90.0, 115.0, ss(0.3, 1.2, u)), pz, face, t)
         return
     # looking up at the floating tree: puzzled, scratching his head; to Steve on "That's normal."; back up;
     # a shrug; the glitch makes him jump
@@ -662,11 +662,12 @@ def noob_anim(E, t, NF):
     jolt = ss(b("crack"), b("crack") + 0.06, t) * (1 - ss(b("crack") + 0.15, b("crack") + 0.5, t))
     c = E.crack_at - p
     yc = math.degrees(math.atan2(c.x, -c.y))
-    base = lerp(55.0, yc - 30, ss(b("crack") + 0.9, b("crack") + 1.5, t))
+    base = lerp(115.0, yc - 30, ss(b("crack") + 0.9, b("crack") + 1.5, t))
     pz = {"head_nod": -22 * up - 6 * jolt, "head_tilt": 12 * scratch + 4 * _n(t, 0.8, 11),
           "head_turn": 0.8 * _wrap(sy - base) * to_steve + 4 * _n(t, 0.6, 12),
           "chest_lean": -5 * up + 4 * jolt, "chest_twist": 0.25 * _wrap(sy - base) * to_steve,
-          "arm_sr": {"out": 12 + 25 * scratch + 20 * shrug, "fwd": 10 + 140 * scratch + 6 * math.sin(t * 18) * scratch},
+          # the far arm scratches (the near one would cover his face from this side)
+          "arm_sr": {"out": 12 - 22 * scratch + 20 * shrug + 30 * jolt, "fwd": 10 + 160 * scratch + 6 * math.sin(t * 18) * scratch + 30 * jolt},
           "arm_sl": {"out": 12 + 20 * shrug + 30 * jolt, "fwd": 10 + 30 * jolt}}
     face = dict(NF["confused"])
     face["both_py"] = 0.3 * up
@@ -720,7 +721,9 @@ def steve_anim(E, t, SF):
         hits = _flurry_hits()
         fl = sum(math.exp(-((t - h) / 0.05) ** 2) for h in hits)
         pz["arm_sl"] = {"fwd": 5, "out": 30, "elbow": 80}
-        pz["head_nod"] = 2.5 * fl
+        pz["head_nod"] = 5 * fl
+        pz["chest_lean"] += -2.5 * fl
+        pz["arm_sr"] = {"fwd": REST_ARM["fwd"] + 6 * fl, "out": REST_ARM["out"], "elbow": REST_ARM["elbow"] + 10 * fl}
         widen = ss(17.2, 17.8, t)
         face.update({"both_to": -0.45 * (1 - widen), "both_tm": -0.5 * (1 - widen)})
         face["bb_raise"] = 0.2 * widen
@@ -782,7 +785,7 @@ def camera(E, t, shot, t0, t1):
     E.cam.data.dof.use_dof = fstop < 30
     E.cam.data.dof.focus_distance = (look - loc).length if focus is None else focus
     E.cam.data.dof.aperture_fstop = fstop
-    gain = {"look": 1.6, "walk": 1.6, "tree": 1.8, "punch": 1.3, "float": 1.5, "normal": 1.3}.get(shot, 1.0)
+    gain = {"look": 1.6, "walk": 2.6, "tree": 2.6, "punch": 1.3, "float": 1.5, "normal": 1.3}.get(shot, 1.0)
     E.key.data.energy *= gain                                   # faces lit (apply set the base this frame)
     E.key.location = loc + Vector((0.6, 0.0, 1.6))
     E.key.rotation_euler = (look - E.key.location).to_track_quat("-Z", "Y").to_euler()
@@ -843,8 +846,10 @@ def _cam(E, t, shot, t0, t1):
     if shot == "float":
         # low from the grass up past the stump to the floating tree; the two looking up below
         # from the south-east, low: the stump's gap under the floating trunk, the two at the left looking up
-        c = Vector((0.6, 1.0, E.ground(0.6, 1.0) + 1.8))
-        loc = Vector((3.0, -4.4, E.ground(3.0, -4.4) + 0.4))
+        # from the south-east, low, beside the tree: the Noob and Steve facing us as they look up at it, the
+        # floating trunk (its gap) between them
+        c = Vector((1.0, 0.4, E.ground(1.0, 0.4) + 1.8))
+        loc = Vector((5.6, -3.8, E.ground(5.6, -3.8) + 0.6))
         return loc, c, 20, 64.0, None, 0.04
     if shot == "normal":
         # "That's normal." - Steve chest-up, turned to the Noob; the floating tree soft behind
