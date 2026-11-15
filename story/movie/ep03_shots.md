@@ -32,7 +32,36 @@ above the course.
 | End card (Episode 4, "WHO FROZE THE DRAGON?") | 24.66-26.56 | **dropped** |
 | Captions, watermark | throughout | **kept** |
 
-## The join with Episode 2
+## The join with Episode 2 (the movie, November 15: one film)
+
+Episode 2 ends in the meadow: the portal snaps empty, the Noob frozen beside
+it, his arm still half up; Steve resting by the floating oak. Episode 3 is
+in the Noob's obby. The Shorts never showed how they got there; the movie
+must ("nobody comes from nowhere"; "you're allowed to add scenes to make
+sense"). The bible already has the link: Steve's portal leads to the Roblox
+side (Episode 2: "obby hazards pour into the forest").
+
+**The added opening, "Through"** (about 6 s, no new line):
+1. The meadow, Episode 2's last frame going on: the quiet; the empty frame;
+   the Noob lowers his arm. The frame flickers: the membrane stutters back
+   on, unstable, crackling (the portal's opening sound, the glitch).
+2. It pulls: the suck from Episode 2 again, stronger, and this time it takes
+   *them*: the Noob first (he grabs at the frame, misses), then Steve, who
+   runs to grab him and is pulled in too.
+3. A short tumble through the swirl (the Episode 0 plunge's language,
+   brighter: the Roblox side's colours).
+4. They drop out of the portal's other side onto the obby, the same portal
+   frame standing on the egg's obby half; the Noob lands delighted ("his"
+   world), Steve on his back.
+5. A beat; then the roar, and the dragon bursts out of the same portal
+   behind them, smashing parts: "BOSS FIGHT!" ... "It used our portal.
+   Hide!" now says exactly what we saw.
+
+This needs both sets in one chapter (the meadow from Episode 2's renderer
+for 1-2, the obby for 4-5); the sound preview gets the new beats first
+(the glitch, the suck, the whoosh, the landing thumps, then the roar).
+
+## (Published) The join with Episode 2
 
 Episode 2 ends with the portal snapping shut, empty. Episode 3 opens on the
 dragon bursting into the obby. Steve's line "It used our portal" ties them:
