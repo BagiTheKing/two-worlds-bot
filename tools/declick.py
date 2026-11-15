@@ -2,6 +2,7 @@
 src/audio.py faded clip edges) from a video's soundtrack (spikes far above the local level), bridging each with a
 smooth curve between the clean samples around it; the picture is copied untouched.
     python tools/declick.py IN.mp4 OUT.mp4
+    python tools/declick.py IN.flac OUT.flac          (a soundtrack on its own)
 
 Check with tools/review_part.py afterwards (its click detector should report none)."""
 import subprocess, sys
@@ -33,8 +34,12 @@ while i < len(pk):
     else:
         i += 1
 for s0, s1, p in fixed: print(f"fixed {s0:.4f}-{s1:.4f} s (peak {p:.2f})")
-p = subprocess.run(["ffmpeg","-nostdin","-v","error","-y","-i",src,"-f","f32le","-ar",str(SR),"-ac","2","-i","-",
-                    "-map","0:v","-map","1:a","-c:v","copy","-c:a","aac","-b:a","192k","-ar","48000","-movflags","+faststart",
-                    dst], input=y.astype(np.float32).tobytes())
+if dst.lower().endswith((".flac", ".wav")):              # a soundtrack on its own (the movie's chapter mixes)
+    p = subprocess.run(["ffmpeg","-nostdin","-v","error","-y","-f","f32le","-ar",str(SR),"-ac","2","-i","-", dst],
+                       input=y.astype(np.float32).tobytes())
+else:
+    p = subprocess.run(["ffmpeg","-nostdin","-v","error","-y","-i",src,"-f","f32le","-ar",str(SR),"-ac","2","-i","-",
+                        "-map","0:v","-map","1:a","-c:v","copy","-c:a","aac","-b:a","192k","-ar","48000","-movflags","+faststart",
+                        dst], input=y.astype(np.float32).tobytes())
 p.check_returncode()
 print(len(fixed), "clicks removed ->", dst)
