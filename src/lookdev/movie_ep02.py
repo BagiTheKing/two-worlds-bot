@@ -65,7 +65,7 @@ def build(tl, tex_dir, assets, res, samples):
              (-3.6, -1.2, 1.2), (-1.0, -2.4, 1.2), (0.6, -2.0, 1.0), (1.0, 0.75, 1.2), (0.1, 0.05, 1.3),
              (2.0, -6.5, 2.4), (-1.0, -7.5, 2.4), (4.0, -4.5, 1.6), (-6.0, -2.0, 1.6), (3.0, 1.8, 1.4), (-0.6, -3.6, 1.6),
              (-6.8, -1.4, 1.8), (-5.6, -0.8, 1.6), (-7.2, -3.4, 2.0), (-4.6, -0.2, 1.6), (0.8, 1.2, 1.4),
-             (NOOB_WATCH.x, NOOB_WATCH.y, 1.0), (-3.2, 2.0, 1.2), (3.6, -1.4, 1.2), (0.2, -1.6, 1.2)]
+             (NOOB_WATCH.x, NOOB_WATCH.y, 1.0), (-5.0, -2.6, 1.6), (-4.2, -5.2, 1.6), (-4.6, -2.0, 1.4), (-0.3, 2.9, 1.0), (-3.2, 2.0, 1.2), (3.6, -1.4, 1.2), (0.2, -1.6, 1.2)]
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     E1._oak(E, assets)                      # the same oak; its lowest log is gone (the tree floats)
@@ -1091,7 +1091,8 @@ def _cam(E, t, shot, t0, t1):
     if shot == "build":
         # low and wide: the frame rising block by block, Steve placing, the button's stone at the right
         c = Vector((-3.4, 2.7, E.ground(-3.4, 2.7) + 2.6))
-        loc = Vector((1.4, 0.2, E.ground(1.4, 0.2) + 1.5)) + Vector((0.0, -0.4, 0)) * u
+        loc = Vector((-0.3, 2.9, E.ground(-0.3, 2.9) + 1.1)) + Vector((0.3, -0.2, 0)) * u
+        c = Vector((-3.6, 2.0, E.ground(-3.6, 2.0) + 2.2))
         return loc, c, 18, 64.0, None, 0.04
     if shot == "this":
         # the Noob and the button, low and close; the empty frame behind
@@ -1163,22 +1164,22 @@ def _cam(E, t, shot, t0, t1):
         # from the front-right, low: the dark portal filling the right; the Noob at the left waving
         # from the front-left, low: the dark portal at the left, the Noob at its right waving into it
         n = gp(E, NOOB_PORTAL)
-        loc = Vector((-6.4, -1.8, E.ground(-6.4, -1.8) + 1.4))
+        loc = Vector((-5.0, -2.6, E.ground(-5.0, -2.6) + 1.5))
         c = gp(E, PORTAL) + Vector((0.0, 0, 2.6))
         return loc, c.lerp(n + Vector((0, 0, 1.4)), 0.35), 22, 64.0, None, 0.03
     if shot == "waved":
         # the Noob three-quarter to us at the left, the portal filling the right two-thirds; the figure closer
         # the Noob three-quarter to us at the right, the portal filling the left; the figure closer
         n = gp(E, NOOB_PORTAL)
-        loc = Vector((-5.6, -0.8, E.ground(-5.6, -0.8) + 1.3))
+        loc = Vector((-4.6, -2.0, E.ground(-4.6, -2.0) + 1.4))
         c = gp(E, PORTAL) + Vector((0.0, 0, 2.6))
         return loc, c.lerp(n + Vector((0, 0, 1.5)), 0.5), 22, 4.0, (n + Vector((0, 0, 1.5)) - loc).length, 0.03
     if shot == "snap":
         # the flash and the snap; then the empty frame, the quiet meadow seen through it, the Noob frozen
         n = gp(E, NOOB_PORTAL)
-        loc = Vector((-6.0, -4.0, E.ground(-6.0, -4.0) + 1.6))
-        c = gp(E, PORTAL) + Vector((-0.4, 0, 2.6))
-        return loc, c, 20, 64.0, None, 0.04 + 0.7 * math.exp(-((t - b("snap") - 0.05) / 0.1) ** 2)
+        loc = Vector((-4.2, -5.2, E.ground(-4.2, -5.2) + 1.6))
+        c = gp(E, PORTAL) + Vector((-0.6, 0, 2.6))
+        return loc, c, 24, 64.0, None, 0.04 + 0.7 * math.exp(-((t - b("snap") - 0.05) / 0.1) ** 2)
     return Vector((0, -8, 3)), Vector((0, 0, 1)), 30, 64.0, None, 0.0
 
 
