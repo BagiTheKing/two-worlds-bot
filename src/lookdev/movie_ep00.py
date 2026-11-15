@@ -752,7 +752,7 @@ def set_steve(E, loc, yaw, pose_d, face, t, grip=None, grip_sides=("sr",)):
     for ob_ in S.brows.values():
         for kb in ob_.data.shape_keys.key_blocks[1:]:
             kb.value = 0.0
-    set_brows(S.brows, {k: v for k, v in face.items() if k.startswith("bb_")})
+    set_brows(S.brows, {k: v for k, v in face.items() if k.startswith(("bb_", "bL_", "bR_"))})
 
 
 def set_noob(E, loc, yaw, pose_d, face, t, grip=None, grip_sides=("sl", "sr"), N=None):
