@@ -21,7 +21,8 @@ Checks (each one is a creator's note; see story/creator_notes.md):
     last frame);
   - silence at the start (no deaf opening) and long silences;
   - loudness (-15 LUFS for the Shorts) and peaks;
-  - clicks and stereo bursts at line ends (the "tchch");
+  - clicks anywhere (1-3 ms spikes, as at the start of a voice clip) and
+    bursts at line ends (the "tchch");
   - brightness per second, against a reference if given (as bright as the
     original);
   - with --previous and --changed: anything that changed OUTSIDE the
@@ -266,6 +267,23 @@ def main():
             say(OK if abs(lufs - a.lufs) <= 1.5 else FLAG, "loudness", f"{lufs:.1f} LUFS (target {a.lufs:.0f})")
         if P and float(P[-1]) > -0.3:
             say(FLAG, "peaks", f"true peak {P[-1]} dBFS (clipping risk)")
+        # clicks anywhere (the start of a line was where the reviewer found them): 1-3 ms spikes
+        # 8x (18 dB) above the level of the 40 ms around them
+        a_ = np.abs(st).max(axis=1)
+        hop = int(0.001 * sr)
+        pk = a_[:len(a_) // hop * hop].reshape(-1, hop).max(axis=1)
+        lv = np.array([np.median(pk[max(0, i - 20):i + 20]) for i in range(len(pk))])
+        clicks, i = [], 0
+        while i < len(pk):
+            if pk[i] > 0.3 and pk[i] > 8 * lv[i] and (i + 3 >= len(pk) or pk[i + 3] < pk[i] / 3):
+                clicks.append((i / 1000, pk[i], 20 * np.log10(pk[i] / max(lv[i], 1e-4))))
+                i += 6
+            else:
+                i += 1
+        for t_, p_, d_ in clicks:
+            say(FLAG, "click", f"{t_:.3f} s: a {d_:.0f} dB spike (peak {p_:.2f}) over the sound around it")
+        if not clicks:
+            say(OK, "clicks", "none")
         err = run(["ffmpeg", "-nostdin", "-i", m, "-af", "silencedetect=noise=-45dB:d=0.5", "-vn", "-f", "null", "-"]).stderr
         ss = [float(x) for x in re.findall(r"silence_start: ([0-9.]+)", err)]
         se = [float(x) for x in re.findall(r"silence_end: ([0-9.]+)", err)]

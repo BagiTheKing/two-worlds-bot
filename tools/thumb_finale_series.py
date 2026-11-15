@@ -91,15 +91,19 @@ def main():
     a = ap.parse_args()
     st = STYLES[a.style]
     img = erase(Image.open(a.thumb).convert("RGB").resize((2160, 3840), Image.LANCZOS)).convert("RGBA")
+    # the layout is always FINALE 1/5's, so "FINALE" is pixel for pixel the same on all five
+    # thumbnails and only the number changes, starting where the "1" started
     word = tear(mask_text("FINALE", HEIGHT), 7)
+    ref = tear(mask_text(f"1/{a.of}", HEIGHT), 11, n=3)
     num = tear(mask_text(f"{a.n}/{a.of}", HEIGHT), 11, n=3)
     gap = 70
-    total = word.width + gap + num.width
+    total = word.width + gap + ref.width
     k = min(1.0, (2160 - 260) / total)
     if k < 1.0:
         word = word.resize((int(word.width * k), int(word.height * k)), Image.LANCZOS)
+        ref = ref.resize((int(ref.width * k), int(ref.height * k)), Image.LANCZOS)
         num = num.resize((int(num.width * k), int(num.height * k)), Image.LANCZOS)
-        total = word.width + gap + num.width
+        total = word.width + gap + ref.width
     x = (2160 - total) // 2
     y = TOP + (HEIGHT - word.height) // 2
     neon(img, word, x, y, st)

@@ -178,6 +178,20 @@ def place(mix, clip, at, gain=1.0):
     mix[i:i + n] += clip[:n] * gain
 
 
+def edge_fade(clip, ms=6.0):
+    """A voice clip's first and last few milliseconds faded, its offset removed: a take cut
+    mid-waveform (or with a DC offset) starts with a 1-2 ms spike, heard as a click."""
+    clip = np.asarray(clip, dtype=np.float64)
+    n = min(len(clip) // 4, int(ms / 1000 * SR))
+    if n < 2:
+        return clip
+    clip = clip - np.median(clip[:n * 4])                 # the offset a cut leaves behind
+    ramp = 0.5 - 0.5 * np.cos(np.linspace(0, np.pi, n))
+    clip[:n] *= ramp
+    clip[-n:] *= ramp[::-1]
+    return clip
+
+
 # --------------------------------------------------------------- the sounds
 
 def sfx_portal(dur):
@@ -1746,7 +1760,7 @@ def build(episode_path, out_dir, keep=None):
         place(mix, seg, a0, a.get("gain", 0.10))
     for kind, at, arg in clips:
         if kind == "voice":
-            place(voice, arg, at, 1.0)
+            place(voice, edge_fade(arg), at, 1.0)
         elif kind == "portal":
             place(mix, sfx_portal(arg), at, 0.5)
         elif kind == "fall":
