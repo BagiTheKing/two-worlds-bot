@@ -66,7 +66,20 @@ def _step(pz, t, k0, k1):
     return pz
 
 
+STEVE_FROM = M.STEVE_FAR                   # where chapter 0 leaves Steve: far off at the left, among the trees
+WALK_FROM = 0.9                            # he has seen the Noob land; he sets off toward him
+
+
+def steve_walk(t):
+    """Steve's walk across the meadow to the tree: (0..1 along the way, distance walked)."""
+    u = ss(WALK_FROM, b("steve_arrives", 1) - 0.1, t)
+    return u, u * (STEVE_AT - STEVE_FROM).length
+
+
 def steve_pos(E, t):
+    if t < b("steve_tool"):
+        p = STEVE_FROM.lerp(STEVE_AT, steve_walk(t)[0])
+        return Vector((p.x, p.y, E.ground(p.x, p.y)))
     u = ss(b("break") + 0.3, b("noob_float"), t)
     p = STEVE_AT.lerp(STEVE2, u)
     return Vector((p.x, p.y, E.ground(p.x, p.y)))
@@ -78,7 +91,7 @@ def build(tl, tex_dir, assets, res, samples):
     clear = [(STEVE_AT.x, STEVE_AT.y, 1.3), (PUNCH_AT.x, PUNCH_AT.y, 1.2), (NOOB0.x, NOOB0.y, 1.2),
              (0.5, -5.6, 2.2), (-0.4, -4.8, 1.6), (0.8, -1.8, 1.4), (-4.7, 2.5, 1.8), (4.2, -3.7, 1.8), (2.0, -1.0, 1.6), (3.9, -4.7, 1.8),
              (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0), (0.7, -4.3, 1.8), (0.1, 0.05, 1.3), (-0.4, -0.6, 1.3), (-0.8, 2.6, 1.3), (3.0, -4.4, 1.8),
-             (1.6, -2.0, 1.6), (-1.2, -4.6, 1.6), (-0.8, -4.1, 1.4), (4.8, -3.0, 1.6), (5.6, -3.8, 1.6), (1.9, -1.5, 1.2), (3.2, 3.9, 1.6)]
+             (1.6, -2.0, 1.6), (-1.2, -4.6, 1.6), (-0.8, -4.1, 1.4), (4.8, -3.0, 1.6), (-2.1, 0.4, 1.4), (-3.6, 9.8, 1.2), (-2.7, 6.6, 1.2), (5.6, -3.8, 1.6), (1.9, -1.5, 1.2), (3.2, 3.9, 1.6)]
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     g = E.ground
@@ -332,7 +345,7 @@ def eye_look(E, t, show, t0=0.0):
 
 # ------------------------------------------------------------------ the shots
 SHOTS = [("look", "look_around"), ("walk", "walk_to_tree"), ("tree", "noob_tree"), ("punch", "punch"),
-         ("steve", "steve_tool"), ("wide", "noob_roblox"), ("flurry", "flurry"), ("break", "break"),
+         ("arrive", "steve_arrives"), ("steve", "steve_tool"), ("wide", "noob_roblox"), ("flurry", "flurry"), ("break", "break"),
          ("float", "noob_float"), ("normal", "steve_normal"), ("crack", "crack"), ("crackwide", ("crack", 0.9)),
          ("eye", "steve_not")]
 
@@ -482,7 +495,7 @@ def noob_anim(E, t, NF):
         # where chapter 0 left him ("Whoa. Where am I?"): still a little scared, then wonder, then delight.
         # The head turns first, the chest after it, the hips last; a step as he turns the other way.
         u = t - b("look_around")
-        ht = _keys(u, [(0.15, 0), (0.75, 38), (1.15, 38), (1.75, -36), (2.0, -30), (2.35, 0)])
+        ht = _keys(u, [(0.0, -7.4), (0.2, 0), (0.75, 38), (1.15, 38), (1.75, -36), (2.0, -30), (2.35, 0)])
         nod = _keys(u, [(1.85, 0), (2.25, -20), (2.55, -20), (2.85, -4)])
         ch = _keys(u, [(0.3, 0), (0.95, 15), (1.3, 15), (1.95, -14), (2.5, 0)])
         root = _keys(u, [(0.45, 0), (1.1, 9), (1.45, 9), (2.1, -10), (2.7, 8)])
@@ -493,9 +506,15 @@ def noob_anim(E, t, NF):
               "arm_sl": {"out": 10 + 14 * wonder + 30 * pump - 0.25 * ch, "fwd": 12 + 10 * wonder + 0.3 * ch},
               "arm_sr": {"out": 10 + 14 * wonder + 30 * pump + 0.25 * ch, "fwd": 12 + 10 * wonder - 0.3 * ch}}
         step = math.sin(math.pi * ss(1.25, 1.65, u))
-        pz["leg_sl"] = {"fwd": 18 * step}
-        lift = 0.03 * step + 0.07 * pump
-        face = dict(NF["worried"]) if u < 0.7 else (dict(NF["awe"]) if u < 2.35 else dict(NF["happy"]))
+        # chapter 0 ends with him mid-stride, walking toward us: his last steps die out here
+        dec = 1 - ss(0.0, 0.45, u)
+        sw0 = math.sin(2 * math.pi * (0.77 + 1.8 * u)) * dec
+        pz["leg_sl"] = {"fwd": 18 * step + 30 * sw0}
+        pz["leg_sr"] = {"fwd": -30 * sw0}
+        pz["arm_sl"]["fwd"] += -28 * sw0
+        pz["arm_sr"]["fwd"] += 28 * sw0
+        lift = 0.03 * step + 0.07 * pump + 0.04 * abs(sw0)
+        face = dict(NF["awe"]) if u < 2.35 else dict(NF["happy"])
         if u >= 2.35:
             face.update({"both_bm": 0.4, "m_arch": -0.55})
         M.set_noob(E, E.noob0 + Vector((0, 0, lift)), root, pz, face, t)
@@ -687,7 +706,27 @@ REST_ARM = {"fwd": 12, "out": 14, "elbow": 25}            # the pickaxe held low
 def steve_anim(E, t, SF):
     """Steve: never a statue - he breathes, shifts his weight, watches, reacts."""
     if t < b("steve_tool"):
-        E.S.holder.location = (0, 0, -300)
+        # where chapter 0 left him (standing among the trees, looking on); he sets off across the meadow,
+        # the pickaxe in his hand, watching the Noob; his last steps slow as he arrives
+        sp = steve_pos(E, t)
+        u, dist = steve_walk(t)
+        walk_yaw = _yawto(STEVE_FROM, STEVE_AT)
+        yaw_noob = _yawto(sp, Vector(E.N.root.location))
+        yaw = lerp(-40.0, walk_yaw, ss(WALK_FROM - 0.3, WALK_FROM + 0.3, t))
+        ph = dist / 0.8 * 2 * math.pi                            # one cycle per 0.8 m: the feet don't slide
+        mv = ss(WALK_FROM - 0.1, WALK_FROM + 0.3, t) * (1 - ss(b("steve_arrives", 1) - 0.35, b("steve_arrives", 1) - 0.05, t))
+        sw = math.sin(ph) * mv
+        look = max(-50.0, min(50.0, ((yaw_noob - yaw + 180) % 360) - 180))
+        pz = {"foot_sl": {"y": -0.32 * sw, "z": max(0.0, 0.22 * math.sin(ph + 1.2)) * mv},
+              "foot_sr": {"y": 0.32 * sw, "z": max(0.0, 0.22 * math.sin(ph + 1.2 + math.pi)) * mv},
+              "arm_sl": {"fwd": 18 * sw + 6, "out": 9, "elbow": 22},
+              "arm_sr": {"fwd": REST_ARM["fwd"] - 8 * sw, "out": REST_ARM["out"], "elbow": REST_ARM["elbow"]},
+              "chest_lean": 3 * mv, "chest_twist": -5 * sw,
+              "head_turn": lerp(10.0, look * 0.7, ss(0.3, 0.8, t)) + 3 * _n(t, 0.6, 31), "head_nod": 3 * abs(sw)}
+        face = dict(SF["neutral"]) if t < 1.0 else dict(SF["flat"])
+        if t >= b("punch") + 0.6:
+            face["bL_raise"] = 0.3 * ss(b("punch") + 0.6, b("punch") + 0.9, t)   # the tree didn't break: a brow
+        M.set_steve(E, sp + Vector((0, 0, 0.025 * abs(sw))), yaw, pz, face, t)
         return
     sp = steve_pos(E, t)
     yaw_tree = _yawto(sp, E.tree_foot)
@@ -800,8 +839,21 @@ def _cam(E, t, shot, t0, t1):
     if shot == "look":
         # medium-wide, low: the Noob centre, the oak at the right, the meadow and cherries behind
         c = E.noob0 + Vector((0.55, 0, 1.15))
-        loc = c + Vector((0.4, -4.4, -0.35)) + Vector((0.0, 0.25, 0.0)) * u
-        return loc, c, 24, 4.0, None, 0.05
+        wide = c + Vector((0.4, -4.4, -0.35)) + Vector((0.0, 0.25, 0.0)) * u
+        ep0 = Vector((0.9, -2.6, E.ground(0.9, -2.6) + 1.2))      # chapter 0's last camera: the same shot goes on
+        k = ss(0.8, 2.4, t)
+        loc = ep0.lerp(wide, k)
+        look = (hn + Vector((0, 0, -0.2))).lerp(c, k)
+        return loc, look, lerp(28, 24, k), lerp(3.5, 4.0, k), None, lerp(0.12, 0.05, k)
+    if shot == "arrive":
+        # Steve's last steps up to the tree, seen from ahead of him: the meadow he crossed behind him
+        hs = M.P6._head(E.S.face, E.S.holder)
+        d = STEVE_AT - STEVE_FROM
+        d = Vector((d.x, d.y, 0)).normalized()
+        left = Vector((-d.y, d.x, 0))
+        base = STEVE_AT + d * 3.2 - left * 1.2
+        loc = Vector((base.x, base.y, E.ground(base.x, base.y) + 1.25))
+        return loc, hs + Vector((0, 0, -0.4)), 30, 3.5, None, 0.05
     if shot == "walk":
         # tracking ahead of him, a little to his left: his face as he walks to the tree, the trunk at the right
         n = Vector(E.N.root.location)

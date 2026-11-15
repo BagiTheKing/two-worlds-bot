@@ -99,6 +99,11 @@
    "dur": 1.2
   },
   {
+   "beat": "steve_arrives",
+   "dur": 1.6,
+   "note": "Steve walks up the last steps: he has been crossing the meadow since chapter 0 left him among the trees"
+  },
+  {
    "line": "steve",
    "name": "steve_tool",
    "text": "It's a tree. You need a tool.",
@@ -981,6 +986,26 @@
    "kind": "step",
    "at": "walk_to_tree+1.75",
    "gain": 1.3
+  },
+  {
+   "kind": "step",
+   "at": "steve_arrives+0.12",
+   "gain": 1.0
+  },
+  {
+   "kind": "step",
+   "at": "steve_arrives+0.52",
+   "gain": 1.0
+  },
+  {
+   "kind": "step",
+   "at": "steve_arrives+0.92",
+   "gain": 1.0
+  },
+  {
+   "kind": "step",
+   "at": "steve_arrives+1.3",
+   "gain": 1.0
   },
   {
    "kind": "break",
