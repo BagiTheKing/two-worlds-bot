@@ -28,8 +28,16 @@
  },
  "music": [
   {
-   "cue": "chase",
+   "cue": "null",
    "from": 0,
+   "to": "through_tumble",
+   "gain": 0.16,
+   "fade_out": 0.6,
+   "note": "Episode 2 ends on Null's theme: it carries on under the meadow's quiet"
+  },
+  {
+   "cue": "chase",
+   "from": "through_land",
    "to": "freeze",
    "gain": 0.2,
    "swell": [
@@ -53,8 +61,15 @@
  ],
  "ambience": [
   {
-   "kind": "sky",
+   "kind": "meadow",
    "from": 0,
+   "to": "through_pull",
+   "gain": 0.08,
+   "fade_in": 0.05
+  },
+  {
+   "kind": "sky",
+   "from": "through_land",
    "to": "freeze",
    "gain": 0.06,
    "fade_in": 0.2
@@ -70,30 +85,30 @@
  "sfx": [
   {
    "kind": "crunch",
-   "at": 0.0,
+   "at": "open",
    "gain": 1.5
   },
   {
    "kind": "break",
-   "at": 0.25,
+   "at": "open+0.25",
    "gain": 0.9
   },
   {
    "kind": "roar",
-   "at": 0.1,
+   "at": "open+0.1",
    "dur": 1.4,
    "gain": 0.75
   },
   {
    "kind": "flaps",
-   "at": 0,
+   "at": "open",
    "dur": 2.6,
    "rate": 1.3,
    "gain": 0.35
   },
   {
    "kind": "whoosh",
-   "at": 1.6,
+   "at": "open+1.6",
    "dur": 0.8,
    "gain": 0.55
   },
@@ -225,17 +240,17 @@
   },
   {
    "kind": "snap",
-   "at": 0.0,
+   "at": "open",
    "gain": 1.0
   },
   {
    "kind": "break",
-   "at": 0.4,
+   "at": "open+0.4",
    "gain": 0.8
   },
   {
    "kind": "break",
-   "at": 0.55,
+   "at": "open+0.55",
    "gain": 0.7
   },
   {
@@ -250,6 +265,48 @@
    "dur": 0.8,
    "rate": 1.3,
    "gain": 0.3
+  },
+  {
+   "kind": "glitch",
+   "at": "through_quiet+1.1",
+   "dur": 0.3,
+   "gain": 0.6
+  },
+  {
+   "kind": "portal",
+   "at": "through_quiet+1.45",
+   "dur": 0.9,
+   "gain": 0.6
+  },
+  {
+   "kind": "suck",
+   "at": "through_pull",
+   "dur": 1.9,
+   "gain": 0.85
+  },
+  {
+   "kind": "whoosh",
+   "at": "through_pull+1.0",
+   "dur": 0.6,
+   "gain": 0.5
+  },
+  {
+   "kind": "whoosh",
+   "at": "through_tumble",
+   "dur": 1.0,
+   "gain": 0.6
+  },
+  {
+   "kind": "thump",
+   "at": "through_land+0.15",
+   "freq": 80,
+   "gain": 0.75
+  },
+  {
+   "kind": "thump",
+   "at": "through_land+0.45",
+   "freq": 65,
+   "gain": 0.8
   }
  ],
  "overlays": [
@@ -1937,6 +1994,26 @@
   }
  ],
  "events": [
+  {
+   "beat": "through_quiet",
+   "dur": 1.8,
+   "note": "the meadow after the snap: the quiet, the Noob lowers his arm; the frame flickers"
+  },
+  {
+   "beat": "through_pull",
+   "dur": 1.7,
+   "note": "the portal relights, unstable, and pulls: the Noob first, then Steve grabbing at him"
+  },
+  {
+   "beat": "through_tumble",
+   "dur": 1.1,
+   "note": "through the swirl"
+  },
+  {
+   "beat": "through_land",
+   "dur": 1.4,
+   "note": "they drop out of the portal's other side onto the obby"
+  },
   {
    "beat": "open",
    "dur": 1.6
