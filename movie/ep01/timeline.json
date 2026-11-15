@@ -1,7 +1,7 @@
 {
  "id": "movie_ep01_the_tree",
  "fps": 24,
- "length": 29.176,
+ "length": 30.776,
  "beats": {
   "look_around": [
    0.0,
@@ -19,57 +19,61 @@
    8.619,
    9.819
   ],
-  "steve_tool": [
+  "steve_arrives": [
    9.819,
-   11.685
+   11.419
+  ],
+  "steve_tool": [
+   11.419,
+   13.285
   ],
   "noob_roblox": [
-   12.085,
-   15.279
+   13.685,
+   16.879
   ],
   "flurry": [
-   15.579,
-   17.979
-  ],
-  "break": [
-   17.979,
+   17.179,
    19.579
   ],
-  "noob_float": [
+  "break": [
    19.579,
-   21.162
+   21.179
+  ],
+  "noob_float": [
+   21.179,
+   22.762
   ],
   "steve_normal": [
-   21.562,
-   22.446
+   23.162,
+   24.046
   ],
   "crack": [
-   23.346,
-   25.946
+   24.946,
+   27.546
   ],
   "steve_not": [
-   25.946,
-   26.676
+   27.546,
+   28.276
   ],
   "eye": [
-   26.976,
-   29.176
+   28.576,
+   30.776
   ]
  },
  "impacts": [
   8.799,
-  15.699,
-  15.889,
-  16.079,
-  16.269,
-  16.459,
-  16.649,
-  16.839,
-  17.029,
-  17.219,
-  17.409,
-  17.599,
-  17.789
+  17.299,
+  17.489,
+  17.679,
+  17.869,
+  18.059,
+  18.249,
+  18.439,
+  18.629,
+  18.819,
+  19.009,
+  19.199,
+  19.389
  ],
  "fx_times": {},
  "lines": [
@@ -88,8 +92,8 @@
    "text": "It's a tree. You need a tool.",
    "vo": false,
    "caption": true,
-   "start": 9.819,
-   "end": 11.685
+   "start": 11.419,
+   "end": 13.285
   },
   {
    "name": "noob_roblox",
@@ -97,8 +101,8 @@
    "text": "I don't need tools. I'm a Roblox player.",
    "vo": false,
    "caption": true,
-   "start": 12.085,
-   "end": 15.279
+   "start": 13.685,
+   "end": 16.879
   },
   {
    "name": "noob_float",
@@ -106,8 +110,8 @@
    "text": "...Why is it floating?",
    "vo": false,
    "caption": true,
-   "start": 19.579,
-   "end": 21.162
+   "start": 21.179,
+   "end": 22.762
   },
   {
    "name": "steve_normal",
@@ -115,8 +119,8 @@
    "text": "That's normal.",
    "vo": false,
    "caption": true,
-   "start": 21.562,
-   "end": 22.446
+   "start": 23.162,
+   "end": 24.046
   },
   {
    "name": "steve_not",
@@ -124,8 +128,8 @@
    "text": "...That's not.",
    "vo": false,
    "caption": true,
-   "start": 25.946,
-   "end": 26.676
+   "start": 27.546,
+   "end": 28.276
   }
  ],
  "cast": {
@@ -157,20 +161,20 @@
    "type": "hud",
    "text": "REALITY: 100%",
    "start": 0.0,
-   "end": 23.746
+   "end": 25.346
   },
   {
    "type": "hud",
    "text": "REALITY: 99%",
    "alert": true,
-   "start": 23.746,
-   "end": 29.576
+   "start": 25.346,
+   "end": 31.176
   },
   {
    "type": "watermark",
    "text": "@GLITCHBOUND2469",
    "start": 0.0,
-   "end": 29.576
+   "end": 31.176
   }
  ]
 }
