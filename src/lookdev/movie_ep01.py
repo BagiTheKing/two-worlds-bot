@@ -31,13 +31,21 @@ from ep10_entrance import FPS, lerp, ss                              # noqa: E40
 B = M.B                                    # the timeline's beats (shared with chapter 0's helpers)
 TREE = (2.3, 0.9)                          # the oak he punches: chapter 0's near trunk (M.NEAR_OAK)
 NOOB0 = Vector((0.1, -1.2, 0.0))           # where chapter 0 leaves him
-PUNCH_AT = Vector((1.25, 0.9, 0.0))        # where he stands to punch (west of the trunk, facing +x)
+PUNCH_AT = Vector((1.0, 0.75, 0.0))        # where he stands to punch (west of the trunk, facing +x)
 STEVE_AT = Vector((-1.8, 3.6, 0.0))        # Steve, a few blocks from the tree, pickaxe in hand
-CRACK = Vector((-3.0, -30.0, 40.0))         # the crack in the sky (north-east, high), from the tree's foot
+STEVE2 = Vector((-0.8, 2.6, 0.0))          # after the break he comes a few steps closer to look at the tree
+NOOB_BACK = Vector((-0.4, -0.6, 0.0))      # the Noob steps back from the log to look up at it
+CRACK = Vector((-14.0, -28.0, 40.0))         # the crack in the sky (south-west, high, clear of the crowns), from the tree foot
 
 
 def b(name, i=0):
     return B[name][i]
+
+
+def steve_pos(E, t):
+    u = ss(b("break") + 0.3, b("noob_float"), t)
+    p = STEVE_AT.lerp(STEVE2, u)
+    return Vector((p.x, p.y, E.ground(p.x, p.y)))
 
 
 # ------------------------------------------------------------------ the build
@@ -45,7 +53,8 @@ def build(tl, tex_dir, assets, res, samples):
     # grass cleared where they stand and where the low cameras look past (nothing in front of a face)
     clear = [(STEVE_AT.x, STEVE_AT.y, 1.3), (PUNCH_AT.x, PUNCH_AT.y, 1.2), (NOOB0.x, NOOB0.y, 1.2),
              (0.5, -5.6, 2.2), (-0.4, -4.8, 1.6), (0.8, -1.8, 1.4), (-4.7, 2.5, 1.8), (4.2, -3.7, 1.8), (2.0, -1.0, 1.6), (3.9, -4.7, 1.8),
-             (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0)]
+             (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0), (0.7, -4.3, 1.8), (0.1, 0.05, 1.3), (-0.4, -0.6, 1.3), (-0.8, 2.6, 1.3), (3.0, -4.4, 1.8),
+             (1.6, -2.0, 1.6)]
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     g = E.ground
@@ -382,18 +391,24 @@ def cast(E, t, shot, NF, SF):
         k = ss(b("break") + 0.1, b("break") + 0.35, t)
         pz = {"arm_sl": {"out": 40 + 120 * k, "fwd": 10}, "arm_sr": {"out": 40 + 120 * k, "fwd": 10},
               "chest_lean": -6 * k, "head_nod": -6}
-        M.set_noob(E, E.punch_at + Vector((0, 0, 0.12 * math.sin(math.pi * k))), 40.0, pz, NF["happy"], t)
+        back = ss(b("break") + 0.6, b("break") + 1.4, t)
+        p = E.punch_at.lerp(NOOB_BACK, back)
+        p.z = E.ground(p.x, p.y) + 0.12 * math.sin(math.pi * k)
+        M.set_noob(E, p, lerp(40.0, 70.0, back), pz, NF["happy"], t)
     else:
         # looking up at the floating tree; puzzled, then (the crack) scared
         up = ss(b("noob_float") - 0.3, b("noob_float") + 0.3, t)
         face = dict(NF["confused"]) if t < b("crack") + 0.3 else dict(NF["worried"])
         pz = {"head_nod": -26 * up, "chest_lean": -4 * up, "arm_sl": {"out": 12}, "arm_sr": {"out": 12}}
-        M.set_noob(E, E.punch_at, 40.0 - 25 * ss(b("crack"), b("crack") + 0.8, t), pz, face, t)
+        p = Vector((NOOB_BACK.x, NOOB_BACK.y, E.ground(NOOB_BACK.x, NOOB_BACK.y)))
+        c = E.crack_at - p
+        yc = math.degrees(math.atan2(c.x, -c.y))
+        M.set_noob(E, p, lerp(70.0, yc - 40, ss(b("crack"), b("crack") + 0.8, t)), pz, face, t)
     # ------------------------------------------------ Steve (on screen from shot 5)
     if t < b("steve_tool"):
         E.S.holder.location = (0, 0, -300)
     else:
-        d = E.punch_at - E.steve_at
+        d = E.tree_foot - steve_pos(E, t)
         yaw_tree = math.degrees(math.atan2(d.x, -d.y))
         face = dict(SF["flat"])
         pz = {"arm_sr": {"fwd": 40, "out": 10, "elbow": 60}, "arm_sl": {"fwd": 10, "out": 8, "elbow": 20}}
@@ -401,20 +416,27 @@ def cast(E, t, shot, NF, SF):
         if b("steve_tool") <= t < b("noob_roblox"):
             # "It's a tree. You need a tool." — the pickaxe up as the proof, lowered on "tool"
             low = ss(b("steve_tool", 1) - 0.5, b("steve_tool", 1), t)
-            pz["arm_sr"] = {"fwd": lerp(55, 35, low), "out": 38, "elbow": lerp(85, 60, low)}   # held out at his side
+            pz["arm_sr"] = {"fwd": lerp(150, 120, low), "out": 22, "elbow": lerp(55, 45, low)}  # raised clear, behind his head
             yaw = yaw_tree - 25
         if t >= b("noob_float") - 0.3:
             up = ss(b("noob_float") - 0.3, b("noob_float") + 0.4, t)
             pz["head_nod"] = -24 * up
+            pz["arm_sr"] = {"fwd": 25, "out": 14, "elbow": 35}
         if t >= b("crack"):
             # he turns to the crack in the sky, looking up: worried
-            c = E.crack_at - E.steve_at
+            c = E.crack_at - steve_pos(E, t)
             yc = math.degrees(math.atan2(c.x, -c.y))
             yaw = lerp(yaw_tree, yc, ss(b("crack") - 0.1, b("crack") + 0.45, t))
             pz["head_nod"] = -30
             pz["arm_sr"] = {"fwd": 12, "out": 14, "elbow": 25}         # the pickaxe down at his side, clear of his face
             face = dict(SF["worried"])
-        M.set_steve(E, E.steve_at, yaw, pz, face, t)
+        sp = steve_pos(E, t)
+        if b("break") + 0.3 < t < b("noob_float"):                # the few steps
+            ph = (t - b("break")) * 1.6 * 2 * math.pi
+            sw = math.sin(ph)
+            pz.update({"foot_sl": {"y": -0.3 * sw, "z": max(0.0, 0.25 * math.sin(ph + 1.2))},
+                       "foot_sr": {"y": 0.3 * sw, "z": max(0.0, 0.25 * math.sin(ph + 1.2 + math.pi))}})
+        M.set_steve(E, sp, yaw, pz, face, t)
 
 
 # ------------------------------------------------------------------ the camera
@@ -487,36 +509,31 @@ def _cam(E, t, shot, t0, t1):
     if shot == "float":
         # low from the grass up past the stump to the floating tree; the two looking up below
         # from the south-east, low: the stump's gap under the floating trunk, the two at the left looking up
-        c = tf + Vector((-1.9, 0.9, 1.9))
-        loc = tf + Vector((1.3, -4.2, 0.35 - tf.z + E.ground(tf.x + 1.3, tf.y - 4.2)))
-        return loc, c, 18, 64.0, None, 0.04
+        c = Vector((0.6, 1.0, E.ground(0.6, 1.0) + 1.8))
+        loc = Vector((3.0, -4.4, E.ground(3.0, -4.4) + 0.4))
+        return loc, c, 20, 64.0, None, 0.04
     if shot == "crack":
         # close, low, in front of him: his face turning up, the tear's pink light on it
         hs = M.P6._head(E.S.face, E.S.holder)
-        d = (E.crack_at - E.steve_at)
+        d = (E.crack_at - steve_pos(E, t))
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
         loc = hs + d * 1.7 + side * 0.6 + Vector((0, 0, -0.85))
         return loc, hs + Vector((0, 0, 0.05)), 30, 2.8, None, 0.06 + 0.35 * math.exp(-((t - b("crack") - 0.3) / 0.15) ** 2)
     if shot == "crackwide":
-        # Steve three-quarter, his face turning up to the sky as it tears open over the floating tree
+        # what he sees (the reverse of his close shot): the sky tearing open over the floating tree's crown
         hs = M.P6._head(E.S.face, E.S.holder)
-        tgt = hs.lerp(E.crack_at, 0.08)
-        d = (E.crack_at - E.steve_at)
-        d = Vector((d.x, d.y, 0)).normalized()
-        side = Vector((-d.y, d.x, 0))
         up_dir = (E.crack_at - hs).normalized()
-        # side on: his face in profile turning up, the tear across the sky along his gaze
-        # wide, from behind and beside him: Steve small below, the tear across the sky over the floating tree
-        loc = Vector((E.steve_at.x, E.steve_at.y, hs.z)) - d * 4.6 - side * 2.6 + Vector((0, 0, -0.2))
-        look = loc + (d + side * 0.25 + Vector((0, 0, 0.4))).normalized() * 10.0
-        return loc, look, 16, 64.0, None, 0.06 + 0.35 * math.exp(-((t - b("crack") - 0.3) / 0.15) ** 2)
+        loc = hs + Vector((0, 0, 0.05))
+        look = hs + up_dir * 10.0 + Vector((0, 0, -1.4 + 0.5 * ss(t0, t0 + 1.4, t)))
+        return loc, look, 18, 64.0, None, 0.05
     if shot == "eye":
         # the crack framed wide, the eye in it looking down at them
-        d = (E.crack_at - E.steve_at)
+        sp = steve_pos(E, t)
+        d = (E.crack_at - sp)
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
-        loc = E.steve_at + d * 1.6 - side * 1.8 + Vector((0, 0, 1.8))
+        loc = sp + d * 1.6 - side * 1.8 + Vector((0, 0, 1.8))
         return loc, E.crack_at, 50, 64.0, None, 0.04
     return Vector((0, -8, 3)), Vector((0, 0, 1)), 30, 64.0, None, 0.0
 
