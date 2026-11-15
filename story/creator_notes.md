@@ -30,6 +30,15 @@ the note wins. Add to it whenever the creator gives a new standing note.
   a preview, then notes, then the full render. Don't move on until the
   creator approves the part.
 - **Send the sound preview first**, before any frame render.
+- **Don't ask for approval of the steps; deliver the preview** (November 15):
+  "I can't keep approving theories you need to try the best and give me the
+  preview so I can validate the final product my approval will not change
+  anything to the best it may even make it worse so don't ask for my approval
+  from now on." Sound previews, stills and shot choices are our call: build
+  them, put them through the review gate, decide the open choices ourselves
+  (say what was chosen and why), and carry straight on to the moving preview.
+  The creator validates the preview and the final render. The review gate
+  still applies to everything.
 - **Ask when unsure.** The creator says "ask me if you need more input"; a
   question costs less than a wrong render.
 - **Give your own opinion; don't just agree.** If you disagree, say so and

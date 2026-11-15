@@ -300,6 +300,20 @@ def apply(E, t):
     if not hasattr(E, "sun0"):
         E.sun0 = E.W.sun.data.energy
     E.W.sun.data.energy = lerp(E.sun0, 0.4 * E.sun0, dk)
+    # the clouds (self-lit) take the dusk too, so the sky darkens as one
+    for nm, e0 in (("cloud", 0.85), ("cloud_under", 0.6)):
+        mt = bpy.data.materials.get(nm)
+        if mt is None:
+            continue
+        bs = mt.node_tree.nodes.get("Principled BSDF")
+        if not hasattr(E, "cloud0"):
+            E.cloud0 = {}
+        if nm not in E.cloud0:
+            E.cloud0[nm] = tuple(bs.inputs["Base Color"].default_value)[:3]
+        col = tuple(lerp(c0, c1, dk) for c0, c1 in zip(E.cloud0[nm], (0.42, 0.34, 0.72)))
+        bs.inputs["Base Color"].default_value = (*col, 1)
+        bs.inputs["Emission Color"].default_value = (*col, 1)
+        bs.inputs["Emission Strength"].default_value = e0 * (1 - 0.45 * dk)
     if not hasattr(E, "key0"):
         E.key0 = (E.key.data.energy, tuple(E.key.data.color))
     E.key.data.energy = E.key0[0] * (1 - 0.35 * dk)                  # the faces' key dims and cools with the day

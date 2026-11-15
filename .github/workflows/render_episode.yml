@@ -242,6 +242,7 @@ jobs:
         run: |
           mkdir -p build && cp ${{ inputs.prep_dir }}/timeline.json build/ && python src/textures.py build/tex > /dev/null
           python -c "import soundfile as sf; x, sr = sf.read('${{ inputs.prep_dir }}/audio.flac'); sf.write('build/audio.wav', x, sr)"
+          if [ -f ${{ inputs.prep_dir }}/voice.flac ]; then python -c "import soundfile as sf; x, sr = sf.read('${{ inputs.prep_dir }}/voice.flac'); sf.write('build/voice.wav', x, sr)"; fi
       - name: The MCprep pack (block and item textures)
         run: |
           for i in 1 2 3 4; do
