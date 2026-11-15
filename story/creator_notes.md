@@ -149,6 +149,15 @@ the note wins. Add to it whenever the creator gives a new standing note.
 
 ## Picture and animation
 
+- **Never graphically lazy** (November 15): "The episodes should not be
+  graphically lazy. The hard work should focus on that. The animation for
+  the zombies, the dragons, and so on should all be perfect, dynamic, and
+  very well made, and very well thought." Every creature and character
+  moves with weight and life: anticipation before an action, overlap and
+  follow-through after it, secondary motion (heads, arms, bodies swaying),
+  no stiff or mechanical cycles, no dead holds. This is where the effort
+  goes.
+
 - **Movement is human.** Turns go head, then shoulders, then hips, with a
   step and the arms following; never a snap ("turned suddenly"). Slow motion
   is truly slow. Characters frozen in fear move slowly, as if afraid of a
