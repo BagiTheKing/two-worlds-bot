@@ -32,19 +32,21 @@ STEVE0 = E1.STEVE2                         # where chapter 1 leaves Steve
 NOOB0 = E1.NOOB_BACK                       # and the Noob
 PORTAL = Vector((-3.8, 3.8, 0.0))          # the portal's foot (its frame 6 wide, 8 tall, facing -y)
 PW, PH = 6, 8
-BUILD_AT = Vector((-2.9, 1.3, 0.0))        # where Steve builds from
+BUILD_AT = Vector((-0.2, 2.2, 0.0))        # where Steve builds from: just right of the frame, placing to his left
+STEVE_REST = Vector((1.75, -0.45, 0.0))    # afterwards he goes to lean by the oak
 PILLAR = Vector((0.5, -0.5, 0.0))          # the button's stone (a block: x 0..1, y -1..0)
 NOOB_BTN = Vector((1.2, -0.05, 0.0))       # the Noob at the button (his right hand over it)
 PAD = Vector((2.6, -3.0, 0.0))             # the respawn pad
-STEVE_DONT = Vector((-2.6, 0.5, 0.0))      # Steve after his two steps back
+STEVE_DONT = Vector((-0.6, 1.0, 0.0))      # Steve after his two steps back
 STEVE_DODGE = Vector((-1.6, -1.6, 0.0))    # where the chaos pushes him
 STEVE_SMASH = Vector((-0.45, -0.55, 0.0))  # Steve at the button (west of it, facing +x)
+STEVE_TIRED = Vector((-0.9, -1.9, 0.0))    # after it, he staggers back a few steps (clear of the Noob's way to the portal)
 NOOB_PORTAL = Vector((-1.9, 2.4, 0.0))
-NOOB_WATCH = Vector((0.6, -1.6, 0.0))      # where the Noob watches the building from     # the Noob in front of the dark portal, at its right
+NOOB_WATCH = Vector((2.0, -1.8, 0.0))      # where the Noob watches the building from     # the Noob in front of the dark portal, at its right
 ZOMBIES = [  # (out of the portal at x, where it ends up after the pour, where the chaos takes it)
     (-4.6, Vector((-5.0, 0.4, 0)), Vector((-4.2, -0.8, 0))),
-    (-3.2, Vector((-2.8, -0.4, 0)), Vector((-2.9, -2.6, 0))),
-    (-2.2, Vector((-0.2, 1.0, 0)), Vector((1.4, -1.9, 0))),
+    (-3.2, Vector((-3.2, -0.8, 0)), Vector((-2.9, -2.6, 0))),
+    (-2.2, Vector((-1.8, -0.2, 0)), Vector((3.4, -1.0, 0))),
 ]
 
 
@@ -65,7 +67,7 @@ def build(tl, tex_dir, assets, res, samples):
              (-3.6, -1.2, 1.2), (-1.0, -2.4, 1.2), (0.6, -2.0, 1.0), (1.0, 0.75, 1.2), (0.1, 0.05, 1.3),
              (2.0, -6.5, 2.4), (-1.0, -7.5, 2.4), (4.0, -4.5, 1.6), (-6.0, -2.0, 1.6), (3.0, 1.8, 1.4), (-0.6, -3.6, 1.6),
              (-6.8, -1.4, 1.8), (-5.6, -0.8, 1.6), (-7.2, -3.4, 2.0), (-4.6, -0.2, 1.6), (0.8, 1.2, 1.4),
-             (NOOB_WATCH.x, NOOB_WATCH.y, 1.0), (-5.0, -2.6, 1.6), (-4.2, -5.2, 1.6), (-4.6, -2.0, 1.4), (-0.3, 2.9, 1.0), (-3.2, 2.0, 1.2), (3.6, -1.4, 1.2), (0.2, -1.6, 1.2)]
+             (NOOB_WATCH.x, NOOB_WATCH.y, 1.0), (-5.0, -2.6, 1.6), (-4.2, -5.2, 1.6), (-4.6, -2.0, 1.4), (-0.3, 2.9, 1.0), (-1.4, -4.4, 1.6), (STEVE_REST.x, STEVE_REST.y, 1.0), (STEVE_TIRED.x, STEVE_TIRED.y, 1.2), (0.2, 3.0, 1.2), (-0.3, -4.7, 1.6), (1.2, 5.2, 1.4), (-4.4, 1.8, 1.4), (-3.6, -5.4, 1.6), (3.4, -1.0, 1.2), (-0.8, -6.6, 1.6), (-3.2, 2.0, 1.2), (3.6, -1.4, 1.2), (0.2, -1.6, 1.2)]
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     E1._oak(E, assets)                      # the same oak; its lowest log is gone (the tree floats)
@@ -144,6 +146,17 @@ def _portal(E, assets):
     nt.links.new(tr.outputs[0], mx.inputs[2])
     nt.links.new(mx.outputs[0], out.inputs["Surface"])
     E.portal_see = see
+    # its colour dims when it goes dark (the surface itself, not only its glow)
+    src = bsdf.inputs["Base Color"].links[0].from_socket
+    dim = nt.nodes.new("ShaderNodeMix")
+    dim.data_type = "RGBA"
+    dim.blend_type = "MULTIPLY"
+    dim.inputs[0].default_value = 1.0
+    nt.links.new(src, dim.inputs[6])
+    dim.inputs[7].default_value = (1, 1, 1, 1)
+    nt.links.new(dim.outputs[2], bsdf.inputs["Base Color"])
+    nt.links.new(dim.outputs[2], bsdf.inputs["Emission Color"])
+    E.portal_dim = dim
     E.portal_power = nt.nodes[m["power"]]
     E.portal_flow = nt.nodes[m["flow"]]
     # the flash: a white sheet in the opening
@@ -477,10 +490,12 @@ def portal(E, t):
     E.portal_flash.hide_render = flash < 0.02
     E.portal_flash_em.inputs["Strength"].default_value = 14.0 * min(1.0, flash)
     swirl = ss(on, on + 0.3, t)
-    dark = ss(b("suck") + 1.6, b("suck", 1), t)
-    E.portal_power.inputs[2].default_value = (0.42 + 0.6 * math.exp(-((t - on - 0.3) / 0.4) ** 2)) * swirl * (1 - 0.82 * dark) \
+    dark = ss(b("suck") + 1.4, b("suck", 1), t)
+    E.portal_power.inputs[2].default_value = (0.42 + 0.6 * math.exp(-((t - on - 0.3) / 0.4) ** 2)) * swirl * (1 - 0.93 * dark) \
         + 1.5 * ss(b("suck"), b("suck") + 0.2, t) * (1 - ss(b("suck") + 1.2, b("suck") + 1.8, t))
     E.portal_flow.inputs[1].default_value = (0.13 * t, 0.37 * t * (1 + 2 * (1 - dark)) * (1 + 3 * ss(b("suck"), b("suck") + 0.3, t) * (1 - dark)), 0)
+    dv = 1.0 - 0.72 * dark
+    E.portal_dim.inputs[7].default_value = (dv, dv * 0.9, dv, 1)
     E.portal_see.outputs[0].default_value = 0.72 * ss(b("noob_hi") - 0.2, b("noob_hi") + 0.6, t)
     P.light.data.energy = 600 * swirl * (1 - 0.75 * dark) * (1 if vis else 0) + 3000 * min(1.0, flash)
     E.portal_room.hide_render = not (b("approach") <= t < b("snap") + 0.04)
@@ -872,9 +887,15 @@ def steve(E, t):
             pz["chest_lean"] = lerp(-6, 16, down)
         face = dict(SF["flat"])
         face.update({"bb_tilt": 0.55, "bb_raise": -0.15, "both_to": -0.1, "both_tm": -0.1, "m_arch": 0.15})
-    elif t < b("approach") + 0.6:
-        # the suck, the quiet: he straightens up, breathes out; "...Never again."; a glance up and left after
-        p = gp(E, STEVE_SMASH)
+    elif t < b("noob_hi"):
+        # the suck, the quiet: he staggers back a few steps, straightens up, breathes out; "...Never again.";
+        # a glance up and left after
+        st = ss(b("quiet") - 0.1, b("quiet") + 0.9, t)
+        p = gp(E, STEVE_SMASH.lerp(STEVE_TIRED, st))
+        if 0 < st < 1:
+            ph = (t - b("quiet") + 0.1) * 1.4 * 2 * math.pi
+            pz.update({"foot_sl": {"y": -0.22 * math.sin(ph), "z": max(0.0, 0.16 * math.sin(ph + 1.2))},
+                       "foot_sr": {"y": 0.22 * math.sin(ph), "z": max(0.0, 0.16 * math.sin(ph + 1.2 + math.pi))}})
         d = gp(E, PORTAL) - p
         yp = math.degrees(math.atan2(d.x, -d.y))
         yaw = lerp(90.0, yp + 25, ss(b("suck") + 0.1, b("suck") + 0.8, t))
@@ -886,7 +907,19 @@ def steve(E, t):
         pz["head_nod"] = 8 * ss(b("quiet"), b("quiet") + 0.8, t)
         face = dict(SF["flat"])
         face.update({"both_to": -0.5, "both_tm": -0.55, "both_ti": -0.45})
-        if t >= b("steve_never", 1) + 0.15:
+        if t >= b("steve_never", 1) + 0.9:
+            nn = Vector(E.N.root.location) - p
+            yn = math.degrees(math.atan2(nn.x, -nn.y))
+            cc = Vector((-4.4, 1.8, 0)) - Vector((p.x, p.y, 0))
+            yc = math.degrees(math.atan2(cc.x, -cc.y))
+            # the Noob goes off behind him; he doesn't watch: worn out, he turns a little away and shuts his
+            # eyes a moment, breathing
+            k = ss(b("steve_never", 1) + 0.9, b("steve_never", 1) + 1.6, t)
+            yaw = lerp(yaw, yc - 20, k)
+            pz["head_nod"] = pz.get("head_nod", 0) + 6 * k
+            face = dict(SF["flat"])
+            face.update({"both_to": -0.9 * k, "both_tm": -0.95 * k, "both_ti": -0.9 * k})
+        if b("steve_never", 1) + 0.15 <= t < b("steve_never", 1) + 0.9:
             k = ss(b("steve_never", 1) + 0.15, b("steve_never", 1) + 0.55, t)
             pz["head_turn"] = 18 * k
             pz["head_nod"] = 8 - 14 * k
@@ -894,12 +927,22 @@ def steve(E, t):
         if b("suck") <= t < b("quiet"):
             face = dict(SF["stunned"])
     else:
-        # off to the side by the broken button while the Noob goes to the portal
-        p = gp(E, STEVE_SMASH)
+        # worn out, he trudges over to lean by the oak, then watches the Noob wander off to the portal
+        w0, w1 = b("noob_hi"), b("noob_hi") + 1.4
+        u = ss(w0, w1, t)
+        p = gp(E, STEVE_TIRED.lerp(STEVE_REST, u))
+        dd = STEVE_REST - STEVE_TIRED
         n = Vector(E.N.root.location) - p
-        yaw = math.degrees(math.atan2(n.x, -n.y))
+        yaw = lerp(math.degrees(math.atan2(dd.x, -dd.y)), math.degrees(math.atan2(n.x, -n.y)), ss(w1 - 0.3, w1 + 0.4, t))
+        if 0 < u < 1:
+            ph = (t - w0) * 1.3 * 2 * math.pi
+            pz.update({"foot_sl": {"y": -0.25 * math.sin(ph), "z": max(0.0, 0.2 * math.sin(ph + 1.2))},
+                       "foot_sr": {"y": 0.25 * math.sin(ph), "z": max(0.0, 0.2 * math.sin(ph + 1.2 + math.pi))}})
         pz["arm_sr"] = {"fwd": 8, "out": 10, "elbow": 10}
+        pz["chest_lean"] = 6 + 2 * math.sin(t * 2.0)
+        pz["head_nod"] = 6
         face = dict(SF["flat"])
+        face.update({"both_to": -0.45, "both_tm": -0.5})
     M.set_steve(E, p, yaw, alive(pz, t, 21), face, t)
 
 
@@ -1167,26 +1210,26 @@ def _cam(E, t, shot, t0, t1):
     if shot == "build":
         # low and wide: the frame rising block by block, Steve placing, the button's stone at the right
         c = Vector((-3.4, 2.7, E.ground(-3.4, 2.7) + 2.6))
-        loc = Vector((-0.3, 2.9, E.ground(-0.3, 2.9) + 1.1)) + Vector((0.3, -0.2, 0)) * u
-        c = Vector((-3.6, 2.0, E.ground(-3.6, 2.0) + 2.2))
-        return loc, c, 18, 64.0, None, 0.04
+        loc = Vector((-1.4, -4.4, E.ground(-1.4, -4.4) + 1.1)) + Vector((-0.4, 0.5, 0)) * u
+        c = Vector((-2.6, 2.6, E.ground(-2.6, 2.6) + 2.9))
+        return loc, c, 20, 64.0, None, 0.04
     if shot == "this":
         # the Noob and the button, low and close; the empty frame behind
         hn = M.P6._head(E.N.face)
         c = hn.lerp(gp(E, PILLAR + Vector((0.5, 0.5, 0))) + Vector((0, 0, 1.0)), 0.45)
-        loc = Vector((-0.6, -2.5, c.z - 0.35))
+        loc = Vector((-0.2, -2.0, c.z - 0.35))
         return loc, c, 28, 3.2, None, 0.05
     if shot == "dont":
         # Steve medium, his arm shooting out toward the Noob (off frame right)
         hs = M.P6._head(E.S.face, E.S.holder)
-        loc = gp(E, STEVE_DONT) + Vector((2.0, -2.2, 1.35))
+        loc = gp(E, STEVE_DONT) + Vector((0.6, -2.8, 1.35))
         return loc, hs + Vector((0.3, -0.3, -0.45)), 30, 3.2, None, 0.08
     if shot == "press":
         # the insert: the hand coming down on the button
         top = gp(E, PILLAR + Vector((0.5, 0.5, 0))) + Vector((0, 0, 1.08))
-        loc = top + Vector((-1.0, -1.7, 0.4))
+        loc = top + Vector((-0.5, 2.2, 0.8))
         jolt = 0.1 + 0.9 * math.exp(-((t - b("press") - 0.06) / 0.06) ** 2)
-        return loc, top + Vector((0.1, -0.1, 0.14)), 45, 4.0, None, jolt
+        return loc, top + Vector((0.1, -0.1, 0.14)), 35, 4.0, None, jolt
     if shot in ("open", "chaos", "suck"):
         loc, c, lens = _wide(E, t, t0, t1)
         if shot == "open":
@@ -1224,18 +1267,23 @@ def _cam(E, t, shot, t0, t1):
     if shot == "quiet":
         # the meadow settling; the dark portal; Steve breathing out at the right
         c = Vector((-2.0, 1.8, E.ground(-2.0, 1.8) + 2.2))
-        loc = Vector((1.8, -6.4, E.ground(1.8, -6.4) + 1.0))
+        loc = Vector((-0.8, -6.6, E.ground(-0.8, -6.6) + 1.0))
         return loc, c, 24, 64.0, None, 0.03
     if shot == "never":
         # Steve centre-right, tired; the dark portal at the left behind him
         hs = M.P6._head(E.S.face, E.S.holder)
-        loc = gp(E, STEVE_SMASH) + Vector((0.6, -2.8, 1.45))
+        loc = gp(E, STEVE_TIRED) + Vector((0.6, -2.8, 1.45))
         return loc, hs + Vector((-0.6, 0, -0.35)), 30, 3.2, None, 0.04
     if shot == "approach":
         # the Noob wandering up to the dark portal
         n = Vector(E.N.root.location)
-        loc = Vector((-3.2, 2.0, E.ground(-3.2, 2.0) + 1.2))
-        return loc, n + Vector((0, 0, 1.2)), 24, 64.0, None, 0.04
+        # tracking ahead of him, at his right: his face as he wanders up to the portal; Steve by the oak behind
+        d = gp(E, NOOB_PORTAL) - E.pad_at
+        d = Vector((d.x, d.y, 0)).normalized()
+        left = Vector((-d.y, d.x, 0))
+        # from by the portal's right side, looking back down his way: he comes toward us, Steve resting at the side
+        loc = Vector((-4.4, 1.8, E.ground(-4.4, 1.8) + 1.3))
+        return loc, n + Vector((0, 0, 1.1)), 26, 64.0, None, 0.04
     if shot == "mirror":
         # from the front-right, low: the dark portal filling the right; the Noob at the left waving
         # from the front-left, low: the dark portal at the left, the Noob at its right waving into it
@@ -1253,7 +1301,7 @@ def _cam(E, t, shot, t0, t1):
     if shot == "snap":
         # the flash and the snap; then the empty frame, the quiet meadow seen through it, the Noob frozen
         n = gp(E, NOOB_PORTAL)
-        loc = Vector((-4.2, -5.2, E.ground(-4.2, -5.2) + 1.6))
+        loc = Vector((-3.6, -5.4, E.ground(-3.6, -5.4) + 1.8))
         c = gp(E, PORTAL) + Vector((-0.6, 0, 2.6))
         return loc, c, 24, 64.0, None, 0.04 + 0.7 * math.exp(-((t - b("snap") - 0.05) / 0.1) ** 2)
     return Vector((0, -8, 3)), Vector((0, 0, 1)), 30, 64.0, None, 0.0

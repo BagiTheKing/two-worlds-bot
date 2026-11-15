@@ -1,0 +1,259 @@
+{
+ "id": "movie_ep02_the_plan",
+ "fps": 24,
+ "length": 45.931,
+ "beats": {
+  "eye": [
+   0.0,
+   2.6
+  ],
+  "look_up": [
+   2.6,
+   3.3
+  ],
+  "steve_rule": [
+   3.3,
+   5.383
+  ],
+  "steve_plan": [
+   5.983,
+   9.109
+  ],
+  "build": [
+   9.409,
+   12.409
+  ],
+  "noob_this": [
+   12.409,
+   12.994
+  ],
+  "steve_dont": [
+   13.044,
+   13.487
+  ],
+  "press": [
+   13.487,
+   13.987
+  ],
+  "portal_open": [
+   13.987,
+   15.587
+  ],
+  "pour": [
+   15.587,
+   19.587
+  ],
+  "hit": [
+   19.587,
+   20.387
+  ],
+  "respawn": [
+   20.387,
+   21.187
+  ],
+  "noob_fine": [
+   21.187,
+   22.571
+  ],
+  "chaos": [
+   22.971,
+   25.971
+  ],
+  "steve_planb": [
+   25.971,
+   27.164
+  ],
+  "dash": [
+   27.214,
+   28.114
+  ],
+  "smash": [
+   28.114,
+   29.114
+  ],
+  "suck": [
+   29.114,
+   31.714
+  ],
+  "quiet": [
+   31.714,
+   32.914
+  ],
+  "steve_never": [
+   32.914,
+   34.348
+  ],
+  "approach": [
+   34.948,
+   36.948
+  ],
+  "noob_hi": [
+   36.948,
+   37.357
+  ],
+  "mirror": [
+   37.557,
+   40.557
+  ],
+  "noob_waved": [
+   40.557,
+   42.831
+  ],
+  "snap": [
+   43.431,
+   45.931
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_rule",
+   "who": "steve",
+   "text": "New rule. We leave. Today.",
+   "vo": false,
+   "caption": true,
+   "start": 3.3,
+   "end": 5.383
+  },
+  {
+   "name": "steve_plan",
+   "who": "steve",
+   "text": "Portal home. Three steps. Nobody touches anything.",
+   "vo": false,
+   "caption": true,
+   "start": 5.983,
+   "end": 9.109
+  },
+  {
+   "name": "noob_this",
+   "who": "noob",
+   "text": "This one?",
+   "vo": false,
+   "caption": true,
+   "start": 12.409,
+   "end": 12.994
+  },
+  {
+   "name": "steve_dont",
+   "who": "steve",
+   "text": "Don't!",
+   "vo": false,
+   "caption": true,
+   "start": 13.044,
+   "end": 13.487
+  },
+  {
+   "name": "noob_fine",
+   "who": "noob",
+   "text": "I'm fine! New record!",
+   "vo": false,
+   "caption": true,
+   "start": 21.187,
+   "end": 22.571
+  },
+  {
+   "name": "steve_planb",
+   "who": "steve",
+   "text": "Plan B!",
+   "vo": false,
+   "caption": true,
+   "start": 25.971,
+   "end": 27.164
+  },
+  {
+   "name": "steve_never",
+   "who": "steve",
+   "text": "...Never again.",
+   "vo": false,
+   "caption": true,
+   "start": 32.914,
+   "end": 34.348
+  },
+  {
+   "name": "noob_hi",
+   "who": "noob",
+   "text": "Hi!",
+   "vo": false,
+   "caption": true,
+   "start": 36.948,
+   "end": 37.357
+  },
+  {
+   "name": "noob_waved",
+   "who": "noob",
+   "text": "...Steve? It waved back.",
+   "vo": false,
+   "caption": true,
+   "start": 40.557,
+   "end": 42.831
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "timer",
+   "label": "PLAN",
+   "fail_after": 3.0,
+   "y": 430,
+   "start": 10.487,
+   "end": 15.587
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "TEAMWORK!",
+   "sub": "Build a portal together",
+   "start": 14.287,
+   "end": 17.387
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 46.331
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 99%",
+   "start": 2.6,
+   "end": 29.714
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 97%",
+   "alert": true,
+   "start": 29.714,
+   "end": 46.331
+  },
+  {
+   "type": "flash",
+   "strength": 0.8,
+   "start": 28.464,
+   "end": 28.614
+  }
+ ]
+}
