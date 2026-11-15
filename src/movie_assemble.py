@@ -147,7 +147,7 @@ def main():
     ap.add_argument("out")
     ap.add_argument("--start", type=float, default=0.0, help="the chapter's first second on the timeline")
     ap.add_argument("--end", type=float, default=None, help="the chapter's last second on the timeline")
-    ap.add_argument("--fade", type=float, default=0.4, help="sound fade at the chapter's end (seconds)")
+    ap.add_argument("--fade", type=float, default=0.03, help="sound fade at the chapter's end (seconds): a click guard only - the movie is one film, chapters run into each other")
     ap.add_argument("--lufs", type=float, default=-15.0, help="the chapter's loudness (all chapters match); none to keep the mix")
     a = ap.parse_args()
     tl = json.load(open(a.timeline))
