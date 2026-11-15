@@ -213,12 +213,18 @@ def _crack(E):
     de = ImageDraw.Draw(eye)
     cx, cy = W_ // 2, H_ // 2
     de.ellipse((cx - 210, cy - 120, cx + 210, cy + 120), fill=(196, 196, 204, 255), outline=(255, 255, 255, 255), width=8)
-    de.ellipse((cx - 95, cy - 95, cx + 95, cy + 95), fill=(60, 58, 70, 255))
-    de.rectangle((cx - 20, cy - 92, cx + 20, cy + 92), fill=(255, 20, 220, 255))
+    # the pupil is its own piece (eye_look moves it: the eye looks round, and blinks)
+    pup = Image.new("RGBA", (192, 192), (0, 0, 0, 0))
+    dp = ImageDraw.Draw(pup)
+    dp.ellipse((1, 1, 190, 190), fill=(60, 58, 70, 255))
+    dp.rectangle((76, 4, 116, 188), fill=(255, 20, 220, 255))
+    ppath = os.path.join(bpy.app.tempdir or "/tmp", "ep01_pupil.png")
+    pup.save(ppath)
     path = os.path.join(bpy.app.tempdir or "/tmp", "ep01_crack_eye.png")
     eye.save(path)
     paths["eye"] = path
     E.crack_mats = {}
+    paths["pupil"] = ppath
     for k, pth in paths.items():
         m = bpy.data.materials.new(f"crack_{k}")
         m.use_nodes = True
@@ -247,6 +253,17 @@ def _crack(E):
     ob.visible_diffuse = False
     ob.visible_glossy = False
     E.crack = ob
+    bpy.ops.mesh.primitive_plane_add(size=1)
+    pu = bpy.context.active_object
+    pu.name = "sky_pupil"
+    pu.data.materials.append(E.crack_mats["pupil"])
+    pu.parent = ob
+    pu.scale = (192 / W_, 192 / H_, 1)
+    pu.location = (0, 0, 0.002)
+    for a_ in ("visible_shadow", "visible_diffuse", "visible_glossy"):
+        setattr(pu, a_, False)
+    E.pupil = pu
+    E.eye_room = (210 - 96) / W_                  # how far the pupil can travel inside the white
     E.crack_at = E.tree_foot + CRACK
     lt = bpy.data.objects.new("crack_light", bpy.data.lights.new("crack_light", "SUN"))
     E.sc.collection.objects.link(lt)
@@ -254,6 +271,18 @@ def _crack(E):
     lt.data.energy = 0.0
     lt.rotation_euler = (-CRACK).to_track_quat("-Z", "Y").to_euler()
     E.crack_light = lt
+
+
+def eye_look(E, t, show, t0=0.0):
+    """The pupil: it looks round (slow drifts with small darts); hidden with the plain crack."""
+    E.pupil.hide_render = not show
+    if not show:
+        return
+    u = t - t0
+    x = 0.75 * math.sin(u * 1.3) * math.cos(u * 0.4) + 0.2 * math.sin(u * 5.1) * (math.sin(u * 2.3) > 0.6)
+    blink = 0.0
+    E.pupil.location = (E.eye_room * max(-1.0, min(1.0, x)), 0.0, 0.002)
+    E.pupil.scale = (192 / 2048, 192 / 640 * (1 - 0.9 * blink), 1)
 
 
 # ------------------------------------------------------------------ the shots
@@ -362,6 +391,7 @@ def apply(E, t):
         E.crack.rotation_quaternion = to_cam.to_track_quat("Z", "Y") @ Quaternion((0, 0, 1), math.radians(-14))
         E.crack.scale = (52.0 * max(u, 0.02), 52.0 * 640 / 2048 * (0.25 + 0.75 * u), 1)
         E.crack.data.materials[0] = E.crack_mats["eye" if t >= b("steve_not") else "crack"]
+    eye_look(E, t, (not E.crack.hide_render) and t >= b("steve_not"), b("steve_not"))
     cast(E, t, name, NF, SF)
     camera(E, t, name, t0, t1)
 

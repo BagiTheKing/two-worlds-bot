@@ -127,6 +127,18 @@ def draw_captions(img, caps, t):
                                  stroke_width=max(7, base // 9), stroke_fill=(0, 0, 0))
 
 
+def loudness(audio, start, dur, target):
+    """A plain gain to the target loudness (measured first), the rare peak above -1.5 dB caught by a fast
+    limiter: the mix's dynamics stay as they are."""
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-ss", f"{start:.3f}", "-t", f"{dur:.3f}", "-i", audio,
+                        "-af", f"loudnorm=I={target}:TP=-1.5:LRA=20:print_format=json", "-f", "null", "-"],
+                       capture_output=True, text=True)
+    txt = r.stderr
+    m = json.loads(txt[txt.rindex("{"):txt.rindex("}") + 1])
+    gain = target - float(m["input_i"])
+    return f"volume={gain:.2f}dB,alimiter=limit={10 ** (-1.5 / 20):.4f}:level=false:attack=2:release=60"
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("timeline")
@@ -136,6 +148,7 @@ def main():
     ap.add_argument("--start", type=float, default=0.0, help="the chapter's first second on the timeline")
     ap.add_argument("--end", type=float, default=None, help="the chapter's last second on the timeline")
     ap.add_argument("--fade", type=float, default=0.4, help="sound fade at the chapter's end (seconds)")
+    ap.add_argument("--lufs", type=float, default=-15.0, help="the chapter's loudness (all chapters match); none to keep the mix")
     a = ap.parse_args()
     tl = json.load(open(a.timeline))
     fps = tl["fps"]
@@ -156,6 +169,8 @@ def main():
     black = Image.new("RGB", (W, H), (0, 0, 0))
     dur = (f1 - f0 + 1) / fps
     af = f"afade=t=out:st={max(0.0, dur - a.fade):.3f}:d={a.fade:.3f}"
+    if a.lufs is not None:
+        af = loudness(a.audio, a.start, dur, a.lufs) + "," + af
     ff = subprocess.Popen(
         ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
          "-r", str(fps), "-i", "-", "-ss", f"{a.start:.3f}", "-t", f"{dur:.3f}", "-i", a.audio,

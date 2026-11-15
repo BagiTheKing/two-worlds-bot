@@ -452,6 +452,7 @@ def light(E, t):
         fade = 1 - ss(snap + 0.15, snap + 0.9, t)
         E.crack.scale = (52.0 * (1 - 0.35 * u) * max(0.02, fade ** 0.3), 52.0 * 640 / 2048 * max(0.015, 1 - u), 1)
         E.crack.data.materials[0] = E.crack_mats["eye" if t < snap else "crack"]
+    E1.eye_look(E, t + 3.2, (not E.crack.hide_render) and t < snap, 0.0)       # it goes on looking round from chapter 1
 
 
 def portal(E, t):
