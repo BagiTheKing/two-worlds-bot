@@ -613,67 +613,131 @@ def junk(E, t):
         pole.rotation_euler = rot
 
 
+def steve_spot(E, t):
+    """Where Steve stands (his path, not his pose): for whoever looks at him."""
+    if t < b("chaos"):
+        return gp(E, STEVE_DONT)
+    if t < b("dash"):
+        return gp(E, STEVE_DONT.lerp(STEVE_DODGE, ss(b("chaos"), b("chaos") + 1.6, t)))
+    return gp(E, STEVE_DODGE.lerp(STEVE_SMASH, ss(b("dash"), b("dash", 1), t)))
+
+
+def _yaw(d):
+    return math.degrees(math.atan2(d.x, -d.y))
+
+
+def _wrap(a):
+    return (a + 180.0) % 360.0 - 180.0
+
+
+def _personas():
+    from mob import Persona
+    return [Persona(1.3, speed=0.85, limp=0.6, tilt=8, reach=84, droop=0.35),     # the slow one, dragging a leg
+            Persona(4.1, speed=1.15, limp=0.0, tilt=-5, reach=94, droop=0.0),     # the eager one (goes for Steve)
+            Persona(7.7, speed=0.8, limp=0.3, tilt=13, reach=78, droop=0.7)]      # head lolling, one arm low
+
+
+STRIDE = 0.85                               # blocks per step cycle
+
+
 def zombie_state(E, k, t):
-    """(position, yaw, walking phase or None, lifted 0..1) for zombie k."""
+    """Where zombie k is and what it is doing: a dict with p, yaw, phase (None standing), arms_up, lean,
+    look (a target point), lunge, lift (0..1, the suck), flail."""
+    per = _personas()[k]
     x_out, after, chaos_to = ZOMBIES[k]
     t_out = b("pour") + 0.4 + 1.0 * k
-    door = gp(E, Vector((x_out, PORTAL.y + 0.7, 0)))
-    if t < t_out:
+    if t < t_out - 0.35:
         return None
+    door = gp(E, Vector((x_out, PORTAL.y + 0.9, 0)))
     a = gp(E, after)
-    d1 = (a - door).length
-    v = 1.1
-    t_arrive = t_out + d1 / v
-    if t < t_arrive:
-        p = door.lerp(a, (t - t_out) / (t_arrive - t_out))
-        d = a - door
-        return p, math.degrees(math.atan2(d.x, -d.y)), (t - t_out) * 1.6, 0.0
-    c0 = b("chaos") + 0.2 * k
-    if t < c0:
-        d = a - door
-        return a, math.degrees(math.atan2(d.x, -d.y)), None, 0.0
     c = gp(E, chaos_to)
+    steve_p = steve_spot(E, t)
+    v = 0.95 * per.speed
+    st = {"arms_up": 1.0, "lean": 0.0, "lunge": 0.0, "lift": 0.0, "flail": 0.0, "look": steve_p + Vector((0, 0, 1.6))}
+    # out of the portal: the first step a lurch (it falls forward out of the surface, catches itself);
+    # the arms come up from hanging as its head finds Steve
+    d1 = (a - door).length
+    t_arr = t_out + d1 / v
+    if t < t_arr:
+        u = max(0.0, (t - t_out) / (t_arr - t_out))
+        p = door.lerp(a, u)
+        st["phase"] = max(0.0, (t - t_out)) * v / STRIDE
+        st["yaw"] = _yaw(a - door)
+        st["arms_up"] = ss(t_out + 0.15, t_out + 0.9, t)
+        st["lean"] = 14 * math.exp(-((t - t_out - 0.15) / 0.2) ** 2)          # the lurch
+        st["p"] = p
+        return st
+    c0 = b("chaos") + 0.25 * k
     d2 = (c - a).length
-    t2 = c0 + d2 / 0.9
-    sk = b("suck") + 0.35 * k + 0.5
+    t2 = c0 + d2 / v
+    sk = b("suck") + 0.45 + 0.35 * k
+    if t < c0:
+        # arrived: swaying where it stopped, turning to Steve
+        st["p"] = a
+        st["phase"] = None
+        y_path, y_st = _yaw(a - door), _yaw(steve_p - a)
+        st["yaw"] = y_path + _wrap(y_st - y_path) * ss(t_arr, t_arr + 0.9, t)
+        return st
     if t < sk:
         if t < t2:
-            p = a.lerp(c, (t - c0) / (t2 - c0))
-            ph = (t - c0) * 1.5
+            st["p"] = a.lerp(c, (t - c0) / (t2 - c0))
+            st["phase"] = (d1 + (t - c0) * v) / STRIDE
+            st["yaw"] = _yaw(c - a)
         else:
-            p, ph = c, None
-        d = c - a
-        return p, math.degrees(math.atan2(d.x, -d.y)), ph, 0.0
-    p = c if t >= t2 else a.lerp(c, (sk - c0) / (t2 - c0))
-    return p, math.degrees(math.atan2((c - a).x, -(c - a).y)), None, min(1.0, (t - sk) / 0.9)
+            st["p"] = c
+            st["phase"] = None
+            st["yaw"] = _yaw(c - a) + _wrap(_yaw(steve_p - c) - _yaw(c - a)) * ss(t2, t2 + 0.7, t)
+        if k == 1:
+            # the eager one goes for Steve: a wind-up (leaning back), the lunge, the miss, the recovery
+            l0 = b("chaos") + 1.3
+            wind = math.exp(-((t - l0) / 0.12) ** 2)
+            lunge = ss(l0 + 0.08, l0 + 0.28, t) * (1 - ss(l0 + 0.55, l0 + 1.0, t))
+            st["lean"] -= 8 * wind
+            st["lunge"] = lunge
+        return st
+    # the suck: it digs in, leaning away, dragged backward over the grass; then torn off its feet, flailing
+    p_stop = c if t >= t2 else a.lerp(c, min(1.0, (sk - c0) / max(1e-3, t2 - c0)))
+    mouth = portal_mouth(E)
+    away = p_stop - gp(E, PORTAL)
+    away = Vector((away.x, away.y, 0)).normalized()
+    drag = ss(sk - 0.5, sk, t)
+    st["p"] = p_stop - away * 0.5 * drag ** 2
+    st["phase"] = (t - sk) * 2.2 if t < sk else None
+    st["yaw"] = _yaw(away)                                        # it faces away from the pull, fighting it
+    st["lean"] = 16 * drag
+    st["flail"] = ss(sk - 0.4, sk, t)
+    st["lift"] = ss(sk, sk + 0.9, t) if t >= sk else 0.0
+    st["arms_up"] = 1.0
+    return st
 
 
 def zombies(E, t):
-    from mob import pose_mob
+    from mob import pose_mob, zombie_pose
     mouth = portal_mouth(E)
+    pers = _personas()
     for k, Z in enumerate(E.Z):
         st = zombie_state(E, k, t)
         if st is None:
             Z.root.location = (0, 0, -300)
             continue
-        p, yaw, ph, lift = st
-        sw = math.sin(ph * 2 * math.pi) if ph is not None else 0.0
-        pz = {"root_yaw": yaw, "arm_r": {"fwd": 88 + 4 * sw, "out": 4}, "arm_l": {"fwd": 92 - 4 * sw, "out": 4},
-              "leg_r": {"fwd": 24 * sw}, "leg_l": {"fwd": -24 * sw}, "head_turn": 8 * math.sin(t * 1.3 + k),
-              "head_tilt": 6 * math.sin(t * 0.9 + 2 * k)}
+        p, yaw = st["p"], st["yaw"]
+        # the head: toward what it looks at, a little behind the body's turn (overlap)
+        lk = st["look"] - (p + Vector((0, 0, 1.6)))
+        look = max(-55.0, min(55.0, _wrap(_yaw(lk) - yaw)))
+        pz, bob = zombie_pose(pers[k], t, st["phase"], st["arms_up"], st["lean"], look, st["lunge"], st["flail"])
+        pz["root_yaw"] = yaw
         s = 1.0
-        if lift > 0:
-            u = lift
-            p = p.lerp(mouth + Vector((0, 0.6, -1.0)), u ** 2.0) + Vector((0, 0, 1.4 * math.sin(math.pi * min(1, u * 1.2)) * (1 - u)))
-            pz["root_yaw"] = yaw + 540 * u ** 1.5
-            pz["arm_r"] = {"fwd": 150, "out": 30}
-            pz["arm_l"] = {"fwd": 150, "out": 30}
-            pz["leg_r"] = {"fwd": 30}
-            pz["leg_l"] = {"fwd": -20}
-            s = max(0.0, 1 - ss(0.8, 1.0, u))
+        if st["lift"] > 0:
+            u = st["lift"]
+            # off its feet: pulled up and back into the mouth, tumbling, stretched as it goes in
+            p = p.lerp(mouth + Vector((0, 0.6, -1.0)), u ** 1.8) + Vector((0, 0, 1.3 * math.sin(math.pi * min(1.0, u * 1.15)) * (1 - u)))
+            pz["root_yaw"] = yaw + 400 * u ** 1.6
+            pz["root_pitch"] = -30 - 140 * u ** 1.4
+            s = max(0.0, 1 - ss(0.82, 1.0, u))
         pose_mob(Z, pz)
-        Z.root.location = p + Vector((0, 0, 0.03 * abs(sw)))
+        Z.root.location = p + Vector((0, 0, bob))
         Z.root.scale = (s, s, s)
+        # the step into the world: its rear half still behind the surface (the membrane hides it)
 
 
 # ------------------------------------------------------------------ the cast
@@ -749,8 +813,8 @@ def steve(E, t):
         d = gp(E, PORTAL) - p
         yaw = math.degrees(math.atan2(d.x, -d.y))
         if b("chaos") <= t:
-            z = E.Z[1].root.location
-            dz = Vector(z) - p
+            zs = zombie_state(E, 1, t)
+            dz = (zs["p"] if zs else gp(E, PORTAL)) - p
             yaw = math.degrees(math.atan2(dz.x, -dz.y))
             fl = math.sin((t - b("chaos")) * 5.0)
             pz["arm_sl"] = {"fwd": 60 + 30 * fl, "out": 40, "elbow": 30}
