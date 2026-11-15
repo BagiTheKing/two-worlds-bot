@@ -31,15 +31,39 @@ from ep10_entrance import FPS, lerp, ss                              # noqa: E40
 B = M.B                                    # the timeline's beats (shared with chapter 0's helpers)
 TREE = (2.3, 0.9)                          # the oak he punches: chapter 0's near trunk (M.NEAR_OAK)
 NOOB0 = Vector((0.1, -1.2, 0.0))           # where chapter 0 leaves him
-PUNCH_AT = Vector((1.0, 0.75, 0.0))        # where he stands to punch (west of the trunk, facing +x)
+PUNCH_AT = Vector((1.25, 0.5, 0.0))        # where he stands to punch (west of the trunk, facing +x): the fist lands
+STAND_BACK = Vector((-0.75, 0.0, 0.0))     # a step back from it while talking, so his arms stay off the bark
 STEVE_AT = Vector((-1.8, 3.6, 0.0))        # Steve, a few blocks from the tree, pickaxe in hand
 STEVE2 = Vector((-0.8, 2.6, 0.0))          # after the break he comes a few steps closer to look at the tree
 NOOB_BACK = Vector((-0.4, -0.6, 0.0))      # the Noob steps back from the log to look up at it
 CRACK = Vector((-14.0, -28.0, 40.0))         # the crack in the sky (south-west, high, clear of the crowns), from the tree foot
 
 
+TOOL_ARM = ((80, 70), 20, (0, 0))           # "You need a tool.": Steve's arm (fwd, out, elbow), the pick head held up clear
+
+
 def b(name, i=0):
     return B[name][i]
+
+
+def noob_stand(E, t):
+    """Where the Noob stands from the walk to the flurry: a step back from the trunk while he talks, a step in to
+    punch (with the turn before the punch and before the flurry), a step back after the one punch."""
+    k = 1.0 - ss(b("punch") - 0.45, b("punch") - 0.05, t)                    # in for the punch
+    if t >= b("punch") + 0.5:
+        k = ss(b("punch") + 0.5, b("punch") + 1.0, t) * (1.0 - ss(b("flurry") - 0.4, b("flurry") - 0.05, t))
+    p = E.punch_at + STAND_BACK * k
+    p.z = E.ground(p.x, p.y)
+    return p, k
+
+
+def _step(pz, t, k0, k1):
+    """Feet stepping while the stand point moves (k0..k1 the window), so he never slides."""
+    if k0 < t < k1:
+        ph = (t - k0) / (k1 - k0) * 2 * math.pi
+        pz["leg_sl"] = {"fwd": 22 * math.sin(ph)}
+        pz["leg_sr"] = {"fwd": -22 * math.sin(ph)}
+    return pz
 
 
 def steve_pos(E, t):
@@ -226,7 +250,7 @@ def _crack(E):
     E.crack_at = E.tree_foot + CRACK
     lt = bpy.data.objects.new("crack_light", bpy.data.lights.new("crack_light", "SUN"))
     E.sc.collection.objects.link(lt)
-    lt.data.color = (1.0, 0.25, 0.85)
+    lt.data.color = (0.75, 0.2, 1.0)                  # the tear's magenta
     lt.data.energy = 0.0
     lt.rotation_euler = (-CRACK).to_track_quat("-Z", "Y").to_euler()
     E.crack_light = lt
@@ -266,13 +290,16 @@ def apply(E, t):
     from world import set_sky
     name, t0, t1 = which(t)
     # the sky: day, darkening a little as the crack opens
-    dk = 0.55 * ss(b("crack") + 0.1, b("crack") + 0.7, t)
+    dk = ss(b("crack"), b("crack") + 0.6, t)
     look = M.mix_look({"glow": (255, 240, 220), "power": 30.0, "horizon": (220, 232, 250), "mid": (140, 186, 250),
                        "zenith": (52, 120, 236), "fill": 1.1, "fill_col": (186, 206, 240)},
                       {"glow": (236, 190, 230), "power": 8.0, "horizon": (200, 150, 200), "mid": (110, 90, 170),
                        "zenith": (44, 34, 96), "fill": 0.8, "fill_col": (176, 150, 220)}, dk)
     set_sky(E.W, look)
-    E.sc.view_settings.exposure = lerp(-0.05, -0.35, dk)
+    E.sc.view_settings.exposure = lerp(-0.05, -0.55, dk)
+    if not hasattr(E, "sun0"):
+        E.sun0 = E.W.sun.data.energy
+    E.W.sun.data.energy = lerp(E.sun0, 0.25 * E.sun0, dk)
     # the oak, the break, the bits
     broken = t >= b("break") + 0.05
     E.log0.hide_render = broken
@@ -306,7 +333,7 @@ def apply(E, t):
             ob.rotation_euler = tuple(w * dt)
         ob.location = p
     # the crack: opens across the sky; the eye from "...That's not."
-    E.crack_light.data.energy = 2.2 * ss(b("crack") + 0.15, b("crack") + 0.5, t) * (1 + 0.25 * math.sin(t * 23))
+    E.crack_light.data.energy = 1.7 * ss(b("crack") + 0.15, b("crack") + 0.5, t) * (1 + 0.25 * math.sin(t * 23))
     E.crack.hide_render = t < b("crack") + 0.15
     if not E.crack.hide_render:
         u = ss(b("crack") + 0.15, b("crack") + 0.55, t)
@@ -315,7 +342,7 @@ def apply(E, t):
         E.crack.location = E.crack_at
         E.crack.rotation_mode = "QUATERNION"
         E.crack.rotation_quaternion = to_cam.to_track_quat("Z", "Y") @ Quaternion((0, 0, 1), math.radians(-14))
-        E.crack.scale = (34.0 * max(u, 0.02), 34.0 * 640 / 2048 * (0.25 + 0.75 * u), 1)
+        E.crack.scale = (52.0 * max(u, 0.02), 52.0 * 640 / 2048 * (0.25 + 0.75 * u), 1)
         E.crack.data.materials[0] = E.crack_mats["eye" if t >= b("steve_not") else "crack"]
     cast(E, t, name, NF, SF)
     camera(E, t, name, t0, t1)
@@ -335,9 +362,10 @@ def cast(E, t, shot, NF, SF):
     elif t < b("noob_tree"):
         # the walk to the tree
         s = ss(b("walk_to_tree"), b("walk_to_tree", 1), t)
-        p = E.noob0.lerp(E.punch_at, s)
+        stand = E.punch_at + STAND_BACK
+        p = E.noob0.lerp(stand, s)
         p.z = g(p.x, p.y)
-        d = E.punch_at - E.noob0
+        d = stand - E.noob0
         ph = (t - b("walk_to_tree")) * 1.25 * 2 * math.pi
         sw = math.sin(ph) * (1 - ss(b("walk_to_tree", 1) - 0.25, b("walk_to_tree", 1), t))
         pz = {"head_turn": 6, "head_nod": -4, "arm_sl": {"fwd": -26 * sw}, "arm_sr": {"fwd": 26 * sw},
@@ -352,7 +380,8 @@ def cast(E, t, shot, NF, SF):
               "arm_sl": {"out": 14}}
         face = dict(NF["happy"])
         face.update({"eL_to": -0.3, "eL_tm": -0.3})                 # cocky: one eye squinting
-        M.set_noob(E, E.punch_at, yaw, pz, face, t)
+        _step(pz, t, b("punch") - 0.45, b("punch") - 0.05)
+        M.set_noob(E, noob_stand(E, t)[0], yaw, pz, face, t)
     elif t < b("steve_tool"):
         # one punch: wind up, hit (punch+0.18), pull back, the arm hangs
         u = t - b("punch")
@@ -360,13 +389,15 @@ def cast(E, t, shot, NF, SF):
         wind = math.exp(-((u - 0.06) / 0.06) ** 2)
         pz = {"chest_twist": -12 * wind + 10 * jab, "arm_sr": {"fwd": 90 * jab + 40 * (1 - ss(0.2, 0.8, u)), "out": 4},
               "arm_sl": {"fwd": 20, "out": 10}, "chest_lean": 6 * jab}
-        M.set_noob(E, E.punch_at, 90.0, pz, NF["happy"] if u < 0.6 else NF["confused"], t)
+        _step(pz, t, b("punch") + 0.5, b("punch") + 1.0)
+        M.set_noob(E, noob_stand(E, t)[0], 90.0, pz, NF["happy"] if u < 0.6 else NF["confused"], t)
     elif t < b("noob_roblox"):
         # Steve speaks; the Noob looks to him, unimpressed by the tool talk
         d = E.steve_at - E.punch_at
         yaw = math.degrees(math.atan2(d.x, -d.y)) * ss(b("steve_tool"), b("steve_tool") + 0.5, t) + \
             90 * (1 - ss(b("steve_tool"), b("steve_tool") + 0.5, t))
-        M.set_noob(E, E.punch_at, yaw, {"head_turn": 0, "arm_sl": {"out": 10}, "arm_sr": {"out": 10}}, NF["neutral"], t)
+        pz = _step({"head_turn": 0, "arm_sl": {"out": 10}, "arm_sr": {"out": 10}}, t, b("punch") + 0.5, b("punch") + 1.0)
+        M.set_noob(E, noob_stand(E, t)[0], yaw, pz, NF["neutral"], t)
     elif t < b("flurry"):
         # "I don't need tools. I'm a Roblox player." — he turns to Steve and spreads his arms
         d = E.steve_at - E.punch_at
@@ -374,7 +405,8 @@ def cast(E, t, shot, NF, SF):
         pz = {"arm_sl": {"out": 20 + 70 * k, "fwd": 10}, "arm_sr": {"out": 20 + 70 * k, "fwd": 10}, "chest_lean": -6 * k,
               "head_nod": -4 * k}
         yaw = lerp(math.degrees(math.atan2(d.x, -d.y)) * 0.45, 90.0, ss(b("flurry") - 0.35, b("flurry"), t))
-        M.set_noob(E, E.punch_at, yaw, pz, NF["happy"], t)
+        _step(pz, t, b("flurry") - 0.4, b("flurry") - 0.05)
+        M.set_noob(E, noob_stand(E, t)[0], yaw, pz, NF["happy"], t)
     elif t < b("break") + 0.1:
         # the flurry: alternating fists, about five a second
         hits = _flurry_hits()
@@ -382,7 +414,7 @@ def cast(E, t, shot, NF, SF):
         side = "arm_sr" if k % 2 == 0 else "arm_sl"
         other = "arm_sl" if side == "arm_sr" else "arm_sr"
         ph = min(1.0, max(0.0, (t - (hits[k] - 0.05)) / 0.19)) if hits else 0
-        pz = {side: {"fwd": 92 * math.sin(math.pi * ph) + 20, "out": 4}, other: {"fwd": 35, "out": 8},
+        pz = {side: {"fwd": 92 * math.sin(math.pi * ph) + 20, "out": 4}, other: {"fwd": 22, "out": 12},
               "chest_twist": 9 if side == "arm_sr" else -9, "chest_lean": 6}
         face = dict(NF["shout"])
         M.set_noob(E, E.punch_at, 90.0, pz, face, t)
@@ -399,7 +431,7 @@ def cast(E, t, shot, NF, SF):
         # looking up at the floating tree; puzzled, then (the crack) scared
         up = ss(b("noob_float") - 0.3, b("noob_float") + 0.3, t)
         face = dict(NF["confused"]) if t < b("crack") + 0.3 else dict(NF["worried"])
-        pz = {"head_nod": -26 * up, "chest_lean": -4 * up, "arm_sl": {"out": 12}, "arm_sr": {"out": 12}}
+        pz = {"head_nod": -40 * up, "chest_lean": -6 * up, "arm_sl": {"out": 12}, "arm_sr": {"out": 12}}
         p = Vector((NOOB_BACK.x, NOOB_BACK.y, E.ground(NOOB_BACK.x, NOOB_BACK.y)))
         c = E.crack_at - p
         yc = math.degrees(math.atan2(c.x, -c.y))
@@ -416,11 +448,11 @@ def cast(E, t, shot, NF, SF):
         if b("steve_tool") <= t < b("noob_roblox"):
             # "It's a tree. You need a tool." — the pickaxe up as the proof, lowered on "tool"
             low = ss(b("steve_tool", 1) - 0.5, b("steve_tool", 1), t)
-            pz["arm_sr"] = {"fwd": lerp(150, 120, low), "out": 22, "elbow": lerp(55, 45, low)}  # raised clear, behind his head
+            pz["arm_sr"] = {"fwd": lerp(*TOOL_ARM[0], low), "out": TOOL_ARM[1], "elbow": lerp(*TOOL_ARM[2], low)}
             yaw = yaw_tree - 25
         if t >= b("noob_float") - 0.3:
             up = ss(b("noob_float") - 0.3, b("noob_float") + 0.4, t)
-            pz["head_nod"] = -24 * up
+            pz["head_nod"] = -38 * up
             pz["arm_sr"] = {"fwd": 25, "out": 14, "elbow": 35}
         if t >= b("crack"):
             # he turns to the crack in the sky, looking up: worried
@@ -480,7 +512,7 @@ def _cam(E, t, shot, t0, t1):
         return loc, c, 26, 4.0, None, 0.05
     if shot == "punch":
         c = mid + Vector((0, 0, 0.95))
-        loc = c + Vector((0.3, -3.7, 0.25))
+        loc = c + Vector((0.9, -3.8, 0.3))          # side on, a little in front: the Noob left, the trunk right
         sh = 0.08 + 0.9 * math.exp(-((t - b("punch") - 0.18) / 0.06) ** 2)
         return loc, c, 26, 4.5, None, sh
     if shot == "steve":
@@ -491,7 +523,7 @@ def _cam(E, t, shot, t0, t1):
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
         loc = c + d * 2.3 - side * 0.5 + Vector((0, 0, 0.05))
-        return loc, c - side * 0.25, 38, 2.8, None, 0.05
+        return loc, c - side * 0.25, 34, 2.8, None, 0.05
     if shot == "break":
         c = mid + Vector((-0.6, 0, 1.25))
         loc = c + Vector((-0.4, -5.0, -0.55))
@@ -525,7 +557,7 @@ def _cam(E, t, shot, t0, t1):
         hs = M.P6._head(E.S.face, E.S.holder)
         up_dir = (E.crack_at - hs).normalized()
         loc = hs + Vector((0, 0, 0.05))
-        look = hs + up_dir * 10.0 + Vector((0, 0, -1.4 + 0.5 * ss(t0, t0 + 1.4, t)))
+        look = hs + up_dir * 10.0 + Vector((0, 0, 0.6 + 0.5 * ss(t0, t0 + 1.4, t)))
         return loc, look, 18, 64.0, None, 0.05
     if shot == "eye":
         # the crack framed wide, the eye in it looking down at them
@@ -534,7 +566,7 @@ def _cam(E, t, shot, t0, t1):
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
         loc = sp + d * 1.6 - side * 1.8 + Vector((0, 0, 1.8))
-        return loc, E.crack_at, 50, 64.0, None, 0.04
+        return loc, E.crack_at, 28, 64.0, None, 0.04
     return Vector((0, -8, 3)), Vector((0, 0, 1)), 30, 64.0, None, 0.0
 
 
