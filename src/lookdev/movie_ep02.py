@@ -741,6 +741,18 @@ def zombies(E, t):
 
 
 # ------------------------------------------------------------------ the cast
+def alive(pz, t, seed):
+    """Never a statue: breathing, and a head that drifts a little, added on top of every pose."""
+    def n(f, sd):
+        return math.sin(t * f + sd) * 0.6 + math.sin(t * f * 2.31 + sd * 1.7) * 0.3 + math.sin(t * f * 4.07 + sd * 2.9) * 0.1
+    pz = dict(pz)
+    pz["chest_lean"] = pz.get("chest_lean", 0) + 1.6 * math.sin(t * 2 * math.pi / 3.1 + seed)
+    pz["head_tilt"] = pz.get("head_tilt", 0) + 3.0 * n(0.6, seed + 1)
+    pz["head_turn"] = pz.get("head_turn", 0) + 3.0 * n(0.5, seed + 2)
+    pz["head_nod"] = pz.get("head_nod", 0) + 1.5 * n(0.7, seed + 3)
+    return pz
+
+
 def steve_place_pose(E, t, pz):
     """His right arm reaching to place the block being placed (a quick jab on each place sound)."""
     pt = place_times()
@@ -888,7 +900,7 @@ def steve(E, t):
         yaw = math.degrees(math.atan2(n.x, -n.y))
         pz["arm_sr"] = {"fwd": 8, "out": 10, "elbow": 10}
         face = dict(SF["flat"])
-    M.set_steve(E, p, yaw, pz, face, t)
+    M.set_steve(E, p, yaw, alive(pz, t, 21), face, t)
 
 
 def noob(E, t):
@@ -960,7 +972,7 @@ def noob(E, t):
         yaw = math.degrees(math.atan2(d.x, -d.y))
         face = dict(NF["shock"])
         pz = {"arm_sl": {"out": 70, "fwd": 20}, "arm_sr": {"out": 70, "fwd": 20}}
-        M.set_noob(E, p, yaw, pz, face, t)
+        M.set_noob(E, p, yaw, alive(pz, t, 7), face, t)
         _burst_apply(E, t - b("hit") - 0.12)
         return
     elif t < b("approach"):
@@ -977,7 +989,7 @@ def noob(E, t):
         face.update({"both_ps": 1.1})                                    # dazed: small pupils
         if t >= b("noob_fine", 1) + 0.5:
             face = dict(NF["awe"]) if t < b("suck", 1) else dict(NF["neutral"])
-        M.set_noob(E, p, yaw, pz, face, t)
+        M.set_noob(E, p, yaw, alive(pz, t, 7), face, t)
         sc = E.noob_scale0 * s
         E.N.root.scale = (sc, sc, sc)
         return
@@ -1012,7 +1024,7 @@ def noob(E, t):
             face = dict(NF["shock"])
             face.update({"m_o": 0.3})
         pz["head_turn"] = -10 * ss(b("noob_waved") + 0.2, b("noob_waved") + 0.7, t)
-    M.set_noob(E, p, yaw, pz, face, t)
+    M.set_noob(E, p, yaw, alive(pz, t, 7), face, t)
 
 
 def _burst_reset(E):
