@@ -120,7 +120,8 @@ def main():
     layer.paste((255, 40, 210, 255), (0, 0), ImageChops.offset(mm, 8, 5))
     layer.paste((*st["slash"], 255), (0, 0), mm)
     layer = layer.filter(ImageFilter.GaussianBlur(1.2))
-    img.alpha_composite(layer, (x + word.width + gap - pad, y + (word.height - num.height) // 2 - pad))
+    shift = (num.width - ref.width) * 2 // 3          # a wider number grows toward FINALE too, keeping the edge margins
+    img.alpha_composite(layer, (x + word.width + gap - shift - pad, y + (word.height - num.height) // 2 - pad))
     img.convert("RGB").save(a.out, quality=95)
     print("wrote", a.out)
 
