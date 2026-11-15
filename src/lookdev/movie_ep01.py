@@ -31,7 +31,7 @@ from ep10_entrance import FPS, lerp, ss                              # noqa: E40
 B = M.B                                    # the timeline's beats (shared with chapter 0's helpers)
 TREE = (2.3, 0.9)                          # the oak he punches: chapter 0's near trunk (M.NEAR_OAK)
 NOOB0 = Vector((0.1, -1.2, 0.0))           # where chapter 0 leaves him
-PUNCH_AT = Vector((1.25, 0.5, 0.0))        # where he stands to punch (west of the trunk, facing +x): the fist lands
+PUNCH_AT = Vector((1.42, 0.5, 0.0))        # where he stands to punch (west of the trunk, facing +x): the fist lands
 STAND_BACK = Vector((-0.75, 0.0, 0.0))     # a step back from it while talking, so his arms stay off the bark
 STEVE_AT = Vector((-1.8, 3.6, 0.0))        # Steve, a few blocks from the tree, pickaxe in hand
 STEVE2 = Vector((-0.8, 2.6, 0.0))          # after the break he comes a few steps closer to look at the tree
@@ -78,7 +78,7 @@ def build(tl, tex_dir, assets, res, samples):
     clear = [(STEVE_AT.x, STEVE_AT.y, 1.3), (PUNCH_AT.x, PUNCH_AT.y, 1.2), (NOOB0.x, NOOB0.y, 1.2),
              (0.5, -5.6, 2.2), (-0.4, -4.8, 1.6), (0.8, -1.8, 1.4), (-4.7, 2.5, 1.8), (4.2, -3.7, 1.8), (2.0, -1.0, 1.6), (3.9, -4.7, 1.8),
              (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0), (0.7, -4.3, 1.8), (0.1, 0.05, 1.3), (-0.4, -0.6, 1.3), (-0.8, 2.6, 1.3), (3.0, -4.4, 1.8),
-             (1.6, -2.0, 1.6)]
+             (1.6, -2.0, 1.6), (3.2, 3.9, 1.6)]
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     g = E.ground
@@ -250,7 +250,7 @@ def _crack(E):
     E.crack_at = E.tree_foot + CRACK
     lt = bpy.data.objects.new("crack_light", bpy.data.lights.new("crack_light", "SUN"))
     E.sc.collection.objects.link(lt)
-    lt.data.color = (0.75, 0.2, 1.0)                  # the tear's magenta
+    lt.data.color = (0.6, 0.25, 1.0)                  # the tear's magenta
     lt.data.energy = 0.0
     lt.rotation_euler = (-CRACK).to_track_quat("-Z", "Y").to_euler()
     E.crack_light = lt
@@ -333,7 +333,7 @@ def apply(E, t):
             ob.rotation_euler = tuple(w * dt)
         ob.location = p
     # the crack: opens across the sky; the eye from "...That's not."
-    E.crack_light.data.energy = 1.7 * ss(b("crack") + 0.15, b("crack") + 0.5, t) * (1 + 0.25 * math.sin(t * 23))
+    E.crack_light.data.energy = 1.0 * ss(b("crack") + 0.15, b("crack") + 0.5, t) * (1 + 0.25 * math.sin(t * 23))
     E.crack.hide_render = t < b("crack") + 0.15
     if not E.crack.hide_render:
         u = ss(b("crack") + 0.15, b("crack") + 0.55, t)
@@ -387,8 +387,9 @@ def cast(E, t, shot, NF, SF):
         u = t - b("punch")
         jab = math.exp(-((u - 0.18) / 0.07) ** 2)
         wind = math.exp(-((u - 0.06) / 0.06) ** 2)
-        pz = {"chest_twist": -12 * wind + 10 * jab, "arm_sr": {"fwd": 90 * jab + 40 * (1 - ss(0.2, 0.8, u)), "out": 4},
-              "arm_sl": {"fwd": 20, "out": 10}, "chest_lean": 6 * jab}
+        # the arm on the camera's side (arm_sl is at -y, the south, when he faces the trunk)
+        pz = {"chest_twist": 12 * wind - 10 * jab, "arm_sl": {"fwd": 90 * jab + 40 * (1 - ss(0.2, 0.8, u)) * (1 - jab), "out": 4},
+              "arm_sr": {"fwd": 20, "out": 10}, "chest_lean": 6 * jab}
         _step(pz, t, b("punch") + 0.5, b("punch") + 1.0)
         M.set_noob(E, noob_stand(E, t)[0], 90.0, pz, NF["happy"] if u < 0.6 else NF["confused"], t)
     elif t < b("noob_roblox"):
@@ -414,7 +415,7 @@ def cast(E, t, shot, NF, SF):
         side = "arm_sr" if k % 2 == 0 else "arm_sl"
         other = "arm_sl" if side == "arm_sr" else "arm_sr"
         ph = min(1.0, max(0.0, (t - (hits[k] - 0.05)) / 0.19)) if hits else 0
-        pz = {side: {"fwd": 92 * math.sin(math.pi * ph) + 20, "out": 4}, other: {"fwd": 22, "out": 12},
+        pz = {side: {"fwd": 70 * math.sin(math.pi * ph) + 20, "out": 4},   # level at the hit other: {"fwd": 22, "out": 12},
               "chest_twist": 9 if side == "arm_sr" else -9, "chest_lean": 6}
         face = dict(NF["shout"])
         M.set_noob(E, E.punch_at, 90.0, pz, face, t)
@@ -512,7 +513,7 @@ def _cam(E, t, shot, t0, t1):
         return loc, c, 26, 4.0, None, 0.05
     if shot == "punch":
         c = mid + Vector((0, 0, 0.95))
-        loc = c + Vector((0.9, -3.8, 0.3))          # side on, a little in front: the Noob left, the trunk right
+        loc = c + Vector((0.6, -3.6, 0.3))          # side on from the south, a little in front: the Noob left, the fist on the bark at the right
         sh = 0.08 + 0.9 * math.exp(-((t - b("punch") - 0.18) / 0.06) ** 2)
         return loc, c, 26, 4.5, None, sh
     if shot == "steve":
@@ -557,7 +558,7 @@ def _cam(E, t, shot, t0, t1):
         hs = M.P6._head(E.S.face, E.S.holder)
         up_dir = (E.crack_at - hs).normalized()
         loc = hs + Vector((0, 0, 0.05))
-        look = hs + up_dir * 10.0 + Vector((0, 0, 0.6 + 0.5 * ss(t0, t0 + 1.4, t)))
+        look = E.crack_at + Vector((0, 0, -6.0 + 4.0 * ss(t0, t0 + 1.4, t)))     # the tear in the middle, tilting up to it
         return loc, look, 18, 64.0, None, 0.05
     if shot == "eye":
         # the crack framed wide, the eye in it looking down at them
