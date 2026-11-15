@@ -300,6 +300,10 @@ def apply(E, t):
     if not hasattr(E, "sun0"):
         E.sun0 = E.W.sun.data.energy
     E.W.sun.data.energy = lerp(E.sun0, 0.25 * E.sun0, dk)
+    if not hasattr(E, "key0"):
+        E.key0 = (E.key.data.energy, tuple(E.key.data.color))
+    E.key.data.energy = E.key0[0] * (1 - 0.6 * dk)                  # the faces' key dims and cools with the day
+    E.key.data.color = tuple(lerp(c0, c1, dk) for c0, c1 in zip(E.key0[1], (0.72, 0.74, 1.0)))
     # the oak, the break, the bits
     broken = t >= b("break") + 0.05
     E.log0.hide_render = broken
