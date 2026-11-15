@@ -1249,7 +1249,7 @@ NEAR_OAK = (2.3, 0.9)                     # the trunk at the right of the last s
 STEVE_FAR = Vector((-5.5, 16.0, 0.0))    # Steve, far off at the left edge
 
 
-def build_forest(tl, tex_dir, assets, res, samples):
+def build_forest(tl, tex_dir, assets, res, samples, drop_trees=(), clear=()):
     """The meadow the finale ends in (the restored world, world.build_world), the first portal
     (portal.py) tumbling in the sky above an oak, the Noob, and Steve far off."""
     from world import build_world, set_sky, set_sun
@@ -1261,8 +1261,9 @@ def build_forest(tl, tex_dir, assets, res, samples):
     sc = bpy.context.scene
     E.sc = sc
     cfg = {"seed": 7, "sun": (140, 40), "flat_box": [-7, 7, -40, 6], "plant_clear_box": [-2.5, 2.5, -4, 6],
-           "feature_trees": [(OAK[0], OAK[1], "oak"), (NEAR_OAK[0], NEAR_OAK[1], "oak"), (-9, 16, "cherry"), (9, 15, "big_oak")],
-           "clear_plants": [(SPOT.x, SPOT.y, 1.4), (0.3, 1.0, 1.4)],
+           "feature_trees": [ft for ft in [(OAK[0], OAK[1], "oak"), (NEAR_OAK[0], NEAR_OAK[1], "oak"), (-9, 16, "cherry"),
+                                           (9, 15, "big_oak")] if (ft[0], ft[1]) not in drop_trees],
+           "clear_plants": [(SPOT.x, SPOT.y, 1.4), (0.3, 1.0, 1.4)] + list(clear),
            "particle_box": (-5, 7, 6, 14, 2.0, 9.0)}             # leaves drift round the oak, never across the lens
     E.W = W = build_world(sc, assets, cfg)
     set_sky(W, {"glow": (255, 240, 220), "power": 30.0, "horizon": (220, 232, 250), "mid": (140, 186, 250),
