@@ -727,6 +727,13 @@ def steve_anim(E, t, SF):
               "arm_sr": {"fwd": REST_ARM["fwd"] - 8 * sw, "out": REST_ARM["out"], "elbow": REST_ARM["elbow"]},
               "chest_lean": 3 * mv, "chest_twist": -5 * sw,
               "head_turn": lerp(10.0, look * 0.7, ss(0.3, 0.8, t)) + 3 * _n(t, 0.6, 31), "head_nod": 3 * abs(sw)}
+        # as he stops he brings the pickaxe up and turns to the tree: the close-up ("It's a tree.") cuts in on it
+        up = ss(b("steve_arrives", 1) - 0.5, b("steve_arrives", 1) - 0.04, t)
+        if up > 0:
+            pz["arm_sr"] = {"fwd": lerp(pz["arm_sr"]["fwd"], TOOL_ARM[0][0], up), "out": lerp(REST_ARM["out"], TOOL_ARM[1], up),
+                            "elbow": lerp(REST_ARM["elbow"], TOOL_ARM[2][0], up)}
+            yaw = yaw + ((_yawto(sp, E.tree_foot) - 25 - yaw + 180) % 360 - 180) * up
+            pz["head_turn"] = lerp(pz["head_turn"], 0.0, up)
         face = dict(SF["neutral"]) if t < 1.0 else dict(SF["flat"])
         if t >= b("punch") + 0.6:
             face["bL_raise"] = 0.3 * ss(b("punch") + 0.6, b("punch") + 0.9, t)   # the tree didn't break: a brow
