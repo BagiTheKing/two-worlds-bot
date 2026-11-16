@@ -43,7 +43,7 @@ STEVE_SMASH = Vector((-0.45, -0.55, 0.0))  # Steve at the button (west of it, fa
 STEVE_TIRED = Vector((-0.9, -1.9, 0.0))    # after it, he staggers back a few steps (clear of the Noob's way to the portal)
 NOOB_PORTAL = Vector((0.0, 2.6, 0.0))      # "Hi!": at the portal's right edge, so a camera sees his face and the portal
 MIRROR_CAM = Vector((-3.0, 0.0, 0.0))      # "Hi!": front-left of him, seeing into the portal
-WAVED_CAM = Vector((-1.8, 0.4, 0.0))       # "It waved back": close on him, the portal (and the figure) behind
+WAVED_CAM = Vector((0.0, -2.2, 0.0))       # "It waved back": close on him, the portal (and the figure) behind
 NOOB_WATCH = Vector((1.9, -0.6, 0.0))
 BUILD_CAM = Vector((-0.6, -5.0, 0.0))      # the build's camera (the frame, Steve at its end, the button, the Noob)      # where the Noob watches the building from     # the Noob in front of the dark portal, at its right
 ZOMBIES = [  # (out of the portal at x, where it ends up after the pour, where the chaos takes it)
@@ -1399,9 +1399,10 @@ def _cam(E, t, shot, t0, t1):
     if shot == "react":
         # their faces as the zombies come out: from the portal's right side, the two of them looking at it,
         # a zombie shuffling past at the side of the frame
-        mid = 0.5 * (gp(E, STEVE_DONT) + gp(E, NOOB_BTN))
-        loc = Vector((1.0, 3.4, E.ground(1.0, 3.4) + 1.45))
-        return loc, mid + Vector((0, 0, 1.2)), 24, 64.0, None, 0.08
+        # from his west side (he faces between the portal and us): Steve's face near, the Noob behind at the button
+        st = gp(E, STEVE_DONT)
+        loc = Vector((-3.0, 0.1, E.ground(-3.0, 0.1) + 1.5))
+        return loc, st.lerp(gp(E, NOOB_BTN), 0.35) + Vector((0, 0, 1.3)), 24, 64.0, None, 0.08
     if shot == "hit":
         # side on, the Noob in the middle: the cube flies in from the portal and smacks him; his parts fly
         n = gp(E, NOOB_BTN)
@@ -1465,13 +1466,13 @@ def _cam(E, t, shot, t0, t1):
         loc = gp(E, WAVED_CAM) + Vector((0, 0, 1.45))
         hn = M.P6._head(E.N.face)
         c = gp(E, PORTAL) + Vector((0.4, 0, 2.2))
-        return loc, c.lerp(hn, 0.6), 28, 4.0, (hn - loc).length, 0.03
+        return loc, c.lerp(hn, 0.5), 35, 4.0, (hn - loc).length, 0.03
     if shot == "snap":
         # the flash and the snap; then the empty frame, the quiet meadow seen through it, the Noob frozen
         n = gp(E, NOOB_PORTAL)
         loc = Vector((-3.6, -5.4, E.ground(-3.6, -5.4) + 1.8))
-        c = gp(E, PORTAL) + Vector((-0.6, 0, 2.6))
-        return loc, c, 24, 64.0, None, 0.04 + 0.7 * math.exp(-((t - b("snap") - 0.05) / 0.1) ** 2)
+        c = (gp(E, PORTAL) + Vector((-0.6, 0, 2.6))).lerp(gp(E, NOOB_PORTAL) + Vector((0, 0, 1.2)), 0.35)
+        return loc, c, 22, 64.0, None, 0.04 + 0.7 * math.exp(-((t - b("snap") - 0.05) / 0.1) ** 2)
     return Vector((0, -8, 3)), Vector((0, 0, 1)), 30, 64.0, None, 0.0
 
 
