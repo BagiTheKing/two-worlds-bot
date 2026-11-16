@@ -1340,13 +1340,17 @@ def apply_forest(E, t):
         set_noob(E, E.spot, 0, pose_d, face, t)
     else:
         # he walks toward us and past, the near trunk at the right
-        s = (t - tb) / (b("forest_end", 1) - tb)
+        # he slows and stops on the chapter's last frame: chapter 1 opens on him standing there
+        u = min(1.0, (t - tb) / (b("forest_end", 1) - tb))
+        s = u * (2 - u)
         end = Vector((0.1, -1.2, 0))
         p = E.spot.lerp(end, s)
         p.z = E.ground(p.x, p.y)
-        ph = (t - tb) * 1.8 * 2 * math.pi
-        sw = math.sin(ph)
-        pose_d = {"head_turn": 18 * math.sin((t - tb) * 1.7), "head_nod": -4, "arm_sl": {"fwd": -28 * sw}, "arm_sr": {"fwd": 28 * sw},
+        ph = (t - tb) * 1.8 * 2 * math.pi * (1 - 0.35 * u)
+        sw = math.sin(ph) * (1 - ss(0.55, 1.0, u))
+        k = ss(0.55, 1.0, u)                       # settling into the pose chapter 1 opens on
+        pose_d = {"head_turn": lerp(18 * math.sin((t - tb) * 1.7), -7.4, k), "head_nod": -4 * (1 - k),
+                  "arm_sl": {"fwd": -28 * sw + 12 * k, "out": 10 * k}, "arm_sr": {"fwd": 28 * sw + 12 * k, "out": 10 * k},
                   "leg_sl": {"fwd": 30 * sw}, "leg_sr": {"fwd": -30 * sw}}
         set_noob(E, p + Vector((0, 0, 0.04 * abs(sw))), 0, pose_d, NF["awe"], t)
     # Steve, far off at the left, among the trees
@@ -1470,7 +1474,15 @@ def main():
     for part, fr in (("island", island), ("forest", forest)):
         if not fr:
             continue
-        E = (build if part == "island" else build_forest)(tl, a.tex_dir, a.assets, a.res, a.samples)
+        if part == "island":
+            E = build(tl, a.tex_dir, a.assets, a.res, a.samples)
+        else:
+            # the meadow exactly as chapter 1 builds it (the trees and bushes come from one random sequence:
+            # the same list, the same clearings, the same oak), so chapter 1 picks up on the same frame
+            import movie_ep01 as E1
+            E = build_forest(tl, a.tex_dir, a.assets, a.res, a.samples, drop_trees=[(NEAR_OAK[0], NEAR_OAK[1])],
+                             clear=E1.CLEAR)
+            E1._oak(E, a.assets)
         E.force = bool(a.times)
         E.mouth = {}
         if not os.path.exists(a.voice):                                         # no voices-only track: the mix

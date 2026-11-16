@@ -85,13 +85,17 @@ def steve_pos(E, t):
     return Vector((p.x, p.y, E.ground(p.x, p.y)))
 
 
+# grass cleared where they stand and where the low cameras look past (nothing in front of a face);
+# chapter 0's last shot is built with the same list, so its meadow is this one, blade for blade
+CLEAR = [(STEVE_AT.x, STEVE_AT.y, 1.3), (PUNCH_AT.x, PUNCH_AT.y, 1.2), (NOOB0.x, NOOB0.y, 1.2),
+         (0.5, -5.6, 2.2), (-0.4, -4.8, 1.6), (0.8, -1.8, 1.4), (-4.7, 2.5, 1.8), (4.2, -3.7, 1.8), (2.0, -1.0, 1.6), (3.9, -4.7, 1.8),
+         (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0), (0.7, -4.3, 1.8), (0.1, 0.05, 1.3), (-0.4, -0.6, 1.3), (-0.8, 2.6, 1.3), (3.0, -4.4, 1.8),
+         (1.6, -2.0, 1.6), (-1.2, -4.6, 1.6), (-0.8, -4.1, 1.4), (4.8, -3.0, 1.6), (-2.1, 0.4, 1.4), (-3.6, 9.8, 1.2), (-2.7, 6.6, 1.2), (5.6, -3.8, 1.6), (1.9, -1.5, 1.2), (3.2, 3.9, 1.6)]
+
+
 # ------------------------------------------------------------------ the build
 def build(tl, tex_dir, assets, res, samples):
-    # grass cleared where they stand and where the low cameras look past (nothing in front of a face)
-    clear = [(STEVE_AT.x, STEVE_AT.y, 1.3), (PUNCH_AT.x, PUNCH_AT.y, 1.2), (NOOB0.x, NOOB0.y, 1.2),
-             (0.5, -5.6, 2.2), (-0.4, -4.8, 1.6), (0.8, -1.8, 1.4), (-4.7, 2.5, 1.8), (4.2, -3.7, 1.8), (2.0, -1.0, 1.6), (3.9, -4.7, 1.8),
-             (0.3, 5.0, 1.6), (-3.3, 0.3, 1.8), (-0.5, 4.3, 1.4), (-4.4, 8.2, 2.0), (0.7, -4.3, 1.8), (0.1, 0.05, 1.3), (-0.4, -0.6, 1.3), (-0.8, 2.6, 1.3), (3.0, -4.4, 1.8),
-             (1.6, -2.0, 1.6), (-1.2, -4.6, 1.6), (-0.8, -4.1, 1.4), (4.8, -3.0, 1.6), (-2.1, 0.4, 1.4), (-3.6, 9.8, 1.2), (-2.7, 6.6, 1.2), (5.6, -3.8, 1.6), (1.9, -1.5, 1.2), (3.2, 3.9, 1.6)]
+    clear = CLEAR
     E = M.build_forest(tl, tex_dir, assets, res, samples, drop_trees=[(M.NEAR_OAK[0], M.NEAR_OAK[1])], clear=clear)
     E.tl = tl
     g = E.ground
@@ -507,9 +511,8 @@ def noob_anim(E, t, NF):
               "arm_sl": {"out": 10 + 14 * wonder + 30 * pump - 0.25 * ch, "fwd": 12 + 10 * wonder + 0.3 * ch},
               "arm_sr": {"out": 10 + 14 * wonder + 30 * pump + 0.25 * ch, "fwd": 12 + 10 * wonder - 0.3 * ch}}
         step = math.sin(math.pi * ss(1.25, 1.65, u))
-        # chapter 0 ends with him mid-stride, walking toward us: his last steps die out here
-        dec = 1 - ss(0.0, 0.45, u)
-        sw0 = math.sin(2 * math.pi * (0.77 + 1.8 * u)) * dec
+        # chapter 0 ends with his last step taken: he stands here, as it left him
+        sw0 = 0.0
         pz["leg_sl"] = {"fwd": 18 * step + 30 * sw0}
         pz["leg_sr"] = {"fwd": -30 * sw0}
         pz["arm_sl"]["fwd"] += -28 * sw0
