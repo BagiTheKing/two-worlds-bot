@@ -346,7 +346,7 @@ def _junk(E, assets):
         ob = _cube(E, f"junk_{k}", s, pink)
         _uv_full(ob)
         land = Vector((rnd.uniform(-6.0, 3.2), rnd.uniform(-4.5, 2.2), 0))
-        if (land - NOOB_BTN).length < 1.0 or (land - PAD).length < 1.2 or (land - PILLAR).length < 1.0:
+        if (land - Vector((1.2, -0.05, 0.0))).length < 1.0 or (land - PAD).length < 1.2 or (land - PILLAR).length < 1.0:
             land += Vector((0.0, -1.3, 0))
         E.cubes.append({"ob": ob, "s": s, "t0": launch[k], "land": land, "spin": Vector((rnd.uniform(-7, 7), rnd.uniform(-7, 7), rnd.uniform(-4, 4))),
                         "sx": rnd.uniform(-1.6, 1.6), "sz": rnd.uniform(2.0, 5.5), "T": rnd.uniform(0.7, 1.0)})
@@ -922,12 +922,12 @@ def steve(E, t):
         # the Noob bursts (the hit): he flinches, an arm up against the bits
         fl_hit = ss(b("hit") + 0.0, b("hit") + 0.08, t) * (1 - ss(b("hit") + 0.4, b("hit") + 0.9, t))
         if b("pour") <= t < b("chaos"):
-            pz["arm_sl"] = {"fwd": 30 + 45 * jump + 60 * fl_hit, "out": 25 + 15 * jump, "elbow": 15 + 25 * fl_hit}
-            pz["arm_sr"] = {"fwd": 30 + 35 * jump, "out": 25 + 15 * jump, "elbow": 15}
-            pz["chest_lean"] = -4 + 6 * jump - 8 * fl_hit
-            pz["head_nod"] = 8 * jump
+            pz["arm_sl"] = {"fwd": 30 + 30 * jump + 60 * fl_hit, "out": 25 + 25 * jump, "elbow": 15 + 25 * fl_hit}
+            pz["arm_sr"] = {"fwd": 20 + 10 * jump, "out": 20 + 20 * jump, "elbow": 15}   # the near arm kept off the lens
+            pz["chest_lean"] = -4 + 2 * jump - 8 * fl_hit
+            pz["head_nod"] = -6 * jump                     # chin up a little: his face stays on the camera
             pz["chest_twist"] = 18 * jump
-            pz["head_turn"] = pz["head_turn"] + 35 * jump
+            pz["head_turn"] = pz["head_turn"] + 10 * jump   # a jerk, his face still to the camera
             p = p + Vector((0.25 * jump, -0.25 * jump, 0))
         if b("chaos") <= t:
             zs = zombie_state(E, 1, t)
@@ -1195,7 +1195,7 @@ def noob(E, t):
         pc = gp(E, PORTAL) - p
         y_portal = math.degrees(math.atan2(pc.x, -pc.y))
         mc = MIRROR_CAM - p
-        y_side = y_portal + 0.3 * _wrap(math.degrees(math.atan2(mc.x, -mc.y)) - y_portal)   # half to us
+        y_side = y_portal + 0.45 * _wrap(math.degrees(math.atan2(mc.x, -mc.y)) - y_portal)   # half to us
         wc = WAVED_CAM - p
         y_cam = math.degrees(math.atan2(wc.x, -wc.y))
         a_, c_ = b("noob_waved") - 0.35, b("noob_waved") + 0.55
@@ -1327,7 +1327,7 @@ def camera(E, t, shot, t0, t1):
     E.cam.data.dof.aperture_fstop = fstop
     E.key.location = loc + Vector((0.6, 0.0, 1.6))
     E.key.rotation_euler = (look - E.key.location).to_track_quat("-Z", "Y").to_euler()
-    if shot == "react":
+    if shot in ("react", "hit"):
         # the camera stands by the portal: its violet would light their faces head-on (an orange Noob, a pink
         # Steve). Keep a violet rim, the faces in their own colours
         E.PP.light.data.energy *= 0.2
@@ -1405,8 +1405,8 @@ def _cam(E, t, shot, t0, t1):
     if shot == "hit":
         # side on, the Noob in the middle: the cube flies in from the portal and smacks him; his parts fly
         n = gp(E, NOOB_BTN)
-        loc = n + Vector((0.4, 2.7, 1.45))
-        return loc, n + Vector((-0.1, 0, 1.15)), 24, 64.0, None, 0.08 + 0.6 * math.exp(-((t - b("hit") - 0.15) / 0.1) ** 2)
+        loc = n + Vector((-1.3, 2.4, 1.35))          # the react shot's axis, closer: his face; west of the oak
+        return loc, n + Vector((-0.2, 0, 1.3)), 26, 64.0, None, 0.08 + 0.6 * math.exp(-((t - b("hit") - 0.15) / 0.1) ** 2)
     if shot == "respawn":
         # the pad, low: the Noob pops in, arms up
         pd = E.pad_at
