@@ -42,16 +42,17 @@ sense"). The bible already has the link: Steve's portal leads to the Roblox
 side (Episode 2: "obby hazards pour into the forest").
 
 **The added opening, "Through"** (about 7.3 s, no new line). Where the dragon
-is: on the other side of the portal, the obby's side (the Roblox world the
-portal leads to). We hear it before we see it: a far roar through the portal
-the moment it relights (it is what woke the portal), and again, growing,
-inside the portal behind them after they land. So when it bursts out, we
-know where it came from.
+is: on the Minecraft side, in the meadow's world, somewhere behind them. We
+hear it far off as the portal pulls them in, and again, growing, inside the
+portal after they land: it is coming through after them. So when it bursts
+out, we know where it came from, and "It used our portal" says exactly that.
+Why the portal relit stays a question (no cause is shown).
+
 1. The meadow, Episode 2's last frame going on: the quiet; the empty frame;
    the Noob lowers his arm. The frame flickers: the membrane stutters back
    on, unstable, crackling (the portal's opening sound, the glitch).
 2. It pulls (3.0 s, not rushed): the suck from Episode 2 again, stronger,
-   with a far roar through it, and this time it takes *them*: the Noob
+   with a far roar somewhere behind them in the meadow, and this time it takes *them*: the Noob
    first (heels digging into the grass, he grabs at the frame, misses, is
    taken), then Steve, who runs (steps) to grab his arm and is pulled in with
    him (a whoosh for each).
@@ -60,7 +61,7 @@ know where it came from.
 4. They drop out of the portal's other side onto the obby, the same portal
    frame standing on the egg's obby half; the Noob lands delighted ("his"
    world), Steve on his back.
-5. A beat: behind them the portal hums up again, a roar growing inside it;
+5. A beat: behind them the portal hums up again, a roar growing inside it (the dragon following them through);
    the chase music starts on the burst. The dragon bursts out of the same portal
    behind them, smashing parts: "BOSS FIGHT!" ... "It used our portal.
    Hide!" now says exactly what we saw.
@@ -70,10 +71,10 @@ for 1-2, the obby for 4-5); the sound preview gets the new beats first
 (the glitch, the suck, the whoosh, the landing thumps, then the roar).
 Null's theme carries on from Episode 2 (the same cue rendered from 2.5 s in:
 no new start, no dip at the cut). The chapter ends on the glitch and the
-dread running to the cut (no fade: the next chapter picks up). The wings flap
-on the sound's flap runs: each run sets its own phase (the renderer takes the
-downstrokes from the run's start, `dragon.py`), and the gaps between runs
-(see the sound review for their times) are visible glides.
+dread running to the cut (no fade: the next chapter picks up). The wings must
+flap on the sound's flap runs: the Ep3 renderer is to take each run's phase
+from its start (downstroke on the run's whumps), and the gaps between runs
+(12.79-16.90, 17.67-24.00 in this sound) are visible glides.
 
 ## (Published) The join with Episode 2
 

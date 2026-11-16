@@ -283,8 +283,8 @@
    "kind": "roar",
    "at": "through_pull+0.35",
    "dur": 1.3,
-   "gain": 0.16,
-   "note": "far off, through the relit portal: something on the other side (the dragon)"
+   "gain": 0.3,
+   "note": "far off, behind them in the meadow: the dragon (it follows them through)"
   },
   {
    "kind": "step",
@@ -307,24 +307,24 @@
   {
    "kind": "step",
    "at": "through_pull+1.3",
-   "gain": 0.9,
+   "gain": 1.8,
    "note": "Steve runs to him"
   },
   {
    "kind": "step",
    "at": "through_pull+1.6",
-   "gain": 0.9
+   "gain": 1.8
   },
   {
    "kind": "step",
    "at": "through_pull+1.9",
-   "gain": 0.95
+   "gain": 1.9
   },
   {
    "kind": "thump",
    "at": "through_pull+2.15",
    "freq": 140,
-   "gain": 0.35,
+   "gain": 0.7,
    "note": "Steve's hand on the Noob's arm"
   },
   {
@@ -2067,7 +2067,7 @@
   {
    "beat": "through_pull",
    "dur": 3.0,
-   "note": "the portal relights, unstable (a far roar through it: the dragon on the other side), and pulls: the Noob digs in his heels and is taken; Steve runs, grabs his arm, and goes with him"
+   "note": "the portal relights, unstable, and pulls (a far roar behind them in the meadow: the dragon): the Noob digs in his heels and is taken; Steve runs, grabs his arm, and goes with him"
   },
   {
    "beat": "through_tumble",
