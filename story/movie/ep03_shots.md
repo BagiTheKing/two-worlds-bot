@@ -74,7 +74,7 @@ no new start, no dip at the cut). The chapter ends on the glitch and the
 dread running to the cut (no fade: the next chapter picks up). The wings must
 flap on the sound's flap runs: the Ep3 renderer is to take each run's phase
 from its start (downstroke on the run's whumps), and the gaps between runs
-(12.79-16.90, 17.67-24.00 in this sound) are visible glides.
+(12.80-16.91, 17.68-24.01 in movie/ep03) are visible glides.
 
 ## (Published) The join with Episode 2
 
