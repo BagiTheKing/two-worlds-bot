@@ -35,14 +35,15 @@ PW, PH = 6, 8
 BUILD_AT = Vector((-0.2, 2.2, 0.0))        # where Steve builds from: just right of the frame, placing to his left
 STEVE_REST = Vector((1.75, -0.45, 0.0))    # afterwards he goes to lean by the oak
 PILLAR = Vector((0.5, -0.5, 0.0))          # the button's stone (a block: x 0..1, y -1..0)
-NOOB_BTN = Vector((1.2, -0.05, 0.0))       # the Noob at the button (his right hand over it)
+NOOB_BTN = Vector((1.75, -0.05, 0.0))      # the Noob at the button: just off the stone (x 0.5..1.5), his right hand over it
 PAD = Vector((2.6, -3.0, 0.0))             # the respawn pad
 STEVE_DONT = Vector((-0.6, 1.0, 0.0))      # Steve after his two steps back
 STEVE_DODGE = Vector((-1.6, -1.6, 0.0))    # where the chaos pushes him
 STEVE_SMASH = Vector((-0.45, -0.55, 0.0))  # Steve at the button (west of it, facing +x)
 STEVE_TIRED = Vector((-0.9, -1.9, 0.0))    # after it, he staggers back a few steps (clear of the Noob's way to the portal)
-NOOB_PORTAL = Vector((-1.9, 2.4, 0.0))
-WAVED_CAM = Vector((-3.7, 0.2, 0.0))       # "It waved back": close on him, the portal (and the figure) behind
+NOOB_PORTAL = Vector((0.0, 2.6, 0.0))      # "Hi!": at the portal's right edge, so a camera sees his face and the portal
+MIRROR_CAM = Vector((-3.0, 0.0, 0.0))      # "Hi!": front-left of him, seeing into the portal
+WAVED_CAM = Vector((-1.8, 0.4, 0.0))       # "It waved back": close on him, the portal (and the figure) behind
 NOOB_WATCH = Vector((1.9, -0.6, 0.0))
 BUILD_CAM = Vector((-0.6, -5.0, 0.0))      # the build's camera (the frame, Steve at its end, the button, the Noob)      # where the Noob watches the building from     # the Noob in front of the dark portal, at its right
 ZOMBIES = [  # (out of the portal at x, where it ends up after the pour, where the chaos takes it)
@@ -62,9 +63,11 @@ def gp(E, v):
 
 # ------------------------------------------------------------------ the build
 def build(tl, tex_dir, assets, res, samples):
+    # the clearings keep their first coordinates: the plants come from one random sequence, and moving one
+    # clearing reshuffles the grass in every shot (already-rendered shots are reused)
     clear = [(STEVE0.x, STEVE0.y, 1.3), (NOOB0.x, NOOB0.y, 1.2), (BUILD_AT.x, BUILD_AT.y, 1.4),
-             (PILLAR.x + 0.5, PILLAR.y + 0.5, 1.2), (NOOB_BTN.x, NOOB_BTN.y, 1.0), (PAD.x, PAD.y, 1.6),
-             (STEVE_DONT.x, STEVE_DONT.y, 1.2), (STEVE_DODGE.x, STEVE_DODGE.y, 1.4), (NOOB_PORTAL.x, NOOB_PORTAL.y, 1.4),
+             (PILLAR.x + 0.5, PILLAR.y + 0.5, 1.2), (1.2, -0.05, 1.0), (PAD.x, PAD.y, 1.6),
+             (STEVE_DONT.x, STEVE_DONT.y, 1.2), (STEVE_DODGE.x, STEVE_DODGE.y, 1.4), (-1.9, 2.4, 1.4),
              (-3.8, 3.8, 3.6), (-3.8, 1.8, 2.6), (-5.0, 0.4, 1.2), (-2.8, -0.4, 1.2), (-0.2, 1.0, 1.2),
              (-3.6, -1.2, 1.2), (-1.0, -2.4, 1.2), (0.6, -2.0, 1.0), (1.0, 0.75, 1.2), (0.1, 0.05, 1.3),
              (2.0, -6.5, 2.4), (-1.0, -7.5, 2.4), (4.0, -4.5, 1.6), (-6.0, -2.0, 1.6), (3.0, 1.8, 1.4), (-0.6, -3.6, 1.6),
@@ -919,9 +922,10 @@ def steve(E, t):
         # the Noob bursts (the hit): he flinches, an arm up against the bits
         fl_hit = ss(b("hit") + 0.0, b("hit") + 0.08, t) * (1 - ss(b("hit") + 0.4, b("hit") + 0.9, t))
         if b("pour") <= t < b("chaos"):
-            pz["arm_sl"] = {"fwd": 30 + 50 * jump + 60 * fl_hit, "out": 25 + 20 * jump, "elbow": 40 + 50 * fl_hit}
-            pz["arm_sr"] = {"fwd": 30 + 40 * jump, "out": 25 + 25 * jump, "elbow": 40}
-            pz["chest_lean"] = -6 - 12 * jump - 8 * fl_hit
+            pz["arm_sl"] = {"fwd": 30 + 45 * jump + 60 * fl_hit, "out": 25 + 15 * jump, "elbow": 15 + 25 * fl_hit}
+            pz["arm_sr"] = {"fwd": 30 + 35 * jump, "out": 25 + 15 * jump, "elbow": 15}
+            pz["chest_lean"] = -4 + 6 * jump - 8 * fl_hit
+            pz["head_nod"] = 8 * jump
             pz["chest_twist"] = 18 * jump
             pz["head_turn"] = pz["head_turn"] + 35 * jump
             p = p + Vector((0.25 * jump, -0.25 * jump, 0))
@@ -1190,7 +1194,8 @@ def noob(E, t):
         p = gp(E, NOOB_PORTAL)
         pc = gp(E, PORTAL) - p
         y_portal = math.degrees(math.atan2(pc.x, -pc.y))
-        y_side = y_portal + 26.0                                  # side-on to the portal, his face toward the camera
+        mc = MIRROR_CAM - p
+        y_side = y_portal + 0.3 * _wrap(math.degrees(math.atan2(mc.x, -mc.y)) - y_portal)   # half to us
         wc = WAVED_CAM - p
         y_cam = math.degrees(math.atan2(wc.x, -wc.y))
         a_, c_ = b("noob_waved") - 0.35, b("noob_waved") + 0.55
@@ -1322,6 +1327,11 @@ def camera(E, t, shot, t0, t1):
     E.cam.data.dof.aperture_fstop = fstop
     E.key.location = loc + Vector((0.6, 0.0, 1.6))
     E.key.rotation_euler = (look - E.key.location).to_track_quat("-Z", "Y").to_euler()
+    if shot == "react":
+        # the camera stands by the portal: its violet would light their faces head-on (an orange Noob, a pink
+        # Steve). Keep a violet rim, the faces in their own colours
+        E.PP.light.data.energy *= 0.2
+        E.key.data.energy *= 1.4
 
 
 def _wide(E, t, t0, t1, lens=20):
@@ -1390,13 +1400,13 @@ def _cam(E, t, shot, t0, t1):
         # their faces as the zombies come out: from the portal's right side, the two of them looking at it,
         # a zombie shuffling past at the side of the frame
         mid = 0.5 * (gp(E, STEVE_DONT) + gp(E, NOOB_BTN))
-        loc = Vector((-0.3, 3.0, E.ground(-0.3, 3.0) + 1.5))
-        return loc, mid + Vector((0, 0, 1.4)), 24, 64.0, None, 0.08
+        loc = Vector((1.0, 3.4, E.ground(1.0, 3.4) + 1.45))
+        return loc, mid + Vector((0, 0, 1.2)), 24, 64.0, None, 0.08
     if shot == "hit":
         # side on, the Noob in the middle: the cube flies in from the portal and smacks him; his parts fly
         n = gp(E, NOOB_BTN)
-        loc = n + Vector((2.6, -2.2, 1.6))
-        return loc, n + Vector((-0.2, 0, 1.15)), 24, 64.0, None, 0.08 + 0.6 * math.exp(-((t - b("hit") - 0.15) / 0.1) ** 2)
+        loc = n + Vector((0.4, 2.7, 1.45))
+        return loc, n + Vector((-0.1, 0, 1.15)), 24, 64.0, None, 0.08 + 0.6 * math.exp(-((t - b("hit") - 0.15) / 0.1) ** 2)
     if shot == "respawn":
         # the pad, low: the Noob pops in, arms up
         pd = E.pad_at
@@ -1444,9 +1454,9 @@ def _cam(E, t, shot, t0, t1):
         # from the front-right, low: the dark portal filling the right; the Noob at the left waving
         # from the front-left, low: the dark portal at the left, the Noob at its right waving into it
         n = gp(E, NOOB_PORTAL)
-        loc = Vector((-5.0, -2.6, E.ground(-5.0, -2.6) + 1.5))
-        c = gp(E, PORTAL) + Vector((0.0, 0, 2.6))
-        return loc, c.lerp(n + Vector((0, 0, 1.4)), 0.35), 22, 64.0, None, 0.03
+        loc = Vector((MIRROR_CAM.x, MIRROR_CAM.y, E.ground(MIRROR_CAM.x, MIRROR_CAM.y) + 1.4))
+        c = gp(E, PORTAL) + Vector((0.0, 0, 2.4))
+        return loc, c.lerp(n + Vector((0, 0, 1.3)), 0.5), 22, 64.0, None, 0.03
     if shot == "waved":
         # the Noob three-quarter to us at the left, the portal filling the right two-thirds; the figure closer
         # the Noob three-quarter to us at the right, the portal filling the left; the figure closer

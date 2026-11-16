@@ -1824,7 +1824,11 @@ def build(episode_path, out_dir, keep=None):
             kw["minimal"] = True
         if m.get("hard_end"):
             kw["hard_end"] = True
-        x = music.render(m["cue"], m1 - m0, seed=k, **kw)
+        if m.get("offset"):                     # carrying on the cue the last chapter ended on
+            kw["offset"] = float(m["offset"])
+        if m.get("open_tail"):                  # the next chapter carries it on: no fade at the end
+            kw["open_tail"] = True
+        x = music.render(m["cue"], m1 - m0, seed=m.get("seed", k), **kw)
         if m.get("fade_out"):                   # dies away by its own end (no hard stop), whatever tail the cue has
             end = min(len(x), int((m1 - m0) * SR))
             n = min(end, int(m["fade_out"] * SR))

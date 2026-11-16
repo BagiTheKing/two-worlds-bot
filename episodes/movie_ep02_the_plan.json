@@ -212,7 +212,9 @@
    "cue": "null",
    "from": "snap",
    "to": "end",
-   "gain": 0.22
+   "gain": 0.22,
+   "open_tail": true,
+   "note": "chapter 3 carries this cue on (offset 2.5, seed 4): no fade at the cut"
   }
  ],
  "ambience": [
@@ -396,7 +398,7 @@
    "type": "timer",
    "label": "PLAN",
    "from": "press-3.0",
-   "to": "portal_open+1.6",
+   "to": "portal_open+0.25",
    "fail_after": 3.0,
    "y": 430
   },

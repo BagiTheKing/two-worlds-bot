@@ -315,13 +315,20 @@ CUES = {"memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null
         "dread": dread}
 
 
-def render(cue, sec, seed=0, hard_end=False, **kw):
-    x = CUES[cue](sec, seed, **kw)
-    fade = int((0.012 if hard_end else min(0.4, sec / 4)) * SR)   # hard_end: cut dead (a gag's silence)
-    x[:int(0.02 * SR)] *= np.linspace(0, 1, int(0.02 * SR))
-    if fade:
-        x[-fade:] *= np.linspace(1, 0, fade)
-    m = np.max(np.abs(x)) or 1
+def render(cue, sec, seed=0, hard_end=False, offset=0.0, open_tail=False, **kw):
+    """offset: the cue as it goes on `offset` seconds in (the next chapter carrying on the last one's cue: the
+    same seed, the same level, no new start). open_tail: no fade at the end (the next chapter carries it on)."""
+    x = CUES[cue](sec + offset, seed, **kw)
+    o = int(round(offset * SR))
+    m = (np.max(np.abs(x[:o])) if o else 0) or None   # carrying on: the level of the part already heard
+    x = x[o:].copy()
+    if not open_tail:
+        fade = int((0.012 if hard_end else min(0.4, sec / 4)) * SR)   # hard_end: cut dead (a gag's silence)
+        if fade:
+            x[-fade:] *= np.linspace(1, 0, fade)
+    if not o:
+        x[:int(0.02 * SR)] *= np.linspace(0, 1, int(0.02 * SR))
+    m = m or np.max(np.abs(x)) or 1
     return x / m * 0.9
 
 
