@@ -1,0 +1,167 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['steve_hide', 'noob_tut', 'steve_wall', 'noob_done', 'steve_myplan', 'noob_planwall', 'noob_lag', 'steve_lag'] placed ['steve_hide', 'noob_tut', 'steve_wall', 'noob_done', 'steve_myplan', 'noob_planwall', 'noob_lag', 'steve_lag']
+  steve_hide: words at 0.00-2.36s of the scene
+  noob_tut: words at 3.14-4.06s of the scene
+  steve_wall: words at 5.80-5.88s of the scene
+  noob_done: words at 6.42-7.14s of the scene
+  steve_myplan: words at 8.14-8.84s of the scene
+  noob_planwall: words at 9.44-10.38s of the scene
+  noob_lag: words at 13.54-14.14s of the scene
+  steve_lag: words at 17.30-17.72s of the scene
+  steve_wall: pinned cut 4.52-6.12s
+  solo Noob 'BOSS FIGHT!' take 0: from the cache
+  solo take 0 for 'BOSS FIGHT!': 1.00 ' Boss  fight!'
+  solo Noob 'BOSS FIGHT!' take 1: from the cache
+  solo take 1 for 'BOSS FIGHT!': 1.00 ' Boss  fight!'
+  solo Noob 'BOSS FIGHT!' take 2: from the cache
+  solo take 2 for 'BOSS FIGHT!': 1.00 ' Boss  fight'
+  solo Steve 'It used our portal. HIDE!' take 0: from the cache
+  solo take 0 for 'It used our portal. HIDE!': 1.00 ' It  used  our  portal.  Hide!'
+  solo Steve 'It used our portal. HIDE!' take 1: from the cache
+  solo take 1 for 'It used our portal. HIDE!': 1.00 ' It  used  our  Portal  Hide!'
+  solo Steve 'It used our portal. HIDE!' take 2: from the cache
+  solo take 2 for 'It used our portal. HIDE!': 1.00 ' It  used  our  portal.  Hide.'
+  solo Steve "Don't—" take 0: from the cache
+  solo take 0 for "Don't—": 1.00 " Don't"
+  solo Steve "Don't—" take 1: from the cache
+  solo take 1 for "Don't—": 1.00 " Don't"
+  solo Steve "Don't—" take 2: from the cache
+  solo take 2 for "Don't—": 1.00 " Don't"
+  solo Noob 'Checkpoint!' take 0: from the cache
+  solo take 0 for 'Checkpoint!': 1.00 ' Checkpoint'
+  solo Noob 'Checkpoint!' take 1: from the cache
+  solo take 1 for 'Checkpoint!': 1.00 ' Checkpoint!'
+  solo Noob 'Checkpoint!' take 2: from the cache
+  solo take 2 for 'Checkpoint!': 1.00 ' Checkpoint!'
+  solo Steve 'That was my plan.' take 0: from the cache
+  solo take 0 for 'That was my plan.': 1.00 ' That  was  my  plan?'
+  solo Steve 'That was my plan.' take 1: from the cache
+  solo take 1 for 'That was my plan.': 1.00 ' That  was  my  plan.'
+  solo Steve 'That was my plan.' take 2: from the cache
+  solo take 2 for 'That was my plan.': 1.00 ' That  was  my  plan.'
+{
+ "length": 42.309,
+ "beats": {
+  "through_quiet": [
+   0.0,
+   1.8
+  ],
+  "through_pull": [
+   1.8,
+   4.8
+  ],
+  "through_tumble": [
+   4.8,
+   5.9
+  ],
+  "through_land": [
+   5.9,
+   7.3
+  ],
+  "open": [
+   7.3,
+   8.9
+  ],
+  "noob_boss": [
+   8.9,
+   10.234
+  ],
+  "steve_hide": [
+   10.484,
+   12.757
+  ],
+  "tutorial": [
+   13.257,
+   14.157
+  ],
+  "noob_tut": [
+   14.157,
+   15.47
+  ],
+  "steve_dont": [
+   15.47,
+   16.114
+  ],
+  "jump": [
+   16.114,
+   17.514
+  ],
+  "kill": [
+   17.514,
+   18.214
+  ],
+  "respawn": [
+   18.214,
+   18.914
+  ],
+  "noob_cp": [
+   18.914,
+   19.917
+  ],
+  "steve_wall": [
+   20.167,
+   21.411
+  ],
+  "build": [
+   21.411,
+   23.011
+  ],
+  "crash": [
+   23.011,
+   24.011
+  ],
+  "leap": [
+   24.011,
+   25.211
+  ],
+  "noob_done": [
+   25.211,
+   26.284
+  ],
+  "dive": [
+   26.584,
+   29.184
+  ],
+  "free": [
+   29.184,
+   31.384
+  ],
+  "steve_myplan": [
+   31.384,
+   32.938
+  ],
+  "noob_planwall": [
+   33.038,
+   34.301
+  ],
+  "freeze": [
+   34.801,
+   36.801
+  ],
+  "noob_lag": [
+   36.801,
+   37.878
+  ],
+  "steve_lag": [
+   38.228,
+   39.109
+  ],
+  "glitch": [
+   39.909,
+   42.309
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    8.9s noob_boss          heard 'boss fight'
+  ok   10.5s steve_hide         heard 'It used our portal. Hide!'
+  ok   14.2s noob_tut           heard 'Tutorial says jump.'
+  ok   15.5s steve_dont         heard "Don't"
+  ok   18.9s noob_cp            heard 'Checkpoint.'
+  ok   20.2s steve_wall         heard 'Plan.  Wall.'
+  ok   25.2s noob_done          heard 'Tutorial complete!'
+  ok   31.4s steve_myplan       heard 'That was my plan'
+  ok   33.0s noob_planwall      heard 'Your plane was a wall.'  missing: plan  extra: plane
+  ok   36.8s noob_lag           heard 'Is it lagging?'
+  ok   38.2s steve_lag          heard "Worlds don't lag."
+hearing check: 0 of 11 lines flagged
