@@ -45,7 +45,7 @@ on:
         description: "Only assemble again: an earlier run whose sound, timing and frames to use (overlays re-read from the episode file)"
         default: ""
       new_range:
-        description: "Only re-render the new-look frames in this time range (seconds, e.g. 0-2.65); with reuse_run_id the rest come from that run"
+        description: "Only re-render the new-look frames in these time ranges (seconds, e.g. 0-2.65 or 0-0.6,9.8-11.45); with reuse_run_id the rest come from that run"
         default: ""
       prep_dir:
         description: "The movie: a folder in the repo with the chapter's timeline.json and audio.flac (instead of a prep job or an earlier run's)"
@@ -261,9 +261,9 @@ jobs:
           import json
           t = json.load(open('build/timeline.json'))
           fps = t['fps']
-          a, b = (float(x) for x in '$RANGE'.split('-'))
+          rs = [tuple(float(x) for x in r.split('-')) for r in '$RANGE'.split(',')]   # one or more ranges: a-b,c-d
           n = int(round((t['length'] + 0.4) * fps)) + 1
-          fr = [f for f in range(1, n + 1) if a - 1e-6 <= (f - 1) / fps <= b + 1e-6]
+          fr = [f for f in range(1, n + 1) if any(a - 1e-6 <= (f - 1) / fps <= b + 1e-6 for a, b in rs)]
           k = ${{ matrix.shard }}
           per = (len(fr) + 39) // 40
           print(','.join('%.5f' % ((f - 1) / fps) for f in fr[k * per:(k + 1) * per]))")
@@ -359,7 +359,15 @@ jobs:
         run: |
           # new frames win; every frame not re-rendered comes from the earlier run
           cp -n build/frames_old/*.png build/frames/ 2>/dev/null || true
+          rm -rf build/frames_old
           ls build/frames | wc -l
+      - name: Keep the whole frame set (a later run can reuse this one)
+        if: inputs.reuse_run_id != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: frames-all
+          path: build/frames/*.png
+          retention-days: 30
       - id: ep
         run: |
           if [ -n "${{ inputs.movie_id }}" ]; then echo "id=${{ inputs.movie_id }}" >> $GITHUB_OUTPUT
