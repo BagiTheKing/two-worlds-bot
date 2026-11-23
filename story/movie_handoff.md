@@ -1,5 +1,11 @@
 # The movie: handoff brief
 
+> **Open corrections (2026-11-23): read `story/movie/fixes_2026-11-23.md`
+> first.** The creator's fix list for chapters 0-2 (Ep0's fall restored, Ep1's
+> walk cut, Ep2's zombies, block, tree and a new dragon ending) and what it
+> changes in chapter 3.
+
+
 For the session(s) that rework **Two Worlds · One Glitch** (Episodes 0-10)
 into **one long-form landscape video** for the channel. Read this first, then
 the files it points to. It sums up how the finale was made with the creator,
