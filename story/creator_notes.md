@@ -26,6 +26,11 @@ the note wins. Add to it whenever the creator gives a new standing note.
 
 ## How we work together
 
+- **Don't waste renders (2026-11-23):** "Please don't render the whole episode
+  and waste my credits ... You just need to fix specific parts." Fix by editing
+  what exists (cut, splice, reassemble earlier frames or the published mp4s);
+  re-render only the frames a fix needs, never a whole chapter.
+
 - **Part by part.** Agree the beats in words, then sound, then stills, then
   a preview, then notes, then the full render. Don't move on until the
   creator approves the part.
