@@ -43,7 +43,7 @@ NOOB_BTN = Vector((1.75, -0.05, 0.0))      # the Noob at the button: just off th
 PAD = Vector((2.6, -3.0, 0.0))             # the respawn pad
 STEVE_DONT = Vector((-0.6, 1.0, 0.0))      # Steve after his two steps back
 STEVE_DODGE = Vector((-1.6, -1.6, 0.0))    # where the chaos pushes him
-STEVE_SMASH = Vector((-0.45, -0.55, 0.0))  # Steve at the button (west of it, facing +x)
+STEVE_SMASH = Vector((-0.05, -0.1, 0.0))  # Steve at the button (west of it, facing +x)
 STEVE_TIRED = Vector((-0.9, -1.9, 0.0))    # after it, he staggers back a few steps (clear of the Noob's way to the portal)
 NOOB_PORTAL = Vector((0.0, 2.6, 0.0))      # "Hi!": at the portal's right edge, so a camera sees his face and the portal
 MIRROR_CAM = Vector((-3.0, 0.0, 0.0))      # "Hi!": front-left of him, seeing into the portal
@@ -52,14 +52,14 @@ NOOB_WATCH = Vector((1.9, -0.6, 0.0))
 BUILD_CAM = Vector((-0.6, -5.0, 0.0))      # the build's camera (the frame, Steve at its end, the button, the Noob)      # where the Noob watches the building from     # the Noob in front of the dark portal, at its right
 ZOMBIES = [  # (out of the portal at x, where it goes after stepping out, where the chaos takes it)
     (-4.4, Vector((-4.7, 0.9, 0)), Vector((-4.2, -0.8, 0))),     # the first: the hand through the swirl
-    (-3.0, Vector((-3.0, 1.7, 0)), Vector((-2.9, -2.6, 0))),     # the eager one: locks on Steve, lunges
-    (-2.2, Vector((-2.0, -0.4, 0)), Vector((-2.7, -2.1, 0))),
+    (-3.0, Vector((-3.0, 1.7, 0)), Vector((-3.4, -3.4, 0))),     # the eager one: locks on Steve, lunges
+    (-2.2, Vector((-2.0, -0.4, 0)), Vector((-3.6, -2.0, 0))),
     (-4.1, Vector((-4.4, 2.0, 0)), None),                        # pulled through on the button's flashes
     (-2.7, Vector((-2.6, 2.3, 0)), None),                        # ... the last one: it clings to the frame
 ]
 ZH = 2.35                                  # tall (the creator: "tall, hunched, ragged skin, glowing red eyes")
-STEVE_BACKED = Vector((0.12, 1.96, 0.0))   # where Steve backs off to from the lunge
-NOOB_NEAR = Vector((0.15, -2.05, 0.0))    # the Noob comes over to Steve after the suck
+STEVE_BACKED = Vector((0.45, 2.2, 0.0))   # where Steve backs off to from the lunge
+NOOB_NEAR = Vector((0.5, -2.3, 0.0))    # the Noob comes over to Steve after the suck
 DRAGON_SCALE = 0.8
 
 
@@ -466,7 +466,7 @@ SHOTS = [("eye", "eye"), ("lookup", "look_up"), ("rule", "steve_rule"), ("build"
          ("cause", "notice"),                      # the button flashes, the portal pulses, one more stumbles out
          ("realize", ("notice", 1.0)),             # Steve's face, lit red by the next flash: he gets it
          ("planb", ("notice", 1.9)), ("dash", "dash"),
-         ("windup", "windup"), ("swing", "swing"), ("shatter", "smash"),
+         ("windup", "windup"), ("swing", "swing"), ("shatter", ("smash", -0.08)),
          ("suck", "suck"), ("cling", ("suck", 1.8)), ("quiet", "quiet"), ("never", "steve_never"),
          ("shadow", "sky_roar"), ("dive", "dive"), ("catch", "catch"), ("circle", "circle"),
          ("whoa", "noob_dragon"), ("toss", ("noob_dragon", 2.45)), ("dragons_too", ("noob_dragon", 3.0)),
@@ -530,7 +530,8 @@ def light(E, t):
         E.key0 = (E.key.data.energy, tuple(E.key.data.color))
     # the dragon's shadow passing over them dims the sun a moment (it is between them and the sun)
     sh = math.exp(-((t - (b("sky_roar") + 0.55)) / 0.16) ** 2)
-    E.W.sun.data.energy = E.sun0 * (1 - 0.6 * dk) * (1 - 0.55 * sh)
+    E.W.sun.data.energy = E.sun0 * (1 - 0.6 * dk) * (1 - 0.25 * sh)
+    _shadow_caster(E, t)
     E.sc.view_settings.exposure = -0.05 - 0.3 * dk
     E.key.data.energy = E.key0[0] * (1 - 0.35 * dk) * (1 - 0.3 * sh)
     E.key.data.color = tuple(lerp(c0, c1, dk) for c0, c1 in zip(E.key0[1], (0.72, 0.74, 1.0)))
@@ -589,15 +590,17 @@ def portal(E, t):
     E.portal_flash_em.inputs["Strength"].default_value = 14.0 * min(1.0, flash)
     swirl = ss(on, on + 0.3, t)
     calm = ss(b("suck") + 1.6, b("suck", 1), t)
-    E.portal_power.inputs[2].default_value = (0.42 + 0.6 * math.exp(-((t - on - 0.3) / 0.4) ** 2) + 0.7 * pulses) * swirl * (1 - 0.35 * calm) \
+    E.portal_power.inputs[2].default_value = (0.42 + 0.6 * math.exp(-((t - on - 0.3) / 0.4) ** 2) + 1.4 * pulses) * swirl * (1 - 0.35 * calm) \
         + 1.5 * ss(b("suck"), b("suck") + 0.2, t) * (1 - ss(b("suck") + 1.2, b("suck") + 1.8, t)) \
         + 0.6 * _pulse(t, [b("jump") + 0.35, b("jump") + 0.5], 0.1) + 1.2 * ss(b("dive_after", 1) - 0.35, b("dive_after", 1), t)
     E.portal_flow.inputs[1].default_value = (0.13 * t, 0.37 * t * (1 + 2 * (1 - calm)) * (1 + 3 * ss(b("suck"), b("suck") + 0.3, t) * (1 - calm)), 0)
     E.portal_dim.inputs[7].default_value = (1, 1, 1, 1)
-    E.portal_see.outputs[0].default_value = 0.0
+    see = 0.55 * ss(b("pour_hand") - 0.1, b("pour_hand") + 0.4, t) * (1 - ss(b("pour_out") + 1.8, b("pour_out") + 2.3, t)) \
+        + 0.45 * ss(z_out(3) - 0.7, z_out(3) - 0.4, t) * (1 - ss(z_out(4) + 0.6, z_out(4) + 1.0, t))
+    E.portal_see.outputs[0].default_value = see
     P.light.data.energy = 600 * swirl * (1 + 1.2 * pulses) * (1 if vis else 0) + 3000 * min(1.0, flash)
-    E.portal_room.hide_render = True
-    E.portal_room_light.data.energy = 0.0
+    E.portal_room.hide_render = see < 0.01
+    E.portal_room_light.data.energy = 140.0 * min(1.0, see * 2)
     # the button, its stone, and the smash
     pt_pillar, pt_button = pt[0], pt[1]
     pg = gp(E, PILLAR + Vector((0.5, 0.5, 0)))
@@ -611,8 +614,8 @@ def portal(E, t):
     press = ss(b("press") - 0.03, b("press") + 0.03, t) * (1 - ss(b("press") + 0.3, b("press") + 0.45, t))
     bsb = E.button.data.materials[0].node_tree.nodes["Principled BSDF"]
     blink = _pulse(t, button_flashes(), 0.08) * (1 if t < sm else 0)
-    bsb.inputs["Emission Strength"].default_value = 0.25 + 4.0 * math.exp(-((t - b("press") - 0.05) / 0.12) ** 2) + 9.0 * blink
-    E.button_light.data.energy = 120.0 * blink
+    bsb.inputs["Emission Strength"].default_value = 0.25 + 4.0 * math.exp(-((t - b("press") - 0.05) / 0.12) ** 2) + 18.0 * blink
+    E.button_light.data.energy = 220.0 * blink
     E.button_light.location = top + Vector((0, 0, 0.35))
     if t < pt_button or t >= sm:
         E.button.location = (0, 0, -300)
@@ -764,14 +767,16 @@ def lunge_dir():
 
 
 def lunge_end():
-    return STEVE_DONT - lunge_dir() * 0.4
+    return STEVE_DONT - lunge_dir() * 0.9
 
 
 def steve_spot(E, t):
-    if t < b("lunge") + 0.95:
+    if t < b("lunge") + 0.8:
         return gp(E, STEVE_DONT)
     if t < b("chaos"):
-        return gp(E, STEVE_DONT.lerp(STEVE_BACKED, ss(b("lunge") + 0.95, b("lunge") + 1.9, t)))
+        # he throws himself back as it leaps (most of the way at once), then keeps backing off, slowly
+        u = 0.7 * ss(b("lunge") + 0.8, b("lunge") + 1.3, t) + 0.3 * ss(b("lunge") + 1.6, b("steve_back", 1), t)
+        return gp(E, STEVE_DONT.lerp(STEVE_BACKED, u))
     if t < b("dash"):
         return gp(E, STEVE_BACKED.lerp(STEVE_DODGE, ss(b("chaos"), b("chaos") + 1.8, t)))
     if t < b("smash") + 0.6:
@@ -821,7 +826,7 @@ def zombie_state(E, k, t):
         st["yaw"] = _yaw(front - door)
         st["look"] = st["p"] + Vector((0, -3.0, 1.2))
         if k == 0:                                  # the head comes up as it comes through; its eyes find us
-            st["glow"] = 2.5 + 4.5 * ss(t0 + 1.4, t0 + 1.8, t)
+            st["glow"] = 4.0 + 3.0 * ss(t0 + 1.4, t0 + 1.8, t)        # its eyes first, glowing in the swirl
         return st
     # 2. out: to its place
     d1 = (a - front).length
@@ -1072,17 +1077,17 @@ def _dragon_keys():
     to them (hovering), and the dive after them into the portal."""
     T = b
     return [
-        (T("sky_roar") - 0.6, Vector((34, -30, 17))),
-        (T("sky_roar") + 0.55, Vector((-0.6, -0.6, 12.0))),     # right over them: its shadow crosses them
+        (T("sky_roar") - 0.6, Vector((20, -22, 10))),
+        (T("sky_roar") + 0.55, Vector((-0.4, -1.2, 9.0))),      # right over them: its shadow crosses them
         (T("sky_roar") + 1.6, Vector((-22, 12, 30))),
         (T("dive"), Vector((-20, 24, 40))),
         (T("dive") + 0.7, Vector((-11, 12, 22))),
         (T("dive") + 1.35, Vector((-4.4, -2.4, 7.5))),
-        (T("catch"), Vector((-3.0, -2.6, 4.6))),
-        (T("catch") + 0.1, Vector((-2.6, -0.9, 3.9))),        # the snatch: its jaws at the frame
-        (T("catch") + 0.45, Vector((-2.8, 0.6, 7.5))),
-        (T("catch", 1), Vector((-3.2, 3.6, 13.5))),            # up over the portal
-        (T("circle") + 0.9, Vector((-11, 5, 15))),
+        (T("catch"), Vector((-3.4, -2.6, 5.6))),
+        (T("catch") + 0.1, Vector((-2.6, 0.3, 4.7))),         # the snatch: its jaws at the frame
+        (T("catch") + 0.45, Vector((-4.4, -1.6, 7.6))),
+        (T("catch", 1), Vector((-9.5, -2.5, 12.0))),           # climbing away, the zombie in its jaws
+        (T("circle") + 0.9, Vector((-14, 0, 15))),
         (T("circle") + 1.8, Vector((-14, -6, 15))),
         (T("noob_dragon"), Vector((-8, -15, 15))),
         (T("noob_dragon") + 1.6, Vector((3, -19, 14))),
@@ -1117,6 +1122,39 @@ def _dragon_pos(E, t):
             p3 = K[min(len(K) - 1, i + 2)][1]
             return _cr(p0, K[i][1], K[i + 1][1], p3, u)
     return K[-1][1].copy()
+
+
+def _sky_look(E, p, t):
+    """Where they look up to: the sound in the sky first, then the dragon itself, blended (no snap)."""
+    ph = p + Vector((-2, 8, 9))
+    if E.D.root.location.z < -100:
+        return ph
+    return ph.lerp(dragon_head(E), ss(b("sky_roar") + 0.05, b("sky_roar") + 0.6, t))
+
+
+def _shadow_caster(E, t):
+    """The dragon's shadow sweeping over the meadow as it passes over them: a dark shape seen by nothing but the
+    sun, carried across the ground along its flight, high between them and the sun."""
+    if not hasattr(E, "shade"):
+        bpy.ops.mesh.primitive_plane_add(size=1)
+        ob = bpy.context.active_object
+        ob.name = "dragon_shadow"
+        ob.scale = (7.0, 12.0, 1)
+        for k in ("visible_camera", "visible_diffuse", "visible_glossy", "visible_transmission", "visible_volume_scatter"):
+            if hasattr(ob, k):
+                setattr(ob, k, False)
+        E.shade = ob
+    ob = E.shade
+    a, c = b("sky_roar") + 0.1, b("sky_roar") + 1.0
+    if not (a <= t <= c):
+        ob.location = (0, 0, -400)
+        return
+    to_sun = (E.W.sun.matrix_world.to_3x3() @ Vector((0, 0, 1))).normalized()
+    mid = (gp(E, STEVE_TIRED) + gp(E, NOOB_NEAR)) / 2
+    fl = Vector((-0.7, 0.7, 0)).normalized()
+    u = (t - a) / (c - a)
+    ob.location = mid + to_sun * (8.0 / max(0.3, to_sun.z)) + fl * lerp(-14, 14, u)
+    ob.rotation_euler = (0, 0, math.atan2(fl.y, fl.x) - math.pi / 2)
 
 
 def dragon_head(E):
@@ -1166,8 +1204,8 @@ def dragon(E, t):
     head_yaw = _clamp(rel, -70, 70) * watch * 0.3
     el = math.degrees(math.atan2(-to.z, max(1.0, to_h.length)))
     snatch = ss(b("catch") - 0.4, b("catch") + 0.02, t) * (1 - ss(b("catch") + 0.15, b("catch") + 0.5, t))
-    neck_pitch = 38 * snatch + _clamp(el - pitch, -30, 40) * watch * 0.6 - 10 * ss(b("dragon_turn") + 0.05, b("dragon_turn") + 0.3, t) * (1 - ss(b("dragon_turn", 1), b("dragon_turn", 1) + 0.3, t))
-    head_pitch = 22 * snatch + _clamp(el - pitch, -30, 40) * watch * 0.4
+    neck_pitch = 55 * snatch + _clamp(el - pitch, -30, 40) * watch * 0.6 - 10 * ss(b("dragon_turn") + 0.05, b("dragon_turn") + 0.3, t) * (1 - ss(b("dragon_turn", 1), b("dragon_turn", 1) + 0.3, t))
+    head_pitch = 30 * snatch + _clamp(el - pitch, -30, 40) * watch * 0.4
     legs = 1.0 - 0.6 * face_them - 0.5 * snatch
     heave = pose_dragon(D, t, flap=flap, amp=1.0 + 0.3 * face_them, glide=glide, neck_pitch=neck_pitch, neck_yaw=neck_yaw,
                         head_pitch=head_pitch, head_yaw=head_yaw, jaw=min(1.0, jaw), legs=legs, turn=yaw_rate)
@@ -1216,9 +1254,9 @@ def _nod_to(p, tgt, h=1.6):
 def run_path(E, who):
     """Their run to the portal and the leap through it: (start, the take-off spot, the far side)."""
     if who == "steve":
-        a, b_ = STEVE_TIRED, Vector((-2.9, 2.2, 0))
+        a, b_ = STEVE_TIRED, Vector((-4.2, 2.0, 0))
     else:
-        a, b_ = NOOB_NEAR, Vector((-4.3, 2.0, 0))
+        a, b_ = NOOB_NEAR, Vector((-2.5, 2.1, 0))
     return gp(E, a), gp(E, b_), gp(E, Vector((b_.x, PORTAL.y + 1.6, 0)))
 
 
@@ -1316,9 +1354,10 @@ def steve(E, t):
         z0 = zombie_state(E, 0, t)
         watch = (z1["p"] if (z1 and t >= b("pour_out") + 0.9) else (z0["p"] if z0 else gp(E, PORTAL))) + Vector((0, 0, 1.8))
         y_watch = _yaw(watch - p)
-        lunge_t = b("lunge") + 1.1
-        rec = ss(lunge_t - 0.18, lunge_t + 0.1, t)                    # the recoil: arms up, leaning away
-        backing = ss(b("lunge") + 0.95, b("lunge") + 1.9, t)
+        lunge_t = b("lunge") + 1.0
+        rec = ss(lunge_t - 0.25, lunge_t + 0.05, t)                   # the recoil: arms up, leaning away
+        backing = ss(b("lunge") + 0.8, b("lunge") + 1.3, t) * (1 - ss(b("lunge") + 1.4, b("lunge") + 1.6, t)) \
+            + ss(b("lunge") + 1.6, b("lunge") + 1.7, t) * (1 - ss(b("steve_back", 1) - 0.2, b("steve_back", 1), t))
         yaw = y_watch
         pz["head_turn"] = 0.0
         pz["head_nod"] = _nod_to(p, watch) * 0.5
@@ -1327,8 +1366,8 @@ def steve(E, t):
         pz["arm_sr"] = {"fwd": 30 + 35 * rec, "out": 25 + 10 * rec, "elbow": 40 + 30 * rec}
         pz["chest_lean"] = -6 - 3 * creep - 14 * rec * (1 - 0.5 * ss(lunge_t + 0.8, lunge_t + 1.6, t))
         pz["chest_twist"] = -10 * rec
-        if 0 < backing < 1:
-            _walk(pz, t, b("lunge") + 0.95, 2.2, 0.32, 0.2)
+        if backing > 0.05:
+            _walk(pz, t, b("lunge") + 0.8, 2.4 if t < b("lunge") + 1.5 else 1.2, 0.32 * backing, 0.2 * backing)
         if b("hit") <= t:
             pz["arm_sl"]["fwd"] += 40 * (1 - ss(b("hit") + 0.4, b("hit") + 0.9, t))
         face = dict(SF["scared"])
@@ -1387,9 +1426,9 @@ def steve(E, t):
             up = ss(b("windup") - 0.05, b("windup", 1) - 0.05, t)
             sw = (t - b("swing")) / max(1e-3, H - b("swing"))
             sw = _clamp(sw, 0.0, 1.0)
-            down = sw ** 2.2                                    # slow, then faster into the hit
+            down = sw ** 1.3                                    # slow motion: the whole arc seen, into the hit
             rec = ss(H + 0.05, H + 0.5, t)
-            pz["arm_sr"] = {"fwd": lerp(lerp(85, 178, up), 55, down) + 15 * rec, "out": 10, "elbow": lerp(lerp(0, 25, up), 5, down)}
+            pz["arm_sr"] = {"fwd": lerp(lerp(85, 178, up), 72, down) + 10 * rec, "out": 8, "elbow": lerp(lerp(0, 25, up), 0, down)}
             pz["arm_sl"] = {"fwd": lerp(20, 45, down), "out": 15, "elbow": 40}
             pz["chest_lean"] = lerp(lerp(-4, -14, up), 20, down) - 8 * rec
             pz["head_nod"] = 12 * down * (1 - rec)
@@ -1423,10 +1462,10 @@ def steve(E, t):
         # the dragon: the shadow, the dive, the snatch, the circle; the Noob's question; "Yes."; the roar;
         # "Into the portal. Now!"
         p = gp(E, STEVE_TIRED)
-        dh = dragon_head(E) if t >= b("sky_roar") + 0.3 else p + Vector((-2, 8, 9))
+        dh = _sky_look(E, p, t)
         y_d = _yaw(dh - p)
         # his body turns to it (head first, then shoulders and hips: the head leads by a few frames)
-        yaw = _yaw(Vector((-0.6, 1.0, 0))) + _wrap(y_d - _yaw(Vector((-0.6, 1.0, 0)))) * 0.55
+        yaw = _yaw(Vector((-0.6, 1.0, 0))) + _wrap(y_d - _yaw(Vector((-0.6, 1.0, 0)))) * (0.55 + 0.4 * ss(b("circle"), b("circle") + 1.2, t))
         pz["head_turn"] = _head_to(yaw, p, dh, 65)
         pz["head_nod"] = _nod_to(p, dh) * 0.7
         face = dict(SF["stunned"])
@@ -1445,16 +1484,17 @@ def steve(E, t):
             face = dict(SF["scared"])
             pz["chest_lean"] = -8 * ss(b("dragon_turn") + 0.1, b("dragon_turn") + 0.3, t)
         if t >= b("steve_go") - 0.1:
-            # urgent: he turns to the Noob, an arm flung at the portal
+            # urgent: he turns to the Noob (head, then body), his left arm flung out at the portal beside them
             k = ss(b("steve_go") - 0.1, b("steve_go") + 0.3, t)
-            prt = gp(E, PORTAL) + Vector((0, 0, 2.0))
-            yaw = lerp(yaw, _yaw(prt - p) + 50, k)
             n_ = Vector(E.N.root.location) + Vector((0, 0, 1.3))
-            pz["head_turn"] = lerp(pz["head_turn"], _head_to(yaw, p, n_, 70), k)
-            pz["arm_sl"] = {"fwd": 85 * k, "out": 10 + 30 * k, "elbow": 5}
+            yaw = yaw + _wrap(_yaw(n_ - p) - yaw) * ss(b("steve_go") - 0.05, b("steve_go") + 0.4, t)
+            pz["head_turn"] = lerp(pz["head_turn"], _head_to(yaw, p, n_, 45), k)
+            pz["head_nod"] = lerp(pz["head_nod"], 2.0, k)
+            pz["head_tilt"] = 0.0
+            pz["arm_sl"] = {"fwd": 35 * k, "out": 80 * k, "elbow": 5}
             face = dict(SF["scared"])
             face.update({"bb_tilt": 0.45, "bb_raise": -0.05, "m_o": 0.3})
-        pz["arm_sr"] = {"fwd": 20, "out": 15, "elbow": 35}
+        pz["arm_sr"] = {"fwd": 8, "out": 28, "elbow": 15}
     else:
         p, yaw, hidden, rt = _run_jump(E, t, "steve", pz)
         if hidden:
@@ -1632,10 +1672,10 @@ def noob(E, t):
         # the dragon: he looks up at the shadow; awe; delight; "Whoa! Is that a dragon? Does your world have dragons
         # too?" (pointing up at it, then turning to Steve); the roar: scared
         p = gp(E, NOOB_NEAR)
-        dh = dragon_head(E) if t >= b("sky_roar") + 0.3 else p + Vector((-2, 8, 9))
+        dh = _sky_look(E, p, t)
         st_ = Vector(E.S.holder.location) + Vector((0, 0, 1.6))
         yaw = _yaw(dh - p) * 1.0
-        yaw = _yaw(Vector((-0.6, 1.0, 0))) + _wrap(_yaw(dh - p) - _yaw(Vector((-0.6, 1.0, 0)))) * 0.6
+        yaw = _yaw(Vector((-0.6, 1.0, 0))) + _wrap(_yaw(dh - p) - _yaw(Vector((-0.6, 1.0, 0)))) * (0.6 + 0.35 * ss(b("circle"), b("circle") + 1.2, t))
         pz["head_turn"] = _head_to(yaw, p, dh, 70)
         pz["head_nod"] = _nod_to(p, dh, 1.2) * 0.8
         face = dict(NF["confused"]) if t < b("dive") + 0.4 else dict(NF["awe"])
@@ -1651,8 +1691,10 @@ def noob(E, t):
         p = p + Vector((0, 0, 0.12 * hop))
         to_s = ss(b("noob_dragon") + 2.9, b("noob_dragon") + 3.4, t) * (1 - ss(b("dragon_turn") - 0.1, b("dragon_turn") + 0.15, t))
         if to_s > 0:
-            yaw = lerp(yaw, _yaw(st_ - p) - 20, to_s)
-            pz["head_turn"] = lerp(pz["head_turn"], _head_to(yaw, p, st_, 70), to_s)
+            g_ = to_s * (1 - ss(b("noob_dragon", 1) - 0.3, b("noob_dragon", 1) + 0.2, t))
+            pz["arm_sr"] = {"out": 25 + 15 * g_, "fwd": 20 + 55 * g_ + 15 * g_ * math.sin((t - b("noob_dragon")) * 5.0)}
+            yaw = yaw + _wrap(_yaw(st_ - p) - yaw) * 0.12 * to_s       # his body stays to the dragon; his head turns
+            pz["head_turn"] = lerp(pz["head_turn"], _head_to(yaw, p, st_, 40), to_s)
             pz["head_nod"] = lerp(pz["head_nod"], 0.0, to_s)
             pz["arm_sl"] = {"out": 10 + 20 * to_s, "fwd": 20 * to_s}
         if t >= b("dragon_turn"):
@@ -1744,6 +1786,7 @@ def hit_cube(E, t):
         return
     mouth = portal_mouth(E)
     tgt = gp(E, NOOB_BTN) + Vector((0, 0, 1.3))
+    tgt = tgt + (mouth - tgt).normalized() * 0.45            # it stops on his face, it doesn't go into it
     if t < t1:
         ob.location = mouth.lerp(tgt, u) + Vector((0, 0, 1.2 * math.sin(math.pi * u)))
         ob.rotation_euler = (u * 7, u * 4, 0)
@@ -1790,7 +1833,7 @@ def camera(E, t, shot, t0, t1):
     E.key.rotation_euler = (look - E.key.location).to_track_quat("-Z", "Y").to_euler()
     if shot in ("hit_see", "hit_slow", "hit", "lock", "lunge", "fear", "cheer", "rise", "hand") or t >= b("suck", 1):
         # by the portal its violet would light their faces head-on: a violet rim, the faces in their own colours
-        E.PP.light.data.energy *= 0.35
+        E.PP.light.data.energy *= 0.12 if t >= b("suck", 1) else 0.35
         E.key.data.energy *= 1.3
 
 
@@ -1924,7 +1967,7 @@ def _cam(E, t, shot, t0, t1):
         # slow motion, close on the Noob: the cube coming in at the top left; his head comes round too late
         hn = M.P6._head(E.N.face)
         f = _fwd(E.N.root)
-        loc = _front_of(hn, f, 2.0, -0.7, -0.15)
+        loc = _front_of(hn, f, 2.3, -1.1, -0.15)
         cube = E.hit_cube.matrix_world.translation
         look = hn.lerp(cube, 0.3 * ss(t0, t1, t)) if cube.z > -100 else hn
         return loc, look, 30, 3.0, (hn - loc).length, 0.03
@@ -1940,12 +1983,11 @@ def _cam(E, t, shot, t0, t1):
     # ---- cause and effect
     if shot == "cause":
         # wide: the button at the right blinks red; the portal at the left pulses and one more stumbles out
+        # the button close in front, the portal straight behind it: it blinks, the portal pulses, one more comes
         btn = gp(E, PILLAR + Vector((0.5, 0.5, 0))) + Vector((0, 0, 1.1))
         prt = gp(E, PORTAL) + Vector((0, 0, 2.6))
-        f1 = button_flashes()[3]
-        look = btn.lerp(prt, ss(f1 + 0.05, f1 + 0.45, t))
-        loc = _g(E, 1.4, -7.4, 2.6)
-        return loc, look, 24, 64.0, None, 0.06
+        loc = _g(E, 3.3, -2.0, 1.35) + Vector((-0.3, 0.25, 0)) * u
+        return loc, btn.lerp(prt, 0.35), 30, 64.0, None, 0.03
     if shot == "realize":
         # Steve's face, close: the next blink lights it red; his eyes go to the button, to the portal
         hs = M.P6._head(E.S.face, E.S.holder)
@@ -1993,17 +2035,18 @@ def _cam(E, t, shot, t0, t1):
         # low in front of them: the two of them, the sky above; something huge crosses it, its shadow over them
         # from by the portal, low, back at them: their faces; it comes over from behind us, its shadow on them
         loc = mid + Vector((-1.6, 3.4, 0.5))
-        return loc, mid + Vector((0.5, -1.6, 2.6)), 16, 64.0, None, 0.05 + 0.25 * math.exp(-((t - b("sky_roar") - 0.55) / 0.2) ** 2)
+        return loc, mid + Vector((0.5, -1.6, 3.6)), 16, 64.0, None, 0.05 + 0.25 * math.exp(-((t - b("sky_roar") - 0.55) / 0.2) ** 2)
     if shot == "dive":
         # from the ground by the portal: it comes down out of the sky at us
         loc = _g(E, -0.6, -4.6, 1.0)
         return loc, loc.lerp(dp, 0.85) if dp.z > -100 else loc + Vector((0, 5, 6)), 20, 64.0, None, 0.08 + 0.2 * ss(t0 + 0.8, t1, t)
     if shot == "catch":
         # by the frame: it swoops in, snatches the clinging one off the frame, and hauls it up and away
+        # from the side, close on the frame: it swoops in, its jaws close on the clinging one, it hauls it off
         g = cling_grip(E)
-        loc = g + Vector((-9.5, -9.0, 2.2))
-        look = g + Vector((1.0, -1.4, 2.2 + 2.5 * ss(t0 + 0.3, t1, t)))
-        return loc, look, 22, 64.0, None, 0.05 + 0.15 * math.exp(-((t - b("catch") - 0.12) / 0.08) ** 2)
+        loc = _g(E, -11.0, 1.2, 2.4)
+        look = g + Vector((0.0, -1.2, 2.0 + 2.2 * ss(t0 + 0.35, t1, t)))
+        return loc, look, 28, 64.0, None, 0.04 + 0.15 * math.exp(-((t - b("catch") - 0.12) / 0.08) ** 2)
     if shot == "circle":
         # low behind them, a little to the side: their faces turned up, the dragon wheeling over the meadow
         f = (_fwd(E.S.holder) + _fwd(E.N.root)).normalized()
@@ -2025,13 +2068,9 @@ def _cam(E, t, shot, t0, t1):
         return loc, dp, 32, 64.0, None, 0.05
     if shot == "dragons_too":
         # the two of them, from in front: the Noob turning to Steve; Steve deadpan
-        s_, n_ = Vector(E.S.holder.location), Vector(E.N.root.location)
-        ln = Vector(((n_ - s_).x, (n_ - s_).y, 0)).normalized()
-        sd = Vector((-ln.y, ln.x, 0))
-        f = (_fwd(E.S.holder) + _fwd(E.N.root))
-        if sd.dot(f) < 0:
-            sd = -sd
-        loc = mid + sd * 3.3 + Vector((0, 0, 1.2))
+        dd = _dragon_pos(E, t0) - mid
+        f = Vector((dd.x, dd.y, 0)).normalized()
+        loc = mid + f * (3.8 - 0.7 * u) + Vector((0, 0, 1.25))
         return loc, mid + Vector((0, 0, 1.25)), 30, 4.0, None, 0.03
     if shot == "yes":
         hs = M.P6._head(E.S.face, E.S.holder)
@@ -2053,11 +2092,10 @@ def _cam(E, t, shot, t0, t1):
         s0, n0 = gp(E, STEVE_TIRED), gp(E, NOOB_NEAR)
         d = Vector(((n0 - s0).x, (n0 - s0).y, 0)).normalized()
         sd = Vector((-d.y, d.x, 0))
-        yg = math.radians(_yaw(gp(E, PORTAL) - s0) + 50)
-        if sd.dot(Vector((math.sin(yg), -math.cos(yg), 0))) < 0:
+        if sd.dot(Vector((0.7, 0.7, 0))) < 0:                # the portal's side stays out of the way
             sd = -sd
         hn0 = n0 + Vector((0, 0, hn.z - n0.z))
-        loc = hn0 + d * 0.5 + sd * 1.6 + Vector((0, 0, 0.05))
+        loc = hn0 + d * 0.9 + sd * 0.75 + Vector((0, 0, 0.15))
         return loc, hs + Vector((0, 0, -0.08)), 34, 3.0, (hs - loc).length, 0.08
     if shot == "run":
         # running with them, from their side: the portal ahead, the dragon coming down behind them
