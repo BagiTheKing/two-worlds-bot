@@ -1264,7 +1264,7 @@ def _run_jump(E, t, who, pz):
     """Running to the portal and diving through: returns (position, yaw, hidden)."""
     a, tk, far = run_path(E, who)
     lag = 0.0 if who == "steve" else 0.12
-    r0, r1 = b("run") - 0.1 + lag, b("jump") + 0.05 + lag
+    r0, r1 = b("run") + lag, b("jump") + 0.05 + lag
     if t < r1:
         u = ss(r0, r1, t) if who else 0
         u = (t - r0) / (r1 - r0) if t > r0 else 0.0
@@ -1458,7 +1458,7 @@ def steve(E, t):
             face = dict(SF["flat"])
         if b("suck") <= t < b("quiet"):
             face = dict(SF["stunned"])
-    elif t < b("run") - 0.1:
+    elif t < b("run"):
         # the dragon: the shadow, the dive, the snatch, the circle; the Noob's question; "Yes."; the roar;
         # "Into the portal. Now!"
         p = gp(E, STEVE_TIRED)
@@ -1945,12 +1945,13 @@ def _cam(E, t, shot, t0, t1):
         return loc, mid + Vector((0, 0, 1.4)) + d * 0.9, 22, 64.0, None, 0.1 + 0.5 * math.exp(-((t - b("lunge") - 1.1) / 0.1) ** 2)
     if shot == "fear":
         # over the zombie's shoulder: Steve's face, terrified, backing off; its arms reaching into the frame
-        h = _zhead(E, 1)
+        # anchored where it landed (not on its moving head: the camera never passes through it)
+        h = gp(E, lunge_end()) + Vector((0, 0, 2.1))
         s_ = M.P6._head(E.S.face, E.S.holder)
-        d = (s_ - h)
+        d = (gp(E, STEVE_BACKED) - gp(E, lunge_end()))
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
-        loc = h - d * 1.3 + side * 1.5 + Vector((0, 0, 0.1))
+        loc = h - d * 1.2 + side * 1.9 + Vector((0, 0, -0.1))
         return loc, s_ + Vector((0, 0, -0.1)), 34, 2.8, (s_ - loc).length, 0.08
     # ---- the hit
     if shot == "hit_see":
