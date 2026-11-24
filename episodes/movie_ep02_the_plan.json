@@ -207,7 +207,8 @@
    "new_take": true,
    "own_scene": true,
    "pad": 0.5,
-   "note": "added line (the creator's, 2026-11-24): a new take in the Noob's voice"
+   "note": "added line (the creator's, 2026-11-24): a new take in the Noob's voice",
+   "deess": 6
   },
   {
    "line": "steve",
@@ -342,6 +343,16 @@
    "minimal": true,
    "fade_out": 0.4,
    "note": "the quiet, a heartbeat, the hit as the dragon dives"
+  },
+  {
+   "cue": "dread",
+   "from": "circle+1.4",
+   "to": "dragon_turn+0.4",
+   "gain": 0.2,
+   "hit_at": "dragon_turn",
+   "fade_out": 0.3,
+   "seed": 6,
+   "note": "under the dragon and the lines: a heartbeat and the tension rising, the hit on its roar (no dead air; review 2026-11-24)"
   },
   {
    "cue": "chase",
@@ -499,13 +510,13 @@
   {
    "kind": "heart",
    "at": "steve_back+0.15",
-   "gain": 0.6
+   "gain": 0.95
   },
   {
    "kind": "heart",
    "at": "steve_back+0.31",
    "dub": true,
-   "gain": 0.5
+   "gain": 0.8
   },
   {
    "kind": "portal",
@@ -780,7 +791,8 @@
    "text": "TEAMWORK!",
    "sub": "Build a portal together",
    "from": "portal_open+0.3",
-   "to": "portal_open+3.4"
+   "to": "pour_hand",
+   "note": "gone before the first scary close-up (the zombie's hand)"
   },
   {
    "type": "watermark",

@@ -1734,6 +1734,8 @@ def build(episode_path, out_dir, keep=None):
                     g[len(g) - ramp:] = np.linspace(g[0], 1, ramp)
                     audio = audio.copy()
                     audio[i0:i1] *= g
+                if ev.get("deess"):                       # harsh "s" sounds softened (dB off 4.5-9 kHz)
+                    audio = audio - (1 - 10 ** (-ev["deess"] / 20)) * band(audio, 4500, 9000)
                 if ev.get("tighten"):                     # shorter pauses inside the line
                     audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
                 if ev.get("speed", 1.0) != 1.0:                 # a little faster, same pitch
