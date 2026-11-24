@@ -82,7 +82,58 @@ def _box_mesh(name, origin, size, tex_w=64, tex_h=64, inflate=0.0, mirror=False)
     return me
 
 
-def _skin_material(name, skin_png):
+def scary_skin(skin_png, out_dir, seed=3):
+    """The movie's zombies (the creator, 2026-11-24: "tall, hunched, ragged skin, glowing red eyes"): the
+    game's skin made rotten (darker, sicklier green, blotched, torn: dark rents and raw red flesh in the skin
+    and the shirt) and its eyes red. Returns (skin png, glow png: the eyes, white on black)."""
+    import os
+    import random
+    from PIL import Image
+    os.makedirs(out_dir, exist_ok=True)
+    im = Image.open(skin_png).convert("RGBA")
+    px = im.load()
+    W, H = im.size
+    rnd = random.Random(seed)
+    glow = Image.new("RGB", (W, H), (0, 0, 0))
+    gp_ = glow.load()
+    eyes = {(9, 12), (10, 12), (13, 12), (14, 12)}         # the face's dark eye pixels (front of the head: 8..16)
+    for y in range(H):
+        for x in range(W):
+            r, g, b_, a = px[x, y]
+            if a == 0:
+                continue
+            if (x, y) in eyes:
+                px[x, y] = (255, 36, 18, 255)
+                gp_[x, y] = (255, 255, 255)
+                continue
+            # rotten: darker, the green pulled toward a sick grey-olive
+            k = 0.62 + 0.12 * rnd.random()
+            grey = (r + g + b_) / 3
+            r2, g2, b2 = [(c * 0.55 + grey * 0.45) * k for c in (r, g, b_)]
+            g2 *= 1.04
+            r2 += 6
+            px[x, y] = (int(r2), int(g2), int(b2), 255)
+    # blotches and rents: dark rot, and raw flesh at some of them (not on the eyes)
+    for _ in range(70):
+        x, y = rnd.randrange(W), rnd.randrange(H)
+        if px[x, y][3] == 0 or (x, y) in eyes or (8 <= x < 16 and 11 <= y < 14):
+            continue
+        n = rnd.choice((1, 2, 2, 3))
+        raw = rnd.random() < 0.35
+        for dx in range(n):
+            for dy in range(rnd.choice((1, 2))):
+                xx, yy = min(W - 1, x + dx), min(H - 1, y + dy)
+                if px[xx, yy][3] == 0 or (xx, yy) in eyes:
+                    continue
+                px[xx, yy] = (118, 22, 18, 255) if raw and dx == n // 2 else (22, 26, 16, 255)
+    sp = os.path.join(out_dir, "zombie_scary.png")
+    gp2 = os.path.join(out_dir, "zombie_scary_glow.png")
+    im.save(sp)
+    glow.save(gp2)
+    return sp, gp2
+
+
+def _skin_material(name, skin_png, glow_png=None, glow=0.0):
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     nt = m.node_tree
@@ -92,6 +143,22 @@ def _skin_material(name, skin_png):
     t.interpolation = "Closest"
     nt.links.new(t.outputs["Color"], b.inputs["Base Color"])
     nt.links.new(t.outputs["Alpha"], b.inputs["Alpha"])
+    if glow_png:                                   # the eyes glow: a mask times a strength (a value node, to animate)
+        g = nt.nodes.new("ShaderNodeTexImage")
+        g.image = bpy.data.images.load(glow_png, check_existing=True)
+        g.image.colorspace_settings.name = "Non-Color"
+        g.interpolation = "Closest"
+        v = nt.nodes.new("ShaderNodeValue")
+        v.name = "glow"
+        v.outputs[0].default_value = glow
+        mul = nt.nodes.new("ShaderNodeMath")
+        mul.operation = "MULTIPLY"
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(g.outputs["Color"], sep.inputs[0])
+        nt.links.new(sep.outputs[0], mul.inputs[0])
+        nt.links.new(v.outputs[0], mul.inputs[1])
+        b.inputs["Emission Color"].default_value = (1.0, 0.08, 0.03, 1)
+        nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
     b.inputs["Roughness"].default_value = 0.78
     if "Specular IOR Level" in b.inputs:
         b.inputs["Specular IOR Level"].default_value = 0.25
@@ -99,10 +166,11 @@ def _skin_material(name, skin_png):
     return m
 
 
-def build_mob(sc, name, skin_png, height=2.0, collection=None):
-    """A player-shaped mob, 32 skin pixels tall scaled to `height` blocks."""
+def build_mob(sc, name, skin_png, height=2.0, collection=None, glow_png=None, glow=0.0):
+    """A player-shaped mob, 32 skin pixels tall scaled to `height` blocks. glow_png: an emission mask (the
+    zombies' red eyes), its strength in M.glow (a value node) and a small red light in front of the face."""
     col = collection or sc.collection
-    mat = _skin_material(f"{name}_skin", skin_png)
+    mat = _skin_material(f"{name}_skin", skin_png, glow_png, glow)
     M = Mob()
     M.name = name
     M.root = bpy.data.objects.new(name, None)
@@ -138,6 +206,19 @@ def build_mob(sc, name, skin_png, height=2.0, collection=None):
         bev.harden_normals = False
         M.pivots[part], M.boxes[part] = pv, ob
     M.root.rotation_mode = "XYZ"
+    M.glow = mat.node_tree.nodes.get("glow")
+    M.eye_light = None
+    if glow_png:
+        lt = bpy.data.objects.new(f"{name}_eyes", bpy.data.lights.new(f"{name}_eyes", "POINT"))
+        col.objects.link(lt)
+        lt.data.color = (1.0, 0.12, 0.05)
+        lt.data.energy = 0.0
+        lt.data.shadow_soft_size = 0.05
+        lt.data.use_shadow = False
+        lt.parent = M.pivots["head"]
+        lt.location = Vector((0, -6.5, 4.6)) * PX                 # just in front of the eyes
+        lt.visible_glossy = False
+        M.eye_light = lt
     return M
 
 
