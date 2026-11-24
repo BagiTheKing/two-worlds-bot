@@ -284,8 +284,9 @@
    "title": "ACHIEVEMENT UNLOCKED",
    "text": "TEAMWORK!",
    "sub": "Build a portal together",
+   "note": "gone before the first scary close-up (the zombie's hand)",
    "start": 14.287,
-   "end": 17.387
+   "end": 15.587
   },
   {
    "type": "watermark",

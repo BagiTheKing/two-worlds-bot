@@ -175,7 +175,7 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
  }
 }
 hearing check (Whisper on the final mix, line by line):
-  ok    3.3s steve_rule         heard 'New rule, we leave today.'
+  ok    3.3s steve_rule         heard 'New rule we leave today'
   ok    6.0s steve_plan         heard 'Portal home, three steps. Nobody touches anything.'
   ok   12.4s noob_this          heard "This one?  Don't."  extra: don't
   ok   13.0s steve_dont         heard "Don't."
