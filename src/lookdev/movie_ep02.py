@@ -2012,8 +2012,12 @@ def _cam(E, t, shot, t0, t1):
         return loc, (mid + Vector((0, 0, 1.6))).lerp(dp, 0.3), 16, 64.0, None, 0.05
     if shot == "whoa":
         # the Noob, close, from in front of him: delighted, looking up at it
+        # anchored to where the dragon is as the shot starts (not to his turning body: no jump when he points)
         hn = M.P6._head(E.N.face)
-        loc = _front_of(hn, _fwd(E.N.root), 1.6, 0.35, -0.45)
+        h0 = gp(E, NOOB_NEAR) + Vector((0, 0, hn.z - E.ground(NOOB_NEAR.x, NOOB_NEAR.y)))
+        dd = _dragon_pos(E, t0) - h0
+        f = Vector((dd.x, dd.y, 0)).normalized()
+        loc = _front_of(h0, f, 1.6, 0.35, -0.45)
         return loc, hn + Vector((0, 0, 0.05)), 35, 3.0, None, 0.03
     if shot == "toss":
         # the dragon over the meadow: it flings the zombie away over the trees
@@ -2043,13 +2047,17 @@ def _cam(E, t, shot, t0, t1):
     if shot == "go":
         # Steve close, urgent; the Noob beside him; the dragon behind, over the meadow
         # over the Noob's shoulder: Steve's face, urgent
+        # anchored to where they stand (not to his body: no jump as he sets off running)
         hs = M.P6._head(E.S.face, E.S.holder)
         hn = M.P6._head(E.N.face)
-        d = Vector(((hn - hs).x, (hn - hs).y, 0)).normalized()
+        s0, n0 = gp(E, STEVE_TIRED), gp(E, NOOB_NEAR)
+        d = Vector(((n0 - s0).x, (n0 - s0).y, 0)).normalized()
         sd = Vector((-d.y, d.x, 0))
-        if sd.dot(_fwd(E.S.holder)) < 0:
+        yg = math.radians(_yaw(gp(E, PORTAL) - s0) + 50)
+        if sd.dot(Vector((math.sin(yg), -math.cos(yg), 0))) < 0:
             sd = -sd
-        loc = hn + d * 0.5 + sd * 1.6 + Vector((0, 0, 0.05))
+        hn0 = n0 + Vector((0, 0, hn.z - n0.z))
+        loc = hn0 + d * 0.5 + sd * 1.6 + Vector((0, 0, 0.05))
         return loc, hs + Vector((0, 0, -0.08)), 34, 3.0, (hs - loc).length, 0.08
     if shot == "run":
         # running with them, from their side: the portal ahead, the dragon coming down behind them
