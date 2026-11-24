@@ -1,0 +1,316 @@
+{
+ "id": "movie_ep02_the_plan",
+ "fps": 24,
+ "length": 65.798,
+ "beats": {
+  "eye": [
+   0.0,
+   2.6
+  ],
+  "look_up": [
+   2.6,
+   3.3
+  ],
+  "steve_rule": [
+   3.3,
+   5.383
+  ],
+  "steve_plan": [
+   5.983,
+   9.109
+  ],
+  "build": [
+   9.409,
+   12.409
+  ],
+  "noob_this": [
+   12.409,
+   12.994
+  ],
+  "steve_dont": [
+   13.044,
+   13.487
+  ],
+  "press": [
+   13.487,
+   13.987
+  ],
+  "portal_open": [
+   13.987,
+   15.587
+  ],
+  "pour_hand": [
+   15.587,
+   17.387
+  ],
+  "pour_out": [
+   17.387,
+   19.987
+  ],
+  "lunge": [
+   19.987,
+   21.587
+  ],
+  "steve_back": [
+   21.587,
+   22.887
+  ],
+  "hit_see": [
+   22.887,
+   23.687
+  ],
+  "hit_slow": [
+   23.687,
+   25.287
+  ],
+  "hit": [
+   25.287,
+   26.187
+  ],
+  "respawn": [
+   26.187,
+   26.987
+  ],
+  "noob_fine": [
+   26.987,
+   28.371
+  ],
+  "chaos": [
+   28.771,
+   31.771
+  ],
+  "notice": [
+   31.771,
+   34.171
+  ],
+  "steve_planb": [
+   34.171,
+   35.364
+  ],
+  "dash": [
+   35.414,
+   36.614
+  ],
+  "windup": [
+   36.614,
+   37.114
+  ],
+  "swing": [
+   37.114,
+   38.314
+  ],
+  "smash": [
+   38.314,
+   39.314
+  ],
+  "suck": [
+   39.314,
+   42.514
+  ],
+  "quiet": [
+   42.514,
+   43.714
+  ],
+  "steve_never": [
+   43.714,
+   45.148
+  ],
+  "sky_roar": [
+   45.748,
+   47.348
+  ],
+  "dive": [
+   47.348,
+   48.948
+  ],
+  "catch": [
+   48.948,
+   49.948
+  ],
+  "circle": [
+   49.948,
+   52.148
+  ],
+  "noob_dragon": [
+   52.148,
+   57.558
+  ],
+  "steve_yes": [
+   58.058,
+   59.128
+  ],
+  "dragon_turn": [
+   59.428,
+   60.428
+  ],
+  "steve_go": [
+   60.428,
+   62.198
+  ],
+  "run": [
+   62.298,
+   63.598
+  ],
+  "jump": [
+   63.598,
+   64.498
+  ],
+  "dive_after": [
+   64.498,
+   65.798
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_rule",
+   "who": "steve",
+   "text": "New rule. We leave. Today.",
+   "vo": false,
+   "caption": true,
+   "start": 3.3,
+   "end": 5.383
+  },
+  {
+   "name": "steve_plan",
+   "who": "steve",
+   "text": "Portal home. Three steps. Nobody touches anything.",
+   "vo": false,
+   "caption": true,
+   "start": 5.983,
+   "end": 9.109
+  },
+  {
+   "name": "noob_this",
+   "who": "noob",
+   "text": "This one?",
+   "vo": false,
+   "caption": true,
+   "start": 12.409,
+   "end": 12.994
+  },
+  {
+   "name": "steve_dont",
+   "who": "steve",
+   "text": "Don't!",
+   "vo": false,
+   "caption": true,
+   "start": 13.044,
+   "end": 13.487
+  },
+  {
+   "name": "noob_fine",
+   "who": "noob",
+   "text": "I'm fine! New record!",
+   "vo": false,
+   "caption": true,
+   "start": 26.987,
+   "end": 28.371
+  },
+  {
+   "name": "steve_planb",
+   "who": "steve",
+   "text": "Plan B!",
+   "vo": false,
+   "caption": true,
+   "start": 34.171,
+   "end": 35.364
+  },
+  {
+   "name": "steve_never",
+   "who": "steve",
+   "text": "...Never again.",
+   "vo": false,
+   "caption": true,
+   "start": 43.714,
+   "end": 45.148
+  },
+  {
+   "name": "noob_dragon",
+   "who": "noob",
+   "text": "Whoa! Is that a dragon? Does your world have dragons too?",
+   "vo": false,
+   "caption": true,
+   "start": 52.148,
+   "end": 57.558
+  },
+  {
+   "name": "steve_yes",
+   "who": "steve",
+   "text": "Yes.",
+   "vo": false,
+   "caption": true,
+   "start": 58.058,
+   "end": 59.128
+  },
+  {
+   "name": "steve_go",
+   "who": "steve",
+   "text": "Into the portal. Now!",
+   "vo": false,
+   "caption": true,
+   "start": 60.428,
+   "end": 62.198
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "TEAMWORK!",
+   "sub": "Build a portal together",
+   "start": 14.287,
+   "end": 17.387
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 66.198
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 99%",
+   "start": 2.6,
+   "end": 39.914
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 97%",
+   "alert": true,
+   "start": 39.914,
+   "end": 66.198
+  },
+  {
+   "type": "flash",
+   "strength": 0.8,
+   "start": 38.414,
+   "end": 38.564
+  }
+ ]
+}

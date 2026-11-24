@@ -1,0 +1,188 @@
+voices from prev_prep: ['noob_fine', 'noob_hi', 'noob_this', 'noob_waved', 'steve_dont', 'steve_never', 'steve_plan', 'steve_planb', 'steve_rule']
+new takes (added lines): ['noob_dragon', 'steve_yes', 'steve_go']
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  noob_dragon take 0 (6.00s): 1.00 ' Whoa,  is  that  a  dragon?  Does  your  world  have  dragons  too?'
+  noob_dragon take 1 (5.60s): 1.00 ' Whoa!  Is  that  a  dragon?  Does  your  world  have  dragons  too?'
+  noob_dragon take 2 (6.76s): 0.95 ' Whoa,  is  that  a  dragon?  Did  your  world  have  dragons  too?'
+  steve_yes take 0 (1.56s): 1.00 ' Yes'
+  steve_yes take 1 (1.68s): 1.00 ' Yes'
+  steve_yes take 2 (1.52s): 1.00 ' Yes'
+  solo Steve 'Into the portal. Now!' take 0: from the cache
+  solo take 0 for 'Into the portal. Now!': 1.00 ' Into  the  portal  now'
+  solo Steve 'Into the portal. Now!' take 1: from the cache
+  solo take 1 for 'Into the portal. Now!': 1.00 ' Into  the  portal  now'
+  solo Steve 'Into the portal. Now!' take 2: from the cache
+  solo take 2 for 'Into the portal. Now!': 1.00 ' Into  the  portal  now.'
+{
+ "length": 65.798,
+ "beats": {
+  "eye": [
+   0.0,
+   2.6
+  ],
+  "look_up": [
+   2.6,
+   3.3
+  ],
+  "steve_rule": [
+   3.3,
+   5.383
+  ],
+  "steve_plan": [
+   5.983,
+   9.109
+  ],
+  "build": [
+   9.409,
+   12.409
+  ],
+  "noob_this": [
+   12.409,
+   12.994
+  ],
+  "steve_dont": [
+   13.044,
+   13.487
+  ],
+  "press": [
+   13.487,
+   13.987
+  ],
+  "portal_open": [
+   13.987,
+   15.587
+  ],
+  "pour_hand": [
+   15.587,
+   17.387
+  ],
+  "pour_out": [
+   17.387,
+   19.987
+  ],
+  "lunge": [
+   19.987,
+   21.587
+  ],
+  "steve_back": [
+   21.587,
+   22.887
+  ],
+  "hit_see": [
+   22.887,
+   23.687
+  ],
+  "hit_slow": [
+   23.687,
+   25.287
+  ],
+  "hit": [
+   25.287,
+   26.187
+  ],
+  "respawn": [
+   26.187,
+   26.987
+  ],
+  "noob_fine": [
+   26.987,
+   28.371
+  ],
+  "chaos": [
+   28.771,
+   31.771
+  ],
+  "notice": [
+   31.771,
+   34.171
+  ],
+  "steve_planb": [
+   34.171,
+   35.364
+  ],
+  "dash": [
+   35.414,
+   36.614
+  ],
+  "windup": [
+   36.614,
+   37.114
+  ],
+  "swing": [
+   37.114,
+   38.314
+  ],
+  "smash": [
+   38.314,
+   39.314
+  ],
+  "suck": [
+   39.314,
+   42.514
+  ],
+  "quiet": [
+   42.514,
+   43.714
+  ],
+  "steve_never": [
+   43.714,
+   45.148
+  ],
+  "sky_roar": [
+   45.748,
+   47.348
+  ],
+  "dive": [
+   47.348,
+   48.948
+  ],
+  "catch": [
+   48.948,
+   49.948
+  ],
+  "circle": [
+   49.948,
+   52.148
+  ],
+  "noob_dragon": [
+   52.148,
+   57.558
+  ],
+  "steve_yes": [
+   58.058,
+   59.128
+  ],
+  "dragon_turn": [
+   59.428,
+   60.428
+  ],
+  "steve_go": [
+   60.428,
+   62.198
+  ],
+  "run": [
+   62.298,
+   63.598
+  ],
+  "jump": [
+   63.598,
+   64.498
+  ],
+  "dive_after": [
+   64.498,
+   65.798
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    3.3s steve_rule         heard 'New rule, we leave today.'
+  ok    6.0s steve_plan         heard 'Portal home, three steps. Nobody touches anything.'
+  ok   12.4s noob_this          heard "This one?  Don't."  extra: don't
+  ok   13.0s steve_dont         heard "Don't."
+  ok   27.0s noob_fine          heard "I'm fine. New record."
+  ok   34.2s steve_planb        heard 'Plan B.'
+  ok   43.7s steve_never        heard 'Never again.'
+  ok   52.1s noob_dragon        heard 'Whoa, is that a dragon? Does your world have dragons too?'
+  ok   58.1s steve_yes          heard 'Yes.'
+  ok   60.4s steve_go           heard 'Into the portal, now!'
+hearing check: 0 of 10 lines flagged
