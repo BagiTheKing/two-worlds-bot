@@ -767,7 +767,7 @@ def lunge_dir():
 
 
 def lunge_end():
-    return STEVE_DONT - lunge_dir() * 0.9
+    return STEVE_DONT - lunge_dir() * 1.35
 
 
 def steve_spot(E, t):
@@ -1026,9 +1026,30 @@ def _cling_pose(E, Z, per, t, st):
     E.cling_root = Vector(Z.root.location)
 
 
+def _cling_root_at_grab(E, Z, per):
+    """Where the clinging one's root was the moment before the jaws closed (computed once, from time alone)."""
+    if getattr(E, "cling_root_grab", None) is None:
+        tg = b("catch") + 0.09
+        _cling_pose(E, Z, per, tg, {"cling": 1.0})
+        E.cling_root_grab = Vector(Z.root.location)
+    return E.cling_root_grab
+
+
+def _toss_from(E, toss, t):
+    """Where the jaws were when it let go (the dragon posed at that moment once, then put back)."""
+    if getattr(E, "toss_tip", None) is None:
+        dragon(E, toss)
+        bpy.context.view_layer.update()
+        E.toss_tip = E.D.head.matrix_world @ Vector((0, -1.25, -0.1))
+        dragon(E, t)
+        bpy.context.view_layer.update()
+    return E.toss_tip
+
+
 def _held_zombie(E, Z, per, t):
     """In the dragon's jaws: hanging by its middle from the jaw, flailing; flung away as the Noob speaks."""
     from mob import pose_mob
+    g_grab = _cling_root_at_grab(E, Z, per)          # first: it poses the zombie itself
     D = E.D
     toss = b("noob_dragon") + 2.6
     tip = (D.head.matrix_world @ Vector((0, -1.25, -0.1)))                 # between the jaws, near the front
@@ -1044,7 +1065,7 @@ def _held_zombie(E, Z, per, t):
     mid = Z.pivots["body"].matrix_world.translation
     held = tip - mid
     # the grab: from where it clung into the jaws in a quarter second
-    g0 = getattr(E, "cling_root", None)
+    g0 = g_grab
     k = ss(b("catch") + 0.1, b("catch") + 0.3, t)
     loc = held if g0 is None else g0.lerp(held, k)
     if t >= toss:
@@ -1060,9 +1081,7 @@ def _held_zombie(E, Z, per, t):
         v = (_dragon_pos(E, toss + 0.05) - h0) / 0.05 + Vector((0, 0, 7.0))
         side = Vector((-v.y, v.x, 0)).normalized() * 6.0
         tip0 = tip if dt == 0 else None
-        base = E.toss_from if hasattr(E, "toss_from") and dt > 0 else tip
-        if dt == 0 or not hasattr(E, "toss_from"):
-            E.toss_from = tip
+        base = _toss_from(E, toss, t)
         p = base + (v * 0.6 + side) * dt + Vector((0, 0, -4.9 * dt * dt)) - mid
         Z.root.location = p
         Z.root.rotation_euler = (dt * 9, dt * 4, math.radians(pz["root_yaw"]) + dt * 6)
@@ -1085,9 +1104,10 @@ def _dragon_keys():
         (T("dive") + 1.35, Vector((-4.4, -2.4, 7.5))),
         (T("catch"), Vector((-3.4, -2.6, 5.6))),
         (T("catch") + 0.1, Vector((-2.6, 0.3, 4.7))),         # the snatch: its jaws at the frame
-        (T("catch") + 0.45, Vector((-4.4, -1.6, 7.6))),
-        (T("catch", 1), Vector((-9.5, -2.5, 12.0))),           # climbing away, the zombie in its jaws
-        (T("circle") + 0.9, Vector((-14, 0, 15))),
+        (T("catch") + 0.4, Vector((-2.7, 1.2, 8.0))),         # hauling it off, climbing hard
+        (T("catch") + 0.7, Vector((-2.9, 2.8, 11.5))),        # over the portal, well clear of its top
+        (T("catch", 1), Vector((-3.4, 6.0, 14.0))),
+        (T("circle") + 0.9, Vector((-9, 8, 15))),
         (T("circle") + 1.8, Vector((-14, -6, 15))),
         (T("noob_dragon"), Vector((-8, -15, 15))),
         (T("noob_dragon") + 1.6, Vector((3, -19, 14))),
@@ -1129,7 +1149,13 @@ def _sky_look(E, p, t):
     ph = p + Vector((-2, 8, 9))
     if E.D.root.location.z < -100:
         return ph
-    return ph.lerp(dragon_head(E), ss(b("sky_roar") + 0.05, b("sky_roar") + 0.6, t))
+    dh = dragon_head(E)
+    hd = Vector(((dh - p).x, (dh - p).y, 0)).length
+    if t < b("dive"):
+        # as it goes right over them they follow where it is going (heads tilt back and turn), never a flip
+        ahead = _dragon_pos(E, t + 0.7) + Vector((0, 0, 0.5))
+        dh = ahead.lerp(dh, ss(3.0, 8.0, hd))
+    return ph.lerp(dh, ss(b("sky_roar") + 0.05, b("sky_roar") + 0.6, t))
 
 
 def _shadow_caster(E, t):
@@ -1174,14 +1200,15 @@ def dragon(E, t):
     p = _dragon_pos(E, t)
     v = (_dragon_pos(E, t + 0.04) - _dragon_pos(E, t - 0.04)) / 0.08
     hv = Vector((v.x, v.y, 0))
-    yaw = _yaw(hv) if hv.length > 0.5 else getattr(E, "_dyaw", 0.0)
+    to0 = chars_mid(E) - p
+    yaw = _yaw(hv) if hv.length > 0.5 else _yaw(Vector((to0.x, to0.y, 0)))
     # hovering and turned to them (the roar): it faces them whatever way it drifts
     face_them = ss(b("steve_yes", 1) - 0.4, b("dragon_turn") + 0.3, t) * (1 - ss(b("steve_go") + 0.8, b("run") + 0.2, t))
     to = chars_mid(E) - p
     yaw = yaw + _wrap(_yaw(Vector((to.x, to.y, 0))) - yaw) * face_them
     E._dyaw = yaw
     yaw_rate = _wrap(_yaw(Vector(((_dragon_pos(E, t + 0.1) - p).x, (_dragon_pos(E, t + 0.1) - p).y, 0))) - _yaw(hv)) / 0.1 if hv.length > 0.5 else 0.0
-    pitch = math.degrees(math.atan2(-v.z, max(0.5, hv.length))) * (1 - face_them)
+    pitch = _clamp(math.degrees(math.atan2(-v.z, max(0.5, hv.length))), -38, 38) * (1 - face_them)
     bank = _clamp(-yaw_rate * 0.25, -40, 40) * (1 - face_them)
     # wings: a glide in the dive (spread, still), big beats pulling up out of the snatch and hovering
     dive_glide = ss(b("dive") + 0.2, b("dive") + 0.5, t) * (1 - ss(b("dive") + 1.2, b("dive") + 1.5, t))
@@ -1211,6 +1238,13 @@ def dragon(E, t):
                         head_pitch=head_pitch, head_yaw=head_yaw, jaw=min(1.0, jaw), legs=legs, turn=yaw_rate)
     D.root.location = p + Vector((0, 0, heave))
     D.root.rotation_euler = (math.radians(pitch), math.radians(bank), math.radians(yaw))
+    # the snatch: its jaws are where the clinging one is (the body follows the head in), whatever the flight path
+    w = ss(b("catch") - 0.25, b("catch") + 0.08, t) * (1 - ss(b("catch") + 0.12, b("catch") + 0.4, t))
+    if w > 0:
+        bpy.context.view_layer.update()
+        want = cling_grip(E) + Vector((0, -0.35, 0.55))
+        tip = D.head.matrix_world @ Vector((0, -1.25, -0.1))
+        D.root.location = D.root.location + (want - tip) * w
 
 
 # ------------------------------------------------------------------ the cast
@@ -1689,7 +1723,7 @@ def noob(E, t):
             pz["root_pitch"] = 0
         hop = math.exp(-((t - (b("noob_dragon") + 0.6)) / 0.1) ** 2)
         p = p + Vector((0, 0, 0.12 * hop))
-        to_s = ss(b("noob_dragon") + 2.9, b("noob_dragon") + 3.4, t) * (1 - ss(b("dragon_turn") - 0.1, b("dragon_turn") + 0.15, t))
+        to_s = ss(b("noob_dragon", 1) - 0.5, b("noob_dragon", 1), t) * (1 - ss(b("dragon_turn") - 0.1, b("dragon_turn") + 0.15, t))
         if to_s > 0:
             g_ = to_s * (1 - ss(b("noob_dragon", 1) - 0.3, b("noob_dragon", 1) + 0.2, t))
             pz["arm_sr"] = {"out": 25 + 15 * g_, "fwd": 20 + 55 * g_ + 15 * g_ * math.sin((t - b("noob_dragon")) * 5.0)}
@@ -1835,6 +1869,13 @@ def camera(E, t, shot, t0, t1):
         # by the portal its violet would light their faces head-on: a violet rim, the faces in their own colours
         E.PP.light.data.energy *= 0.12 if t >= b("suck", 1) else 0.35
         E.key.data.energy *= 1.3
+    if shot in ("shadow", "circle", "toss", "dive"):
+        # the camera looks up at the sky: aim the key at the two of them, not at the sky
+        tgt = chars_mid(E)
+        E.key.location = loc + (tgt - loc) * 0.35 + Vector((0.4, 0, 1.2))
+        E.key.rotation_euler = (tgt - E.key.location).to_track_quat("-Z", "Y").to_euler()
+    if shot in ("windup", "swing", "dragons_too", "yes"):
+        E.key.data.energy *= 1.6
 
 
 def _wide(E, t, t0, t1, lens=20):
@@ -1935,14 +1976,16 @@ def _cam(E, t, shot, t0, t1):
         return loc, h + Vector((0, 0, -0.05)), 40, 3.5, None, 0.05
     if shot == "lunge":
         # side on and low: it lunges in from the left, arms up; Steve throwing himself back at the right
-        a = gp(E, ZOMBIES[1][1])
-        e = gp(E, STEVE_DONT)
-        mid = a.lerp(e, 0.6)
+        a = gp(E, lunge_end())
+        e = gp(E, STEVE_DONT.lerp(STEVE_BACKED, 0.7))
+        mid = a.lerp(e, 0.5)
         d = (e - a)
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((d.y, -d.x, 0))
-        loc = mid + side * 4.4 + d * 0.6 + Vector((0, 0, 0.8)) - d * 0.3 * u
-        return loc, mid + Vector((0, 0, 1.4)) + d * 0.9, 22, 64.0, None, 0.1 + 0.5 * math.exp(-((t - b("lunge") - 1.1) / 0.1) ** 2)
+        if side.y > 0:
+            side = -side
+        loc = mid + side * 4.6 + Vector((0, 0, 1.0)) - d * 0.25 * u
+        return loc, mid + Vector((0, 0, 1.3)), 22, 64.0, None, 0.1 + 0.5 * math.exp(-((t - b("lunge") - 1.1) / 0.1) ** 2)
     if shot == "fear":
         # over the zombie's shoulder: Steve's face, terrified, backing off; its arms reaching into the frame
         # anchored where it landed (not on its moving head: the camera never passes through it)
@@ -2045,9 +2088,9 @@ def _cam(E, t, shot, t0, t1):
         # by the frame: it swoops in, snatches the clinging one off the frame, and hauls it up and away
         # from the side, close on the frame: it swoops in, its jaws close on the clinging one, it hauls it off
         g = cling_grip(E)
-        loc = _g(E, -11.0, 1.2, 2.4)
-        look = g + Vector((0.0, -1.2, 2.0 + 2.2 * ss(t0 + 0.35, t1, t)))
-        return loc, look, 28, 64.0, None, 0.04 + 0.15 * math.exp(-((t - b("catch") - 0.12) / 0.08) ** 2)
+        loc = g + Vector((1.7, -3.0, 0.2))
+        look = g + Vector((-0.3, 0.0, 0.9 + 3.2 * ss(t0 + 0.2, t1, t)))
+        return loc, look, 22, 64.0, None, 0.04 + 0.15 * math.exp(-((t - b("catch") - 0.12) / 0.08) ** 2)
     if shot == "circle":
         # low behind them, a little to the side: their faces turned up, the dragon wheeling over the meadow
         f = (_fwd(E.S.holder) + _fwd(E.N.root)).normalized()
@@ -2069,14 +2112,25 @@ def _cam(E, t, shot, t0, t1):
         return loc, dp, 32, 64.0, None, 0.05
     if shot == "dragons_too":
         # the two of them, from in front: the Noob turning to Steve; Steve deadpan
+        s0, n0 = gp(E, STEVE_TIRED), gp(E, NOOB_NEAR)
+        ln = Vector(((n0 - s0).x, (n0 - s0).y, 0)).normalized()
+        sd = Vector((ln.y, -ln.x, 0))                        # their line's south side: both seen side by side
         dd = _dragon_pos(E, t0) - mid
-        f = Vector((dd.x, dd.y, 0)).normalized()
-        loc = mid + f * (3.8 - 0.7 * u) + Vector((0, 0, 1.25))
-        return loc, mid + Vector((0, 0, 1.25)), 30, 4.0, None, 0.03
+        f = (sd * 0.75 + Vector((dd.x, dd.y, 0)).normalized() * 0.45).normalized()
+        loc = mid + f * (3.9 - 0.6 * u) + Vector((0, 0, 1.2))
+        return loc, mid + Vector((0, 0, 1.25)), 28, 4.0, None, 0.03
     if shot == "yes":
         hs = M.P6._head(E.S.face, E.S.holder)
-        loc = _front_of(hs, _fwd(E.S.holder), 1.6, 0.4, -0.05)
-        return loc, hs + Vector((0, 0, -0.08)), 38, 2.8, None, 0.03
+        s0, n0 = gp(E, STEVE_TIRED), gp(E, NOOB_NEAR)
+        to_n = Vector(((n0 - s0).x, (n0 - s0).y, 0)).normalized()
+        dd = _dragon_pos(E, t0) - s0
+        f = Vector((dd.x, dd.y, 0)).normalized()
+        sd = Vector((-f.y, f.x, 0))
+        if sd.dot(to_n) > 0:
+            sd = -sd
+        h0 = s0 + Vector((0, 0, hs.z - s0.z))
+        loc = h0 + (f * 0.6 + sd * 0.8).normalized() * 1.5 + Vector((0, 0, -0.1))
+        return loc, hs + Vector((0, 0, -0.08)), 36, 2.8, None, 0.03
     if shot == "roar":
         # the dragon turned to them, hovering, roaring at us
         dh = dragon_head(E)

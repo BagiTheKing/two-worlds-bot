@@ -163,6 +163,18 @@ def _skin_material(name, skin_png, glow_png=None, glow=0.0):
     if "Specular IOR Level" in b.inputs:
         b.inputs["Specular IOR Level"].default_value = 0.25
     m.blend_method = "HASHED" if hasattr(m, "blend_method") else None
+    if glow_png:
+        # where a box is cut by the portal's surface we see into it: its inside glows the portal's violet, not black
+        out = nt.nodes["Material Output"]
+        geo = nt.nodes.new("ShaderNodeNewGeometry")
+        em = nt.nodes.new("ShaderNodeEmission")
+        em.inputs["Color"].default_value = (0.62, 0.3, 0.95, 1)
+        em.inputs["Strength"].default_value = 2.5
+        mx = nt.nodes.new("ShaderNodeMixShader")
+        nt.links.new(geo.outputs["Backfacing"], mx.inputs[0])
+        nt.links.new(b.outputs[0], mx.inputs[1])
+        nt.links.new(em.outputs[0], mx.inputs[2])
+        nt.links.new(mx.outputs[0], out.inputs["Surface"])
     return m
 
 
