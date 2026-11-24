@@ -230,9 +230,9 @@
    "text": "Into the portal. Now!",
    "direction_text": "[urgent, sharp, low] Into the portal. Now!",
    "new_take": true,
-   "own_scene": true,
    "pad": 0.1,
-   "note": "added line: Steve, urgent, to go into the portal"
+   "note": "added line: Steve, urgent, to go into the portal; recorded on its own without the direction (with it, the takes read 'Urgent, sharp, low' aloud or added 'Hurry, quick')",
+   "solo_only": true
   },
   {
    "beat": "run",
