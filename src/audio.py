@@ -1147,6 +1147,40 @@ def sfx_groan(dur=0.9):
     return norm(voice * env(len(x), 0.08, dur * 0.4), 0.6)
 
 
+def sfx_growl(dur=1.2, pitch=1.0):
+    """A scary zombie (the movie): a deep, wet, rasping growl from the chest,
+    slow and uneven, with a gurgle and breath noise; no cartoon moan."""
+    x = t(dur)
+    f = pitch * (58 + 9 * np.sin(2 * np.pi * 1.7 * x) + 6 * np.sin(2 * np.pi * 5.3 * x + 1.0))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = sum(np.sin(k * ph) / k ** 0.8 for k in range(1, 18))            # a rough, buzzy throat
+    rasp = 1 + 0.6 * np.sin(2 * np.pi * (31 + 9 * np.sin(2 * np.pi * 0.9 * x)) * x)   # the rattle
+    breath = band(rng.standard_normal(len(x)), 300, 2600) * (0.6 + 0.4 * np.sin(2 * np.pi * 2.1 * x))
+    y = np.tanh(2.2 * (norm(tone) * rasp + 0.7 * norm(breath)))            # saturated, nasty
+    shape = np.minimum(1, x / 0.12) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.5
+    return norm(band(y * shape, 70, 4200), 0.75)
+
+
+def sfx_snarl(dur=0.7):
+    """A zombie lunging at someone: a short, rising, ragged shriek-growl."""
+    x = t(dur)
+    f = 90 + 160 * np.minimum(1, x / (dur * 0.35))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = sum(np.sin(k * ph) / k for k in range(1, 14))
+    breath = band(rng.standard_normal(len(x)), 600, 5000)
+    y = np.tanh(2.6 * (norm(tone) * (1 + 0.5 * np.sin(2 * np.pi * 38 * x)) + 0.8 * norm(breath)))
+    return norm(y * env(len(x), 0.03, dur * 0.45), 0.85)
+
+
+def sfx_slowmo(dur=1.6):
+    """Slow motion: a low, stretched whoosh dropping in pitch, a sub under it."""
+    x = t(dur)
+    air = band(rng.standard_normal(len(x)), 120, 900) * np.sin(np.pi * x / dur) ** 1.5
+    f = 55 * np.exp(-x * 0.6) + 22
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.sin(np.pi * x / dur)
+    return norm(0.7 * norm(air) + norm(sub), 0.8)
+
+
 def sfx_burst():
     """The Noob breaking apart: a pop, a plastic clatter."""
     out = np.zeros(int(0.9 * SR))
@@ -1369,7 +1403,9 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "ring": lambda e: sfx_ring(e.get("dur", 4.0)),
        "clip": lambda e: _clip_file(e["path"]), "quack": lambda e: sfx_quack(e.get("n", 2)),
        "servo": lambda e: sfx_servo(e.get("dur", 0.5), e.get("pitch", 1.0)), "clunk": lambda e: sfx_clunk(e.get("pitch", 1.0)),
-       "hiss": lambda e: sfx_hiss(e.get("dur", 0.4))}
+       "hiss": lambda e: sfx_hiss(e.get("dur", 0.4)),
+       "growl": lambda e: sfx_growl(e.get("dur", 1.2), e.get("pitch", 1.0)),
+       "snarl": lambda e: sfx_snarl(e.get("dur", 0.7)), "slowmo": lambda e: sfx_slowmo(e.get("dur", 1.6))}
 
 
 def _clip_file(path):
@@ -1577,8 +1613,10 @@ def build(episode_path, out_dir, keep=None):
     # the movie: every line exactly as an earlier run finished it (its voices-only track, cut at its line times)
     prep = {}
     vdir = os.getenv("VOICES_FROM")
-    if vdir and os.path.exists(os.path.join(vdir, "voice.wav")):
-        vw, vsr = sf.read(os.path.join(vdir, "voice.wav"))
+    vfile = next((os.path.join(vdir, f) for f in ("voice.wav", "voice.flac")
+                  if vdir and os.path.exists(os.path.join(vdir, f))), None)
+    if vfile:       # an earlier run's prep, or a chapter folder in the repo (movie/epNN)
+        vw, vsr = sf.read(vfile)
         if vw.ndim > 1:
             vw = vw.mean(axis=1)
         assert vsr == SR, vsr
@@ -1588,9 +1626,17 @@ def build(episode_path, out_dir, keep=None):
     need = [ev.get("name") for ev in ep["events"] if "line" in ev and not ev.get("unused")]
     if prep and all(n in prep for n in need):
         pre = {}
+    elif prep:
+        # lines added to the movie ("new_take": the creator allowed new lines, November 15) are recorded in the
+        # same voices; every other line must come exactly as it was finished
+        added = [ev for ev in ep["events"] if "line" in ev and not ev.get("unused") and ev.get("name") not in prep]
+        if not all(ev.get("new_take") for ev in added):
+            raise SystemExit(f"VOICES_FROM is missing lines: {[ev.get('name') for ev in added if not ev.get('new_take')]}")
+        print(f"new takes (added lines): {[ev['name'] for ev in added]}")
+        CACHE_ONLY = False          # only the added lines are in this request; nothing else can be re-recorded
+        pre = gemini_lines(dict(ep, events=added), cache_dir) if ENGINE == "gemini" else {}
+        CACHE_ONLY = bool(ep.get("voices_cache_only"))
     else:
-        if prep:
-            raise SystemExit(f"VOICES_FROM is missing lines: {[n for n in need if n not in prep]}")
         pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0

@@ -57,7 +57,7 @@ on:
         description: "The movie: publish to preview-<this> instead of the episode's own preview branch (never overwrite a published Short)"
         default: ""
       voices_from:
-        description: "The movie: an earlier run whose finished voice lines to reuse exactly (its prep's voices-only track); the timing is new"
+        description: "The movie: an earlier run (or a chapter folder in the repo, e.g. movie/ep02) whose finished voice lines to reuse exactly; the timing is new; lines marked new_take are recorded"
         default: ""
 
 permissions:
@@ -99,7 +99,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download ${{ inputs.voices_from }} -n prep -D prev_prep -R ${{ github.repository }}
+          if [ -d "${{ inputs.voices_from }}" ]; then     # a chapter folder in the repo (movie/epNN: voice.flac, timeline.json)
+            cp -r "${{ inputs.voices_from }}" prev_prep
+          else
+            gh run download ${{ inputs.voices_from }} -n prep -D prev_prep -R ${{ github.repository }}
+          fi
           ls prev_prep
           cat prev_prep/voice_log.txt || true
       - name: Voice cache (unchanged lines are not re-generated)

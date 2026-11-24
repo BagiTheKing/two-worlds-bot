@@ -78,12 +78,39 @@
    "dur": 1.6
   },
   {
-   "beat": "pour",
-   "dur": 4.0
+   "beat": "pour_hand",
+   "dur": 1.8,
+   "note": "close on the swirl: a hand pushes through, then the head, red eyes"
+  },
+  {
+   "beat": "pour_out",
+   "dur": 2.6,
+   "note": "they step out one by one, growling (close-ups, low angles); the Noob still delighted at the button"
+  },
+  {
+   "beat": "lunge",
+   "dur": 1.6,
+   "note": "one locks eyes on Steve: arms up, it lunges at him"
+  },
+  {
+   "beat": "steve_back",
+   "dur": 1.3,
+   "note": "Steve backs off, terrified (his face close, then over the zombie's shoulder)"
+  },
+  {
+   "beat": "hit_see",
+   "dur": 0.8,
+   "note": "a cube leaves the portal, flying at the Noob (he doesn't see it)"
+  },
+  {
+   "beat": "hit_slow",
+   "dur": 1.6,
+   "note": "slow motion: the cube in the air, the Noob turning too late"
   },
   {
    "beat": "hit",
-   "dur": 0.8
+   "dur": 0.9,
+   "note": "the impact: his parts fly clear of the tree"
   },
   {
    "beat": "respawn",
@@ -102,6 +129,11 @@
    "dur": 3.0
   },
   {
+   "beat": "notice",
+   "dur": 2.4,
+   "note": "Steve sees it: every time the button flashes, the portal pulses and pulls another one through (twice)"
+  },
+  {
    "line": "steve",
    "name": "steve_planb",
    "text": "Plan B!",
@@ -111,15 +143,28 @@
   },
   {
    "beat": "dash",
-   "dur": 0.9
+   "dur": 1.2,
+   "note": "he runs at the button"
+  },
+  {
+   "beat": "windup",
+   "dur": 0.5,
+   "note": "he winds up the pickaxe"
+  },
+  {
+   "beat": "swing",
+   "dur": 1.2,
+   "note": "the swing, in slow motion"
   },
   {
    "beat": "smash",
-   "dur": 1.0
+   "dur": 1.0,
+   "note": "the button shatters in close-up; the portal reverses"
   },
   {
    "beat": "suck",
-   "dur": 2.6
+   "dur": 3.2,
+   "note": "the zombies are dragged back into the portal; the last one clings to the frame, half pulled in"
   },
   {
    "beat": "quiet",
@@ -135,11 +180,74 @@
    "tighten": 0.3
   },
   {
-   "beat": "approach",
-   "dur": 2.0,
-   "sfx": "steps",
-   "step_every": 0.34,
-   "step_first": 0.15
+   "beat": "sky_roar",
+   "dur": 1.6,
+   "note": "a roar from the sky; a shadow sweeps over the meadow; they look up"
+  },
+  {
+   "beat": "dive",
+   "dur": 1.6,
+   "note": "the dragon dives out of the clouds (the Minecraft sky)"
+  },
+  {
+   "beat": "catch",
+   "dur": 1.0,
+   "note": "it snatches the clinging zombie off the frame in its jaws"
+  },
+  {
+   "beat": "circle",
+   "dur": 2.2,
+   "note": "it swings round over the portal, its eyes on them"
+  },
+  {
+   "line": "noob",
+   "name": "noob_dragon",
+   "text": "Whoa! Is that a dragon? Does your world have dragons too?",
+   "direction_text": "[amazed, breathless, delighted] Whoa! Is that a dragon? Does your world have dragons too?",
+   "new_take": true,
+   "own_scene": true,
+   "pad": 0.5,
+   "note": "added line (the creator's, 2026-11-24): a new take in the Noob's voice"
+  },
+  {
+   "line": "steve",
+   "name": "steve_yes",
+   "text": "Yes.",
+   "direction_text": "[flat, dry, deadpan] Yes.",
+   "new_take": true,
+   "own_scene": true,
+   "pad": 0.3,
+   "note": "added line: Steve's answer, dry (comes after the Noob's line, as the creator asked)"
+  },
+  {
+   "beat": "dragon_turn",
+   "dur": 1.0,
+   "note": "the dragon turns toward them and roars"
+  },
+  {
+   "line": "steve",
+   "name": "steve_go",
+   "text": "Into the portal. Now!",
+   "direction_text": "[urgent, sharp, low] Into the portal. Now!",
+   "new_take": true,
+   "own_scene": true,
+   "pad": 0.1,
+   "note": "added line: Steve, urgent, to go into the portal"
+  },
+  {
+   "beat": "run",
+   "dur": 1.3,
+   "note": "they run at the swirling portal"
+  },
+  {
+   "beat": "jump",
+   "dur": 0.9,
+   "note": "they jump in"
+  },
+  {
+   "beat": "dive_after",
+   "dur": 1.3,
+   "note": "the dragon dives after them; cut on the swirl (chapter 3 opens on the tumble)"
   },
   {
    "line": "noob",
@@ -150,11 +258,9 @@
    "cut_at": [
     17.02,
     17.43
-   ]
-  },
-  {
-   "beat": "mirror",
-   "dur": 3.0
+   ],
+   "unused": true,
+   "note": "the old ending (the figure in the portal), removed by the creator 2026-11-23"
   },
   {
    "line": "noob",
@@ -163,11 +269,9 @@
    "direction_text": "[uneasy, small voice] ...Steve? It waved back.",
    "solo_only": true,
    "pad": 0.6,
-   "tighten": 0.3
-  },
-  {
-   "beat": "snap",
-   "dur": 2.5
+   "tighten": 0.3,
+   "unused": true,
+   "note": "the old ending (the figure in the portal), removed by the creator 2026-11-23"
   }
  ],
  "music": [
@@ -189,32 +293,72 @@
   {
    "cue": "chase",
    "from": "press",
+   "to": "pour_hand+0.4",
+   "gain": 0.2,
+   "fade_out": 0.6,
+   "note": "the portal opens: still a game for the Noob"
+  },
+  {
+   "cue": "dread",
+   "from": "pour_hand",
+   "to": "hit_see",
+   "gain": 0.26,
+   "hit_at": "lunge+0.3",
+   "fade_out": 0.2,
+   "note": "the pour is scary: a heartbeat speeding up, the tension rising, the hit when it lunges at Steve"
+  },
+  {
+   "cue": "chase",
+   "from": "hit_see",
    "to": "suck+1.2",
    "gain": 0.2,
    "swell": [
+    {
+     "from": "hit_slow",
+     "to": "hit",
+     "gain": 0.3,
+     "ramp": 0.2
+    },
     {
      "from": "chaos",
      "to": "steve_planb",
      "gain": 1.9,
      "ramp": 0.25
+    },
+    {
+     "from": "swing",
+     "to": "smash",
+     "gain": 0.3,
+     "ramp": 0.2
     }
    ]
   },
   {
    "cue": "dread",
    "from": "suck.end",
-   "to": "snap",
-   "gain": 0.16,
-   "hit_at": "snap",
-   "minimal": true
+   "to": "circle.end",
+   "gain": 0.2,
+   "hit_at": "dive",
+   "minimal": true,
+   "fade_out": 0.4,
+   "note": "the quiet, a heartbeat, the hit as the dragon dives"
   },
   {
-   "cue": "null",
-   "from": "snap",
+   "cue": "chase",
+   "from": "dragon_turn",
    "to": "end",
-   "gain": 0.22,
+   "gain": 0.2,
+   "seed": 5,
    "open_tail": true,
-   "note": "chapter 3 carries this cue on (offset 2.5, seed 4): no fade at the cut"
+   "swell": [
+    {
+     "from": "run",
+     "to": "end",
+     "gain": 1.6,
+     "ramp": 0.3
+    }
+   ],
+   "note": "chapter 3 carries this cue on (seed 5, offset = this cue's length): no fade at the cut"
   }
  ],
  "ambience": [
@@ -228,7 +372,7 @@
   {
    "kind": "meadow",
    "from": "suck.end-0.35",
-   "to": "noob_hi",
+   "to": "end",
    "gain": 0.05,
    "fade_in": 0.6
   }
@@ -259,6 +403,16 @@
    "gain": 0.5
   },
   {
+   "kind": "step",
+   "at": "build+2.45",
+   "gain": 0.6
+  },
+  {
+   "kind": "step",
+   "at": "build+2.75",
+   "gain": 0.5
+  },
+  {
    "kind": "click",
    "at": "press",
    "gain": 0.8
@@ -280,32 +434,114 @@
    "gain": 0.5
   },
   {
-   "kind": "pop",
-   "from": "pour",
-   "to": "pour+3.6",
-   "count": 16,
-   "gain": 0.35
+   "kind": "whir",
+   "at": "pour_hand+0.2",
+   "to": "suck+1.2",
+   "gain": 0.4
   },
   {
-   "kind": "groan",
-   "at": "pour+0.4",
+   "kind": "growl",
+   "at": "pour_hand+0.5",
+   "dur": 1.4,
+   "pitch": 0.9,
+   "gain": 0.6
+  },
+  {
+   "kind": "growl",
+   "at": "pour_out+0.1",
+   "dur": 1.2,
+   "gain": 0.55
+  },
+  {
+   "kind": "growl",
+   "at": "pour_out+0.9",
+   "dur": 1.1,
+   "pitch": 1.15,
    "gain": 0.5
   },
   {
-   "kind": "groan",
-   "at": "pour+2.4",
-   "gain": 0.45,
-   "dur": 1.1
+   "kind": "growl",
+   "at": "pour_out+1.6",
+   "dur": 1.2,
+   "pitch": 0.85,
+   "gain": 0.55
   },
   {
-   "kind": "groan",
-   "at": "hit+0.3",
-   "gain": 0.4
+   "kind": "thump",
+   "from": "pour_out+0.2",
+   "to": "pour_out.end-0.1",
+   "count": 6,
+   "freq": 55,
+   "gain": 0.35
+  },
+  {
+   "kind": "snarl",
+   "at": "lunge+0.3",
+   "dur": 0.8,
+   "gain": 0.8
+  },
+  {
+   "kind": "whoosh",
+   "at": "lunge+0.55",
+   "dur": 0.5,
+   "gain": 0.5
+  },
+  {
+   "kind": "step",
+   "at": "steve_back+0.1",
+   "gain": 0.55
+  },
+  {
+   "kind": "step",
+   "at": "steve_back+0.5",
+   "gain": 0.5
+  },
+  {
+   "kind": "heart",
+   "at": "steve_back+0.15",
+   "gain": 0.6
+  },
+  {
+   "kind": "heart",
+   "at": "steve_back+0.31",
+   "dub": true,
+   "gain": 0.5
+  },
+  {
+   "kind": "portal",
+   "at": "hit_see",
+   "dur": 0.5,
+   "gain": 0.45
+  },
+  {
+   "kind": "whoosh",
+   "at": "hit_see+0.3",
+   "dur": 0.5,
+   "gain": 0.5
+  },
+  {
+   "kind": "slowmo",
+   "at": "hit_slow",
+   "dur": 1.6,
+   "gain": 0.7
   },
   {
    "kind": "burst",
    "at": "hit",
-   "gain": 0.8
+   "gain": 0.9
+  },
+  {
+   "kind": "thump",
+   "at": "hit",
+   "freq": 50,
+   "gain": 0.7
+  },
+  {
+   "kind": "pop",
+   "from": "hit+0.15",
+   "to": "hit+0.8",
+   "count": 5,
+   "gain": 0.3
   },
   {
    "kind": "respawn",
@@ -313,95 +549,231 @@
    "gain": 0.7
   },
   {
-   "kind": "whir",
-   "at": "pour+0.2",
-   "to": "suck+1.2",
+   "kind": "growl",
+   "at": "chaos+0.15",
+   "dur": 1.1,
+   "gain": 0.5
+  },
+  {
+   "kind": "growl",
+   "at": "chaos+1.6",
+   "dur": 1.1,
+   "pitch": 1.1,
+   "gain": 0.45
+  },
+  {
+   "kind": "thump",
+   "from": "chaos+0.1",
+   "to": "chaos.end-0.1",
+   "count": 7,
+   "freq": 55,
+   "gain": 0.3
+  },
+  {
+   "kind": "click",
+   "at": "notice+0.2",
+   "gain": 0.7
+  },
+  {
+   "kind": "portal",
+   "at": "notice+0.25",
+   "dur": 0.5,
+   "gain": 0.5
+  },
+  {
+   "kind": "growl",
+   "at": "notice+0.5",
+   "dur": 0.8,
    "gain": 0.4
   },
   {
-   "kind": "groan",
-   "at": "chaos+0.15",
-   "gain": 0.5,
-   "dur": 1.0
+   "kind": "click",
+   "at": "notice+1.3",
+   "gain": 0.7
   },
   {
-   "kind": "whoosh",
+   "kind": "portal",
+   "at": "notice+1.35",
+   "dur": 0.5,
+   "gain": 0.5
+  },
+  {
+   "kind": "growl",
+   "at": "notice+1.6",
+   "dur": 0.8,
+   "pitch": 1.1,
+   "gain": 0.4
+  },
+  {
+   "kind": "run",
    "at": "dash",
-   "dur": 0.45,
+   "dur": 1.2,
    "gain": 0.6
   },
   {
+   "kind": "whoosh",
+   "at": "windup",
+   "dur": 0.35,
+   "gain": 0.35
+  },
+  {
+   "kind": "slowmo",
+   "at": "swing",
+   "dur": 1.2,
+   "gain": 0.65
+  },
+  {
    "kind": "crunch",
-   "at": "smash+0.35",
+   "at": "smash+0.1",
    "gain": 0.95
+  },
+  {
+   "kind": "break",
+   "at": "smash+0.15",
+   "gain": 0.8
   },
   {
    "kind": "suck",
    "at": "suck",
-   "dur": 2.2,
+   "dur": 2.8,
    "gain": 0.8
   },
   {
    "kind": "pop",
    "from": "suck+0.9",
-   "to": "suck+2.2",
-   "count": 8,
-   "gain": 0.35
+   "to": "suck+2.4",
+   "count": 6,
+   "gain": 0.3
   },
   {
-   "kind": "sub_drop",
-   "at": "noob_hi",
-   "dur": 2.4,
-   "gain": 0.45
+   "kind": "growl",
+   "at": "suck+0.3",
+   "dur": 1.0,
+   "pitch": 1.1,
+   "gain": 0.5
   },
   {
-   "kind": "snap",
-   "at": "snap",
-   "gain": 2.4
+   "kind": "growl",
+   "at": "suck+1.8",
+   "dur": 1.4,
+   "gain": 0.55
   },
   {
-   "kind": "pop",
-   "from": "chaos+0.1",
-   "to": "chaos.end-0.1",
-   "count": 9,
-   "gain": 0.35
-  },
-  {
-   "kind": "groan",
-   "at": "pour+1.4",
-   "gain": 0.45
-  },
-  {
-   "kind": "groan",
-   "at": "chaos+1.6",
-   "gain": 0.45,
-   "dur": 1.0
-  },
-  {
-   "kind": "groan",
-   "at": "pour+3.2",
+   "kind": "creak",
+   "at": "suck+1.6",
+   "dur": 1.2,
    "gain": 0.4
   },
   {
-   "kind": "step",
-   "at": "build+2.45",
+   "kind": "rumble_rise",
+   "at": "sky_roar",
+   "dur": 1.6,
+   "gain": 0.3
+  },
+  {
+   "kind": "roar",
+   "at": "sky_roar+0.2",
+   "dur": 1.4,
+   "gain": 0.35
+  },
+  {
+   "kind": "whoosh",
+   "at": "dive",
+   "dur": 1.4,
+   "gain": 0.7
+  },
+  {
+   "kind": "flaps",
+   "at": "dive",
+   "dur": 1.6,
+   "gain": 0.35
+  },
+  {
+   "kind": "roar",
+   "at": "dive+0.6",
+   "dur": 1.0,
    "gain": 0.6
   },
   {
-   "kind": "step",
-   "at": "build+2.75",
+   "kind": "crunch",
+   "at": "catch+0.1",
+   "gain": 1.3
+  },
+  {
+   "kind": "snarl",
+   "at": "catch",
+   "dur": 0.4,
+   "gain": 0.5
+  },
+  {
+   "kind": "break",
+   "at": "catch+0.15",
+   "gain": 0.7
+  },
+  {
+   "kind": "flaps",
+   "at": "circle",
+   "dur": 2.2,
+   "gain": 0.35
+  },
+  {
+   "kind": "growl",
+   "at": "circle+0.4",
+   "dur": 1.6,
+   "pitch": 0.55,
+   "gain": 0.45
+  },
+  {
+   "kind": "flaps",
+   "at": "noob_dragon",
+   "to": "dragon_turn",
+   "rate": 1.3,
+   "gain": 0.18
+  },
+  {
+   "kind": "roar",
+   "at": "dragon_turn+0.1",
+   "dur": 0.9,
+   "gain": 0.7
+  },
+  {
+   "kind": "run",
+   "at": "run",
+   "dur": 1.3,
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "jump",
+   "dur": 0.8,
+   "gain": 0.6
+  },
+  {
+   "kind": "portal",
+   "at": "jump+0.4",
+   "dur": 0.9,
+   "gain": 0.6
+  },
+  {
+   "kind": "roar",
+   "at": "dive_after",
+   "dur": 1.0,
+   "gain": 0.8
+  },
+  {
+   "kind": "flaps",
+   "at": "dive_after",
+   "dur": 1.3,
+   "gain": 0.4
+  },
+  {
+   "kind": "whoosh",
+   "at": "dive_after+0.3",
+   "dur": 0.7,
    "gain": 0.5
   }
  ],
  "overlays": [
-  {
-   "type": "timer",
-   "label": "PLAN",
-   "from": "press-3.0",
-   "to": "portal_open+0.25",
-   "fail_after": 3.0,
-   "y": 430
-  },
   {
    "type": "achievement",
    "title": "ACHIEVEMENT UNLOCKED",
@@ -431,8 +803,8 @@
   },
   {
    "type": "flash",
-   "from": "smash+0.35",
-   "to": "smash+0.5",
+   "from": "smash+0.1",
+   "to": "smash+0.25",
    "strength": 0.8
   }
  ],
@@ -1702,8 +2074,9 @@
    ]
   }
  ],
- "movie_note": "Movie version of Episode 2 (story/movie/ep02_shots.md): the same lines and voice takes, more room around them (the creator: no time limit in the movie, November 14). 16:9; the Shorts packaging is dropped (episode label, comment prompt, end card).",
+ "movie_note": "Movie version of Episode 2 (story/movie/ep02_shots.md): the same lines and voice takes, more room around them (the creator: no time limit in the movie, November 14). 16:9; the Shorts packaging is dropped (episode label, comment prompt, end card). v5 (the creator's corrections, 2026-11-23/24, story/movie/fixes_2026-11-23.md): no PLAN countdown; the pour close and scary; the hit slowed; the button shown driving the portal before the smash; the dragon ending with three added lines (new takes in the same voices), replacing the figure in the portal.",
  "voices_cache_only": true,
  "declick": 0.004,
- "declick_blank": 0.0025
+ "declick_blank": 0.0025,
+ "own_takes": 3
 }
