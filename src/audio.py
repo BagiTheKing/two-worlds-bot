@@ -84,6 +84,13 @@ def clean_tail(x, sr=SR):
     start = end
     while start > 0 and db[start - 1] > -40:
         start -= 1
+        # a burst broken by a few frames of digital silence (exact zeros) is one burst
+        # (the movie's new takes, 2026-11-24: 40 ms, 30 ms of zeros, 90 ms)
+        z = start
+        while z > 0 and fr[z - 1] < 1e-8 and start - z < 6:
+            z -= 1
+        if z < start and z > 0 and fr[z - 1] >= 1e-8 and db[z - 1] > -40:
+            start = z
     gap_end = start
     gap_start = gap_end
     while gap_start > 0 and db[gap_start - 1] <= -40:
