@@ -157,7 +157,7 @@ def _skin_material(name, skin_png, glow_png=None, glow=0.0):
         nt.links.new(g.outputs["Color"], sep.inputs[0])
         nt.links.new(sep.outputs[0], mul.inputs[0])
         nt.links.new(v.outputs[0], mul.inputs[1])
-        b.inputs["Emission Color"].default_value = (1.0, 0.08, 0.03, 1)
+        b.inputs["Emission Color"].default_value = (1.0, 0.02, 0.005, 1)
         nt.links.new(mul.outputs[0], b.inputs["Emission Strength"])
     b.inputs["Roughness"].default_value = 0.78
     if "Specular IOR Level" in b.inputs:
@@ -211,7 +211,7 @@ def build_mob(sc, name, skin_png, height=2.0, collection=None, glow_png=None, gl
     if glow_png:
         lt = bpy.data.objects.new(f"{name}_eyes", bpy.data.lights.new(f"{name}_eyes", "POINT"))
         col.objects.link(lt)
-        lt.data.color = (1.0, 0.12, 0.05)
+        lt.data.color = (1.0, 0.06, 0.02)
         lt.data.energy = 0.0
         lt.data.shadow_soft_size = 0.05
         lt.data.use_shadow = False

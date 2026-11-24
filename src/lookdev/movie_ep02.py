@@ -53,13 +53,13 @@ BUILD_CAM = Vector((-0.6, -5.0, 0.0))      # the build's camera (the frame, Stev
 ZOMBIES = [  # (out of the portal at x, where it goes after stepping out, where the chaos takes it)
     (-4.4, Vector((-4.7, 0.9, 0)), Vector((-4.2, -0.8, 0))),     # the first: the hand through the swirl
     (-3.0, Vector((-3.0, 1.7, 0)), Vector((-2.9, -2.6, 0))),     # the eager one: locks on Steve, lunges
-    (-2.2, Vector((-2.0, -0.4, 0)), Vector((-0.4, -3.6, 0))),
+    (-2.2, Vector((-2.0, -0.4, 0)), Vector((-2.7, -2.1, 0))),
     (-4.1, Vector((-4.4, 2.0, 0)), None),                        # pulled through on the button's flashes
     (-2.7, Vector((-2.6, 2.3, 0)), None),                        # ... the last one: it clings to the frame
 ]
 ZH = 2.35                                  # tall (the creator: "tall, hunched, ragged skin, glowing red eyes")
 STEVE_BACKED = Vector((0.12, 1.96, 0.0))   # where Steve backs off to from the lunge
-NOOB_NEAR = Vector((-0.15, -2.55, 0.0))    # the Noob comes over to Steve after the suck
+NOOB_NEAR = Vector((0.15, -2.05, 0.0))    # the Noob comes over to Steve after the suck
 DRAGON_SCALE = 0.8
 
 
@@ -584,7 +584,7 @@ def portal(E, t):
     P.membrane.hide_render = not vis
     pulses = _pulse(t, [x + 0.1 for x in button_flashes()], 0.14)
     flash = math.exp(-((t - on - 0.08) / 0.12) ** 2) + 0.8 * math.exp(-((t - b("suck") - 0.05) / 0.15) ** 2) \
-        + 0.5 * math.exp(-((t - b("jump") - 0.45) / 0.1) ** 2) + 0.9 * ss(b("dive_after", 1) - 0.25, b("dive_after", 1), t)
+        + 0.12 * math.exp(-((t - b("jump") - 0.45) / 0.1) ** 2) + 0.3 * ss(b("dive_after", 1) - 0.12, b("dive_after", 1), t)
     E.portal_flash.hide_render = flash < 0.02
     E.portal_flash_em.inputs["Strength"].default_value = 14.0 * min(1.0, flash)
     swirl = ss(on, on + 0.3, t)
@@ -803,23 +803,24 @@ def zombie_state(E, k, t):
     slow = 2.6 if k == 0 else 1.0                 # the first creeps through: the hand, then the head
     if t < t0 - 0.6:
         return None
-    door = gp(E, Vector((x_out, PORTAL.y + 1.3, 0)))
+    door = gp(E, Vector((x_out, PORTAL.y + (2.0 if k == 0 else 1.3), 0)))
     front = gp(E, Vector((x_out, PORTAL.y - 0.8, 0)))
     a = gp(E, after)
     steve_p = steve_spot(E, t)
     v = 0.95 * per.speed
     st = {"arms_up": 1.0, "lean": HUNCH, "lunge": 0.0, "lift": 0.0, "flail": 0.0, "look": steve_p + Vector((0, 0, 1.6)),
-          "glow": 7.0 + 2.0 * math.sin(t * 3.1 + k)}
+          "glow": 3.0 + 0.8 * math.sin(t * 3.1 + k)}
     # 1. through the surface: slow, its arms out ahead of it
     t_front = t0 + slow
     if t < t_front:
-        u = ss(t0 - 0.6, t_front, t)
+        u = _clamp((t - t0 + 0.6) / (t_front - t0 + 0.6), 0.0, 1.0)
+        u = u ** 1.7 if k == 0 else ss(0.0, 1.0, u)
         st["p"] = door.lerp(front, u)
         st["phase"] = max(0.0, t - t0) * 0.55 * v / STRIDE
         st["yaw"] = _yaw(front - door)
         st["look"] = st["p"] + Vector((0, -3.0, 1.2))
         if k == 0:                                  # the head comes up as it comes through; its eyes find us
-            st["glow"] = 6.0 + 14.0 * ss(t0 + 0.9, t0 + 1.3, t)
+            st["glow"] = 2.5 + 4.5 * ss(t0 + 1.4, t0 + 1.8, t)
         return st
     # 2. out: to its place
     d1 = (a - front).length
@@ -833,13 +834,13 @@ def zombie_state(E, k, t):
         st["phase"] = (t - t0) * v / STRIDE
         st["yaw"] = _yaw(a - front)
         return st
-    if k == 1 and t >= b("lunge"):
+    if k == 1 and b("lunge") <= t < b("lunge") + 0.6:
         # the lock: its head turns to Steve, then its shoulders; its eyes flare
         st["p"] = a
         st["phase"] = None
         y_path, y_st = _yaw(a - front), _yaw(steve_p - a)
         st["yaw"] = y_path + _wrap(y_st - y_path) * ss(b("lunge") + 0.1, b("lunge") + 0.55, t)
-        st["glow"] = 9.0 + 26.0 * ss(b("lunge") + 0.2, b("lunge") + 0.4, t)
+        st["glow"] = 3.5 + 7.0 * ss(b("lunge") + 0.2, b("lunge") + 0.4, t)
         st["lean"] = HUNCH + 4 * ss(b("lunge") + 0.3, b("lunge") + 0.6, t)
         return st
     # 3. arrived
@@ -909,7 +910,7 @@ def _lunge_state(E, st, a, t):
         st["lunge"] = 1.0 - ss(land, land + 0.7, t)
         st["lean"] = HUNCH + 22 * (1 - ss(land, land + 0.6, t)) + 6 * math.exp(-((t - land - 0.1) / 0.1) ** 2)
     st["yaw"] = _yaw(e - a) + _wrap(_yaw(steve_spot(E, t) - st["p"]) - _yaw(e - a)) * ss(land + 0.2, land + 1.0, t)
-    st["glow"] = 30.0
+    st["glow"] = 9.0
     return st
 
 
@@ -949,13 +950,13 @@ def _cling_state(E, st, p0, t):
             st["flail"] = 0.5
             return st
         st["cling"] = ss(s0 + 1.0, s0 + 1.35, t)
-        st["glow"] = 14.0 + 6 * math.sin(t * 9)
+        st["glow"] = 5.0 + 2 * math.sin(t * 9)
         st["p"] = p0
         st["phase"] = None
         st["yaw"] = 0.0
         return st
     st["held"] = True                              # in the dragon's jaws
-    st["glow"] = 12.0
+    st["glow"] = 5.0
     return st
 
 
@@ -972,7 +973,7 @@ def zombies(E, t):
             continue
         Z.glow.outputs[0].default_value = st["glow"]
         if Z.eye_light:
-            Z.eye_light.data.energy = 0.6 * st["glow"] / 8.0
+            Z.eye_light.data.energy = 0.5 * st["glow"] / 3.0
         if st.get("held"):
             _held_zombie(E, Z, pers[k], t)
             continue
@@ -1802,6 +1803,17 @@ def _g(E, x, y, h):
     return Vector((x, y, E.ground(x, y) + h))
 
 
+def _fwd(ob):
+    f = ob.matrix_world.to_3x3() @ Vector((0, -1, 0))
+    f = Vector((f.x, f.y, 0))
+    return f.normalized() if f.length > 1e-6 else Vector((0, -1, 0))
+
+
+def _front_of(head, f, dist, side=0.0, up=0.0):
+    sd = Vector((-f.y, f.x, 0))
+    return head + f * dist + sd * side + Vector((0, 0, up))
+
+
 def _zhead(E, k):
     Z = E.Z[k]
     return Z.boxes["head"].matrix_world.translation
@@ -1863,24 +1875,20 @@ def _cam(E, t, shot, t0, t1):
     if shot == "rise":
         # from the grass, looking up: it steps out over us, the swirl behind it; its eyes
         z = E.Z[0].root.location
-        loc = _g(E, x0 + 0.9, PORTAL.y - 2.9, 0.35)
+        loc = _g(E, -3.95, 1.15, 0.4)
         look = Vector((z.x, z.y, 0)) + Vector((0, 0, E.ground(z.x, z.y) + 1.9))
         return loc, look, 20, 64.0, None, 0.06
     if shot == "cheer":
         # the Noob in front, cheering at the right; two more coming out of the swirl behind him at the left
-        n = gp(E, NOOB_BTN)
-        loc = _g(E, -0.2, -1.6, 1.15)
-        look = n.lerp(gp(E, PORTAL), 0.45) + Vector((0, 0, 1.7))
-        return loc, look, 22, 64.0, None, 0.05
+        # behind the zombies coming out: Steve facing them, frozen, and the Noob cheering beyond him
+        loc = _g(E, -4.3, 0.2, 1.55)
+        return loc, _g(E, 0.4, 0.5, 1.45), 24, 64.0, None, 0.05
     if shot == "lock":
         # close on the eager one's face: its head comes round to Steve (to us), its eyes flare
         h = _zhead(E, 1)
-        sp = steve_spot(E, t) + Vector((0, 0, 1.7))
-        d = (sp - h)
-        d = Vector((d.x, d.y, 0)).normalized()
-        side = Vector((-d.y, d.x, 0))
-        loc = h + d * 1.25 + side * 0.3 + Vector((0, 0, -0.12))
-        return loc, h + Vector((0, 0, -0.05)), 40, 3.5, None, 0.05
+        f = _fwd(E.Z[1].boxes["head"])
+        loc = _front_of(h, f, 2.0, 0.35, -0.15)
+        return loc, h + Vector((0, 0, -0.05)), 42, 3.5, None, 0.05
     if shot == "lunge":
         # side on and low: it lunges in from the left, arms up; Steve throwing himself back at the right
         a = gp(E, ZOMBIES[1][1])
@@ -1889,8 +1897,8 @@ def _cam(E, t, shot, t0, t1):
         d = (e - a)
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((d.y, -d.x, 0))
-        loc = mid + side * 3.6 + Vector((0, 0, 0.75)) - d * 0.3 * u
-        return loc, mid + Vector((0, 0, 1.45)) + d * 0.4, 24, 64.0, None, 0.1 + 0.5 * math.exp(-((t - b("lunge") - 1.1) / 0.1) ** 2)
+        loc = mid + side * 4.4 + d * 0.6 + Vector((0, 0, 0.8)) - d * 0.3 * u
+        return loc, mid + Vector((0, 0, 1.4)) + d * 0.9, 22, 64.0, None, 0.1 + 0.5 * math.exp(-((t - b("lunge") - 1.1) / 0.1) ** 2)
     if shot == "fear":
         # over the zombie's shoulder: Steve's face, terrified, backing off; its arms reaching into the frame
         h = _zhead(E, 1)
@@ -1898,8 +1906,8 @@ def _cam(E, t, shot, t0, t1):
         d = (s_ - h)
         d = Vector((d.x, d.y, 0)).normalized()
         side = Vector((-d.y, d.x, 0))
-        loc = h - d * 0.9 + side * 0.55 + Vector((0, 0, 0.12))
-        return loc, s_ + Vector((0, 0, -0.1)), 32, 2.8, (s_ - loc).length, 0.08
+        loc = h - d * 1.5 + side * 0.95 + Vector((0, 0, 0.2))
+        return loc, s_ + Vector((0, 0, -0.1)), 34, 2.8, (s_ - loc).length, 0.08
     # ---- the hit
     if shot == "hit_see":
         # side on: the swirl at the left spitting the cube; the Noob cheering at the right, turned away from it
@@ -1914,8 +1922,8 @@ def _cam(E, t, shot, t0, t1):
     if shot == "hit_slow":
         # slow motion, close on the Noob: the cube coming in at the top left; his head comes round too late
         hn = M.P6._head(E.N.face)
-        n = gp(E, NOOB_BTN)
-        loc = n + Vector((-0.85, -2.1, 1.35))
+        f = _fwd(E.N.root)
+        loc = _front_of(hn, f, 2.0, -0.7, -0.15)
         cube = E.hit_cube.matrix_world.translation
         look = hn.lerp(cube, 0.3 * ss(t0, t1, t)) if cube.z > -100 else hn
         return loc, look, 30, 3.0, (hn - loc).length, 0.03
@@ -1935,13 +1943,13 @@ def _cam(E, t, shot, t0, t1):
         prt = gp(E, PORTAL) + Vector((0, 0, 2.6))
         f1 = button_flashes()[3]
         look = btn.lerp(prt, ss(f1 + 0.05, f1 + 0.45, t))
-        loc = _g(E, 0.2, -6.4, 1.5)
-        return loc, look, 26, 64.0, None, 0.06
+        loc = _g(E, 1.4, -7.4, 2.6)
+        return loc, look, 24, 64.0, None, 0.06
     if shot == "realize":
         # Steve's face, close: the next blink lights it red; his eyes go to the button, to the portal
         hs = M.P6._head(E.S.face, E.S.holder)
-        loc = gp(E, STEVE_DODGE) + Vector((1.3, -1.6, 1.62))
-        return loc, hs + Vector((0.05, 0, -0.06)), 40, 2.8, None, 0.04
+        loc = _front_of(hs, _fwd(E.S.holder), 1.5, 0.3, -0.05)
+        return loc, hs + Vector((0.0, 0, -0.06)), 40, 2.8, None, 0.04
     if shot == "planb":
         hs = M.P6._head(E.S.face, E.S.holder)
         loc = gp(E, STEVE_DODGE) + Vector((2.0, -1.0, 1.45))
@@ -1982,8 +1990,8 @@ def _cam(E, t, shot, t0, t1):
     dp = Vector(E.D.root.location)
     if shot == "shadow":
         # low in front of them: the two of them, the sky above; something huge crosses it, its shadow over them
-        loc = mid + Vector((1.2, -4.2, 0.45))
-        return loc, mid + Vector((-0.3, 0.6, 2.6)), 18, 64.0, None, 0.05 + 0.25 * math.exp(-((t - b("sky_roar") - 0.55) / 0.2) ** 2)
+        loc = mid + Vector((0.2, -4.0, 0.45))
+        return loc, mid + Vector((0.0, 0.6, 2.4)), 18, 64.0, None, 0.05 + 0.25 * math.exp(-((t - b("sky_roar") - 0.55) / 0.2) ** 2)
     if shot == "dive":
         # from the ground by the portal: it comes down out of the sky at us
         loc = _g(E, -0.6, -4.6, 1.0)
@@ -1992,19 +2000,16 @@ def _cam(E, t, shot, t0, t1):
         # by the frame: it swoops in, snatches the clinging one off the frame, and hauls it up and away
         g = cling_grip(E)
         loc = g + Vector((3.4, -4.6, 0.6))
-        look = g.lerp(dragon_head(E), 0.5 * ss(t0 + 0.3, t1, t)) + Vector((0, 0, 1.2))
-        return loc, look, 22, 64.0, None, 0.1 + 0.6 * math.exp(-((t - b("catch") - 0.1) / 0.12) ** 2)
+        look = g.lerp(dragon_head(E), 0.35 + 0.25 * ss(t0 + 0.3, t1, t)) + Vector((0, 0, 0.6))
+        return loc, look, 20, 64.0, None, 0.1 + 0.6 * math.exp(-((t - b("catch") - 0.1) / 0.12) ** 2)
     if shot == "circle":
         # low behind them, a little to the side: their faces turned up, the dragon wheeling over the meadow
-        loc = mid + Vector((-1.4, -3.4, 0.9))
-        return loc, (mid + Vector((0, 0, 1.6))).lerp(dp, 0.55), 18, 64.0, None, 0.05
+        loc = mid + Vector((-1.2, -3.8, 0.8))
+        return loc, (mid + Vector((0, 0, 1.4))).lerp(dp, 0.35), 16, 64.0, None, 0.05
     if shot == "whoa":
         # the Noob, close, from in front of him: delighted, looking up at it
         hn = M.P6._head(E.N.face)
-        dh = dragon_head(E)
-        d = dh - hn
-        d = Vector((d.x, d.y, 0)).normalized()
-        loc = hn + d * 1.55 + Vector((-d.y, d.x, 0)) * 0.35 + Vector((0, 0, 0.2))
+        loc = _front_of(hn, _fwd(E.N.root), 1.7, 0.4, 0.1)
         return loc, hn + Vector((0, 0, 0.05)), 35, 3.0, None, 0.03
     if shot == "toss":
         # the dragon over the meadow: it flings the zombie away over the trees
@@ -2012,17 +2017,12 @@ def _cam(E, t, shot, t0, t1):
         return loc, dp, 32, 64.0, None, 0.05
     if shot == "dragons_too":
         # the two of them, from in front: the Noob turning to Steve; Steve deadpan
-        dh = dragon_head(E)
-        d = dh - mid
-        d = Vector((d.x, d.y, 0)).normalized()
-        loc = mid + d * 3.0 + Vector((-d.y, d.x, 0)) * 0.4 + Vector((0, 0, 1.25))
+        f = (_fwd(E.S.holder) + _fwd(E.N.root)).normalized()
+        loc = _front_of(mid, f, 3.2, 0.3, 1.25)
         return loc, mid + Vector((0, 0, 1.25)), 30, 4.0, None, 0.03
     if shot == "yes":
         hs = M.P6._head(E.S.face, E.S.holder)
-        dh = dragon_head(E)
-        d = dh - hs
-        d = Vector((d.x, d.y, 0)).normalized()
-        loc = hs + d * 1.6 + Vector((-d.y, d.x, 0)) * 0.5 + Vector((0, 0, -0.05))
+        loc = _front_of(hs, _fwd(E.S.holder), 1.6, 0.4, -0.05)
         return loc, hs + Vector((0, 0, -0.08)), 38, 2.8, None, 0.03
     if shot == "roar":
         # the dragon turned to them, hovering, roaring at us
@@ -2034,10 +2034,7 @@ def _cam(E, t, shot, t0, t1):
     if shot == "go":
         # Steve close, urgent; the Noob beside him; the dragon behind, over the meadow
         hs = M.P6._head(E.S.face, E.S.holder)
-        dh = dragon_head(E)
-        d = dh - hs
-        d = Vector((d.x, d.y, 0)).normalized()
-        loc = hs + d * 2.2 + Vector((-d.y, d.x, 0)) * 0.9 + Vector((0, 0, -0.2))
+        loc = _front_of(hs, _fwd(E.S.holder), 2.3, 0.8, -0.15)
         return loc, hs.lerp(M.P6._head(E.N.face), 0.3) + Vector((0, 0, -0.1)), 30, 3.5, None, 0.08
     if shot == "run":
         # running with them, from their side: the portal ahead, the dragon coming down behind them
@@ -2047,7 +2044,7 @@ def _cam(E, t, shot, t0, t1):
         a, tk, _ = run_path(E, "steve")
         d = (tk - a)
         d = Vector((d.x, d.y, 0)).normalized()
-        side = Vector((d.y, -d.x, 0))
+        side = Vector((-d.y, d.x, 0))
         loc = c + side * 4.6 + d * 1.2 + Vector((0, 0, 1.3))
         return loc, c + Vector((0, 0, 1.2)) - d * 0.6, 22, 64.0, None, 0.15
     if shot == "jump":
@@ -2056,12 +2053,12 @@ def _cam(E, t, shot, t0, t1):
         return loc, _g(E, -3.4, PORTAL.y - 0.2, 2.1), 22, 64.0, None, 0.1
     if shot == "dive_after":
         # from the frame's side, low: the dragon coming at the portal, at us
-        loc = _g(E, -6.6, 1.5, 1.0)
+        loc = _g(E, -8.6, -1.2, 1.2)
         return loc, dp if dp.z > -100 else _g(E, 0, -2, 4), 20, 64.0, None, 0.12 + 0.3 * u
     if shot == "swirl":
         # close on the swirl: its snout plunges in; the flash
         c = gp(E, PORTAL) + Vector((0, 0, 4.2))
-        loc = c + Vector((2.6, -2.5, -0.4))
+        loc = c + Vector((3.2, -3.4, -0.6))
         return loc, c + Vector((-0.2, 0, -0.1)), 30, 64.0, None, 0.15 + 0.4 * u
     return Vector((0, -8, 3)), Vector((0, 0, 1)), 30, 64.0, None, 0.0
 
