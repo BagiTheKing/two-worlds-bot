@@ -579,9 +579,9 @@
    "solo_only": true,
    "solo_text": "BOSS FIGHT!",
    "shout": 3,
-   "new_take": true,
    "pad": 0.2,
-   "note": "new take, hyper (the creator's notes 2026-11-25: Boss fight lacked the excitement)"
+   "note": "new take, hyper (the creator's notes 2026-11-25: Boss fight lacked the excitement)",
+   "taken_in": "run 45628706087"
   },
   {
    "line": "steve",
@@ -591,9 +591,9 @@
    "solo_only": true,
    "solo_text": "It used our portal. HIDE!",
    "shout": 2,
-   "new_take": true,
    "pad": 0.3,
-   "note": "new take: flat, then HIDE shouted (it was monotone)"
+   "note": "new take: flat, then HIDE shouted (it was monotone)",
+   "taken_in": "run 45628706087"
   },
   {
    "beat": "hide",
@@ -604,11 +604,12 @@
    "line": "noob",
    "name": "noob_hi",
    "text": "Hi! ...Hello?",
-   "direction_text": "[cheerful wave, then puzzled when nobody answers] Hi! ...Hello?",
-   "own_scene": true,
+   "direction_text": "Hi! ...Hello?",
    "new_take": true,
    "pad": 0.3,
-   "note": "added line: the frozen players' setup (the creator's notes: they had none)"
+   "note": "added line: the frozen players' setup (the creator's notes: they had none) (run 45628706087's acted takes read the direction aloud: recorded solo, no direction)",
+   "solo_only": true,
+   "solo_text": "Hi! ...Hello?"
   },
   {
    "beat": "tap",
@@ -619,11 +620,12 @@
    "line": "noob",
    "name": "noob_frozen",
    "text": "They're frozen.",
-   "direction_text": "[quiet, uneasy, the cheer gone] They're frozen.",
-   "own_scene": true,
+   "direction_text": "They're... frozen.",
    "new_take": true,
    "pad": 0.35,
-   "note": "added line"
+   "note": "added line (run 45628706087's acted takes read the direction aloud: recorded solo, no direction)",
+   "solo_only": true,
+   "solo_text": "They're... frozen."
   },
   {
    "line": "steve",
@@ -631,9 +633,9 @@
    "text": "The glitch is here too.",
    "direction_text": "[low, quiet, a grim realisation] The glitch is here too.",
    "own_scene": true,
-   "new_take": true,
    "pad": 0.6,
-   "note": "added line: Steve clocks that something is wrong with this world (foreshadows the frozen dragon)"
+   "note": "added line: Steve clocks that something is wrong with this world (foreshadows the frozen dragon)",
+   "taken_in": "run 45628706087"
   },
   {
    "beat": "panel",
@@ -648,9 +650,9 @@
    "solo_only": true,
    "solo_text": "Tutorial says JUMP!",
    "shout": 2,
-   "new_take": true,
    "pad": 0.0,
-   "note": "new take, hyper"
+   "note": "new take, hyper",
+   "taken_in": "run 45628706087"
   },
   {
    "line": "steve",
@@ -660,9 +662,9 @@
    "solo_only": true,
    "solo_text": "DON'T!",
    "shout": 3,
-   "new_take": true,
    "pad": 0.0,
-   "note": "new take, shouted (it was flat); cut off by the jump"
+   "note": "new take, shouted (it was flat); cut off by the jump",
+   "taken_in": "run 45628706087"
   },
   {
    "beat": "jump",
@@ -687,9 +689,9 @@
    "solo_only": true,
    "solo_text": "Checkpoint!!",
    "shout": 2,
-   "new_take": true,
    "pad": 0.3,
-   "note": "new take, hyper"
+   "note": "new take, hyper",
+   "taken_in": "run 45628706087"
   },
   {
    "beat": "wheel",
@@ -725,9 +727,9 @@
    "solo_only": true,
    "solo_text": "Round two!!",
    "shout": 2,
-   "new_take": true,
    "pad": 0.0,
-   "note": "added line: the Noob jumps blind from the checkpoint pad, at where the dragon was"
+   "note": "added line: the Noob jumps blind from the checkpoint pad, at where the dragon was",
+   "taken_in": "run 45628706087"
   },
   {
    "beat": "leap",
@@ -807,9 +809,9 @@
    "text": "Worlds don't lag.",
    "direction_text": "[slow, low, cold and certain, a weight on every word] Worlds don't lag.",
    "own_scene": true,
-   "new_take": true,
    "pad": 0.9,
-   "note": "new take (it was monotone)"
+   "note": "new take (it was monotone)",
+   "taken_in": "run 45628706087"
   },
   {
    "beat": "glitch",
