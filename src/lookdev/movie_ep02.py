@@ -652,7 +652,7 @@ def portal(E, t):
 
 
 def pad(E, t):
-    a = b("portal_open") + 0.4
+    a = b("portal_open") + 0.7
     s0 = a - 0.38
     if s0 <= t < a + 0.02:
         u = (t - s0) / 0.38
@@ -664,9 +664,9 @@ def pad(E, t):
     bk = ss(a - 0.02, a + 0.05, t) * (1 - ss(a + 0.15, a + 0.6, t))
     if bk > 0.01:
         E.beam.location = E.pad_at + Vector((0, 0, 1.6))
-        E.beam.scale = (0.6 + 0.4 * ss(a, a + 0.3, t), 0.6 + 0.4 * ss(a, a + 0.3, t), 3.2)
-        E.beam_mix.inputs[0].default_value = 0.3 * bk
-        E.beam_em.inputs["Strength"].default_value = 6.0
+        E.beam.scale = (0.3 + 0.2 * ss(a, a + 0.3, t), 0.3 + 0.2 * ss(a, a + 0.3, t), 2.2)
+        E.beam_mix.inputs[0].default_value = 0.12 * bk          # a soft glow, not a solid white cylinder
+        E.beam_em.inputs["Strength"].default_value = 3.0
     else:
         E.beam.location = (0, 0, -300)
     if t < a:
@@ -692,6 +692,9 @@ def junk(E, t):
     sk0, sk1 = b("suck") + 0.4, b("suck") + 2.0
     for k, c in enumerate(E.cubes):
         ob = c["ob"]
+        if True:                                     # gone (the creator, 2026-11-25: unclear props)
+            ob.location = (0, 0, -300)
+            continue
         if t < c["t0"]:
             ob.location = (0, 0, -300)
             continue
@@ -721,6 +724,9 @@ def junk(E, t):
         ob.rotation_euler = tuple(rot)
     pole = E.pole
     t0 = b("pour_out") + 1.9
+    if True:
+        pole.location = (0, 0, -300)
+        return
     if t < t0:
         pole.location = (0, 0, -300)
     else:

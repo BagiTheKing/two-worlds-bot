@@ -1840,6 +1840,8 @@ def build(episode_path, out_dir, keep=None):
                 audio = level_line(audio, quiet=quiet)
                 if ev.get("shout"):                         # a shout: driven a little (grit) and louder
                     pk = np.max(np.abs(audio)) or 1.0
+                    audio = audio - band(audio, 20, 150) + 0.45 * band(audio, 2500, 4000)   # no rumble, presence (urgency)
+                    pk = np.max(np.abs(audio)) or 1.0
                     audio = np.tanh(2.2 * audio / pk) / np.tanh(2.2) * pk * 10 ** (ev["shout"] / 20)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
