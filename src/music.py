@@ -223,7 +223,7 @@ def theme_full(sec, seed=0):
     return reverb(out, 1.8, 0.25, seed)[:int(sec * SR)]
 
 
-def dread(sec, seed=0, hit_at=None, minimal=False):
+def dread(sec, seed=0, hit_at=None, minimal=False, smooth=False):
     """The eye: a heartbeat that speeds up, a tension tone rising underneath,
     a high dissonant shimmer, and one hard hit when it locks on (hit_at s)."""
     out = np.zeros(int((sec + 3) * SR))
@@ -242,7 +242,8 @@ def dread(sec, seed=0, hit_at=None, minimal=False):
     rise = np.zeros(len(x))
     for m, det in ((D - 24, 0.0), (D - 23, 0.05), (D - 17, -0.04)):      # a tight, ugly cluster
         f = hz(m + det) * (1 + 0.5 * np.minimum(1, x / max(sec, 0.1)))     # bends upward
-        rise += np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.3
+        ph_ = 2 * np.pi * np.cumsum(f) / SR
+        rise += (np.sin(ph_) + 0.2 * np.sin(2 * ph_) if smooth else np.sign(np.sin(ph_))) * 0.3   # smooth: no buzz
     rise = lowpass(rise, 900) * np.minimum(1, x / max(sec, 0.1)) ** 1.5
     out += rise * 0.5
     shimmer = (np.sin(2 * np.pi * hz(D + 25) * x) + np.sin(2 * np.pi * hz(D + 26) * x)) * 0.06
@@ -311,7 +312,20 @@ def memory(sec, seed=0, hit_at=None):
     return reverb(out, 3.4, 0.5, seed)[:int(sec * SR)]
 
 
-CUES = {"memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
+def drone(sec, seed=0):
+    """A serious, quiet bed: a low dark chord held, slowly breathing, a sub under it; no beat, no melody."""
+    t = _t(sec + 2)
+    out = np.zeros(len(t))
+    for m, a in ((D - 24, 0.5), (D - 17, 0.32), (D - 12, 0.22), (D - 9, 0.12)):
+        f = hz(m)
+        out += a * (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 2.003 * f * t))
+    out *= 0.75 + 0.25 * np.sin(2 * np.pi * 0.11 * t + seed)
+    out += 0.4 * np.sin(2 * np.pi * hz(D - 36) * t)
+    out *= np.minimum(1, t / 1.5)
+    return reverb(out, 2.6, 0.35, seed)[:int(sec * SR)]
+
+
+CUES = {"drone": drone, "memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
         "dread": dread}
 
 

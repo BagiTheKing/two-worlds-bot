@@ -1188,6 +1188,82 @@ def sfx_slowmo(dur=1.6):
     return norm(0.7 * norm(air) + norm(sub), 0.8)
 
 
+def sfx_grass_step(heavy=False):
+    """A foot on grass: a soft crunch of blades, and for a heavy body a dull thud under it."""
+    out = np.zeros(int(0.25 * SR))
+    for i in range(5):
+        n = int(0.025 * SR)
+        place(out, band(rng.standard_normal(n), 900, 5000) * env(n, 0.001, 0.008), 0.004 * i + 0.01 * rng.random(), 0.35)
+    n = int(0.12 * SR)
+    place(out, band(rng.standard_normal(n), 200, 1500) * env(n, 0.003, 0.03), 0.0, 0.6)
+    if heavy:
+        place(out, sfx_thump(70, 0.22, 0.4), 0.0, 0.9)
+    return norm(out, 0.6 if heavy else 0.4)
+
+
+def sfx_zgroan(dur=1.2, pitch=1.0):
+    """A zombie's groan: a throaty, wavering "uuurgh" shaped like a voice (formants), with breath; no synth buzz."""
+    x = t(dur)
+    f0 = pitch * (88 + 10 * np.sin(2 * np.pi * 2.3 * x) - 14 * x / dur + 3 * rng.standard_normal(len(x)).cumsum() / SR)
+    ph = 2 * np.pi * np.cumsum(f0) / SR
+    src = sum(np.sin(k * ph) / k ** 1.3 for k in range(1, 30))
+    src = src * (1 + 0.25 * np.sin(2 * np.pi * 17 * x))                      # a rasp, gentle
+    vowel = 0.9 * band(src, 300, 750) + 0.5 * band(src, 900, 1300) + 0.15 * band(src, 2300, 2900)
+    breath = band(rng.standard_normal(len(x)), 400, 3500) * 0.18
+    shape = np.minimum(1, x / 0.15) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.7
+    return norm((norm(vowel) + breath) * shape, 0.7)
+
+
+def sfx_droar(dur=1.2):
+    """The dragon's roar for the movie: a huge breath driven through a throat (shaped like a voice, mostly air),
+    a low growl under it, rising then falling; no synth buzz."""
+    x = t(dur)
+    f0 = 52 + 30 * np.sin(np.pi * x / dur) ** 1.4 + 4 * np.sin(2 * np.pi * 7 * x)
+    ph = 2 * np.pi * np.cumsum(f0) / SR
+    src = sum(np.sin(k * ph) / k ** 1.4 for k in range(1, 40))
+    air = rng.standard_normal(len(x))
+    body = 0.7 * band(src, 120, 600) + 0.35 * band(src, 700, 1100)
+    roar = band(air, 300, 2600) * (0.6 + 0.4 * np.sin(np.pi * x / dur))
+    shape = np.minimum(1, x / 0.1) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.6
+    return norm((norm(body) * 0.8 + norm(roar)) * shape, 0.95)
+
+
+def sfx_clink():
+    """Iron on stone or iron: a short bright ring, inharmonic."""
+    x = t(0.5)
+    tone = sum(a * np.sin(2 * np.pi * f * x) for f, a in ((1240, 1.0), (2710, 0.6), (4130, 0.35), (5900, 0.2)))
+    return norm(tone * np.exp(-x / 0.07) + 0.3 * band(rng.standard_normal(len(x)), 3000, 9000) * np.exp(-x / 0.01), 0.7)
+
+
+def sfx_shatter():
+    """Stone and plastic shattering: a hard crack, a spray of fragments, then pieces pattering down."""
+    out = np.zeros(int(1.4 * SR))
+    place(out, sfx_thump(90, 0.35, 1.0), 0.0, 1.0)
+    n = int(0.05 * SR)
+    place(out, band(rng.standard_normal(n), 1500, 9000) * env(n, 0.0005, 0.015), 0.0, 1.0)
+    for i in range(22):
+        n = int(rng.uniform(0.01, 0.03) * SR)
+        place(out, band(rng.standard_normal(n), rng.uniform(1500, 3500), 9500) * env(n, 0.0005, 0.006),
+              0.02 + rng.exponential(0.12), rng.uniform(0.15, 0.5))
+    for i in range(9):
+        place(out, sfx_clink(), 0.35 + rng.uniform(0, 0.8), rng.uniform(0.04, 0.1))
+    return norm(out, 0.95)
+
+
+def sfx_wingbeat(dur=2.0, rate=1.1):
+    """Huge wings: a deep whump on every downstroke, the air torn by the membrane (no tone)."""
+    out = np.zeros(int((dur + 0.6) * SR))
+    k = 0.0
+    while k < dur:
+        n = int(0.45 * SR)
+        xx = np.arange(n) / SR
+        whump = band(rng.standard_normal(n), 30, 220) * np.sin(np.pi * xx / 0.45) ** 3
+        flap = band(rng.standard_normal(n), 250, 1400) * np.exp(-((xx - 0.12) / 0.06) ** 2)
+        place(out, norm(whump, 1.0) + 0.35 * norm(flap), k, 1.0)
+        k += 1 / rate
+    return norm(out, 0.9)
+
+
 def sfx_burst():
     """The Noob breaking apart: a pop, a plastic clatter."""
     out = np.zeros(int(0.9 * SR))
@@ -1412,7 +1488,11 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "servo": lambda e: sfx_servo(e.get("dur", 0.5), e.get("pitch", 1.0)), "clunk": lambda e: sfx_clunk(e.get("pitch", 1.0)),
        "hiss": lambda e: sfx_hiss(e.get("dur", 0.4)),
        "growl": lambda e: sfx_growl(e.get("dur", 1.2), e.get("pitch", 1.0)),
-       "snarl": lambda e: sfx_snarl(e.get("dur", 0.7)), "slowmo": lambda e: sfx_slowmo(e.get("dur", 1.6))}
+       "snarl": lambda e: sfx_snarl(e.get("dur", 0.7)), "slowmo": lambda e: sfx_slowmo(e.get("dur", 1.6)),
+       "gstep": lambda e: sfx_grass_step(e.get("heavy", False)),
+       "zgroan": lambda e: sfx_zgroan(e.get("dur", 1.2), e.get("pitch", 1.0)),
+       "clink": lambda e: sfx_clink(), "shatter": lambda e: sfx_shatter(), "droar": lambda e: sfx_droar(e.get("dur", 1.2)),
+       "wingbeat": lambda e: sfx_wingbeat(e.get("dur", 2.0), e.get("rate", 1.1))}
 
 
 def _clip_file(path):
@@ -1631,12 +1711,16 @@ def build(episode_path, out_dir, keep=None):
             prep[ln["name"]] = np.asarray(vw[int(round(ln["start"] * SR)):int(round(ln["end"] * SR))], dtype=np.float64)
         print(f"voices from {vdir}: {sorted(prep)}")
     need = [ev.get("name") for ev in ep["events"] if "line" in ev and not ev.get("unused")]
+    for ev in ep["events"]:                      # a line re-recorded on purpose is never taken from the old voices
+        if "line" in ev and ev.get("new_take"):
+            prep.pop(ev.get("name"), None)
     if prep and all(n in prep for n in need):
         pre = {}
     elif prep:
         # lines added to the movie ("new_take": the creator allowed new lines, November 15) are recorded in the
         # same voices; every other line must come exactly as it was finished
-        added = [ev for ev in ep["events"] if "line" in ev and not ev.get("unused") and ev.get("name") not in prep]
+        added = [ev for ev in ep["events"] if "line" in ev and not ev.get("unused")
+                 and (ev.get("name") not in prep or ev.get("new_take"))]
         if not all(ev.get("new_take") for ev in added):
             raise SystemExit(f"VOICES_FROM is missing lines: {[ev.get('name') for ev in added if not ev.get('new_take')]}")
         print(f"new takes (added lines): {[ev['name'] for ev in added]}")
@@ -1754,6 +1838,9 @@ def build(episode_path, out_dir, keep=None):
                     audio = clean_tail(audio)
                 quiet = any(w in ev.get("direction_text", "").lower() for w in ("whisper", "very quiet"))
                 audio = level_line(audio, quiet=quiet)
+                if ev.get("shout"):                         # a shout: driven a little (grit) and louder
+                    pk = np.max(np.abs(audio)) or 1.0
+                    audio = np.tanh(2.2 * audio / pk) / np.tanh(2.2) * pk * 10 ** (ev["shout"] / 20)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1
@@ -1883,6 +1970,8 @@ def build(episode_path, out_dir, keep=None):
             kw["offset"] = float(m["offset"])
         if m.get("open_tail"):                  # the next chapter carries it on: no fade at the end
             kw["open_tail"] = True
+        if m.get("smooth"):                     # no square-wave buzz in the tension
+            kw["smooth"] = True
         x = music.render(m["cue"], m1 - m0, seed=m.get("seed", k), **kw)
         if m.get("fade_out"):                   # dies away by its own end (no hard stop), whatever tail the cue has
             end = min(len(x), int((m1 - m0) * SR))
@@ -1901,6 +1990,13 @@ def build(episode_path, out_dir, keep=None):
                     g[a_:b_] = 1 + (sw["gain"] - 1) * (r if up else 1 - r)
             x = x * g
         place(score, x, m0, m.get("gain", 0.2))
+    if ep.get("voice_air"):
+        n_ = int(0.35 * SR)
+        ir = rng.standard_normal(n_) * np.exp(-np.arange(n_) / (0.07 * SR))
+        ir[:int(0.012 * SR)] = 0.0                               # the first reflection a little after the voice
+        air = np.convolve(band(voice, 250, 6000), ir)[:len(voice)]
+        air = air / (np.max(np.abs(air)) or 1) * np.max(np.abs(voice)) * float(ep["voice_air"])
+        mix = mix + air
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
     out = voice + keep_under(voice, mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck))
