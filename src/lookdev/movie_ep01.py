@@ -215,7 +215,7 @@ def _crack(E):
         for x in range(0, W_, c):
             d.rectangle((x, y, x + c, y + c), fill=(255, 20, 220, 255) if (x // c + y // c) % 2 else (8, 0, 12, 255))
     glow = mask.filter(ImageFilter.MaxFilter(15)).filter(ImageFilter.GaussianBlur(10))
-    edge = Image.new("RGBA", (W_, H_), (255, 255, 255, 0))
+    edge = Image.new("RGBA", (W_, H_), (255, 96, 236, 0))        # a magenta glow, not a flat grey outline (2026-11-25)
     edge.putalpha(glow)
     base = Image.new("RGBA", (W_, H_), (0, 0, 0, 0))
     base = Image.alpha_composite(base, edge)
