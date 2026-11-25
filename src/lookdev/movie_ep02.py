@@ -109,6 +109,7 @@ def build(tl, tex_dir, assets, res, samples):
     _dragon(E, assets)
     _finish_materials(E)
     _ripple(E)
+    lens_wash(E)
     E.sc.render.motion_blur_shutter = 0.28                 # fast props stay readable
     E.mats_sky = {}
     return E
@@ -467,12 +468,57 @@ def _finish_materials(E):
             if "Specular IOR Level" in bs.inputs:
                 bs.inputs["Specular IOR Level"].default_value = 0.28
     dm = bpy.data.materials.get("dragon_skin")
-    if dm:
-        for nd in dm.node_tree.nodes:
-            if nd.type == "MIX" and nd.blend_type == "SCREEN":
-                nd.inputs[0].default_value = 0.05            # its own dark charcoal scales
-        bs = dm.node_tree.nodes["Principled BSDF"]
-        bs.inputs["Roughness"].default_value = 0.55
+    if dm:                                                   # v7: the skin both chapters share (dragon.upgrade_skin)
+        from dragon import upgrade_skin
+        upgrade_skin(dm)
+
+
+def lens_wash(E):
+    """A violet-white flare washing across the lens (v7, the creator's notes 2026-11-25: the instant the dragon's head
+    hits the portal at Episode 2's end; Episode 3 opens on it and lets it go). A sheet just in front of the lens."""
+    bpy.ops.mesh.primitive_plane_add(size=1)
+    ob = bpy.context.active_object
+    ob.name = "lens_wash"
+    m = bpy.data.materials.new("lens_wash")
+    m.use_nodes = True
+    nt = m.node_tree
+    for n_ in list(nt.nodes):
+        nt.nodes.remove(n_)
+    tc = nt.nodes.new("ShaderNodeTexCoord")
+    gr = nt.nodes.new("ShaderNodeTexGradient")
+    gr.gradient_type = "SPHERICAL"
+    mp = nt.nodes.new("ShaderNodeMapping")
+    mp.inputs["Location"].default_value = (-0.0, -0.0, 0)
+    nt.links.new(tc.outputs["Object"], mp.inputs["Vector"])
+    mp.inputs["Scale"].default_value = (1.4, 1.4, 1)
+    nt.links.new(mp.outputs["Vector"], gr.inputs["Vector"])
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.elements[0].color = (0.62, 0.3, 1.0, 1)
+    ramp.color_ramp.elements[1].color = (1.0, 0.95, 1.0, 1)
+    nt.links.new(gr.outputs["Fac"], ramp.inputs["Fac"])
+    em = nt.nodes.new("ShaderNodeEmission")
+    em.inputs["Strength"].default_value = 3.0
+    nt.links.new(ramp.outputs["Color"], em.inputs["Color"])
+    tr = nt.nodes.new("ShaderNodeBsdfTransparent")
+    mx = nt.nodes.new("ShaderNodeMixShader")
+    mx.inputs[0].default_value = 0.0
+    nt.links.new(tr.outputs[0], mx.inputs[1])
+    nt.links.new(em.outputs[0], mx.inputs[2])
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    nt.links.new(mx.outputs[0], out.inputs["Surface"])
+    ob.data.materials.append(m)
+    for k in ("visible_diffuse", "visible_glossy", "visible_transmission", "visible_volume_scatter", "visible_shadow"):
+        if hasattr(ob, k):
+            setattr(ob, k, False)
+    ob.parent = E.cam
+    ob.location = (0, 0, -0.12)
+    ob.scale = (0.5, 0.3, 1)
+    E.wash = mx.inputs[0]
+    return ob
+
+
+def set_wash(E, amount):
+    E.wash.default_value = max(0.0, min(1.0, amount))
 
 
 def _ripple(E):
@@ -2046,6 +2092,8 @@ def apply(E, t):
     steve(E, t)
     noob(E, t)
     camera(E, tc, name, t0, t1)
+    r0 = b("dive_after") + 0.85                       # its head hits the swirl: the flare washes the lens to the cut
+    set_wash(E, 0.9 * ss(r0 - 0.04, r0 + 0.22, tc))
 
 
 # ------------------------------------------------------------------ the camera

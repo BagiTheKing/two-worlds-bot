@@ -252,3 +252,42 @@ def pose_dragon(D, t, flap=None, amp=1.0, glide=0.0, neck_pitch=0.0, neck_yaw=0.
 
 def lerp(a, b, u):
     return a + (b - a) * u
+
+
+def upgrade_skin(m):
+    """The dragon both chapters share (the creator's notes, 2026-11-25: Ep2's read "smooth flat grey"): its own
+    near-black hide with the scale plates standing out (contrast from the texture, a cool violet cast in the
+    darks), relief from the texture itself so every scale catches the light, matte (the sky's grey sheen was
+    washing the colour out), and the purple eyes glowing."""
+    if m.get("upgraded"):
+        return m
+    nt = m.node_tree
+    bs = nt.nodes["Principled BSDF"]
+    tex = next(n for n in nt.nodes if n.type == "TEX_IMAGE" and n.image and n.image.name.startswith("dragon.png"))
+    for nd in list(nt.nodes):
+        if nd.type == "MIX" and nd.blend_type == "SCREEN":
+            nt.nodes.remove(nd)
+    bc = nt.nodes.new("ShaderNodeBrightContrast")
+    bc.inputs["Bright"].default_value = 0.0
+    bc.inputs["Contrast"].default_value = 0.45
+    nt.links.new(tex.outputs["Color"], bc.inputs["Color"])
+    tint = nt.nodes.new("ShaderNodeMix")
+    tint.data_type = "RGBA"
+    tint.blend_type = "MULTIPLY"
+    tint.inputs[0].default_value = 1.0
+    tint.inputs[7].default_value = (0.92, 0.86, 1.0, 1)
+    nt.links.new(bc.outputs["Color"], tint.inputs[6])
+    nt.links.new(tint.outputs[2], bs.inputs["Base Color"])
+    bp = nt.nodes.new("ShaderNodeBump")
+    bp.inputs["Strength"].default_value = 0.55
+    bp.inputs["Distance"].default_value = 0.03
+    nt.links.new(tex.outputs["Color"], bp.inputs["Height"])
+    nt.links.new(bp.outputs["Normal"], bs.inputs["Normal"])
+    bs.inputs["Roughness"].default_value = 0.72
+    if "Specular IOR Level" in bs.inputs:
+        bs.inputs["Specular IOR Level"].default_value = 0.22
+    es = nt.nodes.get(m["eyes"]) if "eyes" in m else None
+    if es is not None:
+        es.inputs[1].default_value = 14.0
+    m["upgraded"] = True
+    return m
