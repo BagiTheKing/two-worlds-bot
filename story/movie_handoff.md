@@ -275,3 +275,50 @@ v5 previews"). The faults caught on the way: `review/ep02_v5_failures/`. Awaitin
   hit-stop and a camera shake.
 - Clarity: one event at a time (stagger by 0.5 s); props that matter readable (less motion blur: shutter 0.28);
   materials matte and textured like the world.
+
+
+## Episode 3: how it was made and what it taught us (2026-11-25)
+
+**State.** Ep3 v2 (the creator's notes on the published Short, 2026-11-25; the story in `story/movie/ep03_shots.md`,
+"v2"). Sound approved: `movie/ep03_v2` (58.3 s; voices run 45628706087 + 45631569353). Renderer
+`src/lookdev/movie_ep03.py`; episode file `episodes/movie_ep03_the_dragon.json`. Preview: CI run 45649852160, branch
+`preview-movie_ep03_v2`. With it: Ep2 v7 (the v6 picture, the buzz-free sound `movie/ep02_v7`, the dragon's new skin
+and the lens flare from 48.7 s, reusing run 45519397363) and Ep1 v9 (the rift with its magenta edge from 24.9 s,
+reusing run 43968500715; the v8 cut of the walk, 3.0-5.0 s, to re-apply as an edit).
+
+**The join Ep2 -> Ep3.** Ep2 ends on a violet-white flare washing the lens as the dragon's head enters the portal
+(`movie_ep02.lens_wash`/`set_wash`, 0.72 at most); Ep3 opens on the same wash clearing in 0.45 s into the tumble
+through the swirl. Ep2's last cue now runs to the cut (`"sustain": true`; it used to die 2.6 s after its hit, so the
+run and the dive had no music); Ep3 carries it on exactly (`dread`, smooth, seed 7, `offset` 6.46, `hit_at` 0.05,
+`rise_over` 6.46: the same heartbeat and the same rise). Ep3's last cue is `open_tail` for Ep4.
+
+**Sound lessons.**
+- The "buzz" the creator kept hearing was the creature voices: `zgroan` and `droar` were stacks of 30-40 harmonics on a
+  low pitch. Both are now breath through a throat (formant-filtered noise, a faint sine voice): no buzz. The square
+  plucks/lead of `chase` and the saw `braam` hits have buzz-free versions (`"smooth": true` on `chase`, `dread`,
+  `rumble_rise`; `music.boom`). Check a spectrogram for wavy harmonic stacks before sending.
+- New: `glass` (crystal shatter), `"stutters"` (the whole mix freezes: a 70 ms slice repeated, then silence; the voices
+  kept), `"cut"` on any sfx (stopped dead at a moment: anything still sounding at a freeze). `sfx_glitch` has a 1.5 s
+  tail: cut it for a short tick.
+- `own_scene` acted takes read their direction aloud for short Noob lines ("Cheerful wave, then puzzled..."): record
+  short lines `solo_only` with plain `solo_text` instead. Mark lines taken in a run with `taken_in`, not `new_take`, or
+  every rebuild calls the voice service.
+- A sound-only fix to a chapter with unchanged timing goes straight onto the existing picture with ffmpeg (no render).
+
+**Picture lessons.**
+- Measure the rig before staging it: the dragon's head is 3.6 m ahead of its root (not 5); its wingspan is ~15 m; its
+  heading vector is `(sin(yaw), -cos(yaw))` for this codebase's yaw (0 faces -y). Probe positions with a small script
+  (`build` + `apply` at the key times, print the head, the seat, the cameras) before rendering: one probe found both a
+  wrong heading and the wrong head offset.
+- Contact moments are keyed from the contact: the wall hit, each crystal, the kill and the landing on its back are
+  solved from where the head or the seat must be at that time (`_seat_at` poses the dragon at the landing time).
+- A character looking at something on the far side of the set shows its back to every camera on the near side:
+  shoot those moments as a reverse angle from the thing looked at (the frozen player's view from the ledge).
+- Keep the scenery clear of the cameras' side (the course ahead was first in front of two cameras) and keep anything
+  that flies (kicked cobblestones) clear of close cameras.
+- A world for the obby: `part()` (studded plastic, `rbx_neon` for kill bricks and checkpoints), `_far_world` (towers,
+  trusses, spinners, kill paths, checkpoints in the haze), `_clouds` (puffs round it, a sea below); mist from 30 m.
+- The freeze reads in-world: full beats and a roar, then a stutter back twice (`freeze_time`), wings locked mid-flap,
+  debris hanging, the camera's handheld stopped, the sound stuttering into silence.
+- 360p, 8 samples is ~15-20 s a frame here; one still per shot (33) is ~10 min. Two or three rounds of stills caught
+  every staging fault before the CI render.
