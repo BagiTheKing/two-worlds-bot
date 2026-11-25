@@ -1,3 +1,47 @@
+# Episode 3 v2 (the creator's notes, 2026-11-25): the story as rebuilt
+
+**This section replaces the published-Short shot list below for the movie.** The notes (word for word in the
+session that made v2) compared the published 26 s Short with Ep2 v6. The source of truth for timing is
+`episodes/movie_ep03_the_dragon.json` (v2) and its sound preview (`movie/ep03_v2`).
+
+**Decisions (ours, from the notes):**
+- **The bridge:** Ep2 v7 ends on the dive into the portal (a violet-white flare as the dragon's head enters: to
+  build in Ep2's last ~1 s). Ep3 opens inside the swirl (`tumble`), then the obby's sky: a purple portal **tears
+  open above the start pad** (`tear`), they tumble out (`drop`: the Noob on his feet, bouncing; Steve on his
+  back), and the dragon blasts out right behind them (`burst`), smashing three stages. The portal stays,
+  flickering, for the whole chapter (where they came from stays on screen).
+- **The frozen players are set up:** "Hide!" sends them running behind the ledge where four players stand frozen
+  in glitch crystal. Noob: "Hi! ...Hello?" (waving), taps the crystal (a glassy clink), "They're frozen." Steve:
+  "The glitch is here too." (added lines). Their rescue later pays this off; the freeze of the dragon echoes it.
+- **The tutorial is a 3D hologram panel** in the sky over the course (TUTORIAL: JUMP ON THE BOSS!, an arrow at
+  the dragon), flickering up; the Noob looks up at it. No 2D card, no comment prompt.
+- **Cause and effect for the ride:** after "Checkpoint!" the dragon wheels round and comes for Steve; "Plan:
+  wall."; the wall goes up; the dragon hits it: the stones burst, **its snout is knocked down and it drops low,
+  skimming the course**; Steve **dives flat** on the green stage (hit-stop, shake). The Noob, on the checkpoint
+  pad, jumps blind ("Round two!", added) at where it was, and the knocked-down dragon passes right under him:
+  he lands on its back. Steve's wall caused it, so "That was my plan." lands.
+- **The rescue:** dazed, the dragon swerves along the course and veers into the ledge; the four crystals shatter
+  one after another (glass sound); the players tumble out, stand, look round, **wave at the two and run off along
+  the course** (not left flailing). ACHIEVEMENT top left (the meter is hidden then: nothing clips).
+- **The freeze reads as in-world:** the dragon banks round over them mid-roar, full wingbeats; mid-flap it
+  **stutters** (twitches back twice: rubber-banding) and locks, wings asymmetric, the wall's cobblestones
+  hanging in the air round it. The sound stutters with it (the mix repeats a 70 ms slice five times) and cuts
+  to silence. The Noob leans down its neck and waves a hand in front of its eye: "...Is it lagging?" Steve
+  turns (head, then shoulders) and looks up at it before "Worlds don't lag." Then the glitch: the missing
+  texture flicker, REALITY 97 -> 92 (the movie meter, the same white segmented bar as every chapter).
+- **No PLAN timer:** it called back Ep2's PLAN countdown, which the creator removed (2026-11-23).
+- **Voices:** new takes with energy for BOSS FIGHT!, It used our portal. HIDE!, Tutorial says JUMP!, DON'T!,
+  Checkpoint!!, and a slow, heavy Worlds don't lag. The other takes stay as approved.
+- **Music:** Ep2's last cue goes on exactly (dread, smooth, seed 7, 6.46 s in, the same rise: Ep2 v7 sustains it
+  to the cut) through the arrival and out as they hide; a low drone under the frozen players; nothing under the
+  tutorial gag and the kill (silence for comedy); tension under the dragon's attack on Steve, its hit on the
+  wall; a driving (buzz-free) cue for the ride and the rescue, out for "That was my plan."; tension under the
+  bank, cut dead by the freeze; the glitch sting at the end (carried into Ep4).
+- **Picture (to build, `src/lookdev/movie_ep03.py`):** the new-look rigs from Ep2 (faces, brows, lips, life());
+  a real obby world (a sky with clouds, towering distant stages in depth fog, kill bricks, spinning beams, truss
+  ladders, neon checkpoints; studded plastic on the parts; a warm sun and sky bounce); the dragon of Ep2 with its
+  texture fixed so it reads dark and scaled with glowing purple eyes in both chapters.
+
 # Episode 3 "The Dragon Entered an Obby": shot list for the movie remake
 
 The source is the published Short, `preview-ep03_the_dragon` (`episode.mp4`,
