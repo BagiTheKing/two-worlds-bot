@@ -6,6 +6,11 @@
 > changes in chapter 3.
 
 
+> **Episode 2 is done (v6, 2026-11-25): read "Episode 2: how it was made and what it taught us" at the end of
+> this file before Episode 3.** Work continues from branch `claude/episode-2-sound-preview-b8mxtd` (it holds
+> lookdev-steve plus all of Episode 2).
+
+
 For the session(s) that rework **Two Worlds · One Glitch** (Episodes 0-10)
 into **one long-form landscape video** for the channel. Read this first, then
 the files it points to. It sums up how the finale was made with the creator,
@@ -204,3 +209,69 @@ Work one chapter per session where possible: each session reads this brief
 and the chapter's files, so it starts clean instead of carrying a long
 conversation. Update this brief at the end of each session with what changed
 and what was learned.
+
+
+## Episode 2: how it was made and what it taught us (2026-11-25)
+
+**State.** Ep2 v6 preview (720p, 68.1 s): run 45519397363, branch `preview-movie_ep02_v6` (`episode.mp4`).
+Sound and timing: `movie/ep02_v6` (audio.flac, voice.flac, timeline.json, voice_log.txt). Earlier versions kept
+in `movie/ep02` (v4) and `movie/ep02_v5`. Renderer `src/lookdev/movie_ep02.py`; episode file
+`episodes/movie_ep02_the_plan.json`. The creator's notes on it are in `story/movie/fixes_2026-11-23.md` (all of
+them, word for word) and the standing rules they set are in `story/creator_notes.md` ("Notes from the Episode 2
+v5 previews"). The faults caught on the way: `review/ep02_v5_failures/`. Awaiting the creator's verdict on v6.
+
+**Still open, before Episode 3 is joined:**
+- Episode 1's last shot shows the sky rift; its edge is now magenta (`movie_ep01._crack`, shared): re-render Ep1's
+  last ~2 s so the Ep1 to Ep2 join still matches.
+- Episode 3's opening must pick up Episode 2's new ending: Steve and the Noob dive into the swirling portal (it
+  stays open), the dragon (scale 0.95, wings folded) plunges in after them, a violet ripple on the surface, cut on
+  the swirl. Ep3's "Through" opening becomes only the tumble and the landing on the Noob's side, the dragon
+  bursting through after them ("It used our portal"). Ep3's sound must carry on Ep2's last cue: `dread`
+  (smooth, seed 7, gain 0.24), already 6.46 s in at the cut (`offset: 6.46`), not Null's theme (gone from Ep2).
+
+**How we work now (the creator, 2026-11-25):**
+- Credits matter: build carefully, render once, send the video. No reviewer passes unless the creator asks; the
+  creator watches every preview themselves (send each preview video, even a failed one; never hide one behind
+  a verdict). Re-render only what changed (`reuse_run_id` + `new_range`).
+- Before any CI render: local test stills (Blender is pip-installable here: `pip install bpy`; the MCprep pack
+  comes from Google Drive, so switch this session's network to the creator's "two-worlds-bot" environment).
+  360p, 8 samples is about 15 s a frame; `tools/contact_sheet.py <frames_dir> <out.png> 3` makes a labelled sheet.
+- Sound first (voices_only, ~4 min), then the picture.
+- When the creator gives solutions, use them; push back only where one can't work, and say why.
+
+**Pipeline additions (src/audio.py, src/music.py, the workflow):**
+- `voices_from` may be a repo folder (e.g. `movie/ep02_v6`): every finished line reused exactly. A line marked
+  `"new_take": true` is re-recorded (Gemini) even if the folder has it; nothing else is.
+- Gemini reads `[directions]` aloud on short shouted lines: record them `solo_only` with `solo_text` in capitals
+  (e.g. "DON'T!", "INTO THE PORTAL! NOW!") and `"shout": 3-4` (rumble cut, 2.5-4 kHz presence, a little drive,
+  louder). Check the voice log's hearing check after every voices run.
+- `"voice_air": 0.12` (episode): a short outdoor reflection on the voices (no dry studio sound).
+- `"deess": 6` (line): harsh s sounds softened. `clean_tail` now removes end-of-take bursts split by digital
+  silence (the "tchch").
+- Foley (sfx kinds): `gstep` (grass step, `heavy` for creatures), `zgroan` (zombie groan, voice-like),
+  `clink` (pickaxe), `shatter` (stone and plastic breaking), `wingbeat` (huge wings), `droar` (the dragon's roar,
+  breathed). Old synth sounds (`whir`, `growl`, `roar`, `flaps`) read as a "distorted synth buzz": don't use them.
+- Music: `drone` cue (a serious low bed); `dread` with `"smooth": true` (no square-wave buzz). Rules: no upbeat
+  track under a serious line, silence for comic pauses, tension (not a bouncy groove) for a chase.
+
+**Renderer lessons (every one cost a render):**
+- `apply(E, t)` must depend on time alone: anything remembered from an earlier frame (a grab position, a toss
+  start, a last yaw) breaks on CI shards. Compute such things from time once (see `_cling_root_at_grab`,
+  `_toss_from`).
+- Call `bpy.context.view_layer.update()` after posing a rig whose matrices others read in the same frame (the
+  dragon's head for the held zombie, the looks, the cameras).
+- Cameras: never follow a character's facing or a moving head (they jump when the character turns, or end up
+  inside the body). Anchor close-ups to fixed spots (where they stand, where the target is at the shot's start).
+  Check every camera for backs, blockers (another character's head, a bush, a column) and the 180-degree line.
+- Staging: place characters so that nobody stands in another's line to what they look at; keep them 1.4 m apart;
+  check clearances numerically (`tools/clearance_ep02.py` checks a creature's oriented part boxes against the
+  trees, the portal, the characters and the ground); fold wings near trees and openings.
+- Path keys must not reverse direction where the heading comes from the velocity (the dragon flipped 180 degrees
+  at the snatch); hold a heading explicitly for such moments.
+- Lighting: when a camera looks at the sky, aim the key at the characters (else faces go dark red); after the
+  portal opens, keep its violet light off faces; a soft camera-side fill keeps skin its own colour.
+- Life: `life()` adds drift, accents on stressed syllables (from the lip-sync), blinks; never a stiff A-pose;
+  walking speed matched to the stride (feet planted); impacts get anticipation, a 3-frame snap, a 2-frame
+  hit-stop and a camera shake.
+- Clarity: one event at a time (stagger by 0.5 s); props that matter readable (less motion blur: shutter 0.28);
+  materials matte and textured like the world.
