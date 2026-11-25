@@ -281,10 +281,11 @@ v5 previews"). The faults caught on the way: `review/ep02_v5_failures/`. Awaitin
 
 **State.** Ep3 v2 (the creator's notes on the published Short, 2026-11-25; the story in `story/movie/ep03_shots.md`,
 "v2"). Sound approved: `movie/ep03_v2` (58.3 s; voices run 45628706087 + 45631569353). Renderer
-`src/lookdev/movie_ep03.py`; episode file `episodes/movie_ep03_the_dragon.json`. Preview: CI run 45649852160, branch
-`preview-movie_ep03_v2`. With it: Ep2 v7 (the v6 picture, the buzz-free sound `movie/ep02_v7`, the dragon's new skin
+`src/lookdev/movie_ep03.py`; episode file `episodes/movie_ep03_the_dragon.json`. Preview: CI run 45649852160 (`preview-movie_ep03_v2`), its
+first 0.5 s re-rendered by the next run (`preview-movie_ep03_v2b`: the one to use). With it: Ep2 v7 (the v6 picture, the buzz-free sound `movie/ep02_v7`, the dragon's new skin
 and the lens flare from 48.7 s, reusing run 45519397363) and Ep1 v9 (the rift with its magenta edge from 24.9 s,
-reusing run 43968500715; the v8 cut of the walk, 3.0-5.0 s, to re-apply as an edit).
+reusing run 43968500715, `preview-movie_ep01_v9`; the v8 cut of the walk, 3.0-5.0 s, re-applied locally with ffmpeg
+(a 60 ms audio crossfade), 28.8 s). Ep2 v7: `preview-movie_ep02_v7`. All sent to the creator; awaiting their notes.
 
 **The join Ep2 -> Ep3.** Ep2 ends on a violet-white flare washing the lens as the dragon's head enters the portal
 (`movie_ep02.lens_wash`/`set_wash`, 0.72 at most); Ep3 opens on the same wash clearing in 0.45 s into the tumble
