@@ -68,6 +68,24 @@ the note wins. Add to it whenever the creator gives a new standing note.
   described). Don't hand the creator's scenes to another model without
   asking.
 
+## Notes from the Episode 2 v5 previews (2026-11-25)
+
+- **Show the creator the videos.** The review gate is not a substitute for the creator's eye: the four
+  previews it failed held many more faults than it listed. Send each preview render with the reviewer's
+  summary, even when it fails; never hide a video behind a verdict.
+- **Screen geography:** keep the 180-degree line across a cut (a character running right to left keeps
+  running right to left); the viewer must always know where the portal, the button and the characters
+  are; nothing pops in and out of frame.
+- **Weight and life in every body:** heads tilt on stressed words, blinks before head turns, chests breathe,
+  weight shifts when reaching; feet planted when walking (no sliding); no stiff A-poses.
+- **Impacts land:** anticipation, a 1-2 frame hit-stop, camera shake.
+- **Sound:** distinct grounded foley (steps on grass, groans, clinks, shattering, wing beats), never a
+  continuous distorted synth buzz; music matches the stakes (no bouncy track while fleeing, no upbeat track
+  under a serious line); music drops out for comic pauses; voices sit in the space (outdoor air), shouted
+  lines sound shouted.
+- **Clarity:** one event at a time on screen (stagger by 0.5 s); what kills a character must read on first
+  watch; materials match the world (textured, matte; no plastic props, no glossy heads).
+
 ## Story
 
 - Open with a **big mysterious event** that shocks; build a series that
