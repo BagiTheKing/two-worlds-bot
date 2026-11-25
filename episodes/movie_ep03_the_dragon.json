@@ -28,102 +28,268 @@
  },
  "music": [
   {
-   "cue": "null",
+   "cue": "dread",
    "from": 0,
-   "to": "through_tumble",
-   "gain": 0.22,
-   "offset": 2.5,
-   "seed": 4,
-   "fade_out": 0.6,
-   "note": "Episode 2 ends on Null's theme (2.5 s of it, seed 4, gain 0.22): it carries on from there, no new start"
+   "to": "hide+1.0",
+   "gain": 0.24,
+   "seed": 7,
+   "offset": 6.46,
+   "hit_at": 0.05,
+   "smooth": true,
+   "sustain": true,
+   "rise_over": 6.46,
+   "fade_out": 1.0,
+   "note": "Ep2 v7's last cue carried on (same seed, level and rise, 6.46 s in at the cut): the racing heartbeat through the arrival, gone as they hide"
+  },
+  {
+   "cue": "drone",
+   "from": "hide+0.4",
+   "to": "panel",
+   "gain": 0.16,
+   "fade_out": 0.5,
+   "note": "the frozen players: a serious low bed"
+  },
+  {
+   "cue": "dread",
+   "from": "wheel",
+   "to": "crash+0.4",
+   "gain": 0.2,
+   "seed": 3,
+   "hit_at": "crash+0.1",
+   "smooth": true,
+   "fade_out": 0.3,
+   "note": "the dragon comes for Steve: tension, the hit on the wall"
   },
   {
    "cue": "chase",
-   "from": "open",
-   "to": "freeze",
-   "gain": 0.2,
+   "from": "leap+0.6",
+   "to": "thanks.end",
+   "gain": 0.17,
+   "smooth": true,
+   "fade_out": 0.6,
    "swell": [
     {
-     "from": "dive",
+     "from": "ride",
      "to": "free.end",
-     "gain": 1.6,
+     "gain": 1.4,
      "ramp": 0.3
     }
-   ]
+   ],
+   "note": "the ride and the rescue: driving, no buzz; out for the comic beat (That was my plan)"
+  },
+  {
+   "cue": "dread",
+   "from": "bank",
+   "to": "freeze",
+   "gain": 0.2,
+   "seed": 9,
+   "hit_at": "bank+30",
+   "smooth": true,
+   "hard_end": true,
+   "note": "rising under the bank, cut dead by the freeze (the stutter)"
   },
   {
    "cue": "dread",
    "from": "glitch",
-   "to": "glitch.end",
+   "to": "end",
    "gain": 0.24,
    "hit_at": "glitch",
    "minimal": true,
-   "fade_out": 0.05
+   "smooth": true,
+   "open_tail": true,
+   "note": "the glitch sting; Ep4 carries it on"
   }
  ],
  "ambience": [
   {
    "kind": "sky",
-   "from": "through_land",
+   "from": "drop",
    "to": "freeze",
    "gain": 0.06,
-   "fade_in": 0.2
+   "fade_in": 0.3
   },
   {
    "kind": "void",
-   "from": "freeze",
+   "from": "freeze+0.6",
    "to": "glitch",
-   "gain": 0.025,
-   "fade_in": 0.4
+   "gain": 0.02,
+   "fade_in": 0.5
   }
  ],
  "sfx": [
   {
-   "kind": "crunch",
-   "at": "open",
-   "gain": 1.5
-  },
-  {
-   "kind": "break",
-   "at": "open+0.25",
-   "gain": 0.9
-  },
-  {
-   "kind": "roar",
-   "at": "open+0.1",
-   "dur": 1.4,
-   "gain": 0.75
-  },
-  {
-   "kind": "flaps",
-   "at": "open",
-   "dur": 2.6,
-   "rate": 1.3,
-   "gain": 0.35
-  },
-  {
    "kind": "whoosh",
-   "at": "open+1.6",
-   "dur": 0.8,
-   "gain": 0.55
+   "at": "tumble",
+   "dur": 1.3,
+   "gain": 0.6
   },
   {
-   "kind": "flaps",
-   "at": "steve_hide",
-   "dur": 3.0,
-   "rate": 1.3,
-   "gain": 0.15
-  },
-  {
-   "kind": "jingle",
-   "at": "tutorial",
+   "kind": "portal",
+   "at": "tumble+0.2",
+   "dur": 1.0,
    "gain": 0.5
   },
   {
+   "kind": "glitch",
+   "at": "tear",
+   "dur": 0.3,
+   "gain": 0.5
+  },
+  {
+   "kind": "portal",
+   "at": "tear+0.1",
+   "dur": 0.9,
+   "gain": 0.7
+  },
+  {
+   "kind": "break",
+   "at": "tear+0.05",
+   "gain": 0.4
+  },
+  {
    "kind": "whoosh",
+   "at": "drop",
+   "dur": 0.5,
+   "gain": 0.45
+  },
+  {
+   "kind": "thump",
+   "at": "drop+0.35",
+   "freq": 90,
+   "gain": 0.7
+  },
+  {
+   "kind": "step",
+   "at": "drop+0.6",
+   "gain": 0.5
+  },
+  {
+   "kind": "thump",
+   "at": "drop+0.65",
+   "freq": 65,
+   "gain": 0.85
+  },
+  {
+   "kind": "step",
+   "at": "drop+0.95",
+   "gain": 0.45
+  },
+  {
+   "kind": "droar",
+   "at": "burst+0.05",
+   "dur": 1.5,
+   "gain": 0.85
+  },
+  {
+   "kind": "sub_drop",
+   "at": "burst+0.05",
+   "dur": 1.6,
+   "gain": 0.6
+  },
+  {
+   "kind": "shatter",
+   "at": "burst+0.35",
+   "gain": 0.8
+  },
+  {
+   "kind": "shatter",
+   "at": "burst+0.6",
+   "gain": 0.7
+  },
+  {
+   "kind": "shatter",
+   "at": "burst+0.85",
+   "gain": 0.6
+  },
+  {
+   "kind": "wingbeat",
+   "at": "burst+0.4",
+   "dur": 1.5,
+   "rate": 1.2,
+   "gain": 0.7
+  },
+  {
+   "kind": "whoosh",
+   "at": "burst+1.1",
+   "dur": 0.8,
+   "gain": 0.5
+  },
+  {
+   "kind": "step",
+   "from": "hide",
+   "to": "hide+1.2",
+   "count": 7,
+   "gain": 0.5
+  },
+  {
+   "kind": "wingbeat",
+   "at": "hide+0.3",
+   "dur": 1.6,
+   "rate": 1.1,
+   "gain": 0.45
+  },
+  {
+   "kind": "whoosh",
+   "at": "hide+0.8",
+   "dur": 0.9,
+   "gain": 0.4
+  },
+  {
+   "kind": "thump",
+   "at": "hide+1.35",
+   "freq": 120,
+   "gain": 0.4
+  },
+  {
+   "kind": "clink",
+   "at": "tap+0.2",
+   "gain": 0.55
+  },
+  {
+   "kind": "clink",
+   "at": "tap+0.45",
+   "gain": 0.45
+  },
+  {
+   "kind": "glitch",
+   "at": "tap+0.6",
+   "dur": 0.08,
+   "gain": 0.15
+  },
+  {
+   "kind": "glitch",
+   "at": "panel",
+   "dur": 0.15,
+   "gain": 0.25
+  },
+  {
+   "kind": "jingle",
+   "at": "panel+0.25",
+   "gain": 0.5
+  },
+  {
+   "kind": "step",
    "at": "jump",
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "jump+0.1",
    "dur": 0.9,
    "gain": 0.6
+  },
+  {
+   "kind": "wingbeat",
+   "at": "jump+0.3",
+   "dur": 1.0,
+   "rate": 1.4,
+   "gain": 0.6
+  },
+  {
+   "kind": "droar",
+   "at": "jump+0.6",
+   "dur": 0.7,
+   "gain": 0.5
   },
   {
    "kind": "burst",
@@ -131,9 +297,29 @@
    "gain": 0.8
   },
   {
+   "kind": "pop",
+   "from": "kill+0.1",
+   "to": "kill+0.7",
+   "count": 5,
+   "gain": 0.3
+  },
+  {
    "kind": "respawn",
    "at": "respawn",
    "gain": 0.7
+  },
+  {
+   "kind": "droar",
+   "at": "wheel+0.2",
+   "dur": 1.2,
+   "gain": 0.7
+  },
+  {
+   "kind": "wingbeat",
+   "at": "wheel",
+   "dur": 1.6,
+   "rate": 1.3,
+   "gain": 0.6
   },
   {
    "kind": "place",
@@ -143,61 +329,166 @@
    "gain": 0.5
   },
   {
-   "kind": "roar",
-   "at": "crash-0.7",
-   "dur": 0.8,
+   "kind": "wingbeat",
+   "at": "build",
+   "dur": 1.6,
+   "rate": 1.4,
+   "gain": 0.4
+  },
+  {
+   "kind": "droar",
+   "at": "build+1.1",
+   "dur": 0.6,
    "gain": 0.6
   },
   {
-   "kind": "crunch",
-   "at": "crash+0.2",
-   "gain": 2.8
-  },
-  {
-   "kind": "break",
-   "at": "crash+0.25",
+   "kind": "shatter",
+   "at": "crash+0.1",
    "gain": 1.1
   },
   {
-   "kind": "whoosh",
-   "at": "leap",
-   "dur": 0.8,
-   "gain": 0.5
-  },
-  {
-   "kind": "flaps",
-   "at": "leap",
-   "dur": 6.5,
-   "rate": 1.3,
-   "gain": 0.3
+   "kind": "thump",
+   "at": "crash+0.1",
+   "freq": 55,
+   "gain": 0.9
   },
   {
    "kind": "break",
-   "at": "free",
-   "gain": 1.7
+   "at": "crash+0.15",
+   "gain": 0.8
   },
   {
-   "kind": "glitch",
-   "at": "free",
-   "dur": 0.25,
+   "kind": "thump",
+   "at": "crash+0.4",
+   "freq": 110,
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "crash+0.5",
+   "dur": 0.9,
    "gain": 0.5
+  },
+  {
+   "kind": "place",
+   "from": "crash+0.6",
+   "to": "crash+1.4",
+   "count": 5,
+   "gain": 0.25
+  },
+  {
+   "kind": "step",
+   "at": "leap",
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "leap+0.05",
+   "dur": 0.7,
+   "gain": 0.5
+  },
+  {
+   "kind": "thump",
+   "at": "leap+0.75",
+   "freq": 85,
+   "gain": 0.8
+  },
+  {
+   "kind": "droar",
+   "at": "leap+0.85",
+   "dur": 0.6,
+   "gain": 0.5
+  },
+  {
+   "kind": "wingbeat",
+   "at": "ride",
+   "dur": 2.4,
+   "rate": 1.5,
+   "gain": 0.65
+  },
+  {
+   "kind": "whoosh",
+   "at": "ride+0.6",
+   "dur": 1.0,
+   "gain": 0.5
+  },
+  {
+   "kind": "droar",
+   "at": "ride+1.2",
+   "dur": 0.9,
+   "gain": 0.55
+  },
+  {
+   "kind": "thump",
+   "at": "free+0.05",
+   "freq": 60,
+   "gain": 0.8
+  },
+  {
+   "kind": "glass",
+   "at": "free+0.05",
+   "gain": 1.3
+  },
+  {
+   "kind": "glass",
+   "at": "free+0.5",
+   "gain": 1.0
+  },
+  {
+   "kind": "glass",
+   "at": "free+0.95",
+   "gain": 0.9
+  },
+  {
+   "kind": "glass",
+   "at": "free+1.4",
+   "gain": 0.8
   },
   {
    "kind": "jingle",
-   "at": "free+0.3",
+   "at": "free+0.9",
    "gain": 0.5
   },
   {
-   "kind": "flaps",
-   "at": "free.end",
-   "rate": 1.3,
-   "gain": 0.25,
-   "to": "freeze"
+   "kind": "step",
+   "from": "thanks+0.4",
+   "to": "thanks.end",
+   "count": 8,
+   "gain": 0.35
   },
   {
-   "kind": "snap",
-   "at": "freeze",
-   "gain": 1.6
+   "kind": "wingbeat",
+   "at": "bank",
+   "dur": 2.4,
+   "rate": 1.3,
+   "gain": 0.65,
+   "cut": "freeze"
+  },
+  {
+   "kind": "droar",
+   "at": "bank+0.3",
+   "dur": 2.2,
+   "gain": 0.8,
+   "cut": "freeze"
+  },
+  {
+   "kind": "glitch",
+   "at": "freeze+0.75",
+   "dur": 0.07,
+   "gain": 0.35,
+   "cut": "freeze+0.85"
+  },
+  {
+   "kind": "glitch",
+   "at": "freeze+1.35",
+   "dur": 0.06,
+   "gain": 0.3,
+   "cut": "freeze+1.43"
+  },
+  {
+   "kind": "step",
+   "at": "look+0.1",
+   "gain": 0.3
   },
   {
    "kind": "glitch",
@@ -208,7 +499,7 @@
   {
    "kind": "sub_drop",
    "at": "glitch",
-   "dur": 2.2,
+   "dur": 2.6,
    "gain": 0.9
   },
   {
@@ -218,160 +509,10 @@
    "gain": 0.45
   },
   {
-   "kind": "break",
-   "at": "free+0.6",
-   "gain": 0.6
-  },
-  {
-   "kind": "break",
-   "at": "free+1.1",
-   "gain": 0.55
-  },
-  {
-   "kind": "roar",
-   "at": "dive",
-   "dur": 0.9,
-   "gain": 0.5
-  },
-  {
-   "kind": "snap",
-   "at": "open",
-   "gain": 1.0
-  },
-  {
-   "kind": "break",
-   "at": "open+0.4",
-   "gain": 0.8
-  },
-  {
-   "kind": "break",
-   "at": "open+0.55",
-   "gain": 0.7
-  },
-  {
-   "kind": "whoosh",
-   "at": "jump+0.85",
-   "dur": 0.5,
-   "gain": 0.6
-  },
-  {
-   "kind": "flaps",
-   "at": "jump+0.8",
-   "dur": 0.8,
-   "rate": 1.3,
-   "gain": 0.3
-  },
-  {
    "kind": "glitch",
-   "at": "through_quiet+1.1",
-   "dur": 0.3,
-   "gain": 0.6
-  },
-  {
-   "kind": "portal",
-   "at": "through_quiet+1.45",
-   "dur": 0.9,
-   "gain": 0.6
-  },
-  {
-   "kind": "suck",
-   "at": "through_pull",
-   "dur": 3.2,
-   "gain": 0.85
-  },
-  {
-   "kind": "roar",
-   "at": "through_pull+0.35",
-   "dur": 1.3,
-   "gain": 0.3,
-   "note": "far off, behind them in the meadow: the dragon (it follows them through)"
-  },
-  {
-   "kind": "step",
-   "at": "through_pull+0.55",
-   "gain": 0.7,
-   "note": "the Noob's heels dig into the grass"
-  },
-  {
-   "kind": "step",
-   "at": "through_pull+0.8",
-   "gain": 0.6
-  },
-  {
-   "kind": "whoosh",
-   "at": "through_pull+1.15",
-   "dur": 0.6,
-   "gain": 0.5,
-   "note": "the Noob taken"
-  },
-  {
-   "kind": "step",
-   "at": "through_pull+1.3",
-   "gain": 1.8,
-   "note": "Steve runs to him"
-  },
-  {
-   "kind": "step",
-   "at": "through_pull+1.6",
-   "gain": 1.8
-  },
-  {
-   "kind": "step",
-   "at": "through_pull+1.9",
-   "gain": 1.9
-  },
-  {
-   "kind": "thump",
-   "at": "through_pull+2.15",
-   "freq": 140,
-   "gain": 0.7,
-   "note": "Steve's hand on the Noob's arm"
-  },
-  {
-   "kind": "whoosh",
-   "at": "through_pull+2.45",
-   "dur": 0.6,
-   "gain": 0.55,
-   "note": "Steve taken with him"
-  },
-  {
-   "kind": "whoosh",
-   "at": "through_tumble",
-   "dur": 1.4,
-   "gain": 0.6,
-   "note": "runs into the landing: no gap"
-  },
-  {
-   "kind": "thump",
-   "at": "through_land+0.15",
-   "freq": 80,
-   "gain": 0.75
-  },
-  {
-   "kind": "thump",
-   "at": "through_land+0.45",
-   "freq": 65,
-   "gain": 0.8
-  },
-  {
-   "kind": "portal",
-   "at": "through_land+0.5",
-   "dur": 1.1,
-   "gain": 0.7,
-   "note": "the portal behind them hums up again"
-  },
-  {
-   "kind": "rumble_rise",
-   "at": "through_land+0.6",
-   "dur": 1.0,
+   "at": "glitch+2.2",
+   "dur": 0.2,
    "gain": 0.4
-  },
-  {
-   "kind": "roar",
-   "at": "through_land+0.85",
-   "dur": 0.6,
-   "gain": 0.35,
-   "note": "the roar inside it, growing: then the burst on open"
   }
  ],
  "overlays": [
@@ -389,35 +530,18 @@
    "to": "end"
   },
   {
-   "type": "tutorial",
-   "title": "TUTORIAL",
-   "text": "JUMP ON THE BOSS!",
-   "from": "tutorial",
-   "to": "steve_dont.end",
-   "arrow": "up",
-   "y": 330
-  },
-  {
-   "type": "timer",
-   "label": "PLAN",
-   "from": "crash-0.6",
-   "to": "crash.end+0.3",
-   "fail_after": 0.8,
-   "y": 430
-  },
-  {
    "type": "flash",
-   "from": "crash+0.2",
-   "to": "crash+0.32",
-   "strength": 0.7
+   "from": "crash+0.1",
+   "to": "crash+0.2",
+   "strength": 0.6
   },
   {
    "type": "achievement",
    "title": "ACHIEVEMENT UNLOCKED",
    "text": "ACCIDENTAL HERO",
    "sub": "Free the frozen players",
-   "from": "free+0.25",
-   "to": "free.end+0.9"
+   "from": "free+0.9",
+   "to": "thanks.end"
   },
   {
    "type": "watermark",
@@ -426,1719 +550,151 @@
    "to": "end"
   }
  ],
- "actors": {
-  "steve": {
-   "rig": "steve",
-   "at": [
-    -2.4,
-    0.8,
-    0
-   ],
-   "yaw": 0
-  },
-  "noob": {
-   "rig": "noob",
-   "at": [
-    1.6,
-    0,
-    0
-   ],
-   "yaw": 0.2,
-   "visible": [
-    [
-     0,
-     "kill"
-    ],
-    [
-     "respawn",
-     "end"
-    ]
-   ]
-  },
-  "dragon": {
-   "rig": "dragon",
-   "s": 0.75,
-   "at": [
-    -3.6,
-    9.5,
-    5.2
-   ],
-   "yaw": 0,
-   "freeze": "freeze"
-  },
-  "frozen_0": {
-   "shirt": [
-    128,
-    130,
-    138
-   ],
-   "pants": [
-    96,
-    98,
-    106
-   ],
-   "skin": [
-    168,
-    170,
-    176
-   ],
-   "rig": "noob",
-   "at": [
-    -11.7,
-    9,
-    1.5
-   ],
-   "yaw": -0.15000000000000002,
-   "idle": 0,
-   "visible": [
-    [
-     0,
-     "free"
-    ]
-   ]
-  },
-  "freed_0": {
-   "rig": "noob",
-   "shirt": [
-    232,
-    64,
-    64
-   ],
-   "pants": [
-    60,
-    60,
-    70
-   ],
-   "at": [
-    -11.7,
-    9,
-    1.5
-   ],
-   "yaw": -0.15000000000000002,
-   "visible": [
-    [
-     "free",
-     "end"
-    ]
-   ]
-  },
-  "frozen_1": {
-   "shirt": [
-    128,
-    130,
-    138
-   ],
-   "pants": [
-    96,
-    98,
-    106
-   ],
-   "skin": [
-    168,
-    170,
-    176
-   ],
-   "rig": "noob",
-   "at": [
-    -9.9,
-    9,
-    1.5
-   ],
-   "yaw": -0.05,
-   "idle": 0,
-   "visible": [
-    [
-     0,
-     "free"
-    ]
-   ]
-  },
-  "freed_1": {
-   "rig": "noob",
-   "shirt": [
-    245,
-    150,
-    40
-   ],
-   "pants": [
-    40,
-    90,
-    200
-   ],
-   "at": [
-    -9.9,
-    9,
-    1.5
-   ],
-   "yaw": -0.05,
-   "visible": [
-    [
-     "free",
-     "end"
-    ]
-   ]
-  },
-  "frozen_2": {
-   "shirt": [
-    128,
-    130,
-    138
-   ],
-   "pants": [
-    96,
-    98,
-    106
-   ],
-   "skin": [
-    168,
-    170,
-    176
-   ],
-   "rig": "noob",
-   "at": [
-    -8.1,
-    9,
-    1.5
-   ],
-   "yaw": 0.05,
-   "idle": 0,
-   "visible": [
-    [
-     0,
-     "free"
-    ]
-   ]
-  },
-  "freed_2": {
-   "rig": "noob",
-   "shirt": [
-    150,
-    90,
-    230
-   ],
-   "pants": [
-    96,
-    182,
-    50
-   ],
-   "at": [
-    -8.1,
-    9,
-    1.5
-   ],
-   "yaw": 0.05,
-   "visible": [
-    [
-     "free",
-     "end"
-    ]
-   ]
-  },
-  "frozen_3": {
-   "shirt": [
-    128,
-    130,
-    138
-   ],
-   "pants": [
-    96,
-    98,
-    106
-   ],
-   "skin": [
-    168,
-    170,
-    176
-   ],
-   "rig": "noob",
-   "at": [
-    -6.3,
-    9,
-    1.5
-   ],
-   "yaw": 0.15000000000000002,
-   "idle": 0,
-   "visible": [
-    [
-     0,
-     "free"
-    ]
-   ]
-  },
-  "freed_3": {
-   "rig": "noob",
-   "shirt": [
-    240,
-    100,
-    190
-   ],
-   "pants": [
-    245,
-    210,
-    50
-   ],
-   "at": [
-    -6.3,
-    9,
-    1.5
-   ],
-   "yaw": 0.15000000000000002,
-   "visible": [
-    [
-     "free",
-     "end"
-    ]
-   ]
-  }
- },
- "clips": [
-  {
-   "who": "noob",
-   "do": "bounce",
-   "from": 0,
-   "to": "noob_boss.end",
-   "height": 0.35,
-   "rate": 2.2
-  },
-  {
-   "who": "noob",
-   "do": "look",
-   "from": "tutorial",
-   "to": "jump",
-   "head": [
-    -0.25,
-    0,
-    0.5
-   ]
-  },
-  {
-   "who": "noob",
-   "do": "leap",
-   "from": "jump",
-   "to": "jump.end",
-   "dest": [
-    3.2,
-    4.6,
-    -0.3
-   ],
-   "height": 1.8
-  },
-  {
-   "who": "noob",
-   "do": "set",
-   "from": "respawn",
-   "at": [
-    6.0,
-    -0.9,
-    0
-   ],
-   "yaw": -0.3
-  },
-  {
-   "who": "noob",
-   "do": "pop",
-   "from": "respawn",
-   "to": "respawn+0.3"
-  },
-  {
-   "who": "noob",
-   "do": "cheer",
-   "from": "noob_cp",
-   "to": "noob_cp+0.5"
-  },
-  {
-   "who": "noob",
-   "do": "leap",
-   "from": "leap",
-   "to": "leap.end",
-   "onto": "dragon",
-   "seat": [
-    0,
-    -1.2,
-    -0.05
-   ],
-   "height": 1.0
-  },
-  {
-   "who": "noob",
-   "do": "ride",
-   "on": "dragon",
-   "from": "leap.end",
-   "to": "end",
-   "seat": [
-    0,
-    -1.2,
-    -0.05
-   ]
-  },
-  {
-   "who": "noob",
-   "do": "look",
-   "from": "noob_lag",
-   "to": "glitch",
-   "head": [
-    0.4,
-    0,
-    0.3
-   ]
-  },
-  {
-   "who": "steve",
-   "do": "face",
-   "from": "steve_wall",
-   "to": "steve_wall+0.25",
-   "yaw": 3.1416
-  },
-  {
-   "who": "steve",
-   "do": "swing",
-   "from": "build",
-   "to": "build.end",
-   "count": 6
-  },
-  {
-   "who": "steve",
-   "do": "set",
-   "from": "steve_myplan",
-   "yaw": 0
-  },
-  {
-   "who": "steve",
-   "do": "look",
-   "from": "steve_lag",
-   "to": "endcard",
-   "head": [
-    -0.2,
-    0,
-    0.35
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": 0,
-   "to": "steve_hide",
-   "path": [
-    [
-     -2.6,
-     4,
-     6.2
-    ],
-    [
-     -1,
-     -2,
-     7.8
-    ],
-    [
-     3,
-     -9,
-     12
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "roar",
-   "from": -0.25,
-   "to": 0.85
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "steve_hide",
-   "to": "jump",
-   "path": [
-    [
-     12,
-     0,
-     14
-    ],
-    [
-     6,
-     18,
-     12
-    ],
-    [
-     -4,
-     22,
-     10
-    ],
-    [
-     -8,
-     14,
-     8
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "jump",
-   "to": "jump.end+0.5",
-   "path": [
-    [
-     -2,
-     8,
-     3.6
-    ],
-    [
-     3.2,
-     5.2,
-     3.0
-    ],
-    [
-     10,
-     3,
-     5
-    ],
-    [
-     16,
-     8,
-     8
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "jump.end+0.5",
-   "to": "crash",
-   "path": [
-    [
-     14,
-     18,
-     9
-    ],
-    [
-     4,
-     22,
-     6
-    ],
-    [
-     -2.4,
-     10,
-     2.2
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "roar",
-   "from": "crash-0.7",
-   "to": "crash"
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "crash",
-   "to": "crash.end",
-   "path": [
-    [
-     -2.4,
-     2.0,
-     1.8
-    ],
-    [
-     -2.4,
-     -1.5,
-     4.4
-    ],
-    [
-     -1,
-     -9,
-     8
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "crash.end",
-   "to": "leap.end",
-   "path": [
-    [
-     6,
-     -14,
-     9
-    ],
-    [
-     12,
-     -6,
-     6
-    ],
-    [
-     8,
-     -1.5,
-     3.0
-    ],
-    [
-     6,
-     -0.9,
-     2.6
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "leap.end",
-   "to": "free",
-   "path": [
-    [
-     2,
-     1,
-     3.5
-    ],
-    [
-     -4,
-     4,
-     4
-    ],
-    [
-     -6.3,
-     9,
-     2.9
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "free",
-   "to": "free.end",
-   "path": [
-    [
-     -9.9,
-     9,
-     2.9
-    ],
-    [
-     -13.5,
-     9,
-     3.2
-    ],
-    [
-     -17,
-     12,
-     6
-    ]
-   ]
-  },
-  {
-   "who": "dragon",
-   "do": "fly",
-   "from": "free.end",
-   "to": "noob_planwall",
-   "path": [
-    [
-     -14,
-     20,
-     9
-    ],
-    [
-     -2,
-     22,
-     7
-    ],
-    [
-     2,
-     12,
-     4.2
-    ],
-    [
-     2,
-     6,
-     4.2
-    ]
-   ]
-  },
-  {
-   "who": "frozen_0",
-   "do": "pose",
-   "from": 0,
-   "to": "free",
-   "parts": {
-    "arm_r": [
-     -2.6,
-     0,
-     0.3
-    ],
-    "arm_l": [
-     -2.2,
-     0,
-     -0.3
-    ],
-    "leg_r": [
-     -0.5,
-     0,
-     0
-    ],
-    "leg_l": [
-     0.3,
-     0,
-     0
-    ]
-   },
-   "hold": true
-  },
-  {
-   "who": "freed_0",
-   "do": "cheer",
-   "from": "free+0.05",
-   "to": "free+0.55"
-  },
-  {
-   "who": "freed_0",
-   "do": "bounce",
-   "from": "free+0.60",
-   "to": "end",
-   "height": 0.4,
-   "rate": 1.8
-  },
-  {
-   "who": "frozen_1",
-   "do": "pose",
-   "from": 0,
-   "to": "free",
-   "parts": {
-    "arm_r": [
-     -2.6,
-     0,
-     0.3
-    ],
-    "arm_l": [
-     -2.4000000000000004,
-     0,
-     -0.3
-    ],
-    "leg_r": [
-     -0.5,
-     0,
-     0
-    ],
-    "leg_l": [
-     0.3,
-     0,
-     0
-    ]
-   },
-   "hold": true
-  },
-  {
-   "who": "freed_1",
-   "do": "cheer",
-   "from": "free+0.13",
-   "to": "free+0.63"
-  },
-  {
-   "who": "freed_1",
-   "do": "bounce",
-   "from": "free+0.68",
-   "to": "end",
-   "height": 0.4,
-   "rate": 1.95
-  },
-  {
-   "who": "frozen_2",
-   "do": "pose",
-   "from": 0,
-   "to": "free",
-   "parts": {
-    "arm_r": [
-     -2.6,
-     0,
-     0.3
-    ],
-    "arm_l": [
-     -2.6,
-     0,
-     -0.3
-    ],
-    "leg_r": [
-     -0.5,
-     0,
-     0
-    ],
-    "leg_l": [
-     0.3,
-     0,
-     0
-    ]
-   },
-   "hold": true
-  },
-  {
-   "who": "freed_2",
-   "do": "cheer",
-   "from": "free+0.21",
-   "to": "free+0.71"
-  },
-  {
-   "who": "freed_2",
-   "do": "bounce",
-   "from": "free+0.76",
-   "to": "end",
-   "height": 0.4,
-   "rate": 2.1
-  },
-  {
-   "who": "frozen_3",
-   "do": "pose",
-   "from": 0,
-   "to": "free",
-   "parts": {
-    "arm_r": [
-     -2.6,
-     0,
-     0.3
-    ],
-    "arm_l": [
-     -2.8000000000000003,
-     0,
-     -0.3
-    ],
-    "leg_r": [
-     -0.5,
-     0,
-     0
-    ],
-    "leg_l": [
-     0.3,
-     0,
-     0
-    ]
-   },
-   "hold": true
-  },
-  {
-   "who": "freed_3",
-   "do": "cheer",
-   "from": "free+0.29",
-   "to": "free+0.79"
-  },
-  {
-   "who": "freed_3",
-   "do": "bounce",
-   "from": "free+0.84",
-   "to": "end",
-   "height": 0.4,
-   "rate": 2.25
-  }
- ],
- "fx": [
-  {
-   "kind": "sky",
-   "below": "sky",
-   "sun_dir": [
-    0.3,
-    0.75,
-    -0.6
-   ],
-   "keys": [
-    [
-     0,
-     5.0,
-     1.25
-    ],
-    [
-     "glitch",
-     5.0,
-     1.25
-    ],
-    [
-     "glitch+0.3",
-     2.6,
-     0.7
-    ]
-   ]
-  },
-  {
-   "kind": "obby_course",
-   "platforms": [
-    {
-     "name": "noob_pad",
-     "at": [
-      1.6,
-      0,
-      0
-     ],
-     "size": [
-      3,
-      3
-     ],
-     "colour": "blue"
-    },
-    {
-     "name": "steve_pad",
-     "at": [
-      -2.4,
-      0.8,
-      0
-     ],
-     "size": [
-      3,
-      3.2
-     ],
-     "colour": "green"
-    },
-    {
-     "name": "kill_pad",
-     "at": [
-      3.2,
-      4.6,
-      -0.3
-     ],
-     "size": [
-      2.4,
-      2.4
-     ],
-     "colour": "red",
-     "kill": true
-    },
-    {
-     "name": "cp_pad",
-     "at": [
-      6.0,
-      -0.9,
-      0
-     ],
-     "size": [
-      2.6,
-      2.6
-     ],
-     "colour": "white"
-    },
-    {
-     "name": "slider",
-     "at": [
-      -6.2,
-      4.2,
-      0.6
-     ],
-     "size": [
-      2.2,
-      2.2
-     ],
-     "colour": "orange",
-     "slide": [
-      1.4,
-      0,
-      0,
-      2.6
-     ]
-    },
-    {
-     "name": "deco_1",
-     "at": [
-      -7.5,
-      0,
-      -0.8
-     ],
-     "size": [
-      3.5,
-      3.5
-     ],
-     "colour": "purple"
-    },
-    {
-     "name": "deco_2",
-     "at": [
-      9.5,
-      3,
-      -0.5
-     ],
-     "size": [
-      3,
-      3
-     ],
-     "colour": "yellow"
-    },
-    {
-     "name": "deco_3",
-     "at": [
-      10,
-      14,
-      1.5
-     ],
-     "size": [
-      3,
-      3
-     ],
-     "colour": "pink"
-    },
-    {
-     "name": "deco_4",
-     "at": [
-      -12,
-      16,
-      2.5
-     ],
-     "size": [
-      3,
-      3
-     ],
-     "colour": "blue"
-    },
-    {
-     "name": "jail",
-     "at": [
-      -9,
-      9,
-      1.5
-     ],
-     "size": [
-      8.5,
-      3.2
-     ],
-     "colour": "grey"
-    },
-    {
-     "name": "s0",
-     "at": [
-      -3,
-      9,
-      1.5
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "red"
-    },
-    {
-     "name": "s1",
-     "at": [
-      -1,
-      11.5,
-      2.3
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "orange"
-    },
-    {
-     "name": "s2",
-     "at": [
-      1,
-      14,
-      3.1
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "yellow"
-    },
-    {
-     "name": "s3",
-     "at": [
-      2.8,
-      16.5,
-      3.9
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "green"
-    },
-    {
-     "name": "s4",
-     "at": [
-      4.5,
-      19,
-      4.7
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "blue"
-    },
-    {
-     "name": "s5",
-     "at": [
-      6,
-      21.5,
-      5.5
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "purple"
-    },
-    {
-     "name": "s6",
-     "at": [
-      -2.5,
-      24,
-      6.5
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "pink"
-    },
-    {
-     "name": "s7",
-     "at": [
-      0,
-      27,
-      7.5
-     ],
-     "size": [
-      2.2,
-      2.2,
-      0.45
-     ],
-     "colour": "red"
-    }
-   ]
-  },
-  {
-   "kind": "flag",
-   "at": [
-    6.9,
-    -1.7,
-    0
-   ]
-  },
-  {
-   "kind": "spawn_pad",
-   "at": [
-    6.0,
-    -0.9
-   ],
-   "appear": 0
-  },
-  {
-   "kind": "smash_near",
-   "actor": "dragon",
-   "targets": [
-    {
-     "name": "s2",
-     "at": -0.45
-    },
-    {
-     "name": "s1",
-     "at": -0.3
-    },
-    {
-     "name": "s0",
-     "at": -0.1
-    }
-   ],
-   "radius": 3.6
-  },
-  {
-   "kind": "wall",
-   "at": [
-    -2.4,
-    2.1,
-    0
-   ],
-   "cols": 3,
-   "rows": 2,
-   "build": [
-    "build",
-    "build.end-0.1"
-   ],
-   "smash": "crash+0.2",
-   "push": [
-    0,
-    -8,
-    2
-   ]
-  },
-  {
-   "kind": "burst",
-   "actor": "noob",
-   "at": "kill"
-  },
-  {
-   "kind": "dark_cube",
-   "actor": "noob",
-   "from": "kill",
-   "to": "kill+3.0",
-   "offset": [
-    0.6,
-    0.4,
-    1.2
-   ]
-  },
-  {
-   "kind": "cages",
-   "actors": [
-    "frozen_0",
-    "frozen_1",
-    "frozen_2",
-    "frozen_3"
-   ],
-   "free": "free"
-  },
-  {
-   "kind": "flicker",
-   "actor": "dragon",
-   "from": "glitch",
-   "to": "end",
-   "rate": 0.4
-  }
- ],
- "shots": [
-  {
-   "name": "hook",
-   "from": 0,
-   "to": "steve_hide",
-   "lens": 20,
-   "path": [
-    [
-     0,
-     [
-      3.4,
-      -4.6,
-      0.8
-     ]
-    ],
-    [
-     "steve_hide",
-     [
-      3.3,
-      -4.9,
-      0.9
-     ]
-    ]
-   ],
-   "look": [
-    [
-     0,
-     [
-      0.2,
-      6,
-      4.0
-     ]
-    ]
-   ],
-   "look_actor": "dragon",
-   "look_offset": [
-    0,
-    0,
-    0
-   ],
-   "look_mix": 0.3
-  },
-  {
-   "name": "steve_hide",
-   "from": "steve_hide",
-   "to": "tutorial",
-   "lens": 35,
-   "path": [
-    [
-     "steve_hide",
-     [
-      -1.4,
-      -3.4,
-      1.65
-     ]
-    ],
-    [
-     "tutorial",
-     [
-      -1.45,
-      -3.3,
-      1.65
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "steve_hide",
-     [
-      -2.4,
-      0.8,
-      1.45
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "tutorial",
-   "from": "tutorial",
-   "to": "jump",
-   "lens": 24,
-   "path": [
-    [
-     "tutorial",
-     [
-      0.0,
-      -7.0,
-      2.0
-     ]
-    ],
-    [
-     "jump",
-     [
-      0.1,
-      -6.8,
-      2.0
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "tutorial",
-     [
-      0.3,
-      1.0,
-      1.6
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "jump",
-   "from": "jump",
-   "to": "respawn",
-   "lens": 24,
-   "path": [
-    [
-     "jump",
-     [
-      -1.8,
-      -5.0,
-      2.6
-     ]
-    ],
-    [
-     "respawn",
-     [
-      -1.7,
-      -5.1,
-      2.6
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "jump",
-     [
-      3.2,
-      3.6,
-      1.4
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "checkpoint",
-   "from": "respawn",
-   "to": "steve_wall",
-   "lens": 32,
-   "path": [
-    [
-     "respawn",
-     [
-      5.0,
-      -4.8,
-      1.4
-     ]
-    ],
-    [
-     "steve_wall",
-     [
-      5.05,
-      -4.6,
-      1.4
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "respawn",
-     [
-      6.0,
-      -0.9,
-      1.1
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "wall",
-   "from": "steve_wall",
-   "to": "crash.end",
-   "lens": 22,
-   "path": [
-    [
-     "steve_wall",
-     [
-      4.5,
-      -0.6,
-      2.2
-     ]
-    ],
-    [
-     "crash.end",
-     [
-      4.5,
-      -0.8,
-      2.25
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "steve_wall",
-     [
-      -2.4,
-      1.6,
-      1.8
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "leap",
-   "from": "crash.end",
-   "to": "noob_done.end",
-   "lens": 24,
-   "path": [
-    [
-     "crash.end",
-     [
-      10.5,
-      -6.5,
-      2.4
-     ]
-    ],
-    [
-     "noob_done.end",
-     [
-      10.0,
-      -6.0,
-      2.8
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "crash.end",
-     [
-      5.0,
-      -0.5,
-      2.6
-     ]
-    ]
-   ],
-   "look_actor": "noob",
-   "look_mix": 0.45
-  },
-  {
-   "name": "dive",
-   "from": "noob_done.end",
-   "to": "free.end",
-   "lens": 22,
-   "path": [
-    [
-     "noob_done.end",
-     [
-      -9.0,
-      2.0,
-      3.4
-     ]
-    ],
-    [
-     "free.end",
-     [
-      -9.4,
-      1.8,
-      3.4
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "noob_done.end",
-     [
-      -8.5,
-      9,
-      2.6
-     ]
-    ]
-   ],
-   "look_actor": "dragon",
-   "look_offset": [
-    0,
-    0,
-    0
-   ],
-   "look_mix": 0.3
-  },
-  {
-   "name": "myplan",
-   "from": "free.end",
-   "to": "noob_planwall",
-   "lens": 40,
-   "path": [
-    [
-     "free.end",
-     [
-      -2.0,
-      -2.4,
-      1.75
-     ]
-    ],
-    [
-     "noob_planwall",
-     [
-      -2.0,
-      -2.3,
-      1.75
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "free.end",
-     [
-      -2.4,
-      0.8,
-      1.6
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "planwall",
-   "from": "noob_planwall",
-   "to": "freeze",
-   "lens": 28,
-   "path": [
-    [
-     "noob_planwall",
-     [
-      5.5,
-      -1.5,
-      4.6
-     ]
-    ],
-    [
-     "freeze",
-     [
-      5.4,
-      -1.4,
-      4.6
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "noob_planwall",
-     [
-      2.0,
-      4.8,
-      5.0
-     ]
-    ]
-   ]
-  },
-  {
-   "name": "freeze",
-   "from": "freeze",
-   "to": "steve_lag",
-   "lens": 22,
-   "path": [
-    [
-     "freeze",
-     [
-      -4.2,
-      -5.2,
-      1.5
-     ]
-    ],
-    [
-     "steve_lag",
-     [
-      -4.2,
-      -5.0,
-      1.55
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "freeze",
-     [
-      0.8,
-      5.0,
-      4.2
-     ]
-    ]
-   ],
-   "shake": 0.0
-  },
-  {
-   "name": "steve_lag",
-   "from": "steve_lag",
-   "to": "glitch",
-   "lens": 40,
-   "path": [
-    [
-     "steve_lag",
-     [
-      -2.0,
-      -2.4,
-      1.75
-     ]
-    ],
-    [
-     "glitch",
-     [
-      -2.0,
-      -2.35,
-      1.75
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "steve_lag",
-     [
-      -2.4,
-      0.8,
-      1.6
-     ]
-    ]
-   ],
-   "shake": 0.0
-  },
-  {
-   "name": "glitch",
-   "from": "glitch",
-   "to": "end",
-   "lens": 28,
-   "path": [
-    [
-     "glitch",
-     [
-      2.0,
-      -4.6,
-      5.1
-     ]
-    ],
-    [
-     "end",
-     [
-      2.0,
-      -4.2,
-      5.05
-     ]
-    ]
-   ],
-   "look": [
-    [
-     "glitch",
-     [
-      2.0,
-      1.5,
-      4.85
-     ]
-    ]
-   ],
-   "shake": 0.0
-  }
- ],
  "events": [
   {
-   "beat": "through_quiet",
-   "dur": 1.8,
-   "note": "the meadow after the snap: the quiet, the Noob lowers his arm; the frame flickers"
+   "beat": "tumble",
+   "dur": 1.2,
+   "note": "Ep2's last frame goes on: through the swirl, a violet-white tunnel (Ep2 ends on a flare as the dragon's head enters)"
   },
   {
-   "beat": "through_pull",
-   "dur": 3.0,
-   "note": "the portal relights, unstable, and pulls (a far roar behind them in the meadow: the dragon): the Noob digs in his heels and is taken; Steve runs, grabs his arm, and goes with him"
+   "beat": "tear",
+   "dur": 0.8,
+   "note": "the obby's sky: a purple portal tears open above the start pad, crackling"
   },
   {
-   "beat": "through_tumble",
-   "dur": 1.1,
-   "note": "through the swirl"
-  },
-  {
-   "beat": "through_land",
+   "beat": "drop",
    "dur": 1.4,
-   "note": "they drop out of the portal's other side onto the obby; behind them it hums up again, a roar growing inside"
+   "note": "Steve and the Noob tumble out of it onto the start pad: the Noob lands on his feet and bounces, delighted; Steve on his back"
   },
   {
-   "beat": "open",
-   "dur": 1.6
+   "beat": "burst",
+   "dur": 1.9,
+   "note": "the dragon blasts out of the same portal right behind them, roaring, smashing three course stages, and climbs; the portal flickers and stays"
   },
   {
    "line": "noob",
    "name": "noob_boss",
    "text": "BOSS FIGHT!",
-   "direction_text": "[shouting, thrilled] BOSS FIGHT!",
-   "pad": 0.25,
-   "solo_only": true
+   "direction_text": "BOSS FIGHT!",
+   "solo_only": true,
+   "solo_text": "BOSS FIGHT!",
+   "shout": 3,
+   "new_take": true,
+   "pad": 0.2,
+   "note": "new take, hyper (the creator's notes 2026-11-25: Boss fight lacked the excitement)"
   },
   {
    "line": "steve",
    "name": "steve_hide",
    "text": "It used our portal. Hide!",
-   "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
-   "pad": 0.5,
-   "tighten": 0.2,
+   "direction_text": "It used our portal. HIDE!",
+   "solo_only": true,
    "solo_text": "It used our portal. HIDE!",
-   "solo_take": 1
+   "shout": 2,
+   "new_take": true,
+   "pad": 0.3,
+   "note": "new take: flat, then HIDE shouted (it was monotone)"
   },
   {
-   "beat": "tutorial",
-   "dur": 0.9
+   "beat": "hide",
+   "dur": 2.0,
+   "note": "they run and duck behind the ledge where four players stand frozen in glitch crystal; the dragon's shadow passes over"
+  },
+  {
+   "line": "noob",
+   "name": "noob_hi",
+   "text": "Hi! ...Hello?",
+   "direction_text": "[cheerful wave, then puzzled when nobody answers] Hi! ...Hello?",
+   "own_scene": true,
+   "new_take": true,
+   "pad": 0.3,
+   "note": "added line: the frozen players' setup (the creator's notes: they had none)"
+  },
+  {
+   "beat": "tap",
+   "dur": 0.9,
+   "note": "he taps the crystal: a glassy clink; nobody inside moves; a pixel flickers across the crystal"
+  },
+  {
+   "line": "noob",
+   "name": "noob_frozen",
+   "text": "They're frozen.",
+   "direction_text": "[quiet, uneasy, the cheer gone] They're frozen.",
+   "own_scene": true,
+   "new_take": true,
+   "pad": 0.35,
+   "note": "added line"
+  },
+  {
+   "line": "steve",
+   "name": "steve_here",
+   "text": "The glitch is here too.",
+   "direction_text": "[low, quiet, a grim realisation] The glitch is here too.",
+   "own_scene": true,
+   "new_take": true,
+   "pad": 0.6,
+   "note": "added line: Steve clocks that something is wrong with this world (foreshadows the frozen dragon)"
+  },
+  {
+   "beat": "panel",
+   "dur": 1.4,
+   "note": "a hologram panel flickers up in the sky over the course, TUTORIAL: JUMP ON THE BOSS! with an arrow at the dragon; the Noob looks up at it"
   },
   {
    "line": "noob",
    "name": "noob_tut",
    "text": "Tutorial says jump!",
-   "direction_text": "[excited, already going] Tutorial says jump!",
-   "pad": 0.0
+   "direction_text": "Tutorial says JUMP!",
+   "solo_only": true,
+   "solo_text": "Tutorial says JUMP!",
+   "shout": 2,
+   "new_take": true,
+   "pad": 0.0,
+   "note": "new take, hyper"
   },
   {
    "line": "steve",
    "name": "steve_dont",
    "text": "Don't—",
-   "direction_text": "[sharp, cut off] Don't—",
+   "direction_text": "DON'T!",
+   "solo_only": true,
+   "solo_text": "DON'T!",
+   "shout": 3,
+   "new_take": true,
    "pad": 0.0,
-   "solo_only": true
+   "note": "new take, shouted (it was flat); cut off by the jump"
   },
   {
    "beat": "jump",
-   "dur": 1.4
+   "dur": 1.3,
+   "note": "the Noob leaps from the ledge's red stage toward the circling dragon"
   },
   {
    "beat": "kill",
-   "dur": 0.7
+   "dur": 0.8,
+   "note": "the dragon sweeps through him: he bursts into pieces (the dark cube in the burst)"
   },
   {
    "beat": "respawn",
-   "dur": 0.7
+   "dur": 0.7,
+   "note": "he pops back on the checkpoint pad by the flag"
   },
   {
    "line": "noob",
    "name": "noob_cp",
    "text": "Checkpoint!",
-   "direction_text": "[cheerful, completely unbothered] Checkpoint!",
-   "pad": 0.25,
-   "solo_only": true
+   "direction_text": "Checkpoint!!",
+   "solo_only": true,
+   "solo_text": "Checkpoint!!",
+   "shout": 2,
+   "new_take": true,
+   "pad": 0.3,
+   "note": "new take, hyper"
+  },
+  {
+   "beat": "wheel",
+   "dur": 1.6,
+   "note": "the dragon wheels round, low, and comes for Steve on the green stage"
   },
   {
    "line": "steve",
@@ -2153,15 +709,30 @@
   },
   {
    "beat": "build",
-   "dur": 1.6
+   "dur": 1.6,
+   "note": "Steve places a cobblestone wall, 3 by 2, block by block"
   },
   {
    "beat": "crash",
-   "dur": 1.0
+   "dur": 1.6,
+   "note": "the dragon hits the wall: the stones burst, its snout is knocked down and it drops low, skimming the course; Steve dives flat on the green stage (hit-stop, shake)"
+  },
+  {
+   "line": "noob",
+   "name": "noob_again",
+   "text": "Round two!",
+   "direction_text": "Round two!!",
+   "solo_only": true,
+   "solo_text": "Round two!!",
+   "shout": 2,
+   "new_take": true,
+   "pad": 0.0,
+   "note": "added line: the Noob jumps blind from the checkpoint pad, at where the dragon was"
   },
   {
    "beat": "leap",
-   "dur": 1.2
+   "dur": 1.2,
+   "note": "the dragon, knocked low by the wall, passes right under him: he lands on its back (the wall caused it)"
   },
   {
    "line": "noob",
@@ -2171,12 +742,19 @@
    "pad": 0.3
   },
   {
-   "beat": "dive",
-   "dur": 2.6
+   "beat": "ride",
+   "dur": 2.4,
+   "note": "dazed, the dragon swerves along the course, the Noob clinging to its neck, and veers straight into the frozen players' ledge"
   },
   {
    "beat": "free",
-   "dur": 2.2
+   "dur": 2.6,
+   "note": "the four crystals shatter one after another; the players tumble out, stand up, look round"
+  },
+  {
+   "beat": "thanks",
+   "dur": 1.6,
+   "note": "they wave at Steve and the Noob, and run off along the course to the next stage"
   },
   {
    "line": "steve",
@@ -2196,8 +774,19 @@
    "pad": 0.5
   },
   {
+   "beat": "bank",
+   "dur": 1.8,
+   "note": "the dragon banks round over them mid-roar, the Noob on its neck, full wingbeats"
+  },
+  {
    "beat": "freeze",
-   "dur": 2.0
+   "dur": 2.0,
+   "note": "mid-flap it stutters (a twitch back, twice) and locks: wings asymmetric, the cobblestone debris hanging in the air round it; the sound freezes with it, then silence"
+  },
+  {
+   "beat": "wave",
+   "dur": 1.0,
+   "note": "the Noob leans down its neck and waves a hand in front of its eye"
   },
   {
    "line": "noob",
@@ -2208,19 +797,40 @@
    "tighten": 0.25
   },
   {
+   "beat": "look",
+   "dur": 0.8,
+   "note": "Steve turns, head then shoulders, and looks up at it"
+  },
+  {
    "line": "steve",
    "name": "steve_lag",
    "text": "Worlds don't lag.",
-   "direction_text": "[quiet, serious] Worlds don't lag.",
-   "pad": 0.8
+   "direction_text": "[slow, low, cold and certain, a weight on every word] Worlds don't lag.",
+   "own_scene": true,
+   "new_take": true,
+   "pad": 0.9,
+   "note": "new take (it was monotone)"
   },
   {
    "beat": "glitch",
-   "dur": 2.4
+   "dur": 3.0,
+   "note": "the frozen dragon flickers into the pink-and-black missing texture and back; REALITY 97 -> 92"
   }
  ],
- "movie_note": "Movie version of Episode 3 (story/movie/ep03_shots.md): the same lines and voice takes, more room around them (the creator: no time limit in the movie). 16:9; the Shorts packaging dropped.",
+ "movie_note": "Movie Episode 3 v2 (the creator's notes, 2026-11-25; story/movie/ep03_shots.md, 'v2'): picks up Ep2 v7's dive; the portal tears open over the obby, they tumble out, the dragon blasts through after them; the frozen players set up; the tutorial a 3D hologram; Steve's wall knocks the dragon low under the Noob's blind jump; the stutter-freeze; energetic new takes; no upbeat music under the dragon; no PLAN timer (Ep2's countdown, the joke it called back, was removed by the creator). The picture is src/lookdev/movie_ep03.py.",
  "voices_cache_only": true,
  "declick": 0.004,
- "declick_blank": 0.0025
+ "declick_blank": 0.0025,
+ "stutters": [
+  {
+   "at": "freeze",
+   "slice": 0.07,
+   "n": 5,
+   "decay": 0.9,
+   "silence": 0.7,
+   "note": "the sound freezes with the dragon: a slice repeats, then silence (the creator's notes 2026-11-25)"
+  }
+ ],
+ "own_takes": 3,
+ "voice_air": 0.12
 }

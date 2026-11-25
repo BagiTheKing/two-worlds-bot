@@ -1258,6 +1258,22 @@ def sfx_shatter():
     return norm(out, 0.95)
 
 
+def sfx_glass():
+    """Glitch crystal shattering (Ep3's frozen players freed): a sharp crack, then a spray of bright ringing
+    shards (glassy, inharmonic partials high up), pattering down for over a second."""
+    out = np.zeros(int(1.8 * SR))
+    n = int(0.04 * SR)
+    place(out, band(rng.standard_normal(n), 2500, 12000) * env(n, 0.0003, 0.01), 0.0, 1.0)
+    place(out, sfx_thump(140, 0.2, 1.0), 0.0, 0.5)
+    for i in range(34):
+        f = rng.uniform(2600, 7500)
+        d = rng.uniform(0.08, 0.35)
+        x = t(d)
+        tone = sum(a * np.sin(2 * np.pi * f * r * x) for r, a in ((1, 1.0), (1.47, 0.5), (2.09, 0.3)))
+        place(out, tone * np.exp(-x / (d / 4)), 0.01 + rng.exponential(0.22), rng.uniform(0.08, 0.3))
+    return norm(out, 0.9)
+
+
 def sfx_wingbeat(dur=2.0, rate=1.1):
     """Huge wings: a deep whump on every downstroke, the air torn by the membrane (no tone)."""
     out = np.zeros(int((dur + 0.6) * SR))
@@ -1499,7 +1515,7 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "snarl": lambda e: sfx_snarl(e.get("dur", 0.7)), "slowmo": lambda e: sfx_slowmo(e.get("dur", 1.6)),
        "gstep": lambda e: sfx_grass_step(e.get("heavy", False)),
        "zgroan": lambda e: sfx_zgroan(e.get("dur", 1.2), e.get("pitch", 1.0)),
-       "clink": lambda e: sfx_clink(), "shatter": lambda e: sfx_shatter(), "droar": lambda e: sfx_droar(e.get("dur", 1.2)),
+       "clink": lambda e: sfx_clink(), "glass": lambda e: sfx_glass(), "shatter": lambda e: sfx_shatter(), "droar": lambda e: sfx_droar(e.get("dur", 1.2)),
        "wingbeat": lambda e: sfx_wingbeat(e.get("dur", 2.0), e.get("rate", 1.1))}
 
 
@@ -1958,7 +1974,10 @@ def build(episode_path, out_dir, keep=None):
         if "to" in e and "count" not in e:       # a sound that lasts until a moment
             e = dict(e, dur=R(e["to"]) - R(e["at"]))
         for h in times:
-            place(mix, SFX[e["kind"]](e), h, e.get("gain", 0.6))
+            clip = SFX[e["kind"]](e)
+            if "cut" in e:                         # stopped dead at a moment (the freeze), not faded
+                clip = clip[:max(0, int((R(e["cut"]) - h) * SR))]
+            place(mix, clip, h, e.get("gain", 0.6))
     for name, ts in fx_times.items():
         for k, h in enumerate(ts):
             place(mix, sfx_pop(), h, 0.35 + 0.25 * (k % 3 == 0))
@@ -2014,6 +2033,18 @@ def build(episode_path, out_dir, keep=None):
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
     out = voice + keep_under(voice, mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck))
+    for st in ep.get("stutters", []):              # the sound itself freezes: a slice repeats, then dead silence
+        h, sl = int(R(st["at"]) * SR), int(st.get("slice", 0.06) * SR)
+        piece = out[h - sl:h].copy()
+        k = h
+        for i in range(st.get("n", 4)):
+            seg = piece * (st.get("decay", 0.85) ** i)
+            seg[:48] *= np.linspace(0, 1, 48)
+            out[k:k + sl] = seg[:len(out[k:k + sl])]
+            k += sl
+        quiet = int(st.get("silence", 0.0) * SR)     # what follows is cut (the voices stay)
+        if quiet:
+            out[k:k + quiet] = voice[k:k + quiet]
     out = master(out, voice)
     if ep.get("end_fade"):                         # the chapter's own ending: everything fades out by its last beat
         e1 = int(length * SR)
