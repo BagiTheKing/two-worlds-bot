@@ -93,6 +93,19 @@ def lead(m, sec, duty=0.5):
     return lowpass(w, 3500) * env(len(w), 0.01, 0.6, 0.6, 0.08) * 0.45
 
 
+def soft_pluck(m, sec=0.4, duty=None):
+    x = _t(sec)
+    f = hz(m)
+    return (np.sin(2 * np.pi * f * x) + 0.2 * np.sin(4 * np.pi * f * x)) * env(len(x), 0.003, 0.12, 0.0, 0.03) * 0.5
+
+
+def soft_lead(m, sec, duty=None):
+    x = _t(sec)
+    vib = 1 + 0.004 * np.sin(2 * np.pi * 5.5 * x)
+    ph = 2 * np.pi * np.cumsum(hz(m) * vib) / SR
+    return (np.sin(ph) + 0.15 * np.sin(2 * ph)) * env(len(x), 0.01, 0.6, 0.6, 0.08) * 0.45
+
+
 def bass(m, sec):
     return tri(hz(m - 24), sec) * env(int(sec * SR), 0.004, 0.25, 0.5, 0.03) * 0.8
 
@@ -126,8 +139,24 @@ def hat(r):
     return x * env(n, 0.0005, 0.012) * 0.25
 
 
-def braam(sec, root=D - 24):
-    """The cinematic low brass hit for Null: detuned saws, filter opening."""
+def boom(sec, root=D - 24):
+    """A cinematic hit with no buzz (the movie, 2026-11-25): a deep sine body with a little second harmonic, a
+    sub that drops, and a soft breath of low air on the attack."""
+    t = _t(sec)
+    out = np.zeros(len(t))
+    for m, a in ((root, 1.0), (root + 7, 0.45), (root + 12, 0.3)):
+        f = hz(m)
+        out += a * (np.sin(2 * np.pi * f * t) + 0.25 * np.sin(4 * np.pi * f * t))
+    f = hz(root - 12) * (1 + 0.6 * np.exp(-t * 6))
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR)
+    air = lowpass(np.random.default_rng(3).standard_normal(len(t)), 300) * np.exp(-t * 5) * 0.8
+    return (out / 3 + 0.6 * sub + air) * env(len(t), 0.03, sec * 0.5, 0.3, 0.6)
+
+
+def braam(sec, root=D - 24, smooth=False):
+    """The cinematic low brass hit for Null: detuned saws, filter opening. smooth: the buzz-free boom instead."""
+    if smooth:
+        return boom(sec, root)
     t = _t(sec)
     out = np.zeros(len(t))
     for m in (root, root + 7, root + 12):
@@ -162,7 +191,8 @@ def theme_soft(sec, seed=0):
     return reverb(out, 2.2, 0.35, seed)[:int(sec * SR)]
 
 
-def chase(sec, seed=0):
+def chase(sec, seed=0, smooth=False):
+    """smooth (the movie): the same groove with soft plucks and lead (sine, triangle): no square-wave buzz."""
     r = np.random.default_rng(seed)
     out = np.zeros(int((sec + 1) * SR))
     eighth = BEAT / 2 * 0.72                 # faster: the world is ending
@@ -174,7 +204,7 @@ def chase(sec, seed=0):
         at = i * eighth
         place(out, bass(root + (12 if bar_pos % 2 else 0), eighth * 0.95), at, 0.7)
         arp = [0, 3, 7, 12][i % 4]
-        place(out, pluck(root + 12 + arp, eighth * 0.9, 0.125), at, 0.22)
+        place(out, (soft_pluck if smooth else pluck)(root + 12 + arp, eighth * 0.9), at, 0.22)
         if bar_pos in (0, 4):
             place(out, kick(), at, 0.9)
         if bar_pos in (2, 6):
@@ -182,7 +212,7 @@ def chase(sec, seed=0):
         place(out, hat(r), at, 0.6)
         i += 1
     for j, n in enumerate(MOTIF):            # the theme, urgent, on top
-        place(out, lead(D + 12 + n, eighth * 1.8), 8 * eighth + j * eighth * 2, 0.3)
+        place(out, (soft_lead if smooth else lead)(D + 12 + n, eighth * 1.8), 8 * eighth + j * eighth * 2, 0.3)
     return reverb(out, 1.2, 0.18, seed)[:int(sec * SR)]
 
 
@@ -223,7 +253,7 @@ def theme_full(sec, seed=0):
     return reverb(out, 1.8, 0.25, seed)[:int(sec * SR)]
 
 
-def dread(sec, seed=0, hit_at=None, minimal=False, smooth=False):
+def dread(sec, seed=0, hit_at=None, minimal=False, smooth=False, sustain=False, rise_over=None):
     """The eye: a heartbeat that speeds up, a tension tone rising underneath,
     a high dissonant shimmer, and one hard hit when it locks on (hit_at s)."""
     out = np.zeros(int((sec + 3) * SR))
@@ -235,23 +265,26 @@ def dread(sec, seed=0, hit_at=None, minimal=False, smooth=False):
     x = _t(sec + 3)
     if minimal:                                      # over Null's theme: heartbeat and the hit only
         hit = hit_at if hit_at is not None else max(0.0, sec - 1.4)
-        place(out, braam(2.8, D - 26), hit, 1.0)
+        place(out, braam(2.8, D - 26, smooth), hit, 1.0)
         place(out, kick(), hit, 1.0)
-        out[int((hit + 2.6) * SR):] *= 0.0
+        if not sustain:
+            out[int((hit + 2.6) * SR):] *= 0.0
         return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
+    span = max(rise_over or sec, 0.1)                # rise_over: the rise's length fixed (a later chapter carrying it on)
     rise = np.zeros(len(x))
     for m, det in ((D - 24, 0.0), (D - 23, 0.05), (D - 17, -0.04)):      # a tight, ugly cluster
-        f = hz(m + det) * (1 + 0.5 * np.minimum(1, x / max(sec, 0.1)))     # bends upward
+        f = hz(m + det) * (1 + 0.5 * np.minimum(1, x / span))              # bends upward
         ph_ = 2 * np.pi * np.cumsum(f) / SR
         rise += (np.sin(ph_) + 0.2 * np.sin(2 * ph_) if smooth else np.sign(np.sin(ph_))) * 0.3   # smooth: no buzz
-    rise = lowpass(rise, 900) * np.minimum(1, x / max(sec, 0.1)) ** 1.5
+    rise = lowpass(rise, 900) * np.minimum(1, x / span) ** 1.5
     out += rise * 0.5
     shimmer = (np.sin(2 * np.pi * hz(D + 25) * x) + np.sin(2 * np.pi * hz(D + 26) * x)) * 0.06
     out += shimmer * np.minimum(1, x / 1.5)
     hit = hit_at if hit_at is not None else max(0.0, sec - 1.4)
-    place(out, braam(2.8, D - 26), hit, 1.0)
+    place(out, braam(2.8, D - 26, smooth), hit, 1.0)
     place(out, kick(), hit, 1.0)
-    out[int((hit + 2.6) * SR):] *= 0.0
+    if not sustain:                                  # sustain: the tension goes on after the hit (a chase to the cut)
+        out[int((hit + 2.6) * SR):] *= 0.0
     return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
 
 

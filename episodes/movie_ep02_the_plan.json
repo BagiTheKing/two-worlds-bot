@@ -68,11 +68,11 @@
    "text": "Don't!",
    "direction_text": "DON'T!",
    "pad": 0.0,
-   "new_take": true,
    "shout": 3,
    "note": "re-recorded shouted (the creator, 2026-11-25: his face screams, his voice was flat)",
    "solo_only": true,
-   "solo_text": "DON'T!"
+   "solo_text": "DON'T!",
+   "taken_in": "movie/ep02_v6"
   },
   {
    "beat": "press",
@@ -147,9 +147,9 @@
    "solo_only": true,
    "pad": 0.05,
    "solo_text": "PLAN B!",
-   "new_take": true,
    "shout": 3,
-   "note": "shouted (the creator, 2026-11-25)"
+   "note": "shouted (the creator, 2026-11-25)",
+   "taken_in": "movie/ep02_v6"
   },
   {
    "beat": "dash",
@@ -238,12 +238,12 @@
    "name": "steve_go",
    "text": "Into the portal. Now!",
    "direction_text": "[urgent, sharp, low] Into the portal. Now!",
-   "new_take": true,
    "pad": 0.1,
    "note": "shouted, recorded on its own (the creator, 2026-11-25: flat)",
    "solo_only": true,
    "shout": 4,
-   "solo_text": "INTO THE PORTAL! NOW!"
+   "solo_text": "INTO THE PORTAL! NOW!",
+   "taken_in": "movie/ep02_v6"
   },
   {
    "beat": "run",
@@ -293,7 +293,8 @@
    "gain": 0.22,
    "hit_at": "eye+2.1",
    "minimal": true,
-   "fade_out": 1.6
+   "fade_out": 1.6,
+   "smooth": true
   },
   {
    "cue": "dread",
@@ -328,7 +329,8 @@
      "gain": 0.25,
      "ramp": 0.15
     }
-   ]
+   ],
+   "smooth": true
   },
   {
    "cue": "dread",
@@ -338,7 +340,8 @@
    "hit_at": "dive",
    "minimal": true,
    "fade_out": 0.4,
-   "note": "the quiet and Never again with no music (the joke lands); it comes back with the roar in the sky"
+   "note": "the quiet and Never again with no music (the joke lands); it comes back with the roar in the sky",
+   "smooth": true
   },
   {
    "cue": "dread",
@@ -358,8 +361,9 @@
    "hit_at": "dragon_turn+0.05",
    "seed": 7,
    "open_tail": true,
-   "note": "fleeing the dragon: the heartbeat racing and the tension rising, the hit on its roar (no bouncy groove)",
-   "smooth": true
+   "note": "fleeing the dragon: the heartbeat racing and the tension rising, the hit on its roar (no bouncy groove) v7 (2026-11-25): sustained to the cut (it had died 2.6 s after its hit, leaving the run and the dive without music); Ep3 carries it on",
+   "smooth": true,
+   "sustain": true
   }
  ],
  "ambience": [
@@ -547,7 +551,8 @@
    "kind": "rumble_rise",
    "at": "sky_roar",
    "dur": 1.6,
-   "gain": 0.2
+   "gain": 0.2,
+   "smooth": true
   },
   {
    "kind": "droar",
@@ -2136,5 +2141,6 @@
  "declick": 0.004,
  "declick_blank": 0.0025,
  "own_takes": 3,
- "voice_air": 0.12
+ "voice_air": 0.12,
+ "sound_note_v7": "v7 sound (2026-11-25, the creator's notes): no buzz left (the chase cue's square plucks and lead, the saw-wave braam hits in the dread and the sky's rumble all replaced by buzz-free versions); the last cue runs to the cut"
 }

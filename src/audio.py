@@ -1072,13 +1072,13 @@ def sfx_sub_drop(dur):
     return norm(np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(x), 0.02, dur * 0.6), 0.9)
 
 
-def sfx_rumble_rise(dur):
-    """Null rising: a slow cinematic braam over a sub swell (no noise)."""
+def sfx_rumble_rise(dur, smooth=False):
+    """Null rising: a slow cinematic braam over a sub swell (no noise). smooth: the buzz-free boom."""
     import music
     x = t(dur + 1.5)
     sub = np.sin(2 * np.pi * 36 * x) * np.minimum(1, x / dur) ** 2
     b = np.zeros(len(x))
-    place(b, music.braam(min(3.5, dur + 1.2)), max(0.0, dur - 1.0))
+    place(b, music.braam(min(3.5, dur + 1.2), smooth=smooth), max(0.0, dur - 1.0))
     return norm(0.6 * sub + b, 0.9)
 
 
@@ -1201,31 +1201,39 @@ def sfx_grass_step(heavy=False):
     return norm(out, 0.6 if heavy else 0.4)
 
 
+def _formants(x, bands):
+    return sum(g * band(x, lo, hi) for lo, hi, g in bands)
+
+
 def sfx_zgroan(dur=1.2, pitch=1.0):
-    """A zombie's groan: a throaty, wavering "uuurgh" shaped like a voice (formants), with breath; no synth buzz."""
+    """A zombie's groan (v7, the creator 2026-11-25: no buzz): breath forced through a throat, shaped into a
+    low "uuurgh" by vowel formants, a soft rattle in its amplitude and only a faint sine voice under it (the old
+    harmonic stack read as an electric buzz)."""
     x = t(dur)
-    f0 = pitch * (88 + 10 * np.sin(2 * np.pi * 2.3 * x) - 14 * x / dur + 3 * rng.standard_normal(len(x)).cumsum() / SR)
+    f0 = pitch * (90 + 8 * np.sin(2 * np.pi * 1.7 * x) - 12 * x / dur)
     ph = 2 * np.pi * np.cumsum(f0) / SR
-    src = sum(np.sin(k * ph) / k ** 1.3 for k in range(1, 30))
-    src = src * (1 + 0.25 * np.sin(2 * np.pi * 17 * x))                      # a rasp, gentle
-    vowel = 0.9 * band(src, 300, 750) + 0.5 * band(src, 900, 1300) + 0.15 * band(src, 2300, 2900)
-    breath = band(rng.standard_normal(len(x)), 400, 3500) * 0.18
-    shape = np.minimum(1, x / 0.15) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.7
-    return norm((norm(vowel) + breath) * shape, 0.7)
+    voice = np.sin(ph) + 0.25 * np.sin(2 * ph)
+    breath = rng.standard_normal(len(x))
+    rattle = 1 + 0.3 * np.sin(2 * np.pi * (9 + 3 * np.sin(2 * np.pi * 0.8 * x)) * x)
+    throat = _formants(breath, ((250, 650, 1.0), (850, 1250, 0.45), (2300, 2800, 0.08)))
+    shape = np.minimum(1, x / 0.18) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.7
+    return norm((norm(throat) * rattle + 0.22 * voice) * shape, 0.7)
 
 
 def sfx_droar(dur=1.2):
-    """The dragon's roar for the movie: a huge breath driven through a throat (shaped like a voice, mostly air),
-    a low growl under it, rising then falling; no synth buzz."""
+    """The dragon's roar (v7: no buzz): a huge breath through a throat, a deep chest under it (a few soft
+    harmonics, low-passed), rising then falling, a slow rattle in the air."""
     x = t(dur)
-    f0 = 52 + 30 * np.sin(np.pi * x / dur) ** 1.4 + 4 * np.sin(2 * np.pi * 7 * x)
+    f0 = 48 + 26 * np.sin(np.pi * x / dur) ** 1.4
     ph = 2 * np.pi * np.cumsum(f0) / SR
-    src = sum(np.sin(k * ph) / k ** 1.4 for k in range(1, 40))
+    chest = sum(np.sin(k * ph) / k ** 2 for k in range(1, 6))
+    chest = band(chest, 30, 420)
     air = rng.standard_normal(len(x))
-    body = 0.7 * band(src, 120, 600) + 0.35 * band(src, 700, 1100)
-    roar = band(air, 300, 2600) * (0.6 + 0.4 * np.sin(np.pi * x / dur))
+    throat = _formants(air, ((180, 520, 1.0), (650, 1100, 0.6), (1400, 2600, 0.25)))
+    rattle = 1 + 0.25 * np.sin(2 * np.pi * 11 * x)
+    rise = 0.55 + 0.45 * np.sin(np.pi * x / dur)
     shape = np.minimum(1, x / 0.1) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.6
-    return norm((norm(body) * 0.8 + norm(roar)) * shape, 0.95)
+    return norm((norm(throat) * rattle * rise + 0.5 * norm(chest)) * shape, 0.95)
 
 
 def sfx_clink():
@@ -1469,7 +1477,7 @@ def sfx_scan(dur=1.2):
     return norm((tone + 0.25 * norm(shimmer)) * e, 0.6)
 
 
-SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
+SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0), e.get("smooth", False)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
        "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
        "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
@@ -1974,6 +1982,10 @@ def build(episode_path, out_dir, keep=None):
             kw["open_tail"] = True
         if m.get("smooth"):                     # no square-wave buzz in the tension
             kw["smooth"] = True
+        if m.get("sustain"):                    # the tension goes on after its hit (to the cut)
+            kw["sustain"] = True
+        if m.get("rise_over"):                  # the rise's length fixed (carrying a cue on across a cut)
+            kw["rise_over"] = float(m["rise_over"])
         x = music.render(m["cue"], m1 - m0, seed=m.get("seed", k), **kw)
         if m.get("fade_out"):                   # dies away by its own end (no hard stop), whatever tail the cue has
             end = min(len(x), int((m1 - m0) * SR))
