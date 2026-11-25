@@ -493,11 +493,11 @@ def lens_wash(E):
     mp.inputs["Scale"].default_value = (1.4, 1.4, 1)
     nt.links.new(mp.outputs["Vector"], gr.inputs["Vector"])
     ramp = nt.nodes.new("ShaderNodeValToRGB")
-    ramp.color_ramp.elements[0].color = (0.62, 0.3, 1.0, 1)
-    ramp.color_ramp.elements[1].color = (1.0, 0.95, 1.0, 1)
+    ramp.color_ramp.elements[0].color = (0.55, 0.2, 1.0, 1)
+    ramp.color_ramp.elements[1].color = (1.0, 0.85, 1.0, 1)
     nt.links.new(gr.outputs["Fac"], ramp.inputs["Fac"])
     em = nt.nodes.new("ShaderNodeEmission")
-    em.inputs["Strength"].default_value = 3.0
+    em.inputs["Strength"].default_value = 1.15
     nt.links.new(ramp.outputs["Color"], em.inputs["Color"])
     tr = nt.nodes.new("ShaderNodeBsdfTransparent")
     mx = nt.nodes.new("ShaderNodeMixShader")
@@ -2093,7 +2093,7 @@ def apply(E, t):
     noob(E, t)
     camera(E, tc, name, t0, t1)
     r0 = b("dive_after") + 0.85                       # its head hits the swirl: the flare washes the lens to the cut
-    set_wash(E, 0.9 * ss(r0 - 0.04, r0 + 0.22, tc))
+    set_wash(E, 0.72 * ss(r0 - 0.04, r0 + 0.22, tc))
 
 
 # ------------------------------------------------------------------ the camera

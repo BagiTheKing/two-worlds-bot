@@ -1624,7 +1624,7 @@ def apply(E, t):
     steve(E, t)
     noob(E, t)
     camera(E, tc, name, t0, t1)
-    E2.set_wash(E, 0.9 * (1 - ss(0.0, 0.45, tc)))      # Episode 2 cut on the flare: it clears into the swirl
+    E2.set_wash(E, 0.72 * (1 - ss(0.0, 0.45, tc)))      # Episode 2 cut on the flare: it clears into the swirl
 
 
 # ------------------------------------------------------------------ the camera
