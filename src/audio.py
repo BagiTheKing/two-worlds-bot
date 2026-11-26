@@ -1902,6 +1902,8 @@ def build(episode_path, out_dir, keep=None):
             pre_name = ev.get("name", f"{who}_{counts.get(who, 0) + 1}")
             if pre_name in prep:                           # finished already: placed as it is
                 audio = prep[pre_name]
+                if c.get("fx") == "patch":                  # Patch's machine voice on his reused takes too
+                    audio = patch_voice(audio, soft=ev.get("patch_soft", False))
             else:
                 if pre_name in pre:
                     s_, sr_ = pre[pre_name]
