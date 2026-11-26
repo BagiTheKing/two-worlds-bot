@@ -1,0 +1,679 @@
+{
+ "id": "movie_ep04_the_block",
+ "number": 4,
+ "title": "This Block Shouldn't Exist",
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely",
+   "fx": "patch"
+  }
+ },
+ "movie_note": "Movie Episode 4 (the creator's notes, 2026-11-26; story/movie/ep04_shots.md): picks up Ep3 v3's frozen dragon; the block tears off it, the dragon is sealed in glitch crystal; the respawn tether shows the rule; REALITY 92 -> 89 -> 85 on the two respawns; Patch comes out of the portal; the twist in silence. The original takes for the original lines (from the voice cache); new takes only for the added lines and 'I touched it!'.",
+ "voices_cache_only": true,
+ "declick": 0.004,
+ "declick_blank": 0.0025,
+ "voice_air": 0.12,
+ "music": [
+  {
+   "cue": "bounce",
+   "from": "poke1",
+   "to": "respawn2.end",
+   "gain": 0.15,
+   "seed": 4,
+   "hard_end": true,
+   "mutes": [
+    [
+     "die1",
+     "respawn1+0.3"
+    ],
+    [
+     "stare",
+     "noob_again"
+    ],
+    [
+     "die2",
+     "respawn2+0.4"
+    ]
+   ],
+   "note": "light comedy for the touches: out dead on each shatter and for '...It grew.', back on the beat"
+  },
+  {
+   "cue": "curious",
+   "from": "patch_in+0.75",
+   "to": "steve_no.end",
+   "gain": 0.13,
+   "seed": 2,
+   "hard_end": true,
+   "note": "Patch: curious, a little mysterious; cut dead the frame after 'No.'"
+  },
+  {
+   "cue": "deleted",
+   "from": "patch_deleted-0.1",
+   "to": "end",
+   "gain": 0.3,
+   "seed": 5,
+   "open_tail": true,
+   "note": "'From a world that got deleted': a deep swell and one high, sad note, ringing into Episode 5"
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": 0,
+   "to": "crystal",
+   "gain": 0.02,
+   "note": "Ep3's frozen silence goes on"
+  },
+  {
+   "kind": "sky",
+   "from": "tearoff",
+   "to": "end",
+   "gain": 0.05,
+   "fade_in": 1.5,
+   "note": "the obby's wind comes back"
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "glitch",
+   "at": 0.0,
+   "dur": 0.5,
+   "gain": 1.4,
+   "note": "the last shudder"
+  },
+  {
+   "kind": "glitch",
+   "at": "shudder+0.8",
+   "dur": 0.25,
+   "gain": 0.7,
+   "cut": "shudder+1.2"
+  },
+  {
+   "kind": "crackle",
+   "at": "tearoff",
+   "dur": 0.6,
+   "gain": 0.6,
+   "note": "magenta sparks"
+  },
+  {
+   "kind": "zap",
+   "at": "tearoff+0.02",
+   "gain": 0.7
+  },
+  {
+   "kind": "snap",
+   "at": "tearoff+0.05",
+   "gain": 0.6
+  },
+  {
+   "kind": "fall",
+   "at": "tearoff+0.3",
+   "dur": 0.6,
+   "gain": 0.25
+  },
+  {
+   "kind": "thump",
+   "at": "fall+0.35",
+   "freq": 60,
+   "gain": 0.8,
+   "note": "the cube lands"
+  },
+  {
+   "kind": "land",
+   "at": "fall+0.85",
+   "gain": 0.7,
+   "note": "the Noob belly-flops"
+  },
+  {
+   "kind": "creak",
+   "at": "crystal",
+   "dur": 1.2,
+   "gain": 0.35,
+   "note": "crystal growing over the dragon"
+  },
+  {
+   "kind": "crackle",
+   "at": "crystal+0.1",
+   "dur": 1.1,
+   "gain": 0.3
+  },
+  {
+   "kind": "clink",
+   "at": "crystal+1.25",
+   "gain": 0.6,
+   "note": "sealed"
+  },
+  {
+   "kind": "step",
+   "at": "crystal+0.9",
+   "gain": 0.35
+  },
+  {
+   "kind": "hum",
+   "at": "fall+0.5",
+   "to": "respawn1+0.75",
+   "semi": 0.0,
+   "gain": 0.09,
+   "note": "the cube's hum: small, high"
+  },
+  {
+   "kind": "hum",
+   "at": "respawn1+0.6",
+   "to": "respawn2+0.85",
+   "semi": -3.0,
+   "gain": 0.14,
+   "note": "-3 semitones, +4 dB"
+  },
+  {
+   "kind": "hum",
+   "at": "respawn2+0.7",
+   "to": "steve_no.end",
+   "semi": -7.0,
+   "sub": 0.6,
+   "gain": 0.19,
+   "note": "-4 more, a sub-rumble"
+  },
+  {
+   "kind": "hum",
+   "at": "steve_no.end-0.1",
+   "to": "end",
+   "semi": -7.0,
+   "sub": 0.6,
+   "gain": 0.08,
+   "note": "faint under the twist"
+  },
+  {
+   "kind": "step",
+   "at": "lean+0.1",
+   "gain": 0.35
+  },
+  {
+   "kind": "zap",
+   "at": "poke1+0.3",
+   "gain": 0.75
+  },
+  {
+   "kind": "burst",
+   "at": "die1",
+   "gain": 0.8
+  },
+  {
+   "kind": "respawn",
+   "at": "respawn1",
+   "gain": 0.6
+  },
+  {
+   "kind": "siphon",
+   "at": "respawn1+0.1",
+   "dur": 0.5,
+   "gain": 0.6
+  },
+  {
+   "kind": "land",
+   "at": "respawn1+0.35",
+   "gain": 0.35
+  },
+  {
+   "kind": "step",
+   "at": "chop",
+   "gain": 0.4,
+   "note": "Steve lunges"
+  },
+  {
+   "kind": "whoosh",
+   "at": "chop+0.1",
+   "dur": 0.35,
+   "gain": 0.35
+  },
+  {
+   "kind": "zap",
+   "at": "chop+0.4",
+   "gain": 0.85
+  },
+  {
+   "kind": "burst",
+   "at": "die2",
+   "gain": 0.9
+  },
+  {
+   "kind": "respawn",
+   "at": "respawn2",
+   "gain": 0.6
+  },
+  {
+   "kind": "siphon",
+   "at": "respawn2+0.1",
+   "dur": 0.6,
+   "big": true,
+   "gain": 0.75
+  },
+  {
+   "kind": "land",
+   "at": "respawn2+0.35",
+   "gain": 0.35
+  },
+  {
+   "kind": "glitch",
+   "at": "patch_in",
+   "dur": 0.12,
+   "gain": 0.4,
+   "cut": "patch_in+0.25",
+   "note": "the portal flickers"
+  },
+  {
+   "kind": "warp",
+   "at": "patch_in+0.05",
+   "dur": 0.6,
+   "gain": 0.6
+  },
+  {
+   "kind": "servo",
+   "at": "patch_in+0.85",
+   "dur": 0.6,
+   "pitch": 1.3,
+   "gain": 0.25,
+   "note": "hover whirr, banking"
+  },
+  {
+   "kind": "step",
+   "at": "react+0.05",
+   "gain": 0.4
+  },
+  {
+   "kind": "step",
+   "at": "react+0.3",
+   "gain": 0.35
+  },
+  {
+   "kind": "servo",
+   "at": "scan",
+   "dur": 0.5,
+   "pitch": 1.2,
+   "gain": 0.2
+  },
+  {
+   "kind": "ping",
+   "at": "scan+0.25",
+   "gain": 0.45
+  },
+  {
+   "kind": "scan",
+   "at": "scan+0.35",
+   "dur": 1.1,
+   "gain": 0.3
+  },
+  {
+   "kind": "trill",
+   "at": "scan+0.7",
+   "dur": 0.7,
+   "gain": 0.3
+  },
+  {
+   "kind": "step",
+   "at": "sigh+0.2",
+   "gain": 0.2
+  },
+  {
+   "kind": "servo",
+   "at": "turn+0.2",
+   "dur": 0.25,
+   "pitch": 1.6,
+   "gain": 0.3,
+   "note": "the sharp turn"
+  },
+  {
+   "kind": "glitch",
+   "at": "turn+0.55",
+   "dur": 0.12,
+   "gain": 0.55,
+   "cut": "turn+0.72",
+   "note": "the eye dilates: a digital stutter"
+  },
+  {
+   "kind": "servo",
+   "at": "drift+0.1",
+   "dur": 0.6,
+   "pitch": 0.9,
+   "gain": 0.12
+  }
+ ],
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 92%",
+   "from": 0,
+   "to": "respawn1+0.6"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 89%",
+   "alert": true,
+   "from": "respawn1+0.6",
+   "to": "respawn2+0.7"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 85%",
+   "alert": true,
+   "from": "respawn2+0.7",
+   "to": "end"
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "events": [
+  {
+   "beat": "shudder",
+   "dur": 1.6,
+   "note": "Ep3's last frame goes on: the dragon frozen in the sky over the spawn pad, the Noob lying on its neck, Steve below on the grey pad looking up, the portal flickering behind, the kicked cobblestones hanging; one last violent missing-texture shudder runs through the dragon (the checkerboard carries on across the cut)"
+  },
+  {
+   "beat": "tearoff",
+   "dur": 0.9,
+   "note": "a glowing checkerboard cube rips loose from its chest in a burst of magenta sparks; the dragon snaps back to its dark scales; the jolt shakes the Noob's grip loose"
+  },
+  {
+   "beat": "fall",
+   "dur": 1.3,
+   "note": "the cube drops onto the big blue stage in front of the portal pad and lands with a thud, then lifts and hovers a hand above it; the Noob slides off the neck, tumbles and belly-flops on the round spawn pad beside it"
+  },
+  {
+   "beat": "crystal",
+   "dur": 1.8,
+   "note": "the dragon's fate: the glitch crystal that held the frozen players grows over it, wingtips first, and seals it where it hangs, a frozen statue in the sky; Steve looks up at it; the Noob bounces up onto his feet and sees the cube"
+  },
+  {
+   "line": "noob",
+   "name": "noob_secret",
+   "text": "A secret block!",
+   "direction_text": "[amazed, thrilled, whispering loudly] A secret block!",
+   "pad": 0.2,
+   "solo_only": true,
+   "note": "the original take; he crouches to it, eyes wide"
+  },
+  {
+   "beat": "lean",
+   "dur": 0.5,
+   "note": "the Noob reaches for it; Steve steps to the edge of the grey pad, pickaxe up, waving his free hand"
+  },
+  {
+   "line": "steve",
+   "name": "steve_touch",
+   "text": "It fell off the dragon. Don't touch it.",
+   "direction_text": "[flat, deadpan] Don't touch it.",
+   "pad": 0.15,
+   "solo_text": "It fell off the dragon. Don't touch it.",
+   "solo_take": 0,
+   "note": "the original take; leaning forward off the grey pad"
+  },
+  {
+   "line": "noob",
+   "name": "noob_touched",
+   "text": "I touched it!",
+   "direction_text": "[proud, cheerful] I touched it!",
+   "pad": 0.05,
+   "cut_at": [
+    1.9,
+    3.35
+   ],
+   "unused": true,
+   "note": "the published take (a wrong-sounding voice): kept in its scene so the other lines' takes stay exactly as published, never placed; replaced by noob_touched2"
+  },
+  {
+   "beat": "poke1",
+   "dur": 0.6,
+   "note": "the Noob pokes it: the finger stops on the block for two frames, a pink flash"
+  },
+  {
+   "beat": "die1",
+   "dur": 0.7,
+   "note": "he bursts into his parts (head, arms, torso, legs) that tumble and bounce off the blue stage; one small dark cube drifts away from where he died, off-centre"
+  },
+  {
+   "beat": "respawn1",
+   "dur": 1.4,
+   "note": "the cyan respawn beam on the spawn pad; a magenta-cyan glitch tether arcs from the pad's ring into the cube for half a second, and the cube swells 0.45 -> 0.85 m (waist-high) with a shockwave; REALITY 92 -> 89; the Noob pops up (squash and stretch), fist-pump"
+  },
+  {
+   "line": "noob",
+   "name": "noob_touched2",
+   "text": "I touched it!",
+   "direction_text": "[proud, cheerful] I touched it!",
+   "solo_only": true,
+   "solo_text": "I touched it!!",
+   "new_take": true,
+   "pad": 0.1,
+   "note": "a new take in the Noob's own voice (the creator, 2026-11-26: the published take sounded like Patch's voice)"
+  },
+  {
+   "beat": "stare",
+   "dur": 0.9,
+   "note": "Steve stares at the bigger cube, then at the Noob; the music drops out"
+  },
+  {
+   "line": "steve",
+   "name": "steve_grew",
+   "text": "...It grew.",
+   "direction_text": "[deadpan, a little worried] ...It grew.",
+   "pad": 0.45,
+   "cut_at": [
+    5.35,
+    7.5
+   ],
+   "note": "the original take; deadpan, in silence"
+  },
+  {
+   "line": "noob",
+   "name": "noob_again",
+   "text": "Again!",
+   "direction_text": "[gleeful] Again!",
+   "pad": 0.0,
+   "solo_text": "Again!",
+   "solo_take": 0,
+   "note": "the original take"
+  },
+  {
+   "beat": "chop",
+   "dur": 0.7,
+   "note": "before Steve can grab him, the Noob karate-chops the cube (Steve lunges a step, too late)"
+  },
+  {
+   "beat": "die2",
+   "dur": 0.7,
+   "note": "the same burst, bigger; one dark cube drifts away"
+  },
+  {
+   "beat": "respawn2",
+   "dur": 1.9,
+   "note": "the respawn; a stronger tether into the cube, which swells to 1.45 m (shoulder-high, casting a pink shadow over the blue stage); REALITY 89 -> 85; the Noob pops up and winds up a third swing"
+  },
+  {
+   "beat": "patch_in",
+   "dur": 1.9,
+   "note": "behind them the portal flickers; a small blue pixel-warp tears at its surface and Patch squeezes out, steadies with a little bob, then zips across the gap (banking into the move, braking with a counter-tilt) and stops between the Noob's raised fist and the cube"
+  },
+  {
+   "line": "patch",
+   "name": "patch_stop",
+   "text": "Please stop doing that.",
+   "direction_text": "[calm, quiet, polite] Please stop doing that.",
+   "pad": 0.15,
+   "cut_at": [
+    0.0,
+    2.45
+   ],
+   "note": "the original take; eyelid flat (annoyed)"
+  },
+  {
+   "beat": "react",
+   "dur": 0.9,
+   "note": "Steve jumps back into a guard, pickaxe raised, eyes darting between Patch and the cube; the Noob hops back and points with both hands"
+  },
+  {
+   "line": "noob",
+   "name": "noob_cube",
+   "text": "A talking cube!",
+   "direction_text": "[delighted] A talking cube!",
+   "pad": 0.3,
+   "cut_at": [
+    2.54,
+    4.26
+   ],
+   "note": "the original take; mouth wide open"
+  },
+  {
+   "line": "patch",
+   "name": "patch_name",
+   "text": "I'm Patch. I find glitches.",
+   "direction_text": "[calm, literal] I'm Patch. I find glitches.",
+   "solo_only": true,
+   "solo_text": "I'm Patch. I find glitches.",
+   "new_take": true,
+   "pad": 0.2,
+   "note": "added line: Patch is named on screen (the creator's notes: the name was never said)"
+  },
+  {
+   "beat": "scan",
+   "dur": 1.8,
+   "note": "Patch glides a metre and a half to the front right (a clear line to the cube, the Noob safely behind) and sweeps a cyan scan cone over the huge cube; little data bars flicker beside it"
+  },
+  {
+   "line": "patch",
+   "name": "patch_feed",
+   "text": "It's feeding on your respawn loop.",
+   "direction_text": "[calm, literal] It's feeding on your respawn loop.",
+   "solo_only": true,
+   "solo_text": "It's feeding on your respawn loop.",
+   "new_take": true,
+   "pad": 0.1,
+   "note": "added line (the creator's notes): what the tether showed"
+  },
+  {
+   "line": "patch",
+   "name": "patch_grows",
+   "text": "It grows every time you come back.",
+   "direction_text": "[calm, literal] It grows every time you come back.",
+   "pad": 0.2,
+   "cut_at": [
+    4.44,
+    7.34
+   ],
+   "note": "the original take"
+  },
+  {
+   "line": "noob",
+   "name": "noob_helping",
+   "text": "So I'm helping!",
+   "direction_text": "[proud] So I'm helping!",
+   "pad": 0.0,
+   "cut_at": [
+    7.48,
+    8.8
+   ],
+   "note": "the original take"
+  },
+  {
+   "beat": "sigh",
+   "dur": 0.9,
+   "note": "Steve lowers his pickaxe a little, blinks, his shoulders drop; he looks from the Noob to Patch and back"
+  },
+  {
+   "line": "steve",
+   "name": "steve_no",
+   "text": "No.",
+   "direction_text": "[flat] No.",
+   "pad": 0.2,
+   "cut_at": [
+    0.0,
+    1.5
+   ],
+   "note": "the original take; the music cut dead right after it"
+  },
+  {
+   "beat": "turn",
+   "dur": 1.8,
+   "note": "silence; Patch turns sharply to the Noob: its eye dilates, flickers with white scanlines and freezes; the camera pushes in to a two-shot (the Noob left, Patch right, the frozen dragon and the portal in the sky between them)"
+  },
+  {
+   "line": "patch",
+   "name": "patch_know",
+   "text": "Wait. I know you.",
+   "direction_text": "[quiet, startled] Wait. I know you.",
+   "pad": 0.35,
+   "cut_at": [
+    2.52,
+    4.66
+   ],
+   "note": "the original take; quiet"
+  },
+  {
+   "line": "noob",
+   "name": "noob_doyou",
+   "text": "...You do?",
+   "direction_text": "[small, unsure] ...You do?",
+   "pad": 0.35,
+   "cut_at": [
+    0.0,
+    1.19
+   ],
+   "note": "the original take; the smile gone"
+  },
+  {
+   "beat": "drift",
+   "dur": 1.0,
+   "note": "Patch drifts half a metre closer, its eye pulsing dim"
+  },
+  {
+   "line": "patch",
+   "name": "patch_deleted",
+   "text": "From a world that got deleted.",
+   "direction_text": "[quiet, ominous] From a world that got deleted.",
+   "pad": 0.3,
+   "cut_at": [
+    1.35,
+    3.81
+   ],
+   "patch_soft": true,
+   "note": "the original take; the machine sound softer on it"
+  },
+  {
+   "beat": "hold",
+   "dur": 2.4,
+   "note": "hold on the Noob's stunned face, Steve's alarmed glance at Patch; the low swell rings on into Episode 5"
+  }
+ ]
+}

@@ -821,6 +821,7 @@ def gemini_lines(ep, cache_dir):
     files = {}          # lines taken as they are from a recording in the repo
     own = set()         # lines recorded as a scene of their own, direction kept, used whole
     starts = set()      # lines that always begin a new scene
+    fresh = set()       # lines added to the movie (new takes)
     for ev in ep["events"]:
         if "line" not in ev:
             continue
@@ -838,6 +839,8 @@ def gemini_lines(ep, cache_dir):
             starts.add(name)
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
+        if ev.get("new_take"):                       # an added line: recorded fresh, all its takes, even in a cache-only run
+            fresh.add(name)
         if ev.get("solo_take") is not None:         # this take by number, not Whisper's pick
             pick[name] = ev["solo_take"]
         if ev.get("cut"):
@@ -942,9 +945,13 @@ def gemini_lines(ep, cache_dir):
             print("  re-taking", n, "alone")
             clip, _ = gemini_solo(cast, w, _spoken(t), False, cache_dir)
             out[n] = (clip, sr)
+    global CACHE_ONLY
     for n, (w, text, nonverbal) in solos.items():
+        keep_only = CACHE_ONLY
+        CACHE_ONLY = CACHE_ONLY and n not in fresh
         out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir, takes=ep.get("solo_takes", 3),
                              whole=ep.get("solo_whole", False), pick=pick.get(n))
+        CACHE_ONLY = keep_only
     for n, path in files.items():                    # a recording kept as it is
         clip, sr = sf.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", path))
         out[n] = (clip.mean(1) if clip.ndim > 1 else clip, sr)
@@ -1493,6 +1500,78 @@ def sfx_scan(dur=1.2):
     return norm((tone + 0.25 * norm(shimmer)) * e, 0.6)
 
 
+def sfx_hum(dur, semi=0.0, sub=0.0):
+    """The glitch block's hum: a soft low tone with a slow wobble and a faint digital grain (stepped, not
+    buzzed: a few sines, lightly quantised, low-passed). semi: lower as the block grows; sub: a sub-rumble."""
+    x = t(dur)
+    f = 98.0 * 2 ** (semi / 12)
+    wob = 1 + 0.004 * np.sin(2 * np.pi * 0.7 * x)
+    ph = 2 * np.pi * np.cumsum(f * wob) / SR
+    tone = np.sin(ph) + 0.35 * np.sin(2 * ph + 0.4) + 0.12 * np.sin(3 * ph + 1.1)
+    tone = np.round(tone * 10) / 10                           # the grain: a light bit crush
+    tone = band(tone, 30, 1400) * (0.8 + 0.2 * np.sin(2 * np.pi * 3.1 * x))
+    if sub:
+        tone = tone + sub * 1.4 * np.sin(np.pi * np.cumsum(f * wob) / SR)   # an octave under
+    e = np.minimum(1, x / 0.25) * np.minimum(1, (dur - x) / 0.15 + 1e-3)
+    return norm(tone * e, 0.5)
+
+
+def sfx_zap():
+    """A finger on the glitch: a crisp digital zap (a fast falling chirp and a hiss)."""
+    x = t(0.18)
+    f = 3200 * np.exp(-x * 30) + 380
+    z = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.4 + np.sin(2 * np.pi * np.cumsum(f) / SR)
+    z = band(z, 300, 7000) * env(len(x), 0.001, 0.05)
+    h = band(rng.standard_normal(len(x)), 4000, 11000) * env(len(x), 0.0005, 0.02)
+    return norm(z + 0.5 * norm(h), 0.85)
+
+
+def sfx_siphon(dur=0.6, big=False):
+    """The respawn drawn into the block: a rising electric zip along the tether, then the block swelling
+    (a heavy low thud). big: deeper, longer."""
+    x = t(dur)
+    f = 260 + (2600 if big else 2000) * (x / dur) ** 1.6
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    zip_ = (np.sin(ph) + 0.25 * np.sin(3 * ph)) * (0.6 + 0.4 * (np.sin(2 * np.pi * 34 * x) > 0))
+    crackle = band(rng.standard_normal(len(x)), 2500, 9000) * (rng.random(len(x)) < 0.02) * 3
+    out = np.zeros(int((dur + 0.9) * SR))
+    place(out, band(zip_, 150, 8000) * np.minimum(1, x / 0.05) + crackle * 0.3, 0.0, 0.55)
+    place(out, sfx_thump(48 if big else 60, 0.8 if big else 0.6, 0.4), dur, 1.0)
+    return norm(out, 0.9)
+
+
+def sfx_ping(pitch=1.0):
+    """A sonar ping from Patch's scan: a clean sine with a soft echo."""
+    out = np.zeros(int(1.2 * SR))
+    for i, g in enumerate((1.0, 0.35, 0.12)):
+        x = t(0.5)
+        place(out, np.sin(2 * np.pi * 1760 * pitch * x) * env(len(x), 0.002, 0.09), i * 0.18, g)
+    return norm(out, 0.6)
+
+
+def sfx_trill(dur=0.8):
+    """Data read out: tiny fast blips at random pitches."""
+    out = np.zeros(int((dur + 0.1) * SR))
+    k = 0.0
+    while k < dur:
+        x = t(0.03)
+        place(out, np.sin(2 * np.pi * float(rng.choice([1320, 1568, 1760, 2093, 2637])) * x) * env(len(x), 0.001, 0.012), k, 0.5)
+        k += 0.035 + 0.02 * rng.random()
+    return norm(out, 0.45)
+
+
+def sfx_warp(dur=0.7):
+    """Something squeezing out of a portal: a reversed shimmer rushing in, a pixel crackle, a bright chime."""
+    out = np.zeros(int((dur + 1.4) * SR))
+    x = t(dur)
+    rush = band(rng.standard_normal(len(x)), 1500, 9000) * (x / dur) ** 2.5
+    place(out, rush, 0.0, 0.45)
+    for i in range(7):
+        place(out, sfx_zap() * 0.25, dur * (0.45 + 0.07 * i), 0.4)
+    place(out, sfx_chime(1.25), dur, 0.9)
+    return norm(out, 0.85)
+
+
 SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0), e.get("smooth", False)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
        "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
@@ -1516,7 +1595,11 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "gstep": lambda e: sfx_grass_step(e.get("heavy", False)),
        "zgroan": lambda e: sfx_zgroan(e.get("dur", 1.2), e.get("pitch", 1.0)),
        "clink": lambda e: sfx_clink(), "glass": lambda e: sfx_glass(), "shatter": lambda e: sfx_shatter(), "droar": lambda e: sfx_droar(e.get("dur", 1.2)),
-       "wingbeat": lambda e: sfx_wingbeat(e.get("dur", 2.0), e.get("rate", 1.1))}
+       "wingbeat": lambda e: sfx_wingbeat(e.get("dur", 2.0), e.get("rate", 1.1)),
+       "hum": lambda e: sfx_hum(e.get("dur", 2.0), e.get("semi", 0.0), e.get("sub", 0.0)), "zap": lambda e: sfx_zap(),
+       "siphon": lambda e: sfx_siphon(e.get("dur", 0.6), e.get("big", False)), "ping": lambda e: sfx_ping(e.get("pitch", 1.0)),
+       "trill": lambda e: sfx_trill(e.get("dur", 0.8)), "crackle": lambda e: sfx_crackle(e.get("dur", 0.6)),
+       "land": lambda e: sfx_land(0.6), "fall": lambda e: sfx_fall(e.get("dur", 0.6)), "warp": lambda e: sfx_warp(e.get("dur", 0.7))}
 
 
 def _clip_file(path):
@@ -1666,6 +1749,20 @@ def whisperize(x, keep=0.0, order=20, frame=0.025, hop=0.0125, air=0.35):
         de = (1 - keep) * norm(de, 0.9) + keep * norm(x, 0.9)
     return norm(de, 0.9)
 
+
+
+def patch_voice(s, soft=False):
+    """Patch, a small machine: the low end cut (180 Hz), a very short metallic slap and a slow flanger
+    blended in (about 10% wet, 5% when soft: the line that is meant to land as feeling)."""
+    v = band(s, 180, 11000)
+    n = len(v)
+    i = np.arange(n)
+    d = (0.0022 + 0.0014 * np.sin(2 * np.pi * 0.6 * i / SR)) * SR       # 0.8-3.6 ms, slowly moving
+    fl = np.interp(np.clip(i - d, 0, n - 1), i, v)
+    slap = np.concatenate([np.zeros(int(0.019 * SR)), v])[:n]
+    wet = 0.05 if soft else 0.10
+    out = v * (1 - wet) + wet * (0.6 * fl + 0.4 * band(slap, 900, 6000) * 2.0)
+    return norm(out, np.max(np.abs(s)) or 1.0)
 
 def null_voice(s, light=False, punch=False):
     """Null speaks with the Noob's voice: pitched down, doubled an octave
@@ -1822,6 +1919,8 @@ def build(episode_path, out_dir, keep=None):
                     audio = gate(audio, ep["gate"])
                 if c.get("fx") == "null":
                     audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
+                if c.get("fx") == "patch":                  # Patch: a machine's voice, softer on the line that lands
+                    audio = patch_voice(audio, soft=ev.get("patch_soft", False))
                 if ev.get("whisper"):                       # a real whisper: the words without the voice's pitch
                     if ev.get("whisper") == "first":
                         audio = whisperize_first(audio, keep=ev.get("whisper_keep", 0.12))
@@ -2011,6 +2110,16 @@ def build(episode_path, out_dir, keep=None):
             n = min(end, int(m["fade_out"] * SR))
             x = x[:end].copy()
             x[end - n:] *= np.linspace(1, 0, n) ** 2
+        for q0, q1 in m.get("mutes", []):       # drops out dead for a gag (a shatter, a deadpan line), the groove
+            a_ = max(0, int((R(q0) - m0) * SR))  # keeping time underneath so it comes back on the beat
+            b_ = min(len(x), int((R(q1) - m0) * SR))
+            if b_ > a_:
+                f_ = min(int(0.012 * SR), (b_ - a_) // 2)
+                g = np.zeros(b_ - a_)
+                g[:f_] = np.linspace(1, 0, f_)
+                g[len(g) - f_:] = np.linspace(0, 1, f_)
+                x = x.copy()
+                x[a_:b_] *= g
         for sw in m.get("swell", []):           # louder while nobody speaks, eased in and out
             s0, s1 = int((R(sw["from"]) - m0) * SR), int((R(sw["to"]) - m0) * SR)
             ramp = int(sw.get("ramp", 0.3) * SR)

@@ -358,8 +358,73 @@ def drone(sec, seed=0):
     return reverb(out, 2.6, 0.35, seed)[:int(sec * SR)]
 
 
+def marimba(m, sec=0.35):
+    """A marimba bar: a warm sine with its 4x partial dying fast (wood, not plastic)."""
+    t = _t(sec)
+    f = hz(m)
+    x = np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 3.93 * f * t) * np.exp(-t * 40)
+    return x * env(len(t), 0.002, 0.11, 0.0, 0.03)
+
+
+def bounce(sec, seed=0):
+    """Light comedy (the Noob feeding the block): a staccato marimba figure on the motif over a soft
+    plucked bass, a tick on the off-beats; no drums, no lead, nothing loud."""
+    r = np.random.default_rng(seed)
+    out = np.zeros(int((sec + 1) * SR))
+    eighth = BEAT / 2
+    roots = [0, 0, -4, -2]
+    i = 0
+    while i * eighth < sec:
+        at = i * eighth
+        bar = (i // 8) % 4
+        if i % 2 == 0:
+            place(out, marimba(D - 12 + roots[bar], 0.3), at, 0.5)
+        n = (MOTIF + [0, -2])[i % 8]
+        if i % 8 not in (3, 7):
+            place(out, marimba(D + 12 + n + (12 if i % 16 == 14 else 0), 0.25), at, 0.38 + 0.06 * r.random())
+        if i % 2 == 1:
+            tk = np.random.default_rng(i).standard_normal(int(0.02 * SR)) * env(int(0.02 * SR), 0.0005, 0.004)
+            place(out, tk, at, 0.12)
+        i += 1
+    return reverb(out, 1.2, 0.18, seed)[:int(sec * SR)]
+
+
+def curious(sec, seed=0):
+    """Patch arrives: a clean, slightly mysterious pad (minor, an added ninth) and a soft arpeggio of
+    sine bells, slow; it wonders rather than threatens."""
+    out = np.zeros(int((sec + 3) * SR))
+    chords = [[D - 12, D - 5, D + 0, D + 4], [D - 14, D - 7, D + 2, D + 5], [D - 17, D - 10, D - 5, D + 2]]
+    bar = BEAT * 4
+    k = 0
+    while k * bar < sec:
+        place(out, pad(chords[k % 3], bar + 1.2) * 0.8, k * bar, 0.4)
+        k += 1
+    step = BEAT / 2
+    arp = [0, 7, 12, 14, 12, 7, 3, 7]
+    i = 0
+    while i * step < sec - 0.2:
+        m = D + 12 + arp[i % 8] + (-2 if (i // 16) % 3 == 1 else 0)
+        place(out, music_box(m, 0.9) * 0.6, i * step, 0.5)
+        i += 1
+    return reverb(out, 2.6, 0.4, seed)[:int(sec * SR)]
+
+
+def deleted(sec, seed=0):
+    """"From a world that got deleted": a deep sub swell that blooms and rings, and one faint, sad high
+    note (a sine with a slow vibrato) held over it, falling a step at the end. Nothing else."""
+    x = _t(sec + 3)
+    sw = np.minimum(1, x / 1.6) ** 2 * np.exp(-np.maximum(0, x - 2.2) / 5.0)
+    sub = (np.sin(2 * np.pi * hz(D - 36) * x) + 0.5 * np.sin(2 * np.pi * hz(D - 24) * x)
+           + 0.15 * np.sin(2 * np.pi * hz(D - 17) * x)) * sw
+    vib = 1 + 0.004 * np.sin(2 * np.pi * 5.0 * x) * np.minimum(1, x / 1.5)
+    fall = np.where(x > sec - 1.6, -2.0 * np.minimum(1, (x - (sec - 1.6)) / 0.5), 0.0)
+    f = hz(D + 21) * vib * 2 ** (fall / 12)
+    hi = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, np.maximum(0, x - 0.4) / 1.2) * 0.22
+    return reverb(sub * 0.9 + hi, 3.2, 0.45, seed)[:int(sec * SR)]
+
+
 CUES = {"drone": drone, "memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
-        "dread": dread}
+        "dread": dread, "bounce": bounce, "curious": curious, "deleted": deleted}
 
 
 def render(cue, sec, seed=0, hard_end=False, offset=0.0, open_tail=False, **kw):
