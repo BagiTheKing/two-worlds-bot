@@ -140,6 +140,7 @@ jobs:
           mkdir -p /tmp/log && cp build/voice_log.txt /tmp/log/ 2>/dev/null || echo "no log" > /tmp/log/voice_log.txt
           cp build/timeline.json /tmp/log/ 2>/dev/null || true
           cp -r build/scenes /tmp/log/ 2>/dev/null || true
+          cp -r prev_prep /tmp/log/prev_prep 2>/dev/null || true     # the earlier run's prep it used (kept past its expiry)
           ffmpeg -loglevel error -i build/audio.wav -c:a aac -b:a 128k /tmp/log/audio.m4a 2>/dev/null || true
           cp build/audio.wav /tmp/log/audio.wav 2>/dev/null || true     # the sound preview, before any frame renders
           cp build/voice.wav /tmp/log/voice.wav 2>/dev/null || true     # the voices alone (lip sync)
