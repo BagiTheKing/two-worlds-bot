@@ -6,6 +6,9 @@
 > changes in chapter 3.
 
 
+> **Episode 3 is built (v3, 2026-11-26): read "Episode 3: how it was made" at the end of this file before Episode 4.**
+> Work continues from branch `claude/episode-3-sound-preview-kwg1rk` (it holds everything through Episode 3).
+
 > **Episode 2 is done (v6, 2026-11-25): read "Episode 2: how it was made and what it taught us" at the end of
 > this file before Episode 3.** Work continues from branch `claude/episode-2-sound-preview-b8mxtd` (it holds
 > lookdev-steve plus all of Episode 2).
@@ -323,3 +326,19 @@ run and the dive had no music); Ep3 carries it on exactly (`dread`, smooth, seed
   debris hanging, the camera's handheld stopped, the sound stuttering into silence.
 - 360p, 8 samples is ~15-20 s a frame here; one still per shot (33) is ~10 min. Two or three rounds of stills caught
   every staging fault before the CI render.
+
+**v3 (2026-11-26).** The creator prefers the old takes of the old lines (BOSS FIGHT!, It used our portal. Hide!,
+Tutorial says jump!, Don't-, Checkpoint!, Worlds don't lag.); the four added lines keep their new takes. Sound
+`movie/ep03_v3` (built locally with `--keep-timeline movie/ep03_v2/timeline.json`: the same beats, the old takes placed
+at the v2 line starts), the six line spans re-rendered for lip sync on top of run 45667919167 (`preview-movie_ep03_v3`).
+Rule from this: **a line that existed before keeps its original take unless the creator asks for a new one**; "more
+energy" notes go to new lines, music and foley, not to re-recording approved lines.
+
+**What Episode 4 picks up.** Ep3 ends on the frozen dragon flickering into the missing texture over the spawn pad,
+the Noob lying on its neck, Steve below looking up, REALITY 92%, the portal still flickering behind them. The last cue
+(`dread`, minimal, smooth, hit at `glitch`, `open_tail`) is silent from 2.6 s after its hit: Ep4 opens on that
+silence and the sub drop's tail (carrying it on is `offset` 3.0, nothing left to hear). The published Ep4 ("This Block
+Shouldn't Exist", `episodes/ep04_the_block.json`, `preview-ep04_the_block`) opens with the dark block "fell off the
+dragon": show it falling off the frozen, glitching dragon at Ep3's place (the obby world of `movie_ep03.py`, which Ep4's
+renderer can import: `build`, `part`, `_far_world`, the cast). Patch arrives in Ep4: he must be seen coming from
+somewhere (nobody from nowhere). The dragon's fate after the freeze is open: decide it on screen, don't leave it hanging.
