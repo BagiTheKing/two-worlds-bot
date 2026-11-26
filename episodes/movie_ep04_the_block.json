@@ -423,7 +423,8 @@
    "direction_text": "[amazed, thrilled, whispering loudly] A secret block!",
    "pad": 0.2,
    "solo_only": true,
-   "note": "the original take; he crouches to it, eyes wide"
+   "note": "the original take; he crouches to it, eyes wide",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "lean",
@@ -438,7 +439,8 @@
    "pad": 0.15,
    "solo_text": "It fell off the dragon. Don't touch it.",
    "solo_take": 0,
-   "note": "the original take; leaning forward off the grey pad"
+   "note": "the original take; leaning forward off the grey pad",
+   "taken_in": "movie/ep04_published"
   },
   {
    "line": "noob",
@@ -451,7 +453,8 @@
     3.35
    ],
    "unused": true,
-   "note": "the published take (a wrong-sounding voice): kept in its scene so the other lines' takes stay exactly as published, never placed; replaced by noob_touched2"
+   "note": "the published take (a wrong-sounding voice): kept in its scene so the other lines' takes stay exactly as published, never placed; replaced by noob_touched2",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "poke1",
@@ -494,7 +497,8 @@
     5.35,
     7.5
    ],
-   "note": "the original take; deadpan, in silence"
+   "note": "the original take; deadpan, in silence",
+   "taken_in": "movie/ep04_published"
   },
   {
    "line": "noob",
@@ -504,7 +508,8 @@
    "pad": 0.0,
    "solo_text": "Again!",
    "solo_take": 0,
-   "note": "the original take"
+   "note": "the original take",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "chop",
@@ -536,7 +541,8 @@
     0.0,
     2.45
    ],
-   "note": "the original take; eyelid flat (annoyed)"
+   "note": "the original take; eyelid flat (annoyed)",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "react",
@@ -553,7 +559,8 @@
     2.54,
     4.26
    ],
-   "note": "the original take; mouth wide open"
+   "note": "the original take; mouth wide open",
+   "taken_in": "movie/ep04_published"
   },
   {
    "line": "patch",
@@ -592,7 +599,8 @@
     4.44,
     7.34
    ],
-   "note": "the original take"
+   "note": "the original take",
+   "taken_in": "movie/ep04_published"
   },
   {
    "line": "noob",
@@ -604,7 +612,8 @@
     7.48,
     8.8
    ],
-   "note": "the original take"
+   "note": "the original take",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "sigh",
@@ -621,7 +630,8 @@
     0.0,
     1.5
    ],
-   "note": "the original take; the music cut dead right after it"
+   "note": "the original take; the music cut dead right after it",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "turn",
@@ -638,7 +648,8 @@
     2.52,
     4.66
    ],
-   "note": "the original take; quiet"
+   "note": "the original take; quiet",
+   "taken_in": "movie/ep04_published"
   },
   {
    "line": "noob",
@@ -650,7 +661,8 @@
     0.0,
     1.19
    ],
-   "note": "the original take; the smile gone"
+   "note": "the original take; the smile gone",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "drift",
@@ -668,7 +680,8 @@
     3.81
    ],
    "patch_soft": true,
-   "note": "the original take; the machine sound softer on it"
+   "note": "the original take; the machine sound softer on it",
+   "taken_in": "movie/ep04_published"
   },
   {
    "beat": "hold",
