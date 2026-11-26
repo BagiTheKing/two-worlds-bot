@@ -575,25 +575,23 @@
    "line": "noob",
    "name": "noob_boss",
    "text": "BOSS FIGHT!",
-   "direction_text": "BOSS FIGHT!",
+   "direction_text": "[shouting, thrilled] BOSS FIGHT!",
+   "pad": 0.25,
    "solo_only": true,
-   "solo_text": "BOSS FIGHT!",
-   "shout": 3,
-   "pad": 0.2,
-   "note": "new take, hyper (the creator's notes 2026-11-25: Boss fight lacked the excitement)",
-   "taken_in": "run 45628706087"
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
   },
   {
    "line": "steve",
    "name": "steve_hide",
    "text": "It used our portal. Hide!",
-   "direction_text": "It used our portal. HIDE!",
-   "solo_only": true,
+   "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
+   "pad": 0.5,
+   "tighten": 0.2,
    "solo_text": "It used our portal. HIDE!",
-   "shout": 2,
-   "pad": 0.3,
-   "note": "new take: flat, then HIDE shouted (it was monotone)",
-   "taken_in": "run 45628706087"
+   "solo_take": 1,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
   },
   {
    "beat": "hide",
@@ -605,11 +603,11 @@
    "name": "noob_hi",
    "text": "Hi! ...Hello?",
    "direction_text": "Hi! ...Hello?",
-   "new_take": true,
    "pad": 0.3,
    "note": "added line: the frozen players' setup (the creator's notes: they had none) (run 45628706087's acted takes read the direction aloud: recorded solo, no direction)",
    "solo_only": true,
-   "solo_text": "Hi! ...Hello?"
+   "solo_text": "Hi! ...Hello?",
+   "taken_in": "run 45631569353"
   },
   {
    "beat": "tap",
@@ -621,11 +619,11 @@
    "name": "noob_frozen",
    "text": "They're frozen.",
    "direction_text": "They're... frozen.",
-   "new_take": true,
    "pad": 0.35,
    "note": "added line (run 45628706087's acted takes read the direction aloud: recorded solo, no direction)",
    "solo_only": true,
-   "solo_text": "They're... frozen."
+   "solo_text": "They're... frozen.",
+   "taken_in": "run 45631569353"
   },
   {
    "line": "steve",
@@ -646,25 +644,20 @@
    "line": "noob",
    "name": "noob_tut",
    "text": "Tutorial says jump!",
-   "direction_text": "Tutorial says JUMP!",
-   "solo_only": true,
-   "solo_text": "Tutorial says JUMP!",
-   "shout": 2,
+   "direction_text": "[excited, already going] Tutorial says jump!",
    "pad": 0.0,
-   "note": "new take, hyper",
-   "taken_in": "run 45628706087"
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
   },
   {
    "line": "steve",
    "name": "steve_dont",
    "text": "Don't—",
-   "direction_text": "DON'T!",
-   "solo_only": true,
-   "solo_text": "DON'T!",
-   "shout": 3,
+   "direction_text": "[sharp, cut off] Don't—",
    "pad": 0.0,
-   "note": "new take, shouted (it was flat); cut off by the jump",
-   "taken_in": "run 45628706087"
+   "solo_only": true,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
   },
   {
    "beat": "jump",
@@ -685,13 +678,11 @@
    "line": "noob",
    "name": "noob_cp",
    "text": "Checkpoint!",
-   "direction_text": "Checkpoint!!",
+   "direction_text": "[cheerful, completely unbothered] Checkpoint!",
+   "pad": 0.25,
    "solo_only": true,
-   "solo_text": "Checkpoint!!",
-   "shout": 2,
-   "pad": 0.3,
-   "note": "new take, hyper",
-   "taken_in": "run 45628706087"
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
   },
   {
    "beat": "wheel",
@@ -807,11 +798,10 @@
    "line": "steve",
    "name": "steve_lag",
    "text": "Worlds don't lag.",
-   "direction_text": "[slow, low, cold and certain, a weight on every word] Worlds don't lag.",
-   "own_scene": true,
-   "pad": 0.9,
-   "note": "new take (it was monotone)",
-   "taken_in": "run 45628706087"
+   "direction_text": "[quiet, serious] Worlds don't lag.",
+   "pad": 0.8,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
   },
   {
    "beat": "glitch",
