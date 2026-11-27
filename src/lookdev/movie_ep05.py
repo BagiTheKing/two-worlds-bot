@@ -1405,7 +1405,9 @@ def _cam(E, t, shot, t0, t1):
     if shot == "master":                                          # Ep4's locked master (the ruler): the third poke
         return _c(-5.4, -8.6, 1.5), _c(-5.8, -0.4, 0.95), 30, 30, None, 0.15
     if shot == "hand":                                            # close: the code pours into his fist
-        f = Vector(E.fist_now)
+        d = (CUBE_C - N_POKE)
+        d.z = 0
+        f = N_POKE + d.normalized() * 0.75 + Vector((0, 0, 1.25))   # where his fist is at the poke (fixed: shards start anywhere)
         return f + _c(1.3, -2.4, 0.35), f + _c(-0.2, 0.2, 0.05), 40, 3.2, None, 0.25
     if shot == "hammer":                                          # the Noob and his new hammer
         return N_ + _c(-2.4, 0.6, 1.5), N_ + _c(0, 0, 1.45), 34, 2.8, None, 0.2
