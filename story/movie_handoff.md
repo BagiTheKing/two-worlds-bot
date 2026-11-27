@@ -510,7 +510,7 @@ cleanly (corr 0.999). With today's code or a rounded timeline the bed is off (Ep
   standing open at the terrace's front edge (hinge (-8.08, -2.2), opened 95 degrees over the drop), the **dragon
   sealed in crystal** over the spawn pad, the portal flickering behind, the far world in the haze. The sun 25% dimmer
   and cooler.
-- **Who:** the Noob on the terrace near (-4.1, -1.9) (`N_BUILD` + (1.25, -0.35)), scared, the BTools hammer in his
+- **Who:** the Noob on the terrace near (-5.4, -1.3) (`N_BUILD` + (-0.05, 0.25): he recoiled from the edge), scared, the BTools hammer in his
   right hand; Steve at (-2.35, -1.2) (`STEVE_D`) facing the Noob, flat brow, after "...That wasn't us."; Patch near
   (-7.1, -1.7, 2.6) looking at the Noob. REALITY 71%.
 - **Sound at the cut:** the void wind (ambience `void`, 0.05) and a faint `drone` (seed 4, gain 0.07, `open_tail`,

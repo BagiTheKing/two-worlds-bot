@@ -1149,7 +1149,7 @@ def noob(E, t):
                 face = dict(NF["scared"])
             if t >= b("hush"):                                    # the course west goes, stone by stone
                 rc = ss(b("stairs_gone") + 0.2, b("stairs_gone") + 1.2, t)
-                p = (N_BUILD + Vector((0.9, -0.1, 0))).lerp(N_BUILD + Vector((1.25, -0.35, 0)), rc)
+                p = (N_BUILD + Vector((0.9, -0.1, 0))).lerp(N_BUILD + Vector((-0.05, 0.25, 0)), rc)
                 yaw = _face_to(p, Vector((-15.0, 0.5, 0)))
                 pz["head_turn"], pz["head_nod"] = 0, 0
                 pz["chest_lean"] = -10 * rc
@@ -1336,6 +1336,8 @@ def apply(E, t):
     if not hasattr(E, "cube_s_now"):
         E.cube_s_now = E4.SIZES[2]
     ep4_world(E, t)
+    for pl in getattr(E, "players", []):                          # the freed players ran off along the course (Ep3)
+        pl.root.location = (0, 0, -300)
     dragon(E, t)
     sun(E, t)
     for nm in ("duck", "statue", "castle", "door"):
@@ -1406,15 +1408,15 @@ def _cam(E, t, shot, t0, t1):
         f = Vector(E.fist_now)
         return f + _c(1.3, -2.4, 0.35), f + _c(-0.2, 0.2, 0.05), 40, 3.2, None, 0.25
     if shot == "hammer":                                          # the Noob and his new hammer
-        return N_BUILD + _c(1.4, -3.0, 1.5), N_BUILD + _c(0.2, 0, 1.45), 34, 2.8, None, 0.2
+        return N_ + _c(-2.5, -1.3, 1.45), N_ + _c(0, 0, 1.45), 34, 2.8, None, 0.2
     if shot == "duck":                                            # wide: the box round the ring, the duck, Steve across the gap
         return _c(-2.9, -7.4, 1.7), _c(-5.6, -0.2, 1.0), 26, 30, None, 0.2
     if shot == "build":                                           # "I can BUILD stuff!"
-        return N_BUILD + _c(1.6, -3.1, 1.3), N_BUILD + _c(0.15, 0, 1.55), 32, 2.8, None, 0.25
+        return N_ + _c(2.5, -1.7, 1.35), N_ + _c(0, 0, 1.5), 32, 2.8, None, 0.25
     if shot == "since":                                           # Steve: "Since when?"
         return STEVE_D + _c(-2.4, -1.5, 1.45), STEVE_D + _c(0, 0, 1.5), 38, 2.8, None, 0.15
     if shot == "block":                                           # "Since the block!" the hammer up (a little low)
-        return N_BUILD + _c(1.2, -2.8, 1.05), N_BUILD + _c(0.1, 0, 1.6), 34, 2.8, None, 0.2
+        return N_ + _c(2.2, -1.5, 1.05), N_ + _c(0, 0, 1.6), 34, 2.8, None, 0.2
     if shot == "statue":                                          # wide: the swing, the box, the statue slams down
         return _c(-9.5, -11.5, 2.2), _c(1.5, 0.0, 3.0), 18, 30, None, 0.2
     if shot == "me":                                              # the Noob, arms wide, the statue far behind him
@@ -1422,38 +1424,38 @@ def _cam(E, t, shot, t0, t1):
     if shot == "crane":                                           # low on Steve, the statue towering behind
         return STEVE_D + _c(-2.2, -3.0, 0.75), STEVE_D + _c(1.6, 0.5, 2.3), 24, 4.0, (STEVE_D - _c(-4.55, -4.2, 0)).length, 0.15
     if shot == "see":                                             # "So everyone can see me!"
-        return N_BUILD + _c(1.4, -2.9, 1.4), N_BUILD + _c(0.15, 0, 1.55), 34, 2.8, None, 0.2
+        return N_ + _c(2.5, -1.7, 1.35), N_ + _c(0, 0, 1.5), 34, 2.8, None, 0.2
     if shot == "castle":                                          # behind him the castle snaps onto the ledge
-        return N_BUILD + _c(0.9, -4.6, 1.5), _c(-7.1, 1.2, 1.3), 26, 30, None, 0.2
+        return _c(-6.6, -4.6, 1.6), _c(-8.6, 2.4, 1.4), 26, 30, None, 0.2
     if shot == "pinch":                                           # Steve: the pinch, the point
         return STEVE_D + _c(-2.4, -1.6, 1.45), STEVE_D + _c(0, 0, 1.5), 36, 2.8, None, 0.15
     if shot == "door":                                            # the salute, the swing, the door at the edge
         return _c(-10.2, -7.6, 1.5), _c(-7.2, -1.9, 1.1), 26, 30, None, 0.2
     if shot == "open_door":                                       # from behind the door: it swings open onto the sky
-        return _c(-7.55, 0.9, 1.35), _c(-7.45, -6.0, 0.8), 26, 30, None, 0.15
+        return _c(-8.75, -0.3, 1.45), _c(-7.0, -6.0, 0.9), 22, 30, None, 0.15
     if shot == "stare":                                           # Steve's deadpan stare
         return STEVE_D + _c(-2.0, -1.0, 1.5), STEVE_D + _c(0, 0, 1.55), 46, 2.6, None, 0.05
     if shot == "chime":                                           # the two of them; between them the duck, then the erase
         return _c(-4.4, -8.6, 1.6), _c(-4.9, -0.2, 1.1), 24, 30, None, 0.12
     if shot == "where":                                           # "Hey! Where's my duck?"
-        return N_ + _c(1.5, -2.9, 1.45), N_ + _c(0.1, 0, 1.5), 36, 2.8, None, 0.15
+        return _c(-7.5, -0.9, 1.5), N_ + _c(0, 0, 1.5), 36, 2.8, None, 0.15
     if shot == "scan":                                            # Patch over the empty ring, the beam down on it
         return _c(-3.2, -7.0, 2.1), _c(-6.3, -0.2, 1.2), 26, 30, None, 0.12
     if shot == "patch":                                           # Patch, three-quarter; the beam whips to the castle
         p = Vector(E.PA.root.location)
-        return p + _c(-1.9, -2.4, -0.25), p + _c(0, 0, 0), 38, 3.0, None, 0.12
+        return p + _c(2.0, -2.2, -0.3), p + _c(0, 0, 0), 38, 3.0, None, 0.12
     if shot == "castle_gone":                                     # behind the Noob: the castle erased
         return N_ + _c(0.8, -4.4, 1.5), LEDGE_TOP + _c(0.3, -0.5, 0.4), 28, 30, None, 0.15
     if shot == "statue_gone":                                     # over Steve's shoulder: the statue erased
-        return STEVE_D + _c(-1.6, -1.9, 1.95), _c(7.5, -0.6, 4.0), 30, 30, None, 0.2
+        return _c(2.5, -9.0, 1.6), _c(8.0, -1.0, 3.5), 30, 30, None, 0.2
     if shot == "no":                                              # "NO!"
-        return N_ + _c(2.0, -2.6, 1.3), N_ + _c(0, 0, 1.5), 32, 2.8, None, 0.35
+        return N_ + _c(2.3, -1.0, 1.3), N_ + _c(0, 0, 1.5), 32, 2.8, None, 0.35
     if shot == "dragon":                                          # up at the sealed dragon: it flickers
         return _c(-4.6, -6.5, 1.2), Vector(E.D.root.location) + _c(0, 0, 0.5), 22, 30, None, 0.25
     if shot == "west":                                            # locked on the course west: the stones go one by one
-        return _c(-6.2, -3.6, 2.3), _c(-15.5, 0.4, 0.6), 26, 30, None, 0.0
+        return _c(-6.0, 1.3, 2.4), _c(-15.5, 0.0, 0.6), 26, 30, None, 0.0
     if shot == "east":                                            # east: the stepping stone, the checkpoint; Steve
-        return _c(-4.4, -3.9, 1.8), _c(5.0, -0.9, 0.6), 24, 30, None, 0.05
+        return _c(-4.0, -6.8, 1.6), _c(6.0, -1.0, 0.6), 24, 30, None, 0.05
     if shot == "void":                                            # the lonely wide: two pads in the sky
         return _c(-4.0, -13.5, 4.2).lerp(_c(-4.0, -12.7, 4.0), u), _c(-4.2, 0.0, 1.6), 22, 30, None, 0.05
     if shot == "us":                                              # Steve, close: "...That wasn't us."
