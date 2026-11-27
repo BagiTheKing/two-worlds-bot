@@ -1,4 +1,4 @@
-# Movie Episode 8: "Steve Was Hiding Something" — the hidden portal (16:9, ~61 s)
+# Movie Episode 8: "Steve Was Hiding Something" — the hidden portal (16:9, 61.24 s)
 
 The creator's 16:9 blueprint and fixes (2026-11-27: `story/movie/ep07_ep08_notes_2026-11-27.md` points 1-3 and the
 session's notes on the published Short). Episode file `episodes/movie_ep08_steve_hiding.json`; sound `movie/ep08`;
@@ -57,7 +57,7 @@ portal stands (its frame 4 x 5, freestanding, under an oak's canopy edge), the c
 opening camera plane. Steve and the Noob land ~6 m in front of it, Patch hovering above them; the reconciliation
 two-shot ~3 m in front of the frame.
 
-## Shots (times from the local sound build, 59.9 s with a placeholder for the new take; the CI voices run fixes them)
+## Shots (times from the CI voices run 46064416479, 61.24 s; `movie/ep08/timeline.json`)
 | # | time | lens | what | line |
 |---|------|------|------|------|
 | 1 | 0.0-11.5 | 28 mm wide, low, golden sunset | Ep7's white-cyan flash fades down (0.6 s) onto the clearing, snowy peaks glowing faintly; tumble (0.6-2.2): Steve to one knee on the tall grass (empty-handed), the Noob rolling onto his back, Patch wobbling, steadying; Steve up first (2.2-3.6), walks quickly to the vine-choked archway under the oak (3.6-5.6), pulls two vine clusters clear (5.6-8.0): the ancient unlit obsidian frame; the Noob scrambles up behind him (8.0-8.9), genuinely shocked | "You had a PORTAL?!" (8.9) |
@@ -67,7 +67,7 @@ two-shot ~3 m in front of the frame.
 | 4A | 38.0-43.0 | 50 mm close-up on the Noob | his worried brow relaxes into a warm crooked smile, a slight playful head tilt, lip-sync | "...I touch weird blocks all the time." (39.2) |
 | 4B | 43.0-51.9 | 35 mm warm two-shot in front of the unlit portal, the light now deep blue twilight | the Noob steps beside Steve (43.0-44.8), a gentle shoulder pat (44.8-46.3: elbow bent, hand on Steve's left sleeve 10 frames, then down); Steve's tiny reluctant half-smile; the Noob grins back; the two side by side (48.8-51.9) | "That's not the same." (46.3), "Kinda is." (47.5) |
 | 5A | 51.9-54.5 | 40 mm two-shot | a deep violet glow sweeps across their faces from behind the camera (no white blowout, nobody vanishes); the THOOM; they freeze, then turn their heads slowly (head, then shoulders) toward the portal; REALITY 30 -> 12 | - |
-| 5B | 54.5-~61 | 32 mm, a slow creeping push-in on the freestanding portal, dark trees and the snowy peaks behind | the portal blazing with the finale's deep violet plasma, purple light across the tall grass; Steve's whisper (off screen); 1.5 s of suffocating silence; a single bright magenta crack ripples across the sheet (~59); HARD CUT to frame 1 of `ep10_part1_null_entrance` | "...I didn't do that." (56.7, Steve) |
+| 5B | 54.5-61.24 | 32 mm, a slow creeping push-in on the freestanding portal, dark trees and the snowy peaks behind | the portal blazing with the finale's deep violet plasma, purple light across the tall grass; Steve's whisper (off screen); 1.5 s of suffocating silence; a single bright magenta crack ripples across the sheet (60.4); HARD CUT to frame 1 of `ep10_part1_null_entrance` | "...I didn't do that." (56.7, Steve) |
 
 ## Picture recipes (from the blueprint)
 - The set: the finale's clearing (import its builder); the leaf wall of the Short is gone. The portal: a freestanding

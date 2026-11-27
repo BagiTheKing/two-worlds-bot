@@ -1,0 +1,169 @@
+voices from prev_prep: ['noob_blocks', 'noob_fault', 'noob_kinda', 'noob_portal', 'noob_scream', 'patch_didnt', 'patch_started', 'steve_cost', 'steve_first', 'steve_same', 'steve_scream']
+new takes (added lines): ['steve_didnt']
+Gemini speech models, in order: gemini-3.8-flash-tts, gemini-3.1-flash-tts-preview, gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.8-flash-lite-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve "...I didn't do that." take 0: NEW recording
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  solo take 0 for "...I didn't do that.": 1.00 " I  didn't  do  that."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve "...I didn't do that." take 1: NEW recording
+  solo take 1 for "...I didn't do that.": 1.00 " I  didn't  do  that."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve "...I didn't do that." take 2: NEW recording
+  solo take 2 for "...I didn't do that.": 1.00 " I  didn't  do  that."
+{
+ "length": 61.243,
+ "beats": {
+  "wash": [
+   0.0,
+   0.6
+  ],
+  "tumble": [
+   0.6,
+   2.2
+  ],
+  "rise": [
+   2.2,
+   3.6
+  ],
+  "walk": [
+   3.6,
+   5.6
+  ],
+  "vines": [
+   5.6,
+   8.0
+  ],
+  "scramble": [
+   8.0,
+   8.9
+  ],
+  "noob_portal": [
+   8.9,
+   10.484
+  ],
+  "stare": [
+   10.584,
+   11.484
+  ],
+  "dissolve": [
+   11.484,
+   12.684
+  ],
+  "place": [
+   12.684,
+   14.284
+  ],
+  "flint": [
+   14.284,
+   15.684
+  ],
+  "flare": [
+   15.684,
+   17.284
+  ],
+  "steve_first": [
+   17.284,
+   20.708
+  ],
+  "patch_started": [
+   20.808,
+   21.979
+  ],
+  "awe": [
+   22.079,
+   23.279
+  ],
+  "back": [
+   23.279,
+   24.279
+  ],
+  "hurt": [
+   24.279,
+   24.979
+  ],
+  "noob_fault": [
+   24.979,
+   28.453
+  ],
+  "guilt": [
+   28.553,
+   30.553
+  ],
+  "steve_cost": [
+   30.553,
+   35.716
+  ],
+  "weight": [
+   35.816,
+   38.016
+  ],
+  "think": [
+   38.016,
+   39.216
+  ],
+  "noob_blocks": [
+   39.216,
+   41.611
+  ],
+  "smile": [
+   41.711,
+   43.011
+  ],
+  "step": [
+   43.011,
+   44.811
+  ],
+  "pat": [
+   44.811,
+   46.311
+  ],
+  "steve_same": [
+   46.311,
+   47.489
+  ],
+  "noob_kinda": [
+   47.539,
+   48.717
+  ],
+  "warm": [
+   48.767,
+   51.167
+  ],
+  "hush": [
+   51.167,
+   51.867
+  ],
+  "ignite": [
+   51.867,
+   54.467
+  ],
+  "reveal": [
+   54.467,
+   56.667
+  ],
+  "steve_didnt": [
+   56.667,
+   58.643
+  ],
+  "dread": [
+   58.743,
+   60.243
+  ],
+  "crack": [
+   60.243,
+   61.243
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    8.9s noob_portal        heard 'You had a portal?'
+  ok   17.3s steve_first        heard 'I built the first one, before I met you.'
+  ok   20.8s patch_started      heard "That's where it started."
+  ok   25.0s noob_fault         heard 'So all of this is your fault?'
+  ok   30.6s steve_cost         heard "I wanted to see the other side, your side. I didn't know what it would cost."
+  ok   39.2s noob_blocks        heard 'I touch weird blocks all the time.'
+  ok   46.3s steve_same         heard "That's not the same."
+  ok   47.5s noob_kinda         heard 'Kinda is.'
+  ok   56.7s steve_didnt        heard "I didn't do that."
+hearing check: 0 of 9 lines flagged

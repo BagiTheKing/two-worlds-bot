@@ -595,3 +595,22 @@ preview `movie/ep07/ep07_sound_preview_local.m4a` (Patch's one new line a placeh
 - **REALITY 30%** at the end of Ep7 (the published Ep7 ended at 30% too).
 - **Story link:** "one stable coordinate left" = the place Steve's first portal stands: Ep8's confession ("I built
   the first one. Before I met you.") pays it off; Steve's guilty glance in Ep7's shot 9B foreshadows it.
+
+
+## Episode 8: how it was made (2026-11-27, in progress)
+
+**State.** Branch `claude/movie-ep08` (cut from `claude/movie-ep07`). Voices: `movie/ep08_published/voice.flac` rebuilt
+from run 41851020512 (all lines lag 0, corr 1.000; the residual floor is ~-40 dB here, the same in voice-free stretches:
+the mix's level fit, inaudible). Episode file `episodes/movie_ep08_steve_hiding.json`; shot plan
+`story/movie/ep08_shots.md`; sound `movie/ep08` (61.24 s, voices run 46064416479, 9/9 lines pass the hearing check;
+`ep08_sound_preview.m4a` sent). One new take: Steve's "...I didn't do that." (the published line was Patch's: kept
+`unused`); the screams cut. Next: the renderer `src/lookdev/movie_ep08.py` (import `movie_ep07` once it exists; the
+set is the finale's forest clearing, `ep10_part1_null_entrance`'s builder), local stills, one CI preview.
+
+**Sound additions.** Ambience `evening` (breeze through oaks, leaf rustle on the gusts, crickets fading in: `crickets`
+[start, end] level, its own seeded generator); the ambience lookup is now a table (`AMBIENCE`; `meadow` and the void
+wind unchanged). Sfx `obsidian_boom` (45 Hz THOOM, leaves rattling), `plasma_hum`, `plasma_crack`, `stone_groan`
+(the J-cut into Null's claws, 0.25 s before the end), `flint`, `vines`.
+
+**What the finale picks up:** Ep8 ends on shot 5B, the blazing violet portal on the finale's opening camera plane,
+the magenta crack, the stone groan already sounding: hard cut to frame 1 of `ep10_part1_null_entrance`. REALITY 12%.
