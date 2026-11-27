@@ -1,6 +1,48 @@
 # The movie: handoff brief
 
-> ## START HERE (a new chat, 2026-11-27): the next job is Episode 6 (Episode 5 is being finished in parallel)
+> ## START HERE (a new chat, 2026-11-27 evening): the next job is Episode 8 (Episodes 6 and 7 are being finished in parallel)
+>
+> **Three chats are working at once.** Ep6 is finished on `claude/movie-ep06`, Ep7 on `claude/movie-ep07` (cut
+> from Ep6). **Episode 8 works on its own branch, `claude/movie-ep08`, cut from `claude/movie-ep07`.** Before each
+> push: `git fetch origin claude/movie-ep07` and merge it in (Ep7 merges Ep6 in, so you get both). Never push to the
+> Ep6 or Ep7 branches. **Files you own:** `episodes/movie_ep08_*.json`, `src/lookdev/movie_ep08.py`,
+> `story/movie/ep08_shots.md`, `movie/ep08*`. Shared sound code (`src/audio.py`, `src/music.py`) and tools: add to
+> them, never change what an existing option does. One CI run at a time across all chats (`preview-logs` is
+> overwritten by every voices run: copy what you need out of it as soon as your run ends).
+>
+> 1. Read the rules below (the Ep6 START HERE still holds for every episode: the loop, local stills, the
+>    environment, no model names), then "Episode 7: how it was made" at the end of this file (**"What Episode 8
+>    picks up"**), `story/movie/ep07_shots.md`, and the creator's Ep7/Ep8 notes
+>    `story/movie/ep07_ep08_notes_2026-11-27.md` (points 1-3 are Ep8's).
+> 2. **Ep8's published takes:** `movie/ep08_published` (rescued raw, prep of run **41851020512**; the published
+>    episode is `episodes/ep08_steve_hiding.json`). Make it a `voices_from` folder first:
+>    `git worktree add <dir> $(gh api repos/BagiTheKing/two-worlds-bot/actions/runs/41851020512 --jq .head_sha)`,
+>    `python tools/rebuild_published_voices.py episodes/ep08_steve_hiding.json movie/ep08_published <dir>`.
+>    The tool now lifts every line that is not in the scenes (`solo_only`, `solo_text` and `own_scene` lines) and
+>    widens a solo's lift over the gaps beside it. Ep8 has four solos: the two screams (`steve_scream`,
+>    `noob_scream`: probably cut, see below), "You had a PORTAL?!", and Steve's "I wanted to see the other side..."
+>    (check `published_voice_log.txt`). Scene lines should come out near -80 dB residual, solos corr ~1.0. Commit
+>    `voice.flac` only (delete `_work` and `timeline.json.rebuilt`).
+> 3. **The creator's Ep8 fixes (from the Ep7 notes, 2026-11-27):** Ep7 ends with Patch's emergency warp dropping
+>    them onto the grass in front of **Steve's hidden mossy obsidian portal**, which "eliminates Ep8's goofy
+>    0:00-0:01 scream next to Null": cut the published screams; never show Null (his silhouette stays a surprise
+>    until `ep10_part1_null_entrance`). The place and light match `video_2.mp4`: a moody Minecraft forest (tall
+>    grass, lush foliage, distant snow-capped mountains), **late golden sunset** during Steve's confession, the sky
+>    darkening and the sun dropping below the horizon right as the portal self-ignites at the end (0:27), lit by the
+>    portal's magenta/violet bounce. No stray BTools hammer (the Noob lost it in Ep6) and Steve has no pickaxe (it was
+>    erased in Ep6). No cheerful `:)` at 0:10 before "So all of this is your fault?". At 0:26, when they spin toward
+>    the igniting portal: no harsh front light; dim ambient, the rim light only from the portal's purple emission.
+>    **Sound:** the Memory Grid's dialogue was in a digital hall (`voice_hall`); Ep8 opens dry and outdoors (forest
+>    wind and rustling leaves) so it feels "startlingly physical"; carry Ep7's warp chime tail over the cut.
+> 4. Start by writing the 16:9 shot-by-shot plan for Ep8 (`story/movie/ep08_shots.md`) from the published episode
+>    and these fixes, then the episode file, the voices-only CI run, the sound preview, then the renderer (import
+>    `movie_ep07` once it is on the Ep7 branch, as Ep7 imports Ep6/Ep5).
+> 5. Working rules (the creator's, 2026-11-26/27): don't ask the creator to approve steps (decide, say what you
+>    chose, send each preview as soon as it is ready); keep the original takes for existing lines, new takes only for
+>    added lines (`solo_only` + `new_take`); cheap local stills (360p, 8 samples, one per shot) before any CI render;
+>    one CI run at a time; keep a turn running while a CI run renders and send the video when it lands.
+
+> ## (earlier) START HERE: Episode 6 (Episode 5 was being finished in parallel)
 >
 > **Two chats are working at once.** Chat A finishes Episode 5 (its sound preview, stills, CI preview, notes). Chat B
 > (you, if you were asked to build Episode 6) builds Episode 6. Rules so you don't collide:
@@ -525,3 +567,31 @@ cleanly (corr 0.999). With today's code or a rounded timeline the bed is off (Ep
   correcting." / the face: Null's first "...Hi?" copying the Noob's / "Someone is watching... you." Null is new on
   screen: he must be seen coming from somewhere (the bible: he is made of the Noob's respawned bodies; the dark cubes
   that drifted off at each of Ep4's deaths are the planted clue).
+
+
+## Episode 7: how it was made (2026-11-27, in progress)
+
+**State.** Branch `claude/movie-ep07` (cut from `claude/movie-ep06`). Voices: `movie/ep07_published/voice.flac` rebuilt
+from run 41463846907 (scene lines -78..-87 dB; the solos "From last time." (`solo_text`) and "I don't want to be
+deleted." (`own_scene`) were missed by the tool at first: it now lifts them). Episode file
+`episodes/movie_ep07_another_world.json` (~51.5 s, local build); shot plan `story/movie/ep07_shots.md`; a local sound
+preview `movie/ep07/ep07_sound_preview_local.m4a` (Patch's one new line a placeholder). Next: the voices-only CI run
+(the new take), the sound preview, the renderer `src/lookdev/movie_ep07.py`, stills, the CI preview.
+
+**Sound additions.** `voice_hall` (episode): a wide digital hall on the dialogue (`decay`, `wet` as a plugin-style mix,
+`hp`, optional `from`/`to`), added after the ducking. Ep7 uses decay 1.1, wet 0.13, hp 250, to the breach.
+
+**What Episode 8 picks up** (confirm against `movie_ep07.py`'s final version and the CI timeline before staging):
+- **The cut:** Ep7 ends on a full white-cyan flash (Patch's emergency warp out of the cracking Memory Grid), held
+  ~0.3 s. Ep8 opens on that flash clearing onto the grass in front of Steve's hidden mossy obsidian portal, late
+  golden sunset (the forest of `video_2.mp4`). Never the obby, never Null.
+- **Who:** Steve (empty-handed), the Noob (no hammer; scared, worried brows: he just said "I don't want to be
+  deleted."), Patch (his eye flashed amber on "It found the archive- I only have one stable coordinate left!", then
+  flared cyan for the warp). They should arrive like in Ep7: tumbling out of the warp, not popped in standing.
+- **Sound at the cut:** Patch's warp chime (sfx `chime`, pitch 1.25, gain 0.6) hits on the flash, ~0.3 s before
+  the cut (`flash` beat): carry its tail on (`at: -0.3`; take the exact offset from Ep7's CI timeline). Under it a
+  rumble rise and crackle from the breach; the `memory` cue was cut dead at the breach (no music to carry). The
+  voices were in a hall: Ep8's are dry, outdoors.
+- **REALITY 30%** at the end of Ep7 (the published Ep7 ended at 30% too).
+- **Story link:** "one stable coordinate left" = the place Steve's first portal stands: Ep8's confession ("I built
+  the first one. Before I met you.") pays it off; Steve's guilty glance in Ep7's shot 9B foreshadows it.
