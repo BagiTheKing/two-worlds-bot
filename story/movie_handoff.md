@@ -476,9 +476,11 @@ The same obby world (`movie_ep04.build` / `movie_ep03`), the same rigs and Patch
 
 ## Episode 5: how it was made (2026-11-27, in progress)
 
-**State.** Episode file `episodes/movie_ep05_creative_mode.json` (55.4 s locally; the real length depends on Patch's
-new take). Voices run 45918732916 (queued when written). Renderer `src/lookdev/movie_ep05.py` (first draft; stills
-round 1 rendering). Shot list `story/movie/ep05_shots.md` (the decisions, the places, every shot).
+**State.** Episode file `episodes/movie_ep05_creative_mode.json`; sound `movie/ep05` (55.65 s, voices run 45918732916,
+13/13 lines pass the hearing check), sent. Renderer `src/lookdev/movie_ep05.py`; three rounds of local stills; CI
+preview runs 45922474466 (one shard crashed: a camera used state from the previous frame) + 45930883334 (range
+5.37-7.05 on top) -> `preview-movie_ep05`, sent to the creator 2026-11-27. Awaiting notes. Lesson: `_cam` must never
+read state set by an earlier frame (shards start anywhere). Shot list `story/movie/ep05_shots.md` (the decisions, the places, every shot).
 
 **The voice rescue that worked (for Ep6-8).** The prep artifacts download straight from the Actions API
 (`download_workflow_run_artifact` gives a signed URL on a `productionresultssaN.blob.core.windows.net` host; the
