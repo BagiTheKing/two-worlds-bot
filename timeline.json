@@ -1,0 +1,346 @@
+{
+ "id": "movie_ep06_deleting_itself",
+ "fps": 24,
+ "length": 46.769,
+ "beats": {
+  "open": [
+   0.0,
+   0.8
+  ],
+  "void_in": [
+   0.8,
+   3.2
+  ],
+  "dragon_gone": [
+   3.2,
+   4.9
+  ],
+  "noob_delete": [
+   4.9,
+   7.084
+  ],
+  "resolve": [
+   7.384,
+   8.484
+  ],
+  "steve_stop": [
+   8.484,
+   9.831
+  ],
+  "windup": [
+   10.081,
+   11.081
+  ],
+  "throw": [
+   11.081,
+   12.081
+  ],
+  "pick_gone": [
+   12.081,
+   12.781
+  ],
+  "blink": [
+   12.781,
+   13.481
+  ],
+  "steve_pick": [
+   13.481,
+   14.625
+  ],
+  "raise": [
+   14.975,
+   15.475
+  ],
+  "noob_wall": [
+   15.475,
+   16.158
+  ],
+  "build_wall": [
+   16.208,
+   17.208
+  ],
+  "glide": [
+   17.208,
+   18.008
+  ],
+  "wall_gone": [
+   18.008,
+   19.308
+  ],
+  "disbelief": [
+   19.308,
+   19.708
+  ],
+  "steve_nowall": [
+   19.708,
+   20.573
+  ],
+  "tnt_pull": [
+   20.973,
+   21.773
+  ],
+  "tnt_throw": [
+   21.773,
+   23.173
+  ],
+  "tnt_gone": [
+   23.173,
+   23.873
+  ],
+  "whip": [
+   23.873,
+   24.373
+  ],
+  "noob_boom": [
+   24.373,
+   25.812
+  ],
+  "bank": [
+   26.212,
+   27.112
+  ],
+  "patch_stop": [
+   27.112,
+   29.183
+  ],
+  "patch_correct": [
+   29.333,
+   32.642
+  ],
+  "hush": [
+   33.042,
+   34.342
+  ],
+  "noob_hi": [
+   34.342,
+   35.569
+  ],
+  "listen": [
+   35.769,
+   36.969
+  ],
+  "void_hi": [
+   36.969,
+   40.803
+  ],
+  "stare": [
+   39.669,
+   40.269
+  ],
+  "surge": [
+   40.269,
+   41.169
+  ],
+  "noob_copy": [
+   41.169,
+   42.529
+  ],
+  "patch_hold": [
+   42.629,
+   44.919
+  ],
+  "warp": [
+   45.019,
+   46.519
+  ],
+  "flash": [
+   46.519,
+   46.769
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_delete",
+   "who": "noob",
+   "text": "The world is DELETING itself!",
+   "vo": false,
+   "caption": true,
+   "start": 4.9,
+   "end": 7.084
+  },
+  {
+   "name": "steve_stop",
+   "who": "steve",
+   "text": "Then we stop it.",
+   "vo": false,
+   "caption": true,
+   "start": 8.484,
+   "end": 9.831
+  },
+  {
+   "name": "steve_pick",
+   "who": "steve",
+   "text": "...My pickaxe.",
+   "vo": false,
+   "caption": true,
+   "start": 13.481,
+   "end": 14.625
+  },
+  {
+   "name": "noob_wall",
+   "who": "noob",
+   "text": "Wall!",
+   "vo": false,
+   "caption": true,
+   "start": 15.475,
+   "end": 16.158
+  },
+  {
+   "name": "steve_nowall",
+   "who": "steve",
+   "text": "...No wall.",
+   "vo": false,
+   "caption": true,
+   "start": 19.708,
+   "end": 20.573
+  },
+  {
+   "name": "noob_boom",
+   "who": "noob",
+   "text": "It deleted the BOOM!",
+   "vo": false,
+   "caption": true,
+   "start": 24.373,
+   "end": 25.812
+  },
+  {
+   "name": "patch_stop",
+   "who": "patch",
+   "text": "Stop throwing things at it!",
+   "vo": false,
+   "caption": true,
+   "start": 27.112,
+   "end": 29.183
+  },
+  {
+   "name": "patch_correct",
+   "who": "patch",
+   "text": "It's not attacking. It's correcting.",
+   "vo": false,
+   "caption": true,
+   "start": 29.333,
+   "end": 32.642
+  },
+  {
+   "name": "noob_hi",
+   "who": "noob",
+   "text": "...Hi?",
+   "vo": false,
+   "caption": true,
+   "start": 34.342,
+   "end": 35.569
+  },
+  {
+   "name": "void_hi",
+   "who": "void",
+   "text": "...Hi?",
+   "vo": false,
+   "caption": true,
+   "start": 36.969,
+   "end": 40.803
+  },
+  {
+   "name": "noob_copy",
+   "who": "noob",
+   "text": "It's copying me!",
+   "vo": false,
+   "caption": true,
+   "start": 41.169,
+   "end": 42.529
+  },
+  {
+   "name": "patch_hold",
+   "who": "patch",
+   "text": "Hold still- I'm pulling us out!",
+   "vo": false,
+   "caption": true,
+   "start": 42.629,
+   "end": 44.919
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely",
+   "fx": "patch"
+  },
+  "void": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "emotion": 0.2,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "unseen: the void copying the Noob's own voice"
+  }
+ },
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 71%",
+   "start": 0.0,
+   "end": 4.9
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 66%",
+   "alert": true,
+   "start": 4.9,
+   "end": 12.381
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 62%",
+   "alert": true,
+   "start": 12.381,
+   "end": 23.173
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 57%",
+   "alert": true,
+   "start": 23.173,
+   "end": 40.669
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 52%",
+   "alert": true,
+   "start": 40.669,
+   "end": 47.169
+  }
+ ]
+}
