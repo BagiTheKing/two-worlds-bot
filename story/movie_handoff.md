@@ -20,9 +20,15 @@
 >    the previous chapter's, as Ep4 imports Ep3) -> local stills -> one CI preview -> send it -> notes -> fixes by
 >    range -> a section here on what was learned.
 > 5. **The original voice takes** of Episodes 4-8 are no longer in the CI voice cache. They live in the repo:
->    `movie/ep04_published` (finished; use as `voices_from`) and, rescued raw before their artifacts expired,
->    `movie/ep05_published` .. `movie/ep08_published` (the raw scene recordings, the published mix, timeline and
->    voice log; turn them into a `voices_from` folder the way Ep4's was made: see "Episode 4", Sound).
+>    `movie/ep04_published` (finished; use as `voices_from`). **Episodes 5-8: rescue FIRST, before anything else,
+>    if `movie/ep0N_published` is not in the repo yet** (a voices-only CI run with `voices_from=<run id>` on any movie
+>    episode file stops fast but publishes the old prep to `preview-logs` as `prev_prep/`; copy it into
+>    `movie/ep0N_published` (scenes, mix, timeline, voice log) at once: each run overwrites `preview-logs`; one at a
+>    time). The published runs and when their prep artifacts expire (30 days, then the takes are gone for good):
+>    Ep5 run 40886523331 (about 2026-11-28 14:00 UTC), Ep6 run 41223595607 (2026-11-30 ~17:00), Ep7 run 41463846907
+>    (2026-12-02 ~14:00), Ep8 run 41851020512 (2026-12-04 ~15:00). On 2026-11-27 ~00:20 UTC the Ep5 rescue run
+>    (45916058648) was queued while GitHub had no runner for it. Then turn the raw folder into a `voices_from`
+>    folder the way Ep4's was made (see "Episode 4", Sound).
 
 > **Open corrections (2026-11-23): read `story/movie/fixes_2026-11-23.md`
 > first.** The creator's fix list for chapters 0-2 (Ep0's fall restored, Ep1's
@@ -399,7 +405,8 @@ one high note, ringing into Ep5); hold on the Noob's stunned face, Steve's glanc
   retention) held the raw scene recordings (`build/scenes/<first line>.wav`), the mix and the timeline, but no
   voices-only stem (that came on Nov 7). It was saved an hour before expiry: the workflow now copies any
   `voices_from` prep into `preview-logs` (`prev_prep/`), so a voices run with `voices_from=<old run id>` rescues it.
-  Episodes 5-8's preps were rescued the same way into `movie/ep0N_published` (raw).
+  Episodes 5-8's preps must be rescued the same way into `movie/ep0N_published` (raw): see START HERE for the run
+  ids and the deadlines.
 - **Rebuilding finished takes from a rescued prep** (`movie/ep04_published`, made locally): run `audio.build` on the
   *published* episode file with `--keep-timeline`-style `keep=<its timeline>`, `gemini_speak` patched to return the
   matching `scenes/<first line>.wav` (lines with `cut_at` are cut exactly as published), `split_scene`/`cut_lines`
@@ -447,4 +454,4 @@ touches it a third time and it pours into him instead of killing him, or it shat
 the castle, the door, the duck (one of the Noob's builds: in the Short it is built on its own pad before the castle; show him building it so its vanishing lands), Patch's "It's not
 you. Something is deleting what doesn't belong.", the wave, REALITY to 71% (the movie meter, one drop per event).
 The same obby world (`movie_ep04.build` / `movie_ep03`), the same rigs and Patch (`patch.py`). Its takes:
-`movie/ep05_published` (rescued raw; build the `voices_from` folder first).
+`movie/ep05_published` (rescued raw: rescue it first if missing; then build the `voices_from` folder).
