@@ -44,7 +44,7 @@ def b(name, i=0):
 
 # ------------------------------------------------------------------ the light
 SUNSET = {"glow": (255, 196, 140), "power": 7.0, "horizon": (255, 176, 118), "mid": (214, 150, 150), "zenith": (70, 78, 140),
-          "fill": 0.75, "fill_col": (255, 206, 170)}
+          "fill": 1.05, "fill_col": (255, 206, 170)}
 TWILIGHT = {"glow": (130, 120, 180), "power": 6.0, "horizon": (66, 70, 122), "mid": (28, 34, 78), "zenith": (7, 11, 26),
             "fill": 0.34, "fill_col": (112, 132, 206)}
 STORM = {"glow": (214, 196, 255), "power": 6.0, "horizon": (176, 96, 180), "mid": (84, 52, 132), "zenith": (22, 14, 48),
@@ -65,18 +65,18 @@ def key_interp(keys, t):
 
 
 # ------------------------------------------------------------------ places (metres; the portal at (0, 5), facing -y)
-LAND_S = (-1.3, -1.6)
-LAND_N = (1.1, -1.2)
+LAND_S = (-1.5, 2.15)
+LAND_N = (1.4, 2.35)
 VINE_A = (-0.5, 3.72)                     # Steve pulling the left curtain
 VINE_B = (0.45, 3.72)                     # ... the right one
-NOOB_SEE = (1.05, 2.15)                   # the Noob, scrambled up behind him: "You had a PORTAL?!"
-STEVE_T = (-0.65, 1.25)                   # the talk, ~3.8 m in front of the frame
-NOOB_T = (0.75, 1.0)
-NOOB_PAT = (0.22, 0.98)                   # beside Steve for the pat
-PATCH_T = Vector((-1.5, 0.45, 2.1))
-PAST_S = (2.3, 3.35)                      # past-Steve setting the last block (the right column's middle)
-PAST_FLINT = (0.55, 3.75)
-PAST_BACK = (0.75, 2.55)
+NOOB_SEE = (2.0, 2.2)                   # the Noob, scrambled up behind him: "You had a PORTAL?!"
+STEVE_T = (-0.8, 2.3)                   # the talk, ~3.8 m in front of the frame
+NOOB_T = (0.7, 2.1)
+NOOB_PAT = (0.1, 2.15)                   # beside Steve for the pat
+PATCH_T = Vector((-1.7, 1.5, 2.2))
+PAST_S = (2.05, 3.85)                      # past-Steve setting the last block (the right column's middle)
+PAST_FLINT = (0.75, 3.75)
+PAST_BACK = (2.3, 2.5)
 LAST_BLOCK = 12                           # P.blocks index: right column, z 2.5
 CURTAIN_X = (-0.5, 0.5)
 PILE = ((-2.95, 3.55), (2.95, 3.45))
@@ -316,7 +316,7 @@ def prepare(E):
     s_yaw, n_yaw = PAT_STEVE_YAW, PAT_NOOB_YAW
     M.set_steve(E, s_loc, s_yaw, {}, {}, 0.0)
     bpy.context.view_layer.update()
-    head = P6._head(E.S.face)
+    head = P6._head(E.S.face, E.S.holder)
     f = Vector((math.sin(math.radians(s_yaw)), -math.cos(math.radians(s_yaw)), 0))
     left = Vector((-f.y, f.x, 0)) * -1                   # his left (the right is (f.y, -f.x))
     target = head + left * 0.36 + Vector((0, 0, -0.62))
@@ -577,8 +577,8 @@ def patch_now(E, t, hidden=False):
         PA.root.location = (0, 0, -300)
         PA.glow.data.energy = 0.0
         return
-    land = G(E, 0.1, -1.0) + Vector((0, 0, 2.0))
-    side = G(E, 1.9, 0.2) + Vector((0, 0, 2.1))
+    land = G(E, 0.0, 1.6) + Vector((0, 0, 2.2))
+    side = G(E, 2.4, 1.2) + Vector((0, 0, 2.2))
     if t < b("tumble") + 1.0:                                     # wobbling out of the warp, steadying
         u = ss(0.0, b("tumble") + 1.0, t)
         p = land + Vector((0, 0, 1.4 * (1 - u)))
@@ -704,14 +704,14 @@ def light(E, t, past):
         look = M.mix_look(look, STORM, sk)
     set_sky(W, look)
     el = key_interp(SUN_KEYS, t)
-    en = 4.2 * max(0.0, min(1.0, el / 6.0)) + 0.15
+    en = 5.6 * max(0.0, min(1.0, el / 6.0)) + 0.15
     col = tuple(lerp(c, w, ss(0, b("step"), t)) for c, w in zip(SUN_COL, (0.62, 0.7, 1.0)))
     if sk > 0:                                                    # ending on ep10_entrance's sun (71, 16, 1.5 violet)
         el, en = lerp(el, 16, sk), lerp(en, 1.5, sk)
         col = tuple(lerp(c, w, sk) for c, w in zip(col, (0.8, 0.66, 1.0)))
     set_sun(W, 71, el, en, col)
     # the character key: warm sun-side fill fading into the dusk; off on the ignition (no front light)
-    E.key.data.energy = lerp(240, 70, tw) * (1 - ss(ig - 0.1, ig + 0.15, t))
+    E.key.data.energy = lerp(320, 80, tw) * (1 - ss(ig - 0.1, ig + 0.15, t))
     E.key.data.color = tuple(lerp(c, w, tw) for c, w in zip((1.0, 0.82, 0.62), (0.62, 0.7, 1.0)))
 
 
@@ -778,7 +778,7 @@ def sparks(E, t):
 # ------------------------------------------------------------------ cameras
 def _head(E, who):
     bpy.context.view_layer.update()
-    return P6._head(E.S.face) if who == "steve" else P6._head(E.N.face)
+    return P6._head(E.S.face, E.S.holder) if who == "steve" else P6._head(E.N.face)
 
 
 def _over(E, who, other, dist, side_deg, lens, fstop, dz=-0.05):
@@ -799,31 +799,31 @@ def camera(E, t, shot, layer):
     from ep10_p2_omg import handheld
     if layer == "past":
         u = ss(b("dissolve"), b("back", 1), t)
-        loc = Vector((4.6 - 0.5 * u, 0.4 + 0.6 * u, 1.75))
-        look = Vector((1.0, 4.4, 1.85))
-        lens, fs, fd, sh = 35, 5.6, (Vector((1.2, 3.5, 1.5)) - loc).length, 0.05
+        loc = Vector((5.2 - 0.4 * u, -0.9 + 0.5 * u, 2.0))
+        look = Vector((0.6, 4.4, 2.3))
+        lens, fs, fd, sh = 30, 6.0, (Vector((1.6, 3.6, 2.0)) - loc).length, 0.05
     elif shot in ("land", "past"):
         u = ss(0.0, b("dissolve", 1), t)
-        loc = G(E, 3.4, -8.8) + Vector((-0.6 * u, 1.4 * u, 1.05))
-        look = G(E, -0.2, 2.3) + Vector((0, 0, 1.75 - 0.15 * u))
-        lens, fs, fd, sh = 28, 9.0, 8.0, 0.06
+        loc = G(E, 3.2, -6.2) + Vector((-0.5 * u, 1.1 * u, 1.75))
+        look = G(E, -0.1, 3.4) + Vector((0, 0, 2.7 - 0.3 * u))
+        lens, fs, fd, sh = 26, 9.0, 9.0, 0.06
     elif shot in ("noob_hurt", "noob_smile"):
-        loc, look, lens, fs, fd = _over(E, "noob", "steve", 2.15, 32, 50, 2.8)
+        loc, look, lens, fs, fd = _over(E, "noob", "steve", 2.3, 40, 50, 2.8)
         sh = 0.05
     elif shot == "steve":
-        loc, look, lens, fs, fd = _over(E, "steve", "noob", 2.6, 30, 65, 2.2)
+        loc, look, lens, fs, fd = _over(E, "steve", "noob", 2.8, 36, 65, 2.2)
         u = ss(b("guilt"), b("think"), t)
         loc = loc + (look - loc).normalized() * 0.25 * u                 # a slow creep in
         sh = 0.04
     elif shot == "two":
         u = ss(b("step"), b("ignite"), t)
-        loc = G(E, -0.1, -2.9) + Vector((0.1 * u, 0.25 * u, 1.45))
-        look = G(E, 0.05, 1.2) + Vector((0, 0, 1.3))
+        loc = G(E, -0.3, -2.2) + Vector((0.1 * u, 0.25 * u, 1.7))
+        look = G(E, -0.2, 2.3) + Vector((0, 0, 1.7))
         lens, fs, fd, sh = 35, 4.0, (look - loc).length, 0.04
     elif shot == "turn":
-        loc = G(E, 0.05, 3.85) + Vector((0, 0, 1.5))
-        look = G(E, -0.2, 1.1) + Vector((0, 0, 1.38))
-        lens, fs, fd, sh = 40, 3.2, (look - loc).length, 0.05 + 0.4 * math.exp(-((t - b("ignite")) / 0.12) ** 2)
+        loc = G(E, -0.2, 4.25) + Vector((0, 0, 1.8))
+        look = G(E, -0.3, 2.2) + Vector((0, 0, 1.75))
+        lens, fs, fd, sh = 32, 3.2, (look - loc).length, 0.05 + 0.4 * math.exp(-((t - b("ignite")) / 0.12) ** 2)
     else:                                                         # 5B: onto ep10_entrance's first camera
         u = ss(b("reveal"), b("crack", 1), t)
         u = u * (2 - u) if u < 1 else 1.0
