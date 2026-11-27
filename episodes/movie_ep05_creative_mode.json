@@ -1,0 +1,762 @@
+{
+ "id": "movie_ep05_creative_mode",
+ "number": 5,
+ "title": "Noob Found Creative Mode",
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely",
+   "fx": "patch"
+  }
+ },
+ "movie_note": "Movie Episode 5 (the creator's notes, 2026-11-27; story/movie/ep05_shots.md): picks up Ep4's twist; the third poke pours the cube into a BTools hammer (shown on screen: 'Since the block!'); duck, statue, castle, door (room for the gag); one erase rule for every deletion; the duck, the castle, the statue, then the original course; REALITY 85 -> 82 -> 80 -> 77 -> 75 -> 73 -> 71, one drop per erasure; the dragon glitches but stays (Ep6 erases it), the door stays (Ep6 erases it). The original takes for the original lines (movie/ep05_published); a new take only for Patch's added 'Wait- don't-'.",
+ "voices_cache_only": true,
+ "declick": 0.004,
+ "declick_blank": 0.0025,
+ "voice_air": 0.12,
+ "music": [
+  {
+   "cue": "deleted",
+   "from": 0,
+   "to": "implode+0.5",
+   "gain": 0.62,
+   "seed": 5,
+   "offset": 4.67,
+   "fall_at": 3.07,
+   "fade_out": 1.4,
+   "note": "Ep4's last cue goes on (the same seed, level and fallen note), dying as the cube implodes (gain matched to Ep4's last second at the cut: this chapter's master level is 3.5 dB lower)"
+  },
+  {
+   "cue": "bounce",
+   "from": "duck+0.45",
+   "to": "duck_gone",
+   "gain": 0.15,
+   "seed": 6,
+   "hard_end": true,
+   "mutes": [
+    [
+     "open+0.35",
+     "stare.end"
+    ]
+   ],
+   "note": "the sandbox groove for the builds; out dead for the door gag, back for one bar, cut dead the frame the duck glitches"
+  },
+  {
+   "cue": "drone",
+   "from": "duck_gone+0.4",
+   "to": "castle_gone",
+   "gain": 0.1,
+   "seed": 3,
+   "fade_out": 0.6,
+   "note": "low unease under 'Where's my duck?' and Patch"
+  },
+  {
+   "cue": "drone",
+   "from": "stairs_gone+1.2",
+   "to": "end",
+   "gain": 0.07,
+   "seed": 4,
+   "open_tail": true,
+   "note": "a faint low drone left in the void, carried into Ep6"
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "sky",
+   "from": 0,
+   "to": "stairs_gone",
+   "gain": 0.05,
+   "note": "the obby's wind"
+  },
+  {
+   "kind": "void",
+   "from": "stairs_gone",
+   "to": "end",
+   "gain": 0.05,
+   "fade_in": 1.2,
+   "note": "the world emptied: raw void wind"
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "hum",
+   "at": 0,
+   "to": "implode+0.2",
+   "semi": -7.0,
+   "sub": 0.6,
+   "gain": 0.16,
+   "note": "Ep4's cube hum goes on, faint"
+  },
+  {
+   "kind": "crackle",
+   "at": "still+0.6",
+   "dur": 0.5,
+   "gain": 0.2
+  },
+  {
+   "kind": "step",
+   "at": "reach+0.1",
+   "gain": 0.3
+  },
+  {
+   "kind": "ping",
+   "at": "poke3+0.05",
+   "pitch": 1.4,
+   "gain": 0.4,
+   "note": "the finger lands: no zap this time"
+  },
+  {
+   "kind": "siphon",
+   "at": "implode",
+   "dur": 1.1,
+   "big": true,
+   "gain": 0.7,
+   "note": "the cube pouring into his hand"
+  },
+  {
+   "kind": "crackle",
+   "at": "implode+0.1",
+   "dur": 1.0,
+   "gain": 0.35
+  },
+  {
+   "kind": "charge",
+   "at": "implode+0.3",
+   "dur": 1.0,
+   "gain": 0.3
+  },
+  {
+   "kind": "clunk",
+   "at": "implode+1.3",
+   "pitch": 1.3,
+   "gain": 0.5,
+   "note": "the hammer forms in his fist"
+  },
+  {
+   "kind": "chime",
+   "at": "implode+1.35",
+   "pitch": 1.5,
+   "gain": 0.3
+  },
+  {
+   "kind": "btool",
+   "at": "duck-0.4",
+   "size": 0.5,
+   "gain": 0.6
+  },
+  {
+   "kind": "quack",
+   "at": "duck+0.35",
+   "n": 2,
+   "gain": 0.45
+  },
+  {
+   "kind": "step",
+   "at": "duck+0.15",
+   "gain": 0.3,
+   "note": "Steve's half step back"
+  },
+  {
+   "kind": "whoosh",
+   "at": "statue",
+   "dur": 0.4,
+   "gain": 0.35,
+   "note": "the swing"
+  },
+  {
+   "kind": "btool",
+   "at": "statue+0.2",
+   "size": 2.0,
+   "gain": 0.55
+  },
+  {
+   "kind": "slam",
+   "at": "statue+0.7",
+   "gain": 0.9,
+   "note": "the statue lands: concrete boom, dust"
+  },
+  {
+   "kind": "whoosh",
+   "at": "castle",
+   "dur": 0.35,
+   "gain": 0.3
+  },
+  {
+   "kind": "btool",
+   "at": "castle+0.15",
+   "size": 1.0,
+   "gain": 0.55
+  },
+  {
+   "kind": "place",
+   "from": "castle+0.55",
+   "to": "castle+1.05",
+   "count": 8,
+   "gain": 0.35,
+   "note": "toy-brick clatter"
+  },
+  {
+   "kind": "step",
+   "at": "pinch+0.6",
+   "gain": 0.25
+  },
+  {
+   "kind": "whoosh",
+   "at": "door",
+   "dur": 0.35,
+   "gain": 0.3
+  },
+  {
+   "kind": "btool",
+   "at": "door+0.15",
+   "size": 1.2,
+   "gain": 0.55
+  },
+  {
+   "kind": "thump",
+   "at": "door+0.6",
+   "freq": 120,
+   "gain": 0.35,
+   "note": "the door's sill settles"
+  },
+  {
+   "kind": "click",
+   "at": "open+0.1",
+   "gain": 0.4,
+   "note": "the handle"
+  },
+  {
+   "kind": "door",
+   "at": "open+0.25",
+   "dur": 1.6,
+   "gain": 0.6,
+   "note": "the slow creak"
+  },
+  {
+   "kind": "gust",
+   "at": "open+0.9",
+   "dur": 3.6,
+   "gain": 0.35,
+   "note": "high-altitude wind through the doorway, under the stare"
+  },
+  {
+   "kind": "chime",
+   "at": "chime+0.6",
+   "pitch": 0.8,
+   "gain": 0.3,
+   "note": "a soft glitch chime"
+  },
+  {
+   "kind": "erase",
+   "at": "duck_gone+0.05",
+   "dur": 0.55,
+   "size": 1.0,
+   "gain": 0.8
+  },
+  {
+   "kind": "servo",
+   "at": "scan",
+   "dur": 0.4,
+   "pitch": 1.4,
+   "gain": 0.25,
+   "note": "Patch darts forward"
+  },
+  {
+   "kind": "ping",
+   "at": "scan+0.45",
+   "gain": 0.35
+  },
+  {
+   "kind": "scan",
+   "at": "scan+0.5",
+   "dur": 4.2,
+   "gain": 0.2
+  },
+  {
+   "kind": "rumble_rise",
+   "at": "castle_gone",
+   "dur": 4.3,
+   "smooth": true,
+   "gain": 0.35,
+   "cut": "dragon+0.5",
+   "note": "the rising low tension, no melody, cut dead"
+  },
+  {
+   "kind": "erase",
+   "at": "castle_gone+0.25",
+   "dur": 0.55,
+   "size": 1.2,
+   "gain": 0.8
+  },
+  {
+   "kind": "erase",
+   "at": "statue_gone+0.2",
+   "dur": 0.9,
+   "size": 2.2,
+   "gain": 0.9
+  },
+  {
+   "kind": "glitch",
+   "at": "dragon+0.05",
+   "dur": 0.3,
+   "gain": 0.6,
+   "cut": "dragon+0.5",
+   "note": "the dragon flickers"
+  },
+  {
+   "kind": "sub_drop",
+   "at": "dragon+0.1",
+   "dur": 0.8,
+   "gain": 0.4
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+0.1",
+   "dur": 0.45,
+   "size": 0.8,
+   "gain": 0.7
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+0.6",
+   "dur": 0.45,
+   "size": 0.8,
+   "gain": 0.7
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+1.1",
+   "dur": 0.45,
+   "size": 0.8,
+   "gain": 0.72
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+1.6",
+   "dur": 0.45,
+   "size": 0.9,
+   "gain": 0.75
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+2.05",
+   "dur": 0.45,
+   "size": 0.9,
+   "gain": 0.78
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+2.5",
+   "dur": 0.55,
+   "size": 1.2,
+   "gain": 0.82,
+   "note": "the stepping stone and the checkpoint"
+  },
+  {
+   "kind": "erase",
+   "at": "stairs_gone+2.95",
+   "dur": 0.6,
+   "size": 2.0,
+   "gain": 0.85,
+   "note": "two far towers"
+  }
+ ],
+ "stutters": [
+  {
+   "at": "duck_gone+0.6",
+   "n": 0,
+   "silence": 0.15,
+   "note": "the instant the duck is gone: 0.15 s of dead air"
+  },
+  {
+   "at": "castle_gone+0.8",
+   "n": 0,
+   "silence": 0.15
+  },
+  {
+   "at": "statue_gone+1.1",
+   "n": 0,
+   "silence": 0.15
+  },
+  {
+   "at": "stairs_gone+3.55",
+   "n": 0,
+   "silence": 0.15
+  }
+ ],
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 85%",
+   "from": 0,
+   "to": "duck_gone+0.6"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 82%",
+   "alert": true,
+   "from": "duck_gone+0.6",
+   "to": "castle_gone+0.8"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 80%",
+   "alert": true,
+   "from": "castle_gone+0.8",
+   "to": "statue_gone+1.1"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 77%",
+   "alert": true,
+   "from": "statue_gone+1.1",
+   "to": "stairs_gone+1.15"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 75%",
+   "alert": true,
+   "from": "stairs_gone+1.15",
+   "to": "stairs_gone+2.1"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 73%",
+   "alert": true,
+   "from": "stairs_gone+2.1",
+   "to": "stairs_gone+3.55"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 71%",
+   "alert": true,
+   "from": "stairs_gone+3.55",
+   "to": "end"
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "events": [
+  {
+   "beat": "still",
+   "dur": 2.4,
+   "note": "Ep4's last instant goes on: the Noob stunned on the blue terrace, Patch facing him (eye dim), Steve on the grey pad's edge, the 1.45 m glitch cube crackling at the terrace's front corner, the sealed dragon in the sky; silence, the low swell still ringing. The Noob blinks, then his eyes slide sideways to the cube"
+  },
+  {
+   "beat": "reach",
+   "dur": 0.7,
+   "note": "zero impulse control: he turns to the cube and reaches out a finger; Patch's eye snaps wide"
+  },
+  {
+   "line": "patch",
+   "name": "patch_wait",
+   "text": "Wait- don't-",
+   "direction_text": "[alarmed, quick] Wait- don't-",
+   "solo_only": true,
+   "solo_text": "Wait! Don't-",
+   "new_take": true,
+   "pad": 0.0,
+   "note": "added line (the creator's blueprint): Patch, too late; the poke cuts him off"
+  },
+  {
+   "beat": "poke3",
+   "dur": 0.5,
+   "note": "the third poke: the finger lands on the cube; a pink flash, and this time no zap"
+  },
+  {
+   "beat": "implode",
+   "dur": 1.7,
+   "note": "the cube implodes inward: it folds into a stream of magenta-cyan code that pours into the Noob's hand and condenses into a glowing BTools hammer (white head, cyan rim); the hum dies; the tether is gone; REALITY stays at 85"
+  },
+  {
+   "beat": "hammer",
+   "dur": 0.9,
+   "note": "he stares at the hammer in his fist, then points it at the white spawn plate next to Steve: a cyan selection box snaps round it"
+  },
+  {
+   "beat": "duck",
+   "dur": 1.0,
+   "note": "BTools materialize (8 frames): the box locks, a cyan scan plane sweeps up, a giant yellow rubber duck pops in with a 1.04 -> 1.0 bounce and square dust puffs; Steve jumps half a step back; the duck quacks"
+  },
+  {
+   "line": "noob",
+   "name": "noob_build",
+   "text": "I can BUILD stuff!",
+   "direction_text": "[thrilled, shouting with joy] I can BUILD stuff!",
+   "solo_only": true,
+   "pad": 0.15,
+   "note": "the original take; he forgets the lore bomb and beams, the hammer up",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "lower",
+   "dur": 0.5,
+   "note": "Steve lowers his pickaxe slowly, staring from the duck to the Noob"
+  },
+  {
+   "line": "steve",
+   "name": "steve_since",
+   "text": "Since when?",
+   "direction_text": "[flat, suspicious] Since when?",
+   "cut_at": [
+    0.0,
+    1.6
+   ],
+   "pad": 0.1,
+   "note": "the original take; flat, suspicious",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "line": "noob",
+   "name": "noob_block",
+   "text": "Since the block!",
+   "direction_text": "[proud] Since the block!",
+   "cut_at": [
+    1.64,
+    2.96
+   ],
+   "pad": 0.35,
+   "note": "the original take; he lifts the glowing hammer proudly",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "statue",
+   "dur": 1.8,
+   "note": "he swings the hammer at the checkpoint pad east of the spawn: the selection box (sized to the statue, arms included), the scan, and a giant grey Noob statue slams down: a dust ring, a camera shake"
+  },
+  {
+   "line": "noob",
+   "name": "noob_statue",
+   "text": "A statue of me!",
+   "direction_text": "[delighted] A statue of me!",
+   "cut_at": [
+    2.96,
+    5.03
+   ],
+   "pad": 0.2,
+   "note": "the original take; arms wide, delighted",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "crane",
+   "dur": 0.8,
+   "note": "Steve's head tilts up 30 degrees to the statue's top; a 3-frame blink as his gaze drops to the Noob"
+  },
+  {
+   "line": "steve",
+   "name": "steve_big",
+   "text": "Why is it so big?",
+   "direction_text": "[deadpan] Why is it so big?",
+   "cut_at": [
+    5.03,
+    6.81
+   ],
+   "pad": 0.1,
+   "note": "the original take; deadpan",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "line": "noob",
+   "name": "noob_see",
+   "text": "So everyone can see me!",
+   "direction_text": "[proud, beaming] So everyone can see me!",
+   "cut_at": [
+    6.81,
+    8.24
+   ],
+   "pad": 0.3,
+   "note": "the original take; proud, beaming",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "castle",
+   "dur": 1.6,
+   "note": "a quick swing back over his shoulder: a pastel toy castle (towers, tiny flags) snaps onto the violet ledge behind him with a toy-brick clatter"
+  },
+  {
+   "beat": "pinch",
+   "dur": 0.9,
+   "note": "Steve pinches the bridge of his nose, then points out at the open sky past the terrace"
+  },
+  {
+   "line": "steve",
+   "name": "steve_home",
+   "text": "Build us a way home.",
+   "direction_text": "[dry, practical] Build us a way home.",
+   "cut_at": [
+    8.24,
+    9.53
+   ],
+   "pad": 0.2,
+   "note": "the original take; dry",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "salute",
+   "dur": 0.6,
+   "note": "the Noob salutes"
+  },
+  {
+   "beat": "door",
+   "dur": 1.3,
+   "note": "he swings at the terrace's front edge: the box, the scan, a single freestanding wooden door on a threshold sill (4 cm above the terrace), facing the open sky"
+  },
+  {
+   "beat": "open",
+   "dur": 1.5,
+   "note": "he reaches over and pulls the handle: the door creaks wide open (hinge origin, local Z 0 -> 95 degrees, clear of the terrace) onto nothing: clouds and a long drop; the music drops out"
+  },
+  {
+   "line": "noob",
+   "name": "noob_close",
+   "text": "...Close enough!",
+   "direction_text": "[cheerful] ...Close enough!",
+   "cut_at": [
+    11.0,
+    12.08
+   ],
+   "pad": 0.1,
+   "note": "the original take; cheerful, presenting it",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "stare",
+   "dur": 1.6,
+   "note": "Steve's full deadpan stare through the open doorframe into the clouds; only the wind whistling through it"
+  },
+  {
+   "beat": "chime",
+   "dur": 1.0,
+   "note": "the groove comes back for a bar; then a soft glitch chime behind Steve pulls focus to the white plate"
+  },
+  {
+   "beat": "duck_gone",
+   "dur": 1.0,
+   "note": "the erase rule (every erasure the same): the duck turns pink-and-black checkerboard top to bottom, slices into transparency, a few magenta pixels float up; the music cut dead; REALITY 85 -> 82"
+  },
+  {
+   "line": "noob",
+   "name": "noob_duck",
+   "text": "Hey! Where's my duck?",
+   "direction_text": "[confused, upset] Hey! Where's my duck?",
+   "cut_at": [
+    12.22,
+    14.13
+   ],
+   "pad": 0.2,
+   "note": "the original take; the smile gone, brows up and in (worry), only vowel mouth shapes",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "scan",
+   "dur": 0.8,
+   "note": "Patch darts forward over the empty white plate and aims his cyan scan cone straight down at it, where faint pink static still hangs; the Noob leans in, anxious"
+  },
+  {
+   "line": "patch",
+   "name": "patch_delete",
+   "text": "It's not you. Something is deleting what doesn't belong.",
+   "direction_text": "[calm, quiet, serious] It's not you. Something is deleting what doesn't belong.",
+   "cut_at": [
+    0.0,
+    4.92
+   ],
+   "pad": 0.3,
+   "note": "the original take; quiet; the cone sweeps the plate, then whips over to the castle just before it goes",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "castle_gone",
+   "dur": 1.4,
+   "note": "behind the Noob the castle erases (the same rule); REALITY 82 -> 80; the low tension rises"
+  },
+  {
+   "beat": "statue_gone",
+   "dur": 1.8,
+   "note": "over Steve's shoulder the giant statue erases top to bottom; REALITY 80 -> 77; the Noob steps toward it, both hands out, the hammer dipping"
+  },
+  {
+   "line": "noob",
+   "name": "noob_no",
+   "text": "NO!",
+   "direction_text": "[scared, shouting] NO!",
+   "solo_only": true,
+   "pad": 0.2,
+   "presence": 3.0,
+   "note": "the original take, pushed (presence +3 dB): real alarm",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "dragon",
+   "dur": 1.1,
+   "note": "overhead the crystal-sealed dragon flickers violently into checkerboard and wireframe, a scanline tears across it, and it snaps back (still there: the next chapter takes it); the tension tone cut dead"
+  },
+  {
+   "beat": "hush",
+   "dur": 0.8,
+   "note": "hard silence; the camera settles on the original course west of the terrace (the yellow, green, orange, red and blue stones the four players ran off along)"
+  },
+  {
+   "beat": "stairs_gone",
+   "dur": 3.6,
+   "note": "one by one the stones erase, nearest first, then the orange stepping stone and the checkpoint east, and two far towers go with them; REALITY 77 -> 75 -> 73 -> 71; the sun pales, the sky turns cooler; only the grey pad, the blue terrace, the door and the dragon in the sky are left"
+  },
+  {
+   "beat": "void",
+   "dur": 1.2,
+   "note": "the lonely wide two-shot; only the void wind; Steve staring at where the stones were"
+  },
+  {
+   "line": "steve",
+   "name": "steve_us",
+   "text": "...That wasn't us.",
+   "direction_text": "[quiet, serious] ...That wasn't us.",
+   "cut_at": [
+    5.2,
+    6.39
+   ],
+   "pad": 0.4,
+   "gain_db": -3.0,
+   "note": "the original take, closer and quieter (-3 dB); he turns his head slowly to the Noob and Patch, shoulders down, flat brow",
+   "taken_in": "movie/ep05_published"
+  },
+  {
+   "beat": "hold",
+   "dur": 2.2,
+   "note": "hold: the three of them on two pads in the empty sky, the door standing open, the dragon above; the wind"
+  }
+ ]
+}
