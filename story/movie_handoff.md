@@ -1,11 +1,36 @@
 # The movie: handoff brief
 
+> ## START HERE (a new chat, 2026-11-27): the next job is Episode 5
+>
+> 1. Branch: work on `claude/episode-3-sound-preview-kwg1rk` (it holds everything through Episode 4; commit and
+>    push there unless the creator names another). Never put a model name in commits or files.
+> 2. Read, in order: `CLAUDE.md`, `story/creator_notes.md`, this file's last three sections ("Episode 2", "Episode 3",
+>    "Episode 4: how it was made and what it taught us", the last one ending in **"What Episode 5 picks up"**), and
+>    `story/movie/ep04_shots.md`.
+> 3. The creator's standing rules for the movie now (2026-11-26): no reviewer-agent passes unless asked; build
+>    carefully, render once, send every preview video as soon as it is ready; re-render only what changed
+>    (`reuse_run_id` + `new_range`); a sound-only change with the same timing goes onto the existing picture with
+>    ffmpeg (no render); cheap local test stills (360p, 8 samples, one per shot) before any CI render; switch the
+>    session's network to the creator's "two-worlds-bot" environment (the MCprep pack comes from Google Drive) and
+>    `pip install bpy`; never ask the creator to approve steps (decide, say what you chose; push back only if an idea
+>    can't work); keep the original voice takes of lines that already existed, new takes only for added lines.
+> 4. The loop for an episode: the published Short (`preview-<id>` branch, `episodes/<id>.json`) and the creator's
+>    notes -> the movie episode file `episodes/movie_epNN_<name>.json` -> voices-only CI run (`voices_from` = the
+>    rescued takes, see below) -> send the sound preview (m4a) -> the renderer `src/lookdev/movie_epNN.py` (import
+>    the previous chapter's, as Ep4 imports Ep3) -> local stills -> one CI preview -> send it -> notes -> fixes by
+>    range -> a section here on what was learned.
+> 5. **The original voice takes** of Episodes 4-8 are no longer in the CI voice cache. They live in the repo:
+>    `movie/ep04_published` (finished; use as `voices_from`) and, rescued raw before their artifacts expired,
+>    `movie/ep05_published` .. `movie/ep08_published` (the raw scene recordings, the published mix, timeline and
+>    voice log; turn them into a `voices_from` folder the way Ep4's was made: see "Episode 4", Sound).
+
 > **Open corrections (2026-11-23): read `story/movie/fixes_2026-11-23.md`
 > first.** The creator's fix list for chapters 0-2 (Ep0's fall restored, Ep1's
 > walk cut, Ep2's zombies, block, tree and a new dragon ending) and what it
 > changes in chapter 3.
 
 
+> **Episode 4 is built (preview, 2026-11-27): read "Episode 4: how it was made" at the end of this file before Episode 5.**
 > **Episode 3 is built (v3, 2026-11-26): read "Episode 3: how it was made" at the end of this file before Episode 4.**
 > Work continues from branch `claude/episode-3-sound-preview-kwg1rk` (it holds everything through Episode 3).
 
@@ -342,3 +367,84 @@ Shouldn't Exist", `episodes/ep04_the_block.json`, `preview-ep04_the_block`) open
 dragon": show it falling off the frozen, glitching dragon at Ep3's place (the obby world of `movie_ep03.py`, which Ep4's
 renderer can import: `build`, `part`, `_far_world`, the cast). Patch arrives in Ep4: he must be seen coming from
 somewhere (nobody from nowhere). The dragon's fate after the freeze is open: decide it on screen, don't leave it hanging.
+
+
+## Episode 4: how it was made and what it taught us (2026-11-27)
+
+**State.** Sound `movie/ep04` (53.2 s; voices run 45910763547; all 15 lines pass the hearing check), sent to the
+creator. Renderer `src/lookdev/movie_ep04.py`; episode file `episodes/movie_ep04_the_block.json`; shot list
+`story/movie/ep04_shots.md` (the decisions, the places, every shot). Picture preview: CI run 45915425874 (720p, 20
+samples) -> `preview-movie_ep04`. With it, the creator's two Ep3 seam notes as range re-renders on Ep3 v3 (run
+45907642735): the missing texture held over Ep3's last 8 frames (Ep4 opens on it) and the cloud behind the dragon's
+head lifted in the burst shot only: run 45915682288 -> `preview-movie_ep03_v3b`. If those runs are still queued
+or failed when you arrive, check them (`list_workflow_runs`), rerun failed shards, and send the videos.
+
+**The story as built (the creator's ~60 s blueprint, 2026-11-26).** Ep3's last instant goes on; one last
+missing-texture shudder; the block rips out of the dragon's chest (sparks), lands on the blue terrace; the Noob is
+flung off and belly-flops onto a spawn ring that lights (a checkpoint). The dragon's fate: the glitch crystal that
+held the frozen players seals it in the sky. "A secret block!" / "It fell off the dragon. Don't touch it." Two
+touches (poke; "Again!" karate chop): zap, burst, one dark cube drifting off (the bible's planting rule: kept, one
+per death, off-centre), respawn with squash and stretch, a tether from the ring into the cube, a shockwave, the cube
+0.45 -> 0.85 -> 1.45 m, REALITY 92 -> 89 -> 85 (one drop per respawn), the hum deeper each time. Patch squeezes out
+of the portal (a cyan warp: seen coming from somewhere), stops between the fist and the cube: "Please stop doing
+that." Steve jumps back into a guard; "A talking cube!"; "I'm Patch. I find glitches." (added: he is named); the
+scan from the front right (a clear line, nobody in the beam); "It's feeding on your respawn loop." (the creator's
+line) "It grows every time you come back." "So I'm helping!" "No." (music cut dead). The twist in silence: Patch's
+eye dilates with a scanline glitch, "Wait. I know you." "...You do?" "From a world that got deleted." (a low swell,
+one high note, ringing into Ep5); hold on the Noob's stunned face, Steve's glance.
+
+**Sound lessons.**
+- **The voice cache forgets.** Ep4's published takes had gone from the CI cache (the run stopped with
+  `voices_cache_only`, as it should, instead of recording new ones). The published run's `prep` artifact (30-day
+  retention) held the raw scene recordings (`build/scenes/<first line>.wav`), the mix and the timeline, but no
+  voices-only stem (that came on Nov 7). It was saved an hour before expiry: the workflow now copies any
+  `voices_from` prep into `preview-logs` (`prev_prep/`), so a voices run with `voices_from=<old run id>` rescues it.
+  Episodes 5-8's preps were rescued the same way into `movie/ep0N_published` (raw).
+- **Rebuilding finished takes from a rescued prep** (`movie/ep04_published`, made locally): run `audio.build` on the
+  *published* episode file with `--keep-timeline`-style `keep=<its timeline>`, `gemini_speak` patched to return the
+  matching `scenes/<first line>.wav` (lines with `cut_at` are cut exactly as published), `split_scene`/`cut_lines`
+  stubbed (Whisper's model host is blocked here; pinned cuts don't need it). Solo takes are not in the scenes: lift
+  them from the published mix and subtract the bed (rebuild it with the same code and timeline, placeholder voices
+  of the right spans, capture `keep_under`'s output, fit its gain on voice-free windows, Wiener-style spectral
+  subtraction). The bed sat 20-27 dB under the solos. Check every line by cross-correlation with the published mix
+  (0.73-0.99 here). Save `voice.flac` + `timeline.json`: that folder is a `voices_from`.
+- Cache keys: a scene's key is its turns (speaker, direction text) and voices, grouped as consecutive lines with at
+  most two speakers; solo lines (`solo_only`) are left out of scenes. Added lines must be `solo_only` + `new_take`
+  so the old scenes group exactly as before. A line to replace keeps its place marked `unused` (still recorded with
+  its scene, never placed) and the new take is a new line (Ep4's `noob_touched` -> `noob_touched2`). A different
+  `solo_text` ("I touched it!!") forces a fresh recording. `new_take` solo lines now get all their takes even in a
+  cache-only run.
+- Takes reused from `voices_from` are placed "finished": per-character effects must be applied there too (Patch's
+  `fx: "patch"` chain was missing on his reused lines at first).
+- New sound code: Patch's voice (`cast.fx = "patch"`: 180 Hz high-pass, a 19 ms metallic slap and a slow flanger,
+  ~10% wet; `patch_soft` on a line, 5%); sfx `hum` (`semi`, `sub`), `zap`, `siphon` (`big`), `ping`, `trill`,
+  `warp`, and `crackle`/`land`/`fall` exposed; music `bounce` (light marimba comedy), `curious` (Patch), `deleted`
+  (sub swell, one high note); music `mutes` (drops out dead on a gag, the groove keeping time underneath).
+
+**Picture lessons.**
+- **Picking up a chapter exactly:** import the previous renderer, build its world, and pose its last instant by
+  swapping its beat table into `B` (`_use(E, 3)` ... `_use(E, 4)`; only one beat name collided). Measure what you
+  need once in `prepare(E)` (the frozen pose, the Noob's seat, the last camera) and keep `apply` time-only.
+- **Update order:** anything a character looks at must be posed before the character (Patch before Steve and the
+  Noob), and anything that uses the camera's position must get this frame's (compute `_cam` first). Stale
+  positions turned Steve's back to the camera.
+- **Props in hands block faces:** Steve's pickaxe with a bent elbow sits in front of his face from most front
+  angles; keep the elbow low (10-35) for a "ready" grip.
+- **Cameras:** check each against every large prop's box (one camera sat inside the grown cube) and against hanging
+  debris; for an over-the-shoulder, put the camera well back (3.4 m), well to the side (1.25 m) and high (+0.75 m)
+  so the near head is small in the lower corner. A locked master shot for a growing prop gives the viewer a ruler.
+- A crystal shell over a posed rig: link each mesh's data to a new object with an object-level material, place it
+  at the posed matrix scaled ~1.07 about its centre, reveal by distance from the root.
+- 360p/8-sample stills: five rounds (25 + 17 + 10 + 4 + 2 stills) caught every staging fault before the CI render.
+
+**What Episode 5 picks up.** Ep4 ends on the twist: the Noob (REACT_N, -6.95, -0.8) stunned, Patch (-5.45, -3.0,
+1.85) facing him, eye dim, the 1.45 m glitch block hovering at the terrace's front corner, Steve on the grey pad's
+edge (-2.1, -1.3), the dragon sealed in crystal over the spawn pad, the portal flickering, REALITY 85%, the
+`deleted` cue ringing (open tail: carry it on). The published Ep5 ("Noob Found Creative Mode",
+`episodes/ep05_creative_mode.json`, `preview-ep05_creative_mode`) opens on "I can BUILD stuff!" / "Since when?" /
+"Since the block!": **show on screen how the block gives him the power** (it is right there, huge, fed by him: he
+touches it a third time and it pours into him instead of killing him, or it shatters into him). Then the statue,
+the castle, the door, the duck (one of the Noob's builds: in the Short it is built on its own pad before the castle; show him building it so its vanishing lands), Patch's "It's not
+you. Something is deleting what doesn't belong.", the wave, REALITY to 71% (the movie meter, one drop per event).
+The same obby world (`movie_ep04.build` / `movie_ep03`), the same rigs and Patch (`patch.py`). Its takes:
+`movie/ep05_published` (rescued raw; build the `voices_from` folder first).
