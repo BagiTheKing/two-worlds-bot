@@ -73,7 +73,8 @@ NOOB_SEE = (2.6, 2.3)                   # the Noob, scrambled up behind him: "Yo
 STEVE_T = (-0.8, 2.3)                   # the talk, ~3.8 m in front of the frame
 NOOB_T = (0.7, 2.1)
 NOOB_PAT = (0.1, 2.15)                   # beside Steve for the pat
-PATCH_T = Vector((-1.7, 1.5, 2.2))
+PATCH_T = Vector((-1.9, 2.9, 1.9))
+PATCH_BACK = Vector((-2.6, 0.7, 2.4))     # startled back by the ignition
 PAST_S = (0.55, 3.8)                      # past-Steve setting the last block (the right column's middle)
 PAST_FLINT = (-0.35, 3.8)
 PAST_BACK = (0.4, 2.4)
@@ -603,7 +604,8 @@ def patch_now(E, t, hidden=False):
             p = land.lerp(side, ss(b("walk"), b("walk") + 2.5, t))
             tgt = G(E, *VINE_A) + Vector((0, 0, 1.5)) if t > b("vines") else G(E, *LAND_N)
         else:
-            p = PATCH_T + Vector((0, 0, E.ground(PATCH_T.x, PATCH_T.y)))
+            p = PATCH_T.lerp(PATCH_BACK, ss(b("ignite") + 0.1, b("ignite") + 0.9, t))
+            p = p + Vector((0, 0, E.ground(p.x, p.y)))
             who = "steve" if (b("steve_cost") <= t < b("think")) or b("steve_same") <= t < b("steve_same", 1) else "noob"
             tgt = G(E, *(STEVE_T if who == "steve" else NOOB_T)) + Vector((0, 0, 1.5))
             if t >= b("ignite") + 0.3:
@@ -696,8 +698,10 @@ def portal(E, t, past):
     k = ss(ig, ig + 0.4, t)
     mem.hide_render = k <= 0
     E.power.inputs[2].default_value = 0.42 + 0.9 * math.exp(-max(0.0, t - ig) / 0.6) * (t >= ig)
-    soft = lerp(0.42, 1.0, ss(b("reveal") - 0.1, b("reveal") + 0.8, t))     # gentler on their faces in 5A
+    full = ss(b("reveal") - 0.1, b("reveal") + 0.8, t)
+    soft = lerp(0.18, 1.0, full)                                             # gentler on their faces in 5A
     P.light.data.energy = 900 * k * soft                                     # ep10_entrance's portal light by 5B
+    P.light.data.color = tuple(lerp(x, y, full) for x, y in zip((0.42, 0.3, 1.0), (0.62, 0.25, 1.0)))   # bluer, not pink
     c0 = b("crack") + 0.15
     if t >= c0:                                                              # the magenta crack ripples across
         n = len(E.crack)
@@ -744,7 +748,7 @@ def past_steve(E, t):
     if t < fl0:
         y = yaw_to(PAST_S, (blk_home.x, blk_home.y))
         u = ss(p0 + 0.3, p0 + 0.9, t)
-        pz = {"arm_sr": {"fwd": lerp(30, 72, u), "out": 6}, "hips_drop": 0.45 * u, "chest_lean": 30 * u, "head_nod": 20 * u,
+        pz = {"arm_sr": {"fwd": lerp(30, 72, u), "out": 6}, "hips_drop": 0.45 * u, "chest_lean": 30 * u, "head_nod": 5 * u,
               "foot_sr": {"y": 0.3 * u}}
         M.set_steve(E, G(E, *PAST_S), y, pz, STEVE_FLAT, t)
         bpy.context.view_layer.update()
@@ -753,7 +757,7 @@ def past_steve(E, t):
         if t >= p0 + 0.5:                                         # where the hand was when the block left it
             u5 = ss(p0 + 0.3, p0 + 0.9, p0 + 0.5)
             M.set_steve(E, G(E, *PAST_S), y, {"arm_sr": {"fwd": lerp(30, 72, u5), "out": 6}, "hips_drop": 0.45 * u5,
-                                              "chest_lean": 30 * u5, "head_nod": 20 * u5, "foot_sr": {"y": 0.3 * u5}},
+                                              "chest_lean": 30 * u5, "head_nod": 5 * u5, "foot_sr": {"y": 0.3 * u5}},
                         STEVE_FLAT, t)
             bpy.context.view_layer.update()
             E.hand_place = P6._steve_hand(E.S, "sr")
@@ -830,9 +834,9 @@ def camera(E, t, shot, layer):
             lens, fs, fd, sh = 30, 6.0, 4.6, 0.04
         else:                                                    # beside the frame: his face in the violet light
             u = ss(b("flare"), b("back", 1), t)
-            loc = G(E, 3.0, 4.1) + Vector((-0.15 * u, -0.1 * u, 1.85))
-            look = G(E, 0.2, 2.6) + Vector((0, 0, 2.25))
-            lens, fs, fd, sh = 30, 4.0, 3.2, 0.04
+            loc = G(E, 3.6, 2.5) + Vector((-0.2 * u, 0.05 * u, 2.2))         # his profile, the portal at the right
+            look = G(E, -0.2, 3.7) + Vector((0, 0, 2.4))
+            lens, fs, fd, sh = 26, 5.0, 3.3, 0.04
     elif shot in ("land", "past"):
         u = ss(0.0, b("dissolve", 1), t)
         loc = G(E, 3.2, -6.2) + Vector((-0.5 * u, 1.1 * u, 1.75))
