@@ -1,0 +1,556 @@
+{
+  "id": "movie_ep08_steve_hiding",
+  "number": 8,
+  "title": "Steve Was Hiding Something",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely",
+      "fx": "patch"
+    }
+  },
+  "movie_note": "Movie Episode 8 (the creator's 16:9 blueprint, 2026-11-27; story/movie/ep08_shots.md): out of Ep7's cyan warp flash onto the tall grass of Steve's hidden forest clearing at golden sunset; Steve pulls the vines off his old obsidian portal; 'You had a PORTAL?!'; the flashback (past-Steve places the last block, flint and steel, the first portal flares, a glimpse of the obby); the confession; the forgiveness and the shoulder pat as the sun drops into deep blue twilight; the portal self-ignites violet (REALITY 30 -> 12), Steve: '...I didn't do that.'; a magenta crack; hard cut into ep10_part1_null_entrance. Null never seen. Original takes (movie/ep08_published); one new take (Steve's '...I didn't do that.', the published line was Patch's).",
+  "voices_cache_only": true,
+  "declick": 0.004,
+  "declick_blank": 0.0025,
+  "music": [
+    {
+      "cue": "memory",
+      "from": "dissolve+0.2",
+      "to": "back",
+      "gain": 0.3,
+      "note": "the published flashback cue (music box over a warm pad, tape-warped): the melancholic score starts with the memory"
+    },
+    {
+      "cue": "theme_soft",
+      "from": "back",
+      "to": "ignite",
+      "gain": 0.17,
+      "hard_end": true,
+      "swell": [
+        {
+          "from": "warm",
+          "to": "ignite",
+          "gain": 1.5,
+          "ramp": 0.4
+        }
+      ],
+      "note": "the published tender bed under the confession and forgiveness; cut dead on the ignition"
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "evening",
+      "from": 0,
+      "to": "ignite",
+      "gain": 0.09,
+      "crickets": [
+        0.15,
+        1.0
+      ],
+      "note": "new: a light breeze through the oaks, faint crickets fading in as the light goes; dry, outdoors (vs Ep7's hall); cut dead on the ignition"
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "chime",
+      "at": -0.3,
+      "pitch": 1.25,
+      "gain": 0.6,
+      "note": "Ep7's warp chime (hit on Ep7's flash, ~0.3 s before the cut): its tail rings on (take the exact offset from Ep7's CI timeline)"
+    },
+    {
+      "kind": "whoosh",
+      "at": 0.0,
+      "dur": 0.5,
+      "gain": 0.3,
+      "note": "the warp letting go"
+    },
+    {
+      "kind": "gstep",
+      "at": "tumble+0.35",
+      "heavy": true,
+      "gain": 0.55,
+      "note": "Steve lands on the grass"
+    },
+    {
+      "kind": "land",
+      "at": "tumble+0.6",
+      "gain": 0.4,
+      "note": "the Noob rolls onto his back"
+    },
+    {
+      "kind": "servo",
+      "at": "tumble+0.9",
+      "dur": 0.5,
+      "pitch": 1.2,
+      "gain": 0.2,
+      "note": "Patch steadying"
+    },
+    {
+      "kind": "gstep",
+      "from": "walk+0.15",
+      "to": "walk+1.85",
+      "count": 5,
+      "gain": 0.3,
+      "note": "Steve's quick steps through the tall grass"
+    },
+    {
+      "kind": "vines",
+      "at": "vines+0.25",
+      "dur": 1.0,
+      "gain": 0.45,
+      "note": "the first vine cluster pulled clear"
+    },
+    {
+      "kind": "vines",
+      "at": "vines+1.3",
+      "dur": 1.0,
+      "gain": 0.5,
+      "note": "the second: the obsidian frame revealed"
+    },
+    {
+      "kind": "gstep",
+      "from": "scramble+0.1",
+      "to": "scramble+0.8",
+      "count": 3,
+      "gain": 0.3,
+      "note": "the Noob scrambles up behind him"
+    },
+    {
+      "kind": "whoosh",
+      "at": "dissolve",
+      "dur": 1.0,
+      "gain": 0.18,
+      "note": "the soft dissolve into the memory (no flash, no laser)"
+    },
+    {
+      "kind": "place",
+      "at": "place+0.9",
+      "gain": 0.5,
+      "note": "past-Steve sets the last obsidian block"
+    },
+    {
+      "kind": "flint",
+      "at": "flint+0.4",
+      "n": 2,
+      "gain": 0.45,
+      "note": "flint and steel"
+    },
+    {
+      "kind": "portal",
+      "at": "flare",
+      "dur": 1.4,
+      "gain": 0.45,
+      "note": "the first portal flares open"
+    },
+    {
+      "kind": "crackle",
+      "at": "flare+0.7",
+      "dur": 1.8,
+      "gain": 0.12,
+      "note": "dark purple static rippling round the edges"
+    },
+    {
+      "kind": "whoosh",
+      "at": "back",
+      "dur": 0.8,
+      "gain": 0.15,
+      "note": "out of the memory"
+    },
+    {
+      "kind": "gstep",
+      "from": "step+0.2",
+      "to": "step+1.5",
+      "count": 3,
+      "gain": 0.28,
+      "note": "the Noob steps beside Steve"
+    },
+    {
+      "kind": "obsidian_boom",
+      "at": "ignite",
+      "dur": 3.4,
+      "gain": 0.9,
+      "note": "replaces the published cartoon warble: a deep 45 Hz THOOM, the leaves rattling"
+    },
+    {
+      "kind": "plasma_hum",
+      "at": "ignite+0.1",
+      "to": "dread",
+      "gain": 0.32,
+      "cut": "dread",
+      "note": "the violet plasma's crackling hum"
+    },
+    {
+      "kind": "pressure",
+      "at": "dread",
+      "to": "end",
+      "gain": 0.15,
+      "note": "the suffocating silence: felt more than heard"
+    },
+    {
+      "kind": "plasma_hum",
+      "at": "dread",
+      "to": "end",
+      "gain": 0.06,
+      "note": "the hum left very faint under the silence"
+    },
+    {
+      "kind": "plasma_crack",
+      "at": "crack+0.15",
+      "gain": 0.35,
+      "note": "a single bright magenta crack ripples across the sheet"
+    },
+    {
+      "kind": "stone_groan",
+      "at": "crack.end-0.25",
+      "dur": 0.9,
+      "gain": 0.55,
+      "note": "the J-cut: the obsidian groaning under Null's claws, 6 frames before ep10_part1_null_entrance"
+    }
+  ],
+  "overlays": [
+    {
+      "type": "hud",
+      "text": "REALITY: 30%",
+      "alert": true,
+      "from": 0,
+      "to": "ignite+0.3"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 21%",
+      "alert": true,
+      "from": "ignite+0.3",
+      "to": "ignite+0.45"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 30%",
+      "alert": true,
+      "from": "ignite+0.45",
+      "to": "ignite+0.55"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 12%",
+      "alert": true,
+      "from": "ignite+0.55",
+      "to": "end"
+    }
+  ],
+  "events": [
+    {
+      "beat": "wash",
+      "dur": 0.6,
+      "note": "Shot 1 (28 mm wide, low, golden sunset): Ep7's white-cyan warp flash fades down onto the forest clearing: tall grass, oaks, the snowy peaks glowing faintly"
+    },
+    {
+      "beat": "tumble",
+      "dur": 1.6,
+      "note": "Steve, the Noob and Patch tumble out of the warp onto the grass: Steve to one knee (empty-handed), the Noob rolling onto his back (no hammer), Patch wobbling then steadying"
+    },
+    {
+      "beat": "rise",
+      "dur": 1.4,
+      "note": "Steve gets up first, looks round, knows where he is"
+    },
+    {
+      "beat": "walk",
+      "dur": 2.0,
+      "note": "he walks quickly to a vine-choked archway under an oak at the clearing's edge"
+    },
+    {
+      "beat": "vines",
+      "dur": 2.4,
+      "note": "he pulls two hanging vine/moss clusters clear by hand: the ancient unlit obsidian frame"
+    },
+    {
+      "beat": "scramble",
+      "dur": 0.9,
+      "note": "the Noob scrambles up behind him"
+    },
+    {
+      "line": "noob",
+      "name": "noob_portal",
+      "text": "You had a PORTAL?!",
+      "direction_text": "[shocked, shouting] You had a PORTAL?!",
+      "pad": 0.1,
+      "solo_only": true,
+      "note": "the original take; genuinely shocked, wide eyes, lip-sync",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "beat": "stare",
+      "dur": 0.9,
+      "note": "Steve's hand still on the vines; he doesn't answer"
+    },
+    {
+      "beat": "dissolve",
+      "dur": 1.2,
+      "note": "Shot 2 (35 mm medium): a smooth desaturating dissolve into the memory, cool hazy twilight blue (no white flash, no Patch laser)"
+    },
+    {
+      "beat": "place",
+      "dur": 1.6,
+      "note": "past-Steve sets the last obsidian block into the frame"
+    },
+    {
+      "beat": "flint",
+      "dur": 1.4,
+      "note": "he strikes flint and steel: sparks"
+    },
+    {
+      "beat": "flare",
+      "dur": 1.6,
+      "note": "the portal flares open: for a split second colourful obby blocks shimmer through the violet haze, then dark purple static ripples round the edges; Steve steps back in quiet awe"
+    },
+    {
+      "line": "steve",
+      "name": "steve_first",
+      "text": "I built the first one. Before I met you.",
+      "direction_text": "[quiet, guilty, not looking at him] I built the first one. Before I met you.",
+      "pad": 0.1,
+      "cut_at": [
+        5.9,
+        9.96
+      ],
+      "vo": true,
+      "note": "the original take, as voice-over over the memory",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "line": "patch",
+      "name": "patch_started",
+      "text": "That's where it started.",
+      "direction_text": "[quiet, calm] That's where it started.",
+      "pad": 0.1,
+      "cut_at": [
+        10.24,
+        11.68
+      ],
+      "vo": true,
+      "note": "the original take, voice-over, quiet",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "beat": "awe",
+      "dur": 1.2,
+      "note": "past-Steve watching the portal he made"
+    },
+    {
+      "beat": "back",
+      "dur": 1.0,
+      "note": "the memory dissolves back to the clearing at sunset"
+    },
+    {
+      "beat": "hurt",
+      "dur": 0.7,
+      "note": "Shot 3A (50 mm MCU on the Noob, sunset rim): his brows pinch in real hurt, his shoulders drop; no smile, no hammer"
+    },
+    {
+      "line": "noob",
+      "name": "noob_fault",
+      "text": "So all of this... is YOUR fault?",
+      "direction_text": "[hurt, quiet then rising] So all of this... is YOUR fault?",
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        3.75
+      ],
+      "note": "the original take; full lip-sync, hurt",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "beat": "guilt",
+      "dur": 2.0,
+      "note": "Shot 3B (65 mm close-up on Steve, shallow focus, the peaks going indigo behind him): his head down -12 degrees, a slow blink, an exhale"
+    },
+    {
+      "line": "steve",
+      "name": "steve_cost",
+      "text": "I wanted to see the other side. Your side. I didn't know what it would cost.",
+      "direction_text": "[quiet, honest, heavy] I wanted to see the other side. I didn't know what it would cost.",
+      "pad": 0.1,
+      "solo_text": "I wanted to see the other side. Your side. I didn't know what it would cost.",
+      "tighten": 0.5,
+      "note": "the original take; a 3-frame blink right before 'Your side', his eyes rising to the Noob's on it, dipping again on '...what it would cost'",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "beat": "weight",
+      "dur": 2.2,
+      "note": "the sunset deepening; neither speaks"
+    },
+    {
+      "beat": "think",
+      "dur": 1.2,
+      "note": "Shot 4A (50 mm close-up on the Noob): his worried brow relaxes"
+    },
+    {
+      "line": "noob",
+      "name": "noob_blocks",
+      "text": "...I touch weird blocks all the time.",
+      "direction_text": "[small, sheepish, forgiving] ...I touch weird blocks all the time.",
+      "pad": 0.1,
+      "cut_at": [
+        8.58,
+        11.33
+      ],
+      "note": "the original take; a warm crooked smile, a slight playful head tilt, lip-sync",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "beat": "smile",
+      "dur": 1.3,
+      "note": "Steve almost smiles"
+    },
+    {
+      "beat": "step",
+      "dur": 1.8,
+      "note": "Shot 4B (35 mm warm two-shot in front of the unlit portal, the light now deep blue twilight): the Noob steps beside Steve"
+    },
+    {
+      "beat": "pat",
+      "dur": 1.5,
+      "note": "a gentle shoulder pat: the Noob's right elbow bent, his hand resting on Steve's left sleeve for 10 frames, dropping to his side"
+    },
+    {
+      "line": "steve",
+      "name": "steve_same",
+      "text": "That's not the same.",
+      "direction_text": "[dry, a small smile] That's not the same.",
+      "pad": 0.05,
+      "cut_at": [
+        11.4,
+        12.96
+      ],
+      "note": "the original take; a tiny reluctant half-smile",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "line": "noob",
+      "name": "noob_kinda",
+      "text": "Kinda is.",
+      "direction_text": "[warm, cheeky] Kinda is.",
+      "pad": 0.05,
+      "cut_at": [
+        13.04,
+        14.5
+      ],
+      "note": "the original take; he grins back",
+      "taken_in": "movie/ep08_published"
+    },
+    {
+      "beat": "warm",
+      "dur": 2.4,
+      "note": "the two side by side in the twilight; the piano's last phrase"
+    },
+    {
+      "beat": "hush",
+      "dur": 0.7,
+      "note": "a breath of stillness"
+    },
+    {
+      "beat": "ignite",
+      "dur": 2.6,
+      "note": "Shot 5A (40 mm two-shot): a deep violet glow sweeps across their faces from behind the camera (no white blowout, nobody vanishes); the piano and crickets cut dead under the THOOM; they freeze, then turn their heads slowly toward the portal; REALITY fractures 30 -> 12"
+    },
+    {
+      "beat": "reveal",
+      "dur": 2.2,
+      "note": "Shot 5B (32 mm, a slow creeping push-in on the freestanding portal, dark trees and snowy peaks behind): the frame blazes with the finale's deep violet plasma, purple light across the tall grass"
+    },
+    {
+      "line": "steve",
+      "name": "steve_didnt",
+      "text": "...I didn't do that.",
+      "direction_text": "[a breathless whisper close to the mic, quiet dread] ...I didn't do that.",
+      "pad": 0.1,
+      "solo_only": true,
+      "new_take": true,
+      "note": "added: the published line was Patch's (a voice-swap the creator caught); now Steve's own deep voice, quiet and breathless"
+    },
+    {
+      "beat": "dread",
+      "dur": 1.5,
+      "note": "suffocating silence on the blazing portal"
+    },
+    {
+      "beat": "crack",
+      "dur": 1.0,
+      "note": "a single bright magenta crack ripples across the violet sheet; HARD CUT to frame 1 of ep10_part1_null_entrance (Null's claws through the plane)"
+    },
+    {
+      "line": "steve",
+      "name": "steve_scream",
+      "text": "Aaaaaaah!",
+      "direction_text": "Aaaaaaaaaaaahhhh!",
+      "nonverbal": true,
+      "fx": "falling",
+      "pad": 0.0,
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "trim": 1.0,
+      "trim_fade": 0.3,
+      "unused": true,
+      "note": "the published opening scream next to Null: cut (the creator); kept so nothing else regroups"
+    },
+    {
+      "line": "noob",
+      "name": "noob_scream",
+      "text": "Aaaaaaaah!",
+      "direction_text": "Aaaaaaaaaaaahhhh!",
+      "nonverbal": true,
+      "fx": "falling",
+      "together": true,
+      "pad": 0.0,
+      "solo_text": "Aaaaaaaaaaaahhhh!",
+      "trim": 1.0,
+      "trim_fade": 0.3,
+      "unused": true,
+      "note": "cut with it"
+    },
+    {
+      "line": "patch",
+      "name": "patch_didnt",
+      "text": "...I didn't do that.",
+      "direction_text": "[quiet, alarmed] ...I didn't do that.",
+      "pad": 0.1,
+      "cut_at": [
+        0.1,
+        2.23
+      ],
+      "unused": true,
+      "note": "the published line in Patch's voice: replaced by Steve's new take (steve_didnt); kept unused so its scene stays as recorded"
+    }
+  ]
+}

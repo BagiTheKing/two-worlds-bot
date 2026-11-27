@@ -1750,7 +1750,10 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "erase": lambda e: sfx_erase(e.get("dur", 0.55), e.get("size", 1.0)), "btool": lambda e: sfx_btool(e.get("size", 1.0)),
        "slam": lambda e: sfx_slam(e.get("dur", 1.4)), "door": lambda e: sfx_door(e.get("dur", 1.6)),
        "gust": lambda e: sfx_gust(e.get("dur", 2.4)), "fuse_rise": lambda e: sfx_fuse_rise(e.get("dur", 1.4)),
-       "turbine": lambda e: sfx_turbine(e.get("dur", 1.6)), "pressure": lambda e: sfx_pressure(e.get("dur", 4.0))}
+       "turbine": lambda e: sfx_turbine(e.get("dur", 1.6)), "pressure": lambda e: sfx_pressure(e.get("dur", 4.0)),
+       "obsidian_boom": lambda e: sfx_obsidian_boom(e.get("dur", 3.2)), "plasma_hum": lambda e: sfx_plasma_hum(e.get("dur", 4.0)),
+       "stone_groan": lambda e: sfx_stone_groan(e.get("dur", 0.9)), "flint": lambda e: sfx_flint(e.get("n", 2)),
+       "vines": lambda e: sfx_vines(e.get("dur", 1.2)), "plasma_crack": lambda e: sfx_plasma_crack(e.get("dur", 0.8))}
 
 
 def _clip_file(path):
@@ -1814,6 +1817,122 @@ def void_wind(length):
     n = int(length * SR)
     w = band(rng.standard_normal(n), 50, 320)
     return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
+
+
+def evening_forest(length, crickets=(0.25, 1.0), seed=11):
+    """Ep8's clearing at sunset into twilight (the creator, 2026-11-27: dry, outdoors, startlingly physical after
+    Ep7's hollow archive): a light breeze through oak leaves (a soft low air bed, slow gusts, a leafy rustle on
+    top that swells with each gust) and faint crickets fading in as the light goes (`crickets`: their level at the
+    start and at the end, 0..1). Its own random generator: placing it never moves any other sound's noise."""
+    r = np.random.default_rng(seed)
+    n = int(length * SR)
+    x = np.arange(n) / SR
+    gust = 0.55 + 0.25 * np.sin(2 * np.pi * 0.07 * x + 1.3) + 0.2 * np.sin(2 * np.pi * 0.19 * x + 0.4)
+    air = band(r.standard_normal(n), 60, 420)
+    air = air / (np.std(air) or 1)
+    rustle = band(r.standard_normal(n), 1800, 7500)
+    flutter = np.convolve(np.abs(r.standard_normal(n)), np.ones(SR // 40) / (SR // 40), "same")
+    rustle = rustle / (np.std(rustle) or 1) * flutter * np.clip(gust - 0.35, 0, None) ** 1.5
+    out = 0.35 * air * gust + 0.5 * rustle
+    out = out / (np.max(np.abs(out)) or 1) * 0.8
+    lvl = np.interp(x, [0, length], [crickets[0], crickets[1]])
+    for k, (f0, rate, every, pan) in enumerate(((4650, 32, 0.55, 1.0), (4300, 28, 0.73, 0.8), (5000, 36, 0.92, 0.6))):
+        at = r.uniform(0.1, every)
+        while at < length - 0.2:
+            m = int(0.12 * SR)
+            xx = np.arange(m) / SR
+            pulses = (np.sin(2 * np.pi * rate * xx) > 0.3).astype(float) * np.hanning(m)
+            ch = np.sin(2 * np.pi * f0 * xx) * pulses
+            i = int(at * SR)
+            seg = ch[:max(0, min(m, n - i))]
+            out[i:i + len(seg)] += 0.09 * pan * seg * lvl[i]
+            at += every * r.uniform(0.92, 1.08)
+    return out
+
+
+AMBIENCE = {"meadow": lambda n_, **k: ambience(n_), "evening": evening_forest}
+
+
+def sfx_obsidian_boom(dur=3.2):
+    """The portal self-igniting (Ep8's end): a deep, heavy subterranean THOOM (a 45 Hz body sagging to ~38 Hz with
+    its second harmonic, a felt-not-heard sub), a dull stone knock on the front, and the oak leaves rattling in the
+    shock for a moment after."""
+    x = t(dur)
+    f = 38 + 7 * np.exp(-x * 1.2)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    body = (np.sin(ph) + 0.35 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph)) * env(len(x), 0.006, dur * 0.38)
+    knock = band(rng.standard_normal(len(x)), 60, 700) * env(len(x), 0.001, 0.09)
+    rattle = band(rng.standard_normal(len(x)), 1600, 6500) * (0.6 + 0.4 * np.sin(2 * np.pi * 17 * x))
+    rattle *= np.minimum(1, x / 0.05) * np.exp(-x / 0.45)
+    return norm(body + 0.5 * norm(knock) + 0.12 * norm(rattle), 0.95)
+
+
+def sfx_plasma_hum(dur=4.0):
+    """A lit portal's violet plasma: a low electric hum (55 Hz and partials, two slightly detuned layers beating
+    slowly), a shimmering band above it and a sparse crackle; swells in over 0.3 s."""
+    x = t(dur)
+    hum = sum(a * np.sin(2 * np.pi * h * 55 * x) for h, a in ((1, 1.0), (2, 0.55), (3, 0.3), (5, 0.12)))
+    hum = hum + 0.6 * np.sin(2 * np.pi * 55.6 * x)
+    shimmer = band(rng.standard_normal(len(x)), 2200, 4200) * (0.5 + 0.5 * np.sin(2 * np.pi * 5.3 * x) ** 2)
+    crack = np.zeros(len(x))
+    for _ in range(int(dur * 9)):
+        i = rng.integers(0, max(1, len(x) - 300))
+        crack[i:i + 240] += rng.uniform(0.2, 1.0) * np.exp(-np.arange(240) / 40) * rng.choice((-1, 1))
+    crack = band(crack, 900, 9000)
+    shape = np.minimum(1, x / 0.3) * np.minimum(1, (dur - x) / 0.15 + 0.001)
+    return norm((norm(hum) + 0.18 * norm(shimmer) + 0.35 * norm(crack)) * shape, 0.85)
+
+
+def sfx_stone_groan(dur=0.9):
+    """Obsidian under strain (pre-lapping a hand gripping the frame): a low grinding groan, stick-slip pulses
+    through a heavy stone body, the pitch sinking."""
+    x = t(dur)
+    rate = 34 - 12 * x / dur
+    pulse = np.exp(-((np.cumsum(rate) / SR) % 1.0) * 9)
+    grind = band(rng.standard_normal(len(x)) * pulse, 55, 520)
+    tone = np.sin(2 * np.pi * np.cumsum(92 - 30 * x / dur) / SR) * pulse
+    out = (norm(grind) + 0.4 * tone) * np.minimum(1, x / 0.12)
+    return norm(out, 0.85)
+
+
+def sfx_flint(n=2):
+    """Flint and steel: `n` quick bright scrapes, each throwing a little shower of sparks."""
+    out = np.zeros(int((0.32 * n + 0.5) * SR))
+    for k in range(n):
+        m = int(0.07 * SR)
+        xx = np.arange(m) / SR
+        scrape = band(rng.standard_normal(m), 2500, 11000) * env(m, 0.002, 0.05)
+        ring = np.sin(2 * np.pi * (3100 + 400 * k) * xx) * np.exp(-xx / 0.03)
+        place(out, norm(scrape) + 0.3 * ring, 0.32 * k, 0.8)
+        for _ in range(9):
+            s = int(0.006 * SR)
+            spark = band(rng.standard_normal(s), 4000, 12000) * np.hanning(s)
+            place(out, spark, 0.32 * k + rng.uniform(0.02, 0.3), rng.uniform(0.1, 0.35))
+    return norm(out, 0.8)
+
+
+def sfx_vines(dur=1.2):
+    """Hanging vines and moss pulled clear by hand: a thick leafy rustle with a few tendrils snapping."""
+    x = t(dur)
+    rustle = band(rng.standard_normal(len(x)), 900, 6000) * (0.5 + 0.5 * np.abs(np.sin(2 * np.pi * 2.3 * x)))
+    rustle *= np.minimum(1, x / 0.08) * np.minimum(1, (dur - x) / 0.3 + 0.001)
+    out = norm(rustle)
+    for _ in range(4):
+        i = int(rng.uniform(0.1, dur - 0.1) * SR)
+        m = int(0.02 * SR)
+        place(out, band(rng.standard_normal(m), 600, 4000) * np.exp(-np.arange(m) / (0.004 * SR)), i / SR, 0.7)
+    return norm(out, 0.75)
+
+
+def sfx_plasma_crack(dur=0.8):
+    """One bright crack rippling across a portal's plasma sheet: a sharp electric snap, then a fizzing tail
+    falling in pitch."""
+    x = t(dur)
+    snap = band(rng.standard_normal(len(x)), 1500, 12000) * env(len(x), 0.0005, 0.02)
+    f = 2400 * np.exp(-x * 4) + 200
+    fizz = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * band(rng.standard_normal(len(x)), 1000, 8000)
+    fizz = band(fizz, 400, 7000) * np.exp(-x / 0.25)
+    return norm(norm(snap) + 0.4 * norm(fizz), 0.8)
 
 
 def whisperize_first(x, keep=0.12, n=1024, hop=256):
@@ -2173,7 +2292,7 @@ def build(episode_path, out_dir, keep=None):
         amb_spec = [{"kind": "meadow", "from": 0, "to": crack_at}]
     for a in amb_spec:
         a0, a1 = R(a["from"]), R(a["to"])
-        seg = (ambience if a["kind"] == "meadow" else void_wind)(a1 - a0)
+        seg = AMBIENCE.get(a["kind"], void_wind)(a1 - a0, **({k: a[k] for k in ("crickets", "seed") if k in a}))
         if a.get("glitch_at") is not None:   # one bird call stutters
             g = int((R(a["glitch_at"]) - a0) * SR)
             if 0 < g < len(seg) - SR // 4:
