@@ -1016,9 +1016,9 @@ def noob(E, t):
                 face = dict(HYPE)
         elif t < b("lower"):                                      # "I can BUILD stuff!": the hammer high, bouncing
             k = ss(b("duck") + 0.4, b("noob_build") + 0.2, t)
-            yaw = lerp(_face_to(p, PLATE), _face_to(p, E.cam_loc_now), 0.55 * k)
-            pz["arm_sr"] = {"fwd": 90 + 70 * k, "out": 15 + 15 * k, "elbow": 10}
-            pz["arm_sl"] = {"fwd": 30 * k, "out": 40 * k}
+            yaw = lerp(_face_to(p, PLATE), _face_to(p, E.cam_loc_now), 0.9 * k)
+            pz["arm_sr"] = {"fwd": 90 - 60 * k, "out": 15 + 125 * k, "elbow": 10}
+            pz["arm_sl"] = {"fwd": 10 * k, "out": 30 * k}
             p = p + Vector((0, 0, 0.12 * abs(math.sin((t - b("noob_build")) * 7)) * k))
             face = dict(HYPE)
         elif t < b("statue"):                                     # "Since the block!": the hammer lifted, proud
@@ -1049,7 +1049,7 @@ def noob(E, t):
             if t >= b("noob_see") - 0.1:
                 k = ss(b("noob_see") - 0.1, b("noob_see") + 0.2, t)
                 pz["arm_sl"] = {"out": 45 * k + 8, "fwd": -15 * k, "elbow": 100 * k}
-                pz["arm_sr"] = {"fwd": 25 + 120 * k, "out": 15, "elbow": 20 * (1 - k)}
+                pz["arm_sr"] = {"fwd": 25 + 10 * k, "out": 15 + 120 * k, "elbow": 20 * (1 - k)}
                 pz["chest_lean"] = -10 * k
                 face = dict(HYPE)
         elif t < b("pinch"):                                      # a swing back over his shoulder: the castle
@@ -1408,7 +1408,7 @@ def _cam(E, t, shot, t0, t1):
         f = Vector(E.fist_now)
         return f + _c(1.3, -2.4, 0.35), f + _c(-0.2, 0.2, 0.05), 40, 3.2, None, 0.25
     if shot == "hammer":                                          # the Noob and his new hammer
-        return N_ + _c(-2.5, -1.3, 1.45), N_ + _c(0, 0, 1.45), 34, 2.8, None, 0.2
+        return N_ + _c(-2.4, 0.6, 1.5), N_ + _c(0, 0, 1.45), 34, 2.8, None, 0.2
     if shot == "duck":                                            # wide: the box round the ring, the duck, Steve across the gap
         return _c(-2.9, -7.4, 1.7), _c(-5.6, -0.2, 1.0), 26, 30, None, 0.2
     if shot == "build":                                           # "I can BUILD stuff!"
@@ -1426,7 +1426,7 @@ def _cam(E, t, shot, t0, t1):
     if shot == "see":                                             # "So everyone can see me!"
         return N_ + _c(2.5, -1.7, 1.35), N_ + _c(0, 0, 1.5), 34, 2.8, None, 0.2
     if shot == "castle":                                          # behind him the castle snaps onto the ledge
-        return _c(-6.6, -4.6, 1.6), _c(-8.6, 2.4, 1.4), 26, 30, None, 0.2
+        return _c(-10.0, -4.0, 1.7), _c(-8.8, 2.6, 1.4), 26, 30, None, 0.2
     if shot == "pinch":                                           # Steve: the pinch, the point
         return STEVE_D + _c(-2.4, -1.6, 1.45), STEVE_D + _c(0, 0, 1.5), 36, 2.8, None, 0.15
     if shot == "door":                                            # the salute, the swing, the door at the edge
@@ -1443,7 +1443,7 @@ def _cam(E, t, shot, t0, t1):
         return _c(-3.2, -7.0, 2.1), _c(-6.3, -0.2, 1.2), 26, 30, None, 0.12
     if shot == "patch":                                           # Patch, three-quarter; the beam whips to the castle
         p = Vector(E.PA.root.location)
-        return p + _c(2.0, -2.2, -0.3), p + _c(0, 0, 0), 38, 3.0, None, 0.12
+        return p + _c(-1.5, 1.9, -0.2), p + _c(0, 0, 0), 38, 3.0, None, 0.12
     if shot == "castle_gone":                                     # behind the Noob: the castle erased
         return N_ + _c(0.8, -4.4, 1.5), LEDGE_TOP + _c(0.3, -0.5, 0.4), 28, 30, None, 0.15
     if shot == "statue_gone":                                     # over Steve's shoulder: the statue erased
