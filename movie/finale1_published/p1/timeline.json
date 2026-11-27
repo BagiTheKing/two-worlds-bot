@@ -1,0 +1,79 @@
+{
+ "id": "ep10_p1_entrance",
+ "fps": 24,
+ "length": 7.084,
+ "beats": {
+  "claws": [
+   0.0,
+   1.2
+  ],
+  "grip": [
+   1.2,
+   2.0
+  ],
+  "grip_l": [
+   2.0,
+   2.62
+  ],
+  "rip": [
+   2.62,
+   3.45
+  ],
+  "press": [
+   3.45,
+   3.98
+  ],
+  "tear": [
+   3.98,
+   4.1
+  ],
+  "null_hi": [
+   4.1,
+   5.014
+  ],
+  "hold": [
+   5.014,
+   5.434
+  ],
+  "rise": [
+   5.434,
+   7.084
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "null_hi",
+   "who": "null",
+   "text": "HI!",
+   "vo": false,
+   "caption": true,
+   "start": 4.1,
+   "end": 5.014,
+   "caption_size": 200
+  }
+ ],
+ "cast": {
+  "null": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.9,
+   "pace": 0.5,
+   "stability": 0.3,
+   "gemini_voice": "Puck",
+   "acting": "the Noob's own happy greeting, copied by a monster: a huge, bright, delighted shout, like seeing a best friend, far too loud and far too happy"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 7.484
+  }
+ ]
+}

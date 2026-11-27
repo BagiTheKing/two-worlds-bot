@@ -14,6 +14,7 @@ out of one main motif (D F A G F E), so the series has a theme people learn:
 """
 
 import numpy as np
+import math
 
 SR = 48000
 BPM = 104
@@ -466,9 +467,60 @@ def tremolo(sec, seed=0):
     return reverb(out, 2.8, 0.45, seed)[:int(sec * SR)]
 
 
+def taiko(r, root=D - 26, big=1.0):
+    """A war drum: a deep skin (a pitch that drops), a hard slap on the hit, a short boom of air."""
+    n = int(0.9 * SR)
+    t = np.arange(n) / SR
+    f = hz(root) * (1 + 0.9 * np.exp(-t * 28))
+    skin = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 5.0)
+    over = 0.45 * np.sin(2 * np.pi * np.cumsum(f * 2.31) / SR) * np.exp(-t * 12)
+    slap = lowpass(r.standard_normal(n), 3200) * np.exp(-t * 30) * 1.1
+    air = lowpass(r.standard_normal(n), 200) * np.exp(-t * 6.0) * 0.25
+    return (skin + over + slap + air) * big * 0.8
+
+
+def war_drums(sec, seed=0, tempo=148):
+    """The chase in the movie's finale (the creator, 2026-11-27: no retro groove on the chase; keep the terror
+    unbroken): driving cinematic percussion (taikos, war drums, mid toms, a snare rattle), a pulsing dark synth bass
+    on sixteenths, and an urgent dissonant string ostinato (spiccato, a minor second and a tritone over D). No
+    melody, no major chord. Weighted to the mids so it drives on a phone, not only in the sub."""
+    r = np.random.default_rng(seed)
+    out = np.zeros(int((sec + 2) * SR))
+    six = 60 / tempo / 4
+    pat = [1.0, 0, 0, 0.45, 0, 0, 0.8, 0, 0.9, 0, 0.4, 0, 0.7, 0.35, 0.55, 0.3]      # a war pattern on one bar
+    tom = [0, 0, 0.5, 0, 0.6, 0, 0, 0.5, 0, 0.5, 0, 0.6, 0, 0, 0, 0]                 # mid toms between the hits
+    i = 0
+    while i * six < sec:
+        at = i * six
+        if pat[i % 16]:
+            place(out, taiko(r, D - 26 + (5 if i % 16 in (12, 14) else 0), pat[i % 16]), at, 0.95)
+        if tom[i % 16]:
+            place(out, taiko(r, D - 14 + (2 if i % 8 > 3 else 0), tom[i % 16]), at, 0.5)
+        n_ = int(0.09 * SR)                                     # the rattle: a dry snare brush on every sixteenth
+        rat = r.standard_normal(n_)
+        rat = (rat - lowpass(rat, 1800)) * env(n_, 0.001, 0.025)
+        place(out, rat, at, 0.16 if i % 4 else 0.3)
+        # the bass: a dark saw pulse on every sixteenth, accented on the beat, filter breathing per bar
+        acc = 1.0 if i % 4 == 0 else 0.55
+        nb = int(six * 0.9 * SR)
+        b = saw(hz(D - 24 + (1 if (i // 16) % 4 == 3 else 0)), six * 0.9)
+        b = lowpass(b, 380 + 500 * (0.5 + 0.5 * math.sin(2 * math.pi * i / 16))) * env(nb, 0.003, 0.08, 0.2, 0.02)
+        place(out, b, at, 0.35 * acc)
+        # the strings: spiccato, D / Eb / A-flat cluster, rising through the bar
+        sm = [D, D + 1, D, D + 6][i % 4] + (12 if (i // 16) % 2 else 0)
+        ns = int(six * 0.7 * SR)
+        x = np.arange(ns) / SR
+        ph = 2 * np.pi * hz(sm) * x
+        s_ = (np.sin(ph) + 0.5 * np.sin(2 * ph) + 0.3 * np.sin(3 * ph) + 0.15 * np.sin(5 * ph))
+        s_ = s_ * env(ns, 0.004, 0.05, 0.15, 0.02)
+        place(out, s_, at, 0.34 + 0.08 * (i % 4 == 0))
+        i += 1
+    return reverb(out, 1.8, 0.28, seed)[:int(sec * SR)]
+
+
 CUES = {"drone": drone, "memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
         "dread": dread, "bounce": bounce, "curious": curious, "deleted": deleted, "industrial": industrial,
-        "tremolo": tremolo}
+        "tremolo": tremolo, "war_drums": war_drums}
 
 
 def render(cue, sec, seed=0, hard_end=False, offset=0.0, open_tail=False, **kw):

@@ -1,0 +1,122 @@
+{
+ "id": "ep10_p3_run",
+ "fps": 24,
+ "length": 17.918,
+ "beats": {
+  "freeze": [
+   0.0,
+   0.4
+  ],
+  "steve_signal": [
+   0.4,
+   2.37
+  ],
+  "noob_signal": [
+   2.37,
+   3.494
+  ],
+  "beat": [
+   3.644,
+   3.944
+  ],
+  "steve_run": [
+   3.944,
+   4.718
+  ],
+  "turn_s": [
+   4.718,
+   6.818
+  ],
+  "turn_n": [
+   6.818,
+   8.918
+  ],
+  "pov": [
+   8.918,
+   10.918
+  ],
+  "run": [
+   10.918,
+   13.218
+  ],
+  "fork": [
+   13.218,
+   14.818
+  ],
+  "null_look": [
+   14.818,
+   17.418
+  ],
+  "end": [
+   17.418,
+   17.918
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "steve_signal",
+   "who": "steve",
+   "text": "On my signal... we split.",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 0.4,
+   "end": 2.37
+  },
+  {
+   "name": "noob_signal",
+   "who": "noob",
+   "text": "What's the signal?",
+   "vo": false,
+   "caption": true,
+   "caption_y": 1420,
+   "start": 2.37,
+   "end": 3.494
+  },
+  {
+   "name": "steve_run",
+   "who": "steve",
+   "text": "RUN!",
+   "vo": false,
+   "caption": true,
+   "caption_size": 170,
+   "caption_y": 1420,
+   "start": 3.944,
+   "end": 4.718
+  }
+ ],
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.5,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "Steve, calm and dry, frozen in front of a giant monster: a tight, low whisper through his teeth, not moving, every word careful"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.5,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, scared but genuinely curious, whispering back an honest question, a little too loud for a whisper"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 18.318
+  }
+ ]
+}
