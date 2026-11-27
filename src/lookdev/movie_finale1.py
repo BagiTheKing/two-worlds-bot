@@ -42,10 +42,6 @@ OFF = {"p1": 0.0, "p2": 7.084, "p3": 13.601}
 LENGTH = 27.519
 T3 = {"freeze": 0.0, "steve_signal": 0.4, "noob_signal": 2.37, "shock": 3.644, "steve_run": 4.844, "run": 5.618,
       "fork": 7.718, "null_look": 9.818, "null_bank": 11.418, "end": 13.018}
-TWILIGHT = {"glow": (150, 140, 220), "power": 2.2, "horizon": (96, 58, 138), "mid": (26, 26, 62), "zenith": (7, 11, 26),
-            "fill": 0.2, "fill_col": (110, 100, 190)}             # Ep8's last look (#070B1A), violet at the horizon
-STORM = {"glow": (214, 196, 255), "power": 6.0, "horizon": (176, 96, 180), "mid": (84, 52, 132), "zenith": (22, 14, 48),
-         "fill": 0.32, "fill_col": (150, 120, 210)}
 
 
 def go():
@@ -167,23 +163,15 @@ def apply_p1(E, u):
     # Steve and the Noob already stand in front of the portal (Ep8 ends on them), frozen as part 2 opens
     P2.apply(E, 0.0)
     EN.apply(E, u)
-    # the storm arrives over the first second, out of Ep8's twilight (nothing appears from nowhere)
-    from world import set_sky
-    k = ss(0.0, 1.3, u)
-    sky = {key: (tuple(lerp(a, b, k) for a, b in zip(TWILIGHT[key], STORM[key])) if isinstance(TWILIGHT[key], tuple)
-                 else lerp(TWILIGHT[key], STORM[key], k)) for key in STORM}
-    set_sky(E.W, sky)
-    flash = math.exp(-max(0.0, u - EN.T["rip"]) / 0.12) if u >= EN.T["rip"] else 0.0
-    flash = max(flash, 0.7 * math.exp(-max(0.0, u - EN.T["hi"]) / 0.1) if u >= EN.T["hi"] else 0.0)
-    E.W.sky_pow.inputs[1].default_value = sky["power"] * (1 + 1.6 * flash)
+    # the sky: Null's storm from frame 1, as published (Ep8's last shot already rolls it in: movie_ep08.STORM)
     lights(E, null_key=0.0, cold_rim=0.0, face_fill=0.0)          # part 1's own light, as published
     E.key.data.energy = 900.0
     patch_idle(E, u + 13.0, look_up=0.4)
     # the cameras, reframed for 16:9
     T = EN.T
     loc, look, lens, fstop, focus = EN.camera(u)
-    if u < T["s2"]:
-        lens *= 0.62
+    if u < T["s2"]:                                         # 1A: Ep8's 5B ends on this camera at 32 mm
+        lens = 32.0
     elif u < T["s3"]:
         lens *= 0.7
     elif u >= T["s4"]:                                       # the wide: further back, his whole height in frame

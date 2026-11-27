@@ -25,11 +25,12 @@ Times are the published Short's (P3 starts at 0:13.6 there).
 
 ## The seam with Ep8
 
-- Ep8 hard-cuts into frame 1 of P1 (the claws through the membrane). P1's set is the reference Ep8 matches
-  (`ep10_entrance.build`: the portal at (0, 5, 0) facing -y, the clearing, the oaks); `movie_ep08.py` was not yet
-  pushed when this was built: check its 5B camera against shot 1A once it is.
-- **The storm is seen arriving:** P1 opens on Ep8's indigo twilight (zenith #070B1A, violet horizon) and the sky
-  blends into Null's storm over 1.3 s (`TWILIGHT` -> `STORM`), the rip's flash on top.
+- Ep8 hard-cuts into frame 1 of P1 (the claws through the membrane). `movie_ep08.py` builds the same world
+  (`ep10_entrance.build`'s seed, trees and portal at (0, 5, 0)) and its 5B push-in ends on P1's first camera
+  (P0 + (-3.5, -2.0, 1.9) looking at P0 + (0, -0.5, 2.4)) at 32 mm: shot 1A is held at 32 mm to match.
+- **The storm is seen arriving in Ep8:** its sky blends from twilight into `STORM` (ep10_entrance's frame-1 sky)
+  from the ignition to the reveal, and its sun ends on ep10_entrance's (71, 16, 1.5 violet). P1 keeps its published
+  storm from frame 1: no jump at the cut.
 - **Who is in frame:** Steve and the Noob stand in front of the portal from frame 1 (frozen as P2 opens them), Patch
   hovering just behind them between their heads; seen in P1's wide (1D) under the rising Null.
 - REALITY 12% (Ep8's end): the meter holds, so the movie's meter stays hidden (it shows only on drops).
@@ -38,8 +39,7 @@ Times are the published Short's (P3 starts at 0:13.6 there).
 ## Shots (chapter time, 24 fps; 16:9)
 
 **P1: the entrance (0 - 7.08), published timing**
-- 1A 0-1.75 Close beside the membrane: the claws through, feeling, gripping. Lens x0.62 (the frame and the forest at
-  the sides). The storm rolls in.
+- 1A 0-1.75 Close beside the membrane: the claws through, feeling, gripping. 32 mm (Ep8 5B's lens and camera).
 - 1B 1.75-3.45 Low, from the front: both claws strain, the rip (flash, shake). Lens x0.7.
 - 1C 3.45-5.43 Close at the opening: the membrane, the face behind, the burst, "HI!" (4.1). Lens x0.66.
 - 1D 5.43-7.08 Wide, low, from the front-right (new place, 16 mm): Steve and the Noob in the mid-ground, Patch
