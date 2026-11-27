@@ -1,0 +1,194 @@
+voices from prev_prep: ['noob_again', 'noob_boss', 'noob_cp', 'noob_done', 'noob_frozen', 'noob_hi', 'noob_lag', 'noob_planwall', 'noob_tut', 'steve_dont', 'steve_here', 'steve_hide', 'steve_lag', 'steve_myplan', 'steve_wall']
+new takes (added lines): ['noob_hi', 'noob_frozen']
+Gemini speech models, in order: gemini-3.8-flash-tts, gemini-3.1-flash-tts-preview, gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.8-flash-lite-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Noob 'Hi! ...Hello?' take 0: NEW recording
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  solo take 0 for 'Hi! ...Hello?': 1.00 ' Hi!  Hello?'
+gemini-3.8-flash-tts with key 1: daily free quota used up, trying the next key or model
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  solo Noob 'Hi! ...Hello?' take 1: NEW recording
+  solo take 1 for 'Hi! ...Hello?': 1.00 ' Hi.  Hello?'
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  solo Noob 'Hi! ...Hello?' take 2: NEW recording
+  solo take 2 for 'Hi! ...Hello?': 1.00 ' Hi!  Hello?'
+gemini-3.8-flash-tts with key 2: daily free quota used up, trying the next key or model
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  solo Noob "They're... frozen." take 0: NEW recording
+  solo take 0 for "They're... frozen.": 1.00 " They're...Frozen."
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  solo Noob "They're... frozen." take 1: NEW recording
+  solo take 1 for "They're... frozen.": 1.00 " They're  frozen."
+Gemini speech ok (gemini-3.8-flash-tts, key 3, script)
+  solo Noob "They're... frozen." take 2: NEW recording
+  solo take 2 for "They're... frozen.": 1.00 " They're...Frozen."
+{
+ "length": 58.319,
+ "beats": {
+  "tumble": [
+   0.0,
+   1.2
+  ],
+  "tear": [
+   1.2,
+   2.0
+  ],
+  "drop": [
+   2.0,
+   3.4
+  ],
+  "burst": [
+   3.4,
+   5.3
+  ],
+  "noob_boss": [
+   5.3,
+   6.375
+  ],
+  "steve_hide": [
+   6.575,
+   8.386
+  ],
+  "hide": [
+   8.686,
+   10.686
+  ],
+  "noob_hi": [
+   10.686,
+   12.106
+  ],
+  "tap": [
+   12.406,
+   13.306
+  ],
+  "noob_frozen": [
+   13.306,
+   15.247
+  ],
+  "steve_here": [
+   15.597,
+   16.847
+  ],
+  "panel": [
+   17.447,
+   18.847
+  ],
+  "noob_tut": [
+   18.847,
+   20.527
+  ],
+  "steve_dont": [
+   20.527,
+   21.167
+  ],
+  "jump": [
+   21.167,
+   22.467
+  ],
+  "kill": [
+   22.467,
+   23.267
+  ],
+  "respawn": [
+   23.267,
+   23.967
+  ],
+  "noob_cp": [
+   23.967,
+   24.727
+  ],
+  "wheel": [
+   25.027,
+   26.627
+  ],
+  "steve_wall": [
+   26.627,
+   27.871
+  ],
+  "build": [
+   27.871,
+   29.471
+  ],
+  "crash": [
+   29.471,
+   31.071
+  ],
+  "noob_again": [
+   31.071,
+   32.122
+  ],
+  "leap": [
+   32.122,
+   33.322
+  ],
+  "noob_done": [
+   33.322,
+   34.395
+  ],
+  "ride": [
+   34.695,
+   37.095
+  ],
+  "free": [
+   37.095,
+   39.695
+  ],
+  "thanks": [
+   39.695,
+   41.295
+  ],
+  "steve_myplan": [
+   41.295,
+   42.849
+  ],
+  "noob_planwall": [
+   42.949,
+   44.212
+  ],
+  "bank": [
+   44.712,
+   46.512
+  ],
+  "freeze": [
+   46.512,
+   48.512
+  ],
+  "wave": [
+   48.512,
+   49.512
+  ],
+  "noob_lag": [
+   49.512,
+   50.589
+  ],
+  "look": [
+   50.939,
+   51.739
+  ],
+  "steve_lag": [
+   51.739,
+   54.419
+  ],
+  "glitch": [
+   55.319,
+   58.319
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    5.3s noob_boss          heard 'boss fight'
+  ok    6.6s steve_hide         heard 'It used our portal! Hide!'
+  ok   10.7s noob_hi            heard 'Hi! Hello?'
+  ok   13.3s noob_frozen        heard "They're... frozen."
+  ok   15.6s steve_here         heard 'The glitch is here, too.'
+  ok   18.8s noob_tut           heard "Tutorial says JUMP!  DON'T!"  extra: don't
+  ok   20.5s steve_dont         heard "Don't!"
+  ok   24.0s noob_cp            heard 'Checkpoint'
+  ok   26.6s steve_wall         heard 'Plan.  Wall.'
+  ok   31.1s noob_again         heard 'ROUND TWO!'
+  ok   33.3s noob_done          heard 'Tutorial complete.'
+  ok   41.3s steve_myplan       heard 'That was my plan'
+  ok   42.9s noob_planwall      heard 'Your plan was a wall.'
+  ok   49.5s noob_lag           heard 'Is it lagging?'
+  ok   51.7s steve_lag          heard "Worlds don't lag."
+hearing check: 0 of 15 lines flagged

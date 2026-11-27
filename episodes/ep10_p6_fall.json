@@ -1,0 +1,239 @@
+{
+ "id": "ep10_p6_fall",
+ "number": 10,
+ "title": "The First Portal Was a Trap: the fall",
+ "cut_loose": false,
+ "cast": {
+  "steve": {
+   "voice": "am_michael",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.45,
+   "gemini_voice": "Charon",
+   "acting": "Steve, dry and deadpan: hanging over the void, exhausted, done with all of it, then losing it"
+  },
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, panicked, yelling, shaking his friend awake"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.6,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "Patch, a small floating robot, thrilled by a discovery, completely oblivious that his friends are hanging over the void"
+  }
+ },
+ "music": [
+  {
+   "cue": "chase",
+   "from": 0,
+   "to": "catch",
+   "gain": 0.22,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": 0,
+   "to": "end",
+   "gain": 0.3
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "glitch",
+   "at": "a+0.1",
+   "dur": 0.25,
+   "gain": 0.3
+  },
+  {
+   "kind": "pop",
+   "at": "a+0.35",
+   "gain": 0.35
+  },
+  {
+   "kind": "pop",
+   "at": "noob_wake+0.5",
+   "gain": 0.3
+  },
+  {
+   "kind": "pop",
+   "at": "noob_wake+0.9",
+   "gain": 0.3
+  },
+  {
+   "kind": "creak",
+   "at": "noob_wake+0.6",
+   "dur": 1.2,
+   "gain": 0.35
+  },
+  {
+   "kind": "break",
+   "at": "noob_wake+1.1",
+   "gain": 0.35
+  },
+  {
+   "kind": "break",
+   "at": "run+0.2",
+   "gain": 0.4
+  },
+  {
+   "kind": "run",
+   "at": "run",
+   "dur": 0.75,
+   "step": 0.15,
+   "gain": 0.4
+  },
+  {
+   "kind": "crunch",
+   "at": "drop",
+   "gain": 0.5
+  },
+  {
+   "kind": "whoosh",
+   "at": "drop+0.05",
+   "dur": 0.8,
+   "gain": 0.4
+  },
+  {
+   "kind": "thump",
+   "at": "catch+0.05",
+   "gain": 0.7
+  },
+  {
+   "kind": "thump",
+   "at": "catch+0.12",
+   "gain": 0.5
+  },
+  {
+   "kind": "break",
+   "at": "catch+0.1",
+   "gain": 0.3
+  },
+  {
+   "kind": "thump",
+   "at": "hang+0.2",
+   "gain": 0.35
+  },
+  {
+   "kind": "whir",
+   "at": "hang+0.7",
+   "dur": 1.0,
+   "gain": 0.3
+  },
+  {
+   "kind": "scan",
+   "at": "patch_omg.end-0.25",
+   "dur": 0.8,
+   "gain": 0.25
+  },
+  {
+   "kind": "punch",
+   "at": "steve_delete",
+   "gain": 0.35
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "a",
+   "dur": 0.35
+  },
+  {
+   "line": "noob",
+   "name": "noob_wake",
+   "caption_y": 1420,
+   "text": "STEVE, WAKE UP! THE BRIDGE IS FALLING!",
+   "direction_text": "[panicked, yelling, shaking his friend] STEVE, WAKE UP! THE BRIDGE IS FALLING!",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "STEVE, WAKE UP! THE BRIDGE IS FALLING!",
+   "caption_size": 140
+  },
+  {
+   "beat": "run",
+   "dur": 0.75
+  },
+  {
+   "beat": "drop",
+   "dur": 0.9
+  },
+  {
+   "beat": "catch",
+   "dur": 0.55
+  },
+  {
+   "beat": "hang",
+   "dur": 1.0
+  },
+  {
+   "line": "patch",
+   "name": "patch_omg",
+   "caption_y": 1420,
+   "text": "OMG, how did I miss this? Look!",
+   "direction_text": "[thrilled, delighted by a discovery, completely oblivious] OMG, how did I miss this? Look!",
+   "pad": 0.5,
+   "solo_only": true,
+   "solo_text": "Oh my gosh, how did I miss this? Look!"
+  },
+  {
+   "line": "steve",
+   "name": "steve_seen",
+   "caption_y": 1420,
+   "text": "I've seen enough.",
+   "direction_text": "[flat, dead tired, deadpan, done] I've seen enough.",
+   "pad": 0.15,
+   "solo_only": true,
+   "solo_text": "I've seen enough."
+  },
+  {
+   "line": "steve",
+   "name": "steve_delete",
+   "caption_y": 1420,
+   "text": "HE'S LITERALLY COMING TO DELETE US.",
+   "direction_text": "[building from exasperated to a full yell] He's LITERALLY coming to DELETE US!",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "He's literally coming to delete us!",
+   "caption_size": 150
+  },
+  {
+   "beat": "end",
+   "dur": 0.5
+  }
+ ]
+}

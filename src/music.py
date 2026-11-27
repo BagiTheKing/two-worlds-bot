@@ -93,6 +93,19 @@ def lead(m, sec, duty=0.5):
     return lowpass(w, 3500) * env(len(w), 0.01, 0.6, 0.6, 0.08) * 0.45
 
 
+def soft_pluck(m, sec=0.4, duty=None):
+    x = _t(sec)
+    f = hz(m)
+    return (np.sin(2 * np.pi * f * x) + 0.2 * np.sin(4 * np.pi * f * x)) * env(len(x), 0.003, 0.12, 0.0, 0.03) * 0.5
+
+
+def soft_lead(m, sec, duty=None):
+    x = _t(sec)
+    vib = 1 + 0.004 * np.sin(2 * np.pi * 5.5 * x)
+    ph = 2 * np.pi * np.cumsum(hz(m) * vib) / SR
+    return (np.sin(ph) + 0.15 * np.sin(2 * ph)) * env(len(x), 0.01, 0.6, 0.6, 0.08) * 0.45
+
+
 def bass(m, sec):
     return tri(hz(m - 24), sec) * env(int(sec * SR), 0.004, 0.25, 0.5, 0.03) * 0.8
 
@@ -126,8 +139,24 @@ def hat(r):
     return x * env(n, 0.0005, 0.012) * 0.25
 
 
-def braam(sec, root=D - 24):
-    """The cinematic low brass hit for Null: detuned saws, filter opening."""
+def boom(sec, root=D - 24):
+    """A cinematic hit with no buzz (the movie, 2026-11-25): a deep sine body with a little second harmonic, a
+    sub that drops, and a soft breath of low air on the attack."""
+    t = _t(sec)
+    out = np.zeros(len(t))
+    for m, a in ((root, 1.0), (root + 7, 0.45), (root + 12, 0.3)):
+        f = hz(m)
+        out += a * (np.sin(2 * np.pi * f * t) + 0.25 * np.sin(4 * np.pi * f * t))
+    f = hz(root - 12) * (1 + 0.6 * np.exp(-t * 6))
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR)
+    air = lowpass(np.random.default_rng(3).standard_normal(len(t)), 300) * np.exp(-t * 5) * 0.8
+    return (out / 3 + 0.6 * sub + air) * env(len(t), 0.03, sec * 0.5, 0.3, 0.6)
+
+
+def braam(sec, root=D - 24, smooth=False):
+    """The cinematic low brass hit for Null: detuned saws, filter opening. smooth: the buzz-free boom instead."""
+    if smooth:
+        return boom(sec, root)
     t = _t(sec)
     out = np.zeros(len(t))
     for m in (root, root + 7, root + 12):
@@ -162,7 +191,8 @@ def theme_soft(sec, seed=0):
     return reverb(out, 2.2, 0.35, seed)[:int(sec * SR)]
 
 
-def chase(sec, seed=0):
+def chase(sec, seed=0, smooth=False):
+    """smooth (the movie): the same groove with soft plucks and lead (sine, triangle): no square-wave buzz."""
     r = np.random.default_rng(seed)
     out = np.zeros(int((sec + 1) * SR))
     eighth = BEAT / 2 * 0.72                 # faster: the world is ending
@@ -174,7 +204,7 @@ def chase(sec, seed=0):
         at = i * eighth
         place(out, bass(root + (12 if bar_pos % 2 else 0), eighth * 0.95), at, 0.7)
         arp = [0, 3, 7, 12][i % 4]
-        place(out, pluck(root + 12 + arp, eighth * 0.9, 0.125), at, 0.22)
+        place(out, (soft_pluck if smooth else pluck)(root + 12 + arp, eighth * 0.9), at, 0.22)
         if bar_pos in (0, 4):
             place(out, kick(), at, 0.9)
         if bar_pos in (2, 6):
@@ -182,7 +212,7 @@ def chase(sec, seed=0):
         place(out, hat(r), at, 0.6)
         i += 1
     for j, n in enumerate(MOTIF):            # the theme, urgent, on top
-        place(out, lead(D + 12 + n, eighth * 1.8), 8 * eighth + j * eighth * 2, 0.3)
+        place(out, (soft_lead if smooth else lead)(D + 12 + n, eighth * 1.8), 8 * eighth + j * eighth * 2, 0.3)
     return reverb(out, 1.2, 0.18, seed)[:int(sec * SR)]
 
 
@@ -223,7 +253,7 @@ def theme_full(sec, seed=0):
     return reverb(out, 1.8, 0.25, seed)[:int(sec * SR)]
 
 
-def dread(sec, seed=0, hit_at=None, minimal=False):
+def dread(sec, seed=0, hit_at=None, minimal=False, smooth=False, sustain=False, rise_over=None):
     """The eye: a heartbeat that speeds up, a tension tone rising underneath,
     a high dissonant shimmer, and one hard hit when it locks on (hit_at s)."""
     out = np.zeros(int((sec + 3) * SR))
@@ -235,22 +265,26 @@ def dread(sec, seed=0, hit_at=None, minimal=False):
     x = _t(sec + 3)
     if minimal:                                      # over Null's theme: heartbeat and the hit only
         hit = hit_at if hit_at is not None else max(0.0, sec - 1.4)
-        place(out, braam(2.8, D - 26), hit, 1.0)
+        place(out, braam(2.8, D - 26, smooth), hit, 1.0)
         place(out, kick(), hit, 1.0)
-        out[int((hit + 2.6) * SR):] *= 0.0
+        if not sustain:
+            out[int((hit + 2.6) * SR):] *= 0.0
         return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
+    span = max(rise_over or sec, 0.1)                # rise_over: the rise's length fixed (a later chapter carrying it on)
     rise = np.zeros(len(x))
     for m, det in ((D - 24, 0.0), (D - 23, 0.05), (D - 17, -0.04)):      # a tight, ugly cluster
-        f = hz(m + det) * (1 + 0.5 * np.minimum(1, x / max(sec, 0.1)))     # bends upward
-        rise += np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.3
-    rise = lowpass(rise, 900) * np.minimum(1, x / max(sec, 0.1)) ** 1.5
+        f = hz(m + det) * (1 + 0.5 * np.minimum(1, x / span))              # bends upward
+        ph_ = 2 * np.pi * np.cumsum(f) / SR
+        rise += (np.sin(ph_) + 0.2 * np.sin(2 * ph_) if smooth else np.sign(np.sin(ph_))) * 0.3   # smooth: no buzz
+    rise = lowpass(rise, 900) * np.minimum(1, x / span) ** 1.5
     out += rise * 0.5
     shimmer = (np.sin(2 * np.pi * hz(D + 25) * x) + np.sin(2 * np.pi * hz(D + 26) * x)) * 0.06
     out += shimmer * np.minimum(1, x / 1.5)
     hit = hit_at if hit_at is not None else max(0.0, sec - 1.4)
-    place(out, braam(2.8, D - 26), hit, 1.0)
+    place(out, braam(2.8, D - 26, smooth), hit, 1.0)
     place(out, kick(), hit, 1.0)
-    out[int((hit + 2.6) * SR):] *= 0.0
+    if not sustain:                                  # sustain: the tension goes on after the hit (a chase to the cut)
+        out[int((hit + 2.6) * SR):] *= 0.0
     return reverb(out, 2.0, 0.3, seed)[:int(sec * SR)]
 
 
@@ -311,17 +345,103 @@ def memory(sec, seed=0, hit_at=None):
     return reverb(out, 3.4, 0.5, seed)[:int(sec * SR)]
 
 
-CUES = {"memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
-        "dread": dread}
+def drone(sec, seed=0):
+    """A serious, quiet bed: a low dark chord held, slowly breathing, a sub under it; no beat, no melody."""
+    t = _t(sec + 2)
+    out = np.zeros(len(t))
+    for m, a in ((D - 24, 0.5), (D - 17, 0.32), (D - 12, 0.22), (D - 9, 0.12)):
+        f = hz(m)
+        out += a * (np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 2.003 * f * t))
+    out *= 0.75 + 0.25 * np.sin(2 * np.pi * 0.11 * t + seed)
+    out += 0.4 * np.sin(2 * np.pi * hz(D - 36) * t)
+    out *= np.minimum(1, t / 1.5)
+    return reverb(out, 2.6, 0.35, seed)[:int(sec * SR)]
 
 
-def render(cue, sec, seed=0, hard_end=False, **kw):
-    x = CUES[cue](sec, seed, **kw)
-    fade = int((0.012 if hard_end else min(0.4, sec / 4)) * SR)   # hard_end: cut dead (a gag's silence)
-    x[:int(0.02 * SR)] *= np.linspace(0, 1, int(0.02 * SR))
-    if fade:
-        x[-fade:] *= np.linspace(1, 0, fade)
-    m = np.max(np.abs(x)) or 1
+def marimba(m, sec=0.35):
+    """A marimba bar: a warm sine with its 4x partial dying fast (wood, not plastic)."""
+    t = _t(sec)
+    f = hz(m)
+    x = np.sin(2 * np.pi * f * t) + 0.3 * np.sin(2 * np.pi * 3.93 * f * t) * np.exp(-t * 40)
+    return x * env(len(t), 0.002, 0.11, 0.0, 0.03)
+
+
+def bounce(sec, seed=0):
+    """Light comedy (the Noob feeding the block): a staccato marimba figure on the motif over a soft
+    plucked bass, a tick on the off-beats; no drums, no lead, nothing loud."""
+    r = np.random.default_rng(seed)
+    out = np.zeros(int((sec + 1) * SR))
+    eighth = BEAT / 2
+    roots = [0, 0, -4, -2]
+    i = 0
+    while i * eighth < sec:
+        at = i * eighth
+        bar = (i // 8) % 4
+        if i % 2 == 0:
+            place(out, marimba(D - 12 + roots[bar], 0.3), at, 0.5)
+        n = (MOTIF + [0, -2])[i % 8]
+        if i % 8 not in (3, 7):
+            place(out, marimba(D + 12 + n + (12 if i % 16 == 14 else 0), 0.25), at, 0.38 + 0.06 * r.random())
+        if i % 2 == 1:
+            tk = np.random.default_rng(i).standard_normal(int(0.02 * SR)) * env(int(0.02 * SR), 0.0005, 0.004)
+            place(out, tk, at, 0.12)
+        i += 1
+    return reverb(out, 1.2, 0.18, seed)[:int(sec * SR)]
+
+
+def curious(sec, seed=0):
+    """Patch arrives: a clean, slightly mysterious pad (minor, an added ninth) and a soft arpeggio of
+    sine bells, slow; it wonders rather than threatens."""
+    out = np.zeros(int((sec + 3) * SR))
+    chords = [[D - 12, D - 5, D + 0, D + 4], [D - 14, D - 7, D + 2, D + 5], [D - 17, D - 10, D - 5, D + 2]]
+    bar = BEAT * 4
+    k = 0
+    while k * bar < sec:
+        place(out, pad(chords[k % 3], bar + 1.2) * 0.8, k * bar, 0.4)
+        k += 1
+    step = BEAT / 2
+    arp = [0, 7, 12, 14, 12, 7, 3, 7]
+    i = 0
+    while i * step < sec - 0.2:
+        m = D + 12 + arp[i % 8] + (-2 if (i // 16) % 3 == 1 else 0)
+        place(out, music_box(m, 0.9) * 0.6, i * step, 0.5)
+        i += 1
+    return reverb(out, 2.6, 0.4, seed)[:int(sec * SR)]
+
+
+def deleted(sec, seed=0, fall_at=None):
+    """"From a world that got deleted": a deep sub swell that blooms and rings, and one faint, sad high
+    note (a sine with a slow vibrato) held over it, falling a step at the end. Nothing else."""
+    x = _t(sec + 3)
+    sw = np.minimum(1, x / 1.6) ** 2 * np.exp(-np.maximum(0, x - 2.2) / 5.0)
+    sub = (np.sin(2 * np.pi * hz(D - 36) * x) + 0.5 * np.sin(2 * np.pi * hz(D - 24) * x)
+           + 0.15 * np.sin(2 * np.pi * hz(D - 17) * x)) * sw
+    vib = 1 + 0.004 * np.sin(2 * np.pi * 5.0 * x) * np.minimum(1, x / 1.5)
+    fa = sec - 1.6 if fall_at is None else fall_at        # carried on into the next chapter: fallen where it fell
+    fall = np.where(x > fa, -2.0 * np.minimum(1, (x - fa) / 0.5), 0.0)
+    f = hz(D + 21) * vib * 2 ** (fall / 12)
+    hi = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, np.maximum(0, x - 0.4) / 1.2) * 0.22
+    return reverb(sub * 0.9 + hi, 3.2, 0.45, seed)[:int(sec * SR)]
+
+
+CUES = {"drone": drone, "memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
+        "dread": dread, "bounce": bounce, "curious": curious, "deleted": deleted}
+
+
+def render(cue, sec, seed=0, hard_end=False, offset=0.0, open_tail=False, **kw):
+    """offset: the cue as it goes on `offset` seconds in (the next chapter carrying on the last one's cue: the
+    same seed, the same level, no new start). open_tail: no fade at the end (the next chapter carries it on)."""
+    x = CUES[cue](sec + offset, seed, **kw)
+    o = int(round(offset * SR))
+    m = (np.max(np.abs(x[:o])) if o else 0) or None   # carrying on: the level of the part already heard
+    x = x[o:].copy()
+    if not open_tail:
+        fade = int((0.012 if hard_end else min(0.4, sec / 4)) * SR)   # hard_end: cut dead (a gag's silence)
+        if fade:
+            x[-fade:] *= np.linspace(1, 0, fade)
+    if not o:
+        x[:int(0.02 * SR)] *= np.linspace(0, 1, int(0.02 * SR))
+    m = m or np.max(np.abs(x)) or 1
     return x / m * 0.9
 
 

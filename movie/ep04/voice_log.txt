@@ -1,0 +1,179 @@
+voices from prev_prep: ['noob_again', 'noob_cube', 'noob_doyou', 'noob_helping', 'noob_secret', 'noob_touched', 'patch_deleted', 'patch_grows', 'patch_know', 'patch_stop', 'steve_grew', 'steve_no', 'steve_touch']
+new takes (added lines): ['noob_touched2', 'patch_name', 'patch_feed']
+  solo Noob 'I touched it!!' take 0: from the cache
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  solo take 0 for 'I touched it!!': 1.00 ' I  touched  it!'
+  solo Noob 'I touched it!!' take 1: from the cache
+  solo take 1 for 'I touched it!!': 1.00 ' I  TOUCHED  IT!'
+  solo Noob 'I touched it!!' take 2: from the cache
+  solo take 2 for 'I touched it!!': 1.00 ' I  touched  it!'
+  solo Patch "I'm Patch. I find glitches." take 0: from the cache
+  solo take 0 for "I'm Patch. I find glitches.": 1.00 " I'm  Patch.  I  find  glitches."
+  solo Patch "I'm Patch. I find glitches." take 1: from the cache
+  solo take 1 for "I'm Patch. I find glitches.": 1.00 " I'm  Patch.  I  find  glitches."
+  solo Patch "I'm Patch. I find glitches." take 2: from the cache
+  solo take 2 for "I'm Patch. I find glitches.": 1.00 " I'm  Patch.  I  find  glitches."
+  solo Patch "It's feeding on your respawn loop." take 0: from the cache
+  solo take 0 for "It's feeding on your respawn loop.": 1.00 " It's  feeding  on  your  respawn  loop."
+  solo Patch "It's feeding on your respawn loop." take 1: from the cache
+  solo take 1 for "It's feeding on your respawn loop.": 1.00 " it's  feeding  on  your  respawn  loop."
+  solo Patch "It's feeding on your respawn loop." take 2: from the cache
+  solo take 2 for "It's feeding on your respawn loop.": 1.00 " It's  feeding  on  your  respawn  loop."
+{
+ "length": 53.237,
+ "beats": {
+  "shudder": [
+   0.0,
+   1.6
+  ],
+  "tearoff": [
+   1.6,
+   2.5
+  ],
+  "fall": [
+   2.5,
+   3.8
+  ],
+  "crystal": [
+   3.8,
+   5.6
+  ],
+  "noob_secret": [
+   5.6,
+   7.354
+  ],
+  "lean": [
+   7.554,
+   8.054
+  ],
+  "steve_touch": [
+   8.054,
+   10.607
+  ],
+  "poke1": [
+   10.757,
+   11.357
+  ],
+  "die1": [
+   11.357,
+   12.057
+  ],
+  "respawn1": [
+   12.057,
+   13.457
+  ],
+  "noob_touched2": [
+   13.457,
+   14.437
+  ],
+  "stare": [
+   14.537,
+   15.437
+  ],
+  "steve_grew": [
+   15.437,
+   16.982
+  ],
+  "noob_again": [
+   17.432,
+   18.686
+  ],
+  "chop": [
+   18.686,
+   19.386
+  ],
+  "die2": [
+   19.386,
+   20.086
+  ],
+  "respawn2": [
+   20.086,
+   21.986
+  ],
+  "patch_in": [
+   21.986,
+   23.886
+  ],
+  "patch_stop": [
+   23.886,
+   26.276
+  ],
+  "react": [
+   26.426,
+   27.326
+  ],
+  "noob_cube": [
+   27.326,
+   28.841
+  ],
+  "patch_name": [
+   29.141,
+   31.352
+  ],
+  "scan": [
+   31.552,
+   33.352
+  ],
+  "patch_feed": [
+   33.352,
+   35.702
+  ],
+  "patch_grows": [
+   35.802,
+   38.34
+  ],
+  "noob_helping": [
+   38.54,
+   39.464
+  ],
+  "sigh": [
+   39.464,
+   40.364
+  ],
+  "steve_no": [
+   40.364,
+   41.707
+  ],
+  "turn": [
+   41.907,
+   43.707
+  ],
+  "patch_know": [
+   43.707,
+   45.847
+  ],
+  "noob_doyou": [
+   46.197,
+   47.317
+  ],
+  "drift": [
+   47.667,
+   48.667
+  ],
+  "patch_deleted": [
+   48.667,
+   50.537
+  ],
+  "hold": [
+   50.837,
+   53.237
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    5.6s noob_secret        heard 'A secret block.'
+  ok    8.1s steve_touch        heard "It fell off the dragon. Don't touch it"
+  ok   13.5s noob_touched2      heard 'I touched it!'
+  ok   15.4s steve_grew         heard 'It grew.'
+  ok   17.4s noob_again         heard 'again'
+  ok   23.9s patch_stop         heard 'Please stop doing that.'
+  ok   27.3s noob_cube          heard 'A talking cube!'
+  ok   29.1s patch_name         heard "I'm Patch. I find glitches."
+  ok   33.4s patch_feed         heard "It's feeding on your respawn loop."
+  ok   35.8s patch_grows        heard 'It grows every time you come back.'
+  ok   38.5s noob_helping       heard "So I'm helping!"
+  ok   40.4s steve_no           heard 'no'
+  ok   43.7s patch_know         heard 'Wait, I know you.'
+  ok   46.2s noob_doyou         heard 'You do?'
+  ok   48.7s patch_deleted      heard 'from a world that got deleted.'
+hearing check: 0 of 15 lines flagged

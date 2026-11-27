@@ -1,0 +1,828 @@
+{
+ "id": "movie_ep03_the_dragon",
+ "number": 3,
+ "title": "The Dragon Entered an Obby",
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  }
+ },
+ "music": [
+  {
+   "cue": "dread",
+   "from": 0,
+   "to": "hide+1.0",
+   "gain": 0.24,
+   "seed": 7,
+   "offset": 6.46,
+   "hit_at": 0.05,
+   "smooth": true,
+   "sustain": true,
+   "rise_over": 6.46,
+   "fade_out": 1.0,
+   "note": "Ep2 v7's last cue carried on (same seed, level and rise, 6.46 s in at the cut): the racing heartbeat through the arrival, gone as they hide"
+  },
+  {
+   "cue": "drone",
+   "from": "hide+0.4",
+   "to": "panel",
+   "gain": 0.16,
+   "fade_out": 0.5,
+   "note": "the frozen players: a serious low bed"
+  },
+  {
+   "cue": "dread",
+   "from": "wheel",
+   "to": "crash+0.4",
+   "gain": 0.2,
+   "seed": 3,
+   "hit_at": "crash+0.1",
+   "smooth": true,
+   "fade_out": 0.3,
+   "note": "the dragon comes for Steve: tension, the hit on the wall"
+  },
+  {
+   "cue": "chase",
+   "from": "leap+0.6",
+   "to": "thanks.end",
+   "gain": 0.17,
+   "smooth": true,
+   "fade_out": 0.6,
+   "swell": [
+    {
+     "from": "ride",
+     "to": "free.end",
+     "gain": 1.4,
+     "ramp": 0.3
+    }
+   ],
+   "note": "the ride and the rescue: driving, no buzz; out for the comic beat (That was my plan)"
+  },
+  {
+   "cue": "dread",
+   "from": "bank",
+   "to": "freeze",
+   "gain": 0.2,
+   "seed": 9,
+   "hit_at": "bank+30",
+   "smooth": true,
+   "hard_end": true,
+   "note": "rising under the bank, cut dead by the freeze (the stutter)"
+  },
+  {
+   "cue": "dread",
+   "from": "glitch",
+   "to": "end",
+   "gain": 0.24,
+   "hit_at": "glitch",
+   "minimal": true,
+   "smooth": true,
+   "open_tail": true,
+   "note": "the glitch sting; Ep4 carries it on"
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "sky",
+   "from": "drop",
+   "to": "freeze",
+   "gain": 0.06,
+   "fade_in": 0.3
+  },
+  {
+   "kind": "void",
+   "from": "freeze+0.6",
+   "to": "glitch",
+   "gain": 0.02,
+   "fade_in": 0.5
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "whoosh",
+   "at": "tumble",
+   "dur": 1.3,
+   "gain": 0.6
+  },
+  {
+   "kind": "portal",
+   "at": "tumble+0.2",
+   "dur": 1.0,
+   "gain": 0.5
+  },
+  {
+   "kind": "glitch",
+   "at": "tear",
+   "dur": 0.3,
+   "gain": 0.5
+  },
+  {
+   "kind": "portal",
+   "at": "tear+0.1",
+   "dur": 0.9,
+   "gain": 0.7
+  },
+  {
+   "kind": "break",
+   "at": "tear+0.05",
+   "gain": 0.4
+  },
+  {
+   "kind": "whoosh",
+   "at": "drop",
+   "dur": 0.5,
+   "gain": 0.45
+  },
+  {
+   "kind": "thump",
+   "at": "drop+0.35",
+   "freq": 90,
+   "gain": 0.7
+  },
+  {
+   "kind": "step",
+   "at": "drop+0.6",
+   "gain": 0.5
+  },
+  {
+   "kind": "thump",
+   "at": "drop+0.65",
+   "freq": 65,
+   "gain": 0.85
+  },
+  {
+   "kind": "step",
+   "at": "drop+0.95",
+   "gain": 0.45
+  },
+  {
+   "kind": "droar",
+   "at": "burst+0.05",
+   "dur": 1.5,
+   "gain": 0.85
+  },
+  {
+   "kind": "sub_drop",
+   "at": "burst+0.05",
+   "dur": 1.6,
+   "gain": 0.6
+  },
+  {
+   "kind": "shatter",
+   "at": "burst+0.35",
+   "gain": 0.8
+  },
+  {
+   "kind": "shatter",
+   "at": "burst+0.6",
+   "gain": 0.7
+  },
+  {
+   "kind": "shatter",
+   "at": "burst+0.85",
+   "gain": 0.6
+  },
+  {
+   "kind": "wingbeat",
+   "at": "burst+0.4",
+   "dur": 1.5,
+   "rate": 1.2,
+   "gain": 0.7
+  },
+  {
+   "kind": "whoosh",
+   "at": "burst+1.1",
+   "dur": 0.8,
+   "gain": 0.5
+  },
+  {
+   "kind": "step",
+   "from": "hide",
+   "to": "hide+1.2",
+   "count": 7,
+   "gain": 0.5
+  },
+  {
+   "kind": "wingbeat",
+   "at": "hide+0.3",
+   "dur": 1.6,
+   "rate": 1.1,
+   "gain": 0.45
+  },
+  {
+   "kind": "whoosh",
+   "at": "hide+0.8",
+   "dur": 0.9,
+   "gain": 0.4
+  },
+  {
+   "kind": "thump",
+   "at": "hide+1.35",
+   "freq": 120,
+   "gain": 0.4
+  },
+  {
+   "kind": "clink",
+   "at": "tap+0.2",
+   "gain": 0.55
+  },
+  {
+   "kind": "clink",
+   "at": "tap+0.45",
+   "gain": 0.45
+  },
+  {
+   "kind": "glitch",
+   "at": "tap+0.6",
+   "dur": 0.08,
+   "gain": 0.15
+  },
+  {
+   "kind": "glitch",
+   "at": "panel",
+   "dur": 0.15,
+   "gain": 0.25
+  },
+  {
+   "kind": "jingle",
+   "at": "panel+0.25",
+   "gain": 0.5
+  },
+  {
+   "kind": "step",
+   "at": "jump",
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "jump+0.1",
+   "dur": 0.9,
+   "gain": 0.6
+  },
+  {
+   "kind": "wingbeat",
+   "at": "jump+0.3",
+   "dur": 1.0,
+   "rate": 1.4,
+   "gain": 0.6
+  },
+  {
+   "kind": "droar",
+   "at": "jump+0.6",
+   "dur": 0.7,
+   "gain": 0.5
+  },
+  {
+   "kind": "burst",
+   "at": "kill",
+   "gain": 0.8
+  },
+  {
+   "kind": "pop",
+   "from": "kill+0.1",
+   "to": "kill+0.7",
+   "count": 5,
+   "gain": 0.3
+  },
+  {
+   "kind": "respawn",
+   "at": "respawn",
+   "gain": 0.7
+  },
+  {
+   "kind": "droar",
+   "at": "wheel+0.2",
+   "dur": 1.2,
+   "gain": 0.7
+  },
+  {
+   "kind": "wingbeat",
+   "at": "wheel",
+   "dur": 1.6,
+   "rate": 1.3,
+   "gain": 0.6
+  },
+  {
+   "kind": "place",
+   "from": "build",
+   "to": "build.end-0.1",
+   "count": 6,
+   "gain": 0.5
+  },
+  {
+   "kind": "wingbeat",
+   "at": "build",
+   "dur": 1.6,
+   "rate": 1.4,
+   "gain": 0.4
+  },
+  {
+   "kind": "droar",
+   "at": "build+1.1",
+   "dur": 0.6,
+   "gain": 0.6
+  },
+  {
+   "kind": "shatter",
+   "at": "crash+0.1",
+   "gain": 1.1
+  },
+  {
+   "kind": "thump",
+   "at": "crash+0.1",
+   "freq": 55,
+   "gain": 0.9
+  },
+  {
+   "kind": "break",
+   "at": "crash+0.15",
+   "gain": 0.8
+  },
+  {
+   "kind": "thump",
+   "at": "crash+0.4",
+   "freq": 110,
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "crash+0.5",
+   "dur": 0.9,
+   "gain": 0.5
+  },
+  {
+   "kind": "place",
+   "from": "crash+0.6",
+   "to": "crash+1.4",
+   "count": 5,
+   "gain": 0.25
+  },
+  {
+   "kind": "step",
+   "at": "leap",
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "leap+0.05",
+   "dur": 0.7,
+   "gain": 0.5
+  },
+  {
+   "kind": "thump",
+   "at": "leap+0.75",
+   "freq": 85,
+   "gain": 0.8
+  },
+  {
+   "kind": "droar",
+   "at": "leap+0.85",
+   "dur": 0.6,
+   "gain": 0.5
+  },
+  {
+   "kind": "wingbeat",
+   "at": "ride",
+   "dur": 2.4,
+   "rate": 1.5,
+   "gain": 0.65
+  },
+  {
+   "kind": "whoosh",
+   "at": "ride+0.6",
+   "dur": 1.0,
+   "gain": 0.5
+  },
+  {
+   "kind": "droar",
+   "at": "ride+1.2",
+   "dur": 0.9,
+   "gain": 0.55
+  },
+  {
+   "kind": "thump",
+   "at": "free+0.05",
+   "freq": 60,
+   "gain": 0.8
+  },
+  {
+   "kind": "glass",
+   "at": "free+0.05",
+   "gain": 1.3
+  },
+  {
+   "kind": "glass",
+   "at": "free+0.5",
+   "gain": 1.0
+  },
+  {
+   "kind": "glass",
+   "at": "free+0.95",
+   "gain": 0.9
+  },
+  {
+   "kind": "glass",
+   "at": "free+1.4",
+   "gain": 0.8
+  },
+  {
+   "kind": "jingle",
+   "at": "free+0.9",
+   "gain": 0.5
+  },
+  {
+   "kind": "step",
+   "from": "thanks+0.4",
+   "to": "thanks.end",
+   "count": 8,
+   "gain": 0.35
+  },
+  {
+   "kind": "wingbeat",
+   "at": "bank",
+   "dur": 2.4,
+   "rate": 1.3,
+   "gain": 0.65,
+   "cut": "freeze"
+  },
+  {
+   "kind": "droar",
+   "at": "bank+0.3",
+   "dur": 2.2,
+   "gain": 0.8,
+   "cut": "freeze"
+  },
+  {
+   "kind": "glitch",
+   "at": "freeze+0.75",
+   "dur": 0.07,
+   "gain": 0.35,
+   "cut": "freeze+0.85"
+  },
+  {
+   "kind": "glitch",
+   "at": "freeze+1.35",
+   "dur": 0.06,
+   "gain": 0.3,
+   "cut": "freeze+1.43"
+  },
+  {
+   "kind": "step",
+   "at": "look+0.1",
+   "gain": 0.3
+  },
+  {
+   "kind": "glitch",
+   "at": "glitch",
+   "dur": 0.5,
+   "gain": 1.9
+  },
+  {
+   "kind": "sub_drop",
+   "at": "glitch",
+   "dur": 2.6,
+   "gain": 0.9
+  },
+  {
+   "kind": "glitch",
+   "at": "glitch+1.2",
+   "dur": 0.3,
+   "gain": 0.45
+  },
+  {
+   "kind": "glitch",
+   "at": "glitch+2.2",
+   "dur": 0.2,
+   "gain": 0.4
+  }
+ ],
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 97%",
+   "from": 0,
+   "to": "glitch"
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 92%",
+   "alert": true,
+   "from": "glitch",
+   "to": "end"
+  },
+  {
+   "type": "flash",
+   "from": "crash+0.1",
+   "to": "crash+0.2",
+   "strength": 0.6
+  },
+  {
+   "type": "achievement",
+   "title": "ACHIEVEMENT UNLOCKED",
+   "text": "ACCIDENTAL HERO",
+   "sub": "Free the frozen players",
+   "from": "free+0.9",
+   "to": "thanks.end"
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "events": [
+  {
+   "beat": "tumble",
+   "dur": 1.2,
+   "note": "Ep2's last frame goes on: through the swirl, a violet-white tunnel (Ep2 ends on a flare as the dragon's head enters)"
+  },
+  {
+   "beat": "tear",
+   "dur": 0.8,
+   "note": "the obby's sky: a purple portal tears open above the start pad, crackling"
+  },
+  {
+   "beat": "drop",
+   "dur": 1.4,
+   "note": "Steve and the Noob tumble out of it onto the start pad: the Noob lands on his feet and bounces, delighted; Steve on his back"
+  },
+  {
+   "beat": "burst",
+   "dur": 1.9,
+   "note": "the dragon blasts out of the same portal right behind them, roaring, smashing three course stages, and climbs; the portal flickers and stays"
+  },
+  {
+   "line": "noob",
+   "name": "noob_boss",
+   "text": "BOSS FIGHT!",
+   "direction_text": "[shouting, thrilled] BOSS FIGHT!",
+   "pad": 0.25,
+   "solo_only": true,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
+  },
+  {
+   "line": "steve",
+   "name": "steve_hide",
+   "text": "It used our portal. Hide!",
+   "direction_text": "[flat, deadpan, unimpressed] That's a dragon. We hide.",
+   "pad": 0.5,
+   "tighten": 0.2,
+   "solo_text": "It used our portal. HIDE!",
+   "solo_take": 1,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
+  },
+  {
+   "beat": "hide",
+   "dur": 2.0,
+   "note": "they run and duck behind the ledge where four players stand frozen in glitch crystal; the dragon's shadow passes over"
+  },
+  {
+   "line": "noob",
+   "name": "noob_hi",
+   "text": "Hi! ...Hello?",
+   "direction_text": "Hi! ...Hello?",
+   "pad": 0.3,
+   "note": "added line: the frozen players' setup (the creator's notes: they had none) (run 45628706087's acted takes read the direction aloud: recorded solo, no direction)",
+   "solo_only": true,
+   "solo_text": "Hi! ...Hello?",
+   "taken_in": "run 45631569353"
+  },
+  {
+   "beat": "tap",
+   "dur": 0.9,
+   "note": "he taps the crystal: a glassy clink; nobody inside moves; a pixel flickers across the crystal"
+  },
+  {
+   "line": "noob",
+   "name": "noob_frozen",
+   "text": "They're frozen.",
+   "direction_text": "They're... frozen.",
+   "pad": 0.35,
+   "note": "added line (run 45628706087's acted takes read the direction aloud: recorded solo, no direction)",
+   "solo_only": true,
+   "solo_text": "They're... frozen.",
+   "taken_in": "run 45631569353"
+  },
+  {
+   "line": "steve",
+   "name": "steve_here",
+   "text": "The glitch is here too.",
+   "direction_text": "[low, quiet, a grim realisation] The glitch is here too.",
+   "own_scene": true,
+   "pad": 0.6,
+   "note": "added line: Steve clocks that something is wrong with this world (foreshadows the frozen dragon)",
+   "taken_in": "run 45628706087"
+  },
+  {
+   "beat": "panel",
+   "dur": 1.4,
+   "note": "a hologram panel flickers up in the sky over the course, TUTORIAL: JUMP ON THE BOSS! with an arrow at the dragon; the Noob looks up at it"
+  },
+  {
+   "line": "noob",
+   "name": "noob_tut",
+   "text": "Tutorial says jump!",
+   "direction_text": "[excited, already going] Tutorial says jump!",
+   "pad": 0.0,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
+  },
+  {
+   "line": "steve",
+   "name": "steve_dont",
+   "text": "Don't—",
+   "direction_text": "[sharp, cut off] Don't—",
+   "pad": 0.0,
+   "solo_only": true,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
+  },
+  {
+   "beat": "jump",
+   "dur": 1.3,
+   "note": "the Noob leaps from the ledge's red stage toward the circling dragon"
+  },
+  {
+   "beat": "kill",
+   "dur": 0.8,
+   "note": "the dragon sweeps through him: he bursts into pieces (the dark cube in the burst)"
+  },
+  {
+   "beat": "respawn",
+   "dur": 0.7,
+   "note": "he pops back on the checkpoint pad by the flag"
+  },
+  {
+   "line": "noob",
+   "name": "noob_cp",
+   "text": "Checkpoint!",
+   "direction_text": "[cheerful, completely unbothered] Checkpoint!",
+   "pad": 0.25,
+   "solo_only": true,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
+  },
+  {
+   "beat": "wheel",
+   "dur": 1.6,
+   "note": "the dragon wheels round, low, and comes for Steve on the green stage"
+  },
+  {
+   "line": "steve",
+   "name": "steve_wall",
+   "text": "Plan: wall.",
+   "direction_text": "[dry, decisive] Plan: wall.",
+   "pad": 0.0,
+   "cut_at": [
+    4.52,
+    6.12
+   ]
+  },
+  {
+   "beat": "build",
+   "dur": 1.6,
+   "note": "Steve places a cobblestone wall, 3 by 2, block by block"
+  },
+  {
+   "beat": "crash",
+   "dur": 1.6,
+   "note": "the dragon hits the wall: the stones burst, its snout is knocked down and it drops low, skimming the course; Steve dives flat on the green stage (hit-stop, shake)"
+  },
+  {
+   "line": "noob",
+   "name": "noob_again",
+   "text": "Round two!",
+   "direction_text": "Round two!!",
+   "solo_only": true,
+   "solo_text": "Round two!!",
+   "shout": 2,
+   "pad": 0.0,
+   "note": "added line: the Noob jumps blind from the checkpoint pad, at where the dragon was",
+   "taken_in": "run 45628706087"
+  },
+  {
+   "beat": "leap",
+   "dur": 1.2,
+   "note": "the dragon, knocked low by the wall, passes right under him: he lands on its back (the wall caused it)"
+  },
+  {
+   "line": "noob",
+   "name": "noob_done",
+   "text": "Tutorial complete!",
+   "direction_text": "[triumphant, riding] Tutorial complete!",
+   "pad": 0.3
+  },
+  {
+   "beat": "ride",
+   "dur": 2.4,
+   "note": "dazed, the dragon swerves along the course, the Noob clinging to its neck, and veers straight into the frozen players' ledge"
+  },
+  {
+   "beat": "free",
+   "dur": 2.6,
+   "note": "the four crystals shatter one after another; the players tumble out, stand up, look round"
+  },
+  {
+   "beat": "thanks",
+   "dur": 1.6,
+   "note": "they wave at Steve and the Noob, and run off along the course to the next stage"
+  },
+  {
+   "line": "steve",
+   "name": "steve_myplan",
+   "text": "That was my plan.",
+   "direction_text": "[unimpressed, quiet] ...That was my plan.",
+   "pad": 0.1,
+   "tighten": 0.25,
+   "solo_text": "That was my plan.",
+   "solo_take": 1
+  },
+  {
+   "line": "noob",
+   "name": "noob_planwall",
+   "text": "Your plan was a wall.",
+   "direction_text": "[cheerfully honest] Your plan was a wall.",
+   "pad": 0.5
+  },
+  {
+   "beat": "bank",
+   "dur": 1.8,
+   "note": "the dragon banks round over them mid-roar, the Noob on its neck, full wingbeats"
+  },
+  {
+   "beat": "freeze",
+   "dur": 2.0,
+   "note": "mid-flap it stutters (a twitch back, twice) and locks: wings asymmetric, the cobblestone debris hanging in the air round it; the sound freezes with it, then silence"
+  },
+  {
+   "beat": "wave",
+   "dur": 1.0,
+   "note": "the Noob leans down its neck and waves a hand in front of its eye"
+  },
+  {
+   "line": "noob",
+   "name": "noob_lag",
+   "text": "...Is it lagging?",
+   "direction_text": "[small, unsure] ...Is it lagging?",
+   "pad": 0.35,
+   "tighten": 0.25
+  },
+  {
+   "beat": "look",
+   "dur": 0.8,
+   "note": "Steve turns, head then shoulders, and looks up at it"
+  },
+  {
+   "line": "steve",
+   "name": "steve_lag",
+   "text": "Worlds don't lag.",
+   "direction_text": "[quiet, serious] Worlds don't lag.",
+   "pad": 0.8,
+   "note": "the original take (the creator, 2026-11-26: prefers the old takes of the old lines; the new lines stay)",
+   "taken_in": "movie/ep03"
+  },
+  {
+   "beat": "glitch",
+   "dur": 3.0,
+   "note": "the frozen dragon flickers into the pink-and-black missing texture and back; REALITY 97 -> 92"
+  }
+ ],
+ "movie_note": "Movie Episode 3 v2 (the creator's notes, 2026-11-25; story/movie/ep03_shots.md, 'v2'): picks up Ep2 v7's dive; the portal tears open over the obby, they tumble out, the dragon blasts through after them; the frozen players set up; the tutorial a 3D hologram; Steve's wall knocks the dragon low under the Noob's blind jump; the stutter-freeze; energetic new takes; no upbeat music under the dragon; no PLAN timer (Ep2's countdown, the joke it called back, was removed by the creator). The picture is src/lookdev/movie_ep03.py.",
+ "voices_cache_only": true,
+ "declick": 0.004,
+ "declick_blank": 0.0025,
+ "stutters": [
+  {
+   "at": "freeze",
+   "slice": 0.07,
+   "n": 5,
+   "decay": 0.9,
+   "silence": 0.7,
+   "note": "the sound freezes with the dragon: a slice repeats, then silence (the creator's notes 2026-11-25)"
+  }
+ ],
+ "own_takes": 3,
+ "voice_air": 0.12
+}

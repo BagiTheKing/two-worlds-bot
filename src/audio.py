@@ -56,6 +56,125 @@ def norm(x, peak=1.0):
     return x / m * peak
 
 
+def _env(x, win):
+    """RMS envelope of x over a centred window of win samples."""
+    c = np.concatenate(([0.0], np.cumsum(x.astype(np.float64) ** 2)))
+    h = win // 2
+    i = np.arange(len(x))
+    lo, hi = np.clip(i - h, 0, len(x)), np.clip(i + h, 0, len(x))
+    return np.sqrt((c[hi] - c[lo]) / np.maximum(hi - lo, 1))
+
+
+def clean_tail(x, sr=SR):
+    """Drop what a take leaves after its last word: a short burst of noise
+    (a click, a breath, the generator's end-of-take hiss) that comes after a
+    real silence. Only noise-like bursts (spectrally flat, under 0.2 s) after
+    0.2 s or more of silence go; a word said after a pause is voiced and stays."""
+    w = int(0.01 * sr)
+    n = len(x) // w
+    if n < 40:
+        return x
+    fr = np.sqrt(np.mean(x[:n * w].reshape(n, w) ** 2, axis=1)) + 1e-9
+    db = 20 * np.log10(fr / fr.max())
+    loud = np.nonzero(db > -40)[0]
+    if len(loud) < 2:
+        return x
+    # the last stretch of sound, and the silence before it
+    end = loud[-1]
+    start = end
+    while start > 0 and db[start - 1] > -40:
+        start -= 1
+        # a burst broken by a few frames of digital silence (exact zeros) is one burst
+        # (the movie's new takes, 2026-11-24: 40 ms, 30 ms of zeros, 90 ms)
+        z = start
+        while z > 0 and fr[z - 1] < 1e-8 and start - z < 6:
+            z -= 1
+        if z < start and z > 0 and fr[z - 1] >= 1e-8 and db[z - 1] > -40:
+            start = z
+    gap_end = start
+    gap_start = gap_end
+    while gap_start > 0 and db[gap_start - 1] <= -40:
+        gap_start -= 1
+    burst = (end + 1 - start) * w
+    gap = (gap_end - gap_start) * w
+    if gap_start == 0 or burst > 0.2 * sr or gap < 0.2 * sr:
+        return x
+    seg = x[start * w:(end + 1) * w]
+    X = np.abs(np.fft.rfft(seg * np.hanning(len(seg)))) + 1e-9
+    if np.exp(np.mean(np.log(X))) / np.mean(X) < 0.25:       # voiced: a word, keep it
+        return x
+    out = x[:gap_start * w + int(0.06 * sr)].copy()
+    f = int(0.04 * sr)
+    out[-f:] *= np.linspace(1, 0, f)
+    return out
+
+
+def level_line(x, target_db=-18.0, quiet=False, sr=SR):
+    """Every line at the same speaking loudness: the RMS of its spoken parts
+    (20 ms frames within 25 dB of its loudest) brought to target_db. A
+    whispered or very quiet line sits 4 dB lower, but stays clear."""
+    w = int(0.02 * sr)
+    if len(x) < 2 * w:
+        return x
+    fr = np.sqrt(np.mean(x[:len(x) // w * w].reshape(-1, w) ** 2, axis=1)) + 1e-9
+    db = 20 * np.log10(fr)
+    act = fr[db > db.max() - 25]
+    rms_db = 20 * np.log10(np.sqrt(np.mean(act ** 2)))
+    g = 10 ** ((target_db - (4.0 if quiet else 0.0) - rms_db) / 20)
+    return x * float(np.clip(g, 0.3, 8.0))
+
+
+def master(out, voice, speech_db=-16.0, ceiling=0.95, sr=SR):
+    """The final level: the dialogue at a steady loudness (speech_db RMS while
+    someone speaks; about what Shorts play at), and a peak limiter instead of
+    turning the whole track down for one loud hit. The limiter looks 5 ms ahead
+    and lets go over 120 ms, so it never clicks or pumps on words."""
+    from numpy.lib.stride_tricks import sliding_window_view
+    ev = _env(voice, int(0.05 * sr))
+    talk = ev > ev.max() * 10 ** (-30 / 20)
+    rms = np.sqrt(np.mean(out[talk] ** 2)) if talk.any() else np.sqrt(np.mean(out ** 2))
+    y = out * (10 ** (speech_db / 20) / max(rms, 1e-9))
+    la = int(0.005 * sr)
+    pk = np.pad(np.abs(y), (la, la), mode="edge")
+    pk = sliding_window_view(pk, 2 * la + 1).max(axis=1)        # the peak around each sample
+    g = np.minimum(1.0, ceiling / np.maximum(pk, 1e-9))
+    rel = int(0.12 * sr)
+    step = int(0.002 * sr)
+    gs = g[::step].copy()
+    a = np.exp(-step / rel)
+    for i in range(1, len(gs)):
+        gs[i] = min(gs[i], a * gs[i - 1] + (1 - a))
+    gs = np.minimum(gs, np.pad(sliding_window_view(g, step).min(axis=1)[::step], (0, len(gs)))[:len(gs)])
+    g = np.interp(np.arange(len(y)), np.arange(len(gs)) * step, gs)
+    return np.clip(y * g, -ceiling, ceiling)
+
+
+def keep_under(voice, bg, margin_db=15.0, cap_db=-26.0, sr=SR):
+    """The background (music, effects, ambience) never covers a word: while
+    someone speaks it stays margin_db under the voice; and whenever it rises
+    above cap_db (a big moment) it is compressed 3:1, so nothing is ever much
+    louder than the dialogue. Gains move smoothly (fast down, slow back up)."""
+    win = int(0.05 * sr)
+    ev, eb = _env(voice, win), _env(bg, win) + 1e-9
+    g = np.ones(len(bg))
+    speaking = ev > 10 ** (-45 / 20)
+    g[speaking] = np.minimum(1.0, ev[speaking] * 10 ** (-margin_db / 20) / eb[speaking])
+    cap = 10 ** (cap_db / 20)
+    over = eb > cap
+    g[over] = np.minimum(g[over], (cap / eb[over]) ** (2 / 3))
+    # fast down (a running minimum over 80 ms, so a word's start is covered), slow up
+    from numpy.lib.stride_tricks import sliding_window_view
+    step = int(0.01 * sr)
+    gs = g[::step]
+    k = 8
+    gs = np.pad(gs, (k // 2, k - k // 2 - 1), mode="edge")
+    gs = sliding_window_view(gs, k).min(axis=1)
+    sm = np.ones(16) / 16                                     # 160 ms release
+    gs = np.convolve(np.pad(gs, (8, 7), mode="edge"), sm, "valid")
+    g = np.interp(np.arange(len(bg)), np.arange(len(gs)) * step, gs)
+    return bg * g
+
+
 def place(mix, clip, at, gain=1.0):
     i = int(at * SR)
     if i >= len(mix):
@@ -64,6 +183,20 @@ def place(mix, clip, at, gain=1.0):
         clip, i = clip[-i:], 0
     n = min(len(clip), len(mix) - i)
     mix[i:i + n] += clip[:n] * gain
+
+
+def edge_fade(clip, ms=6.0):
+    """A voice clip's first and last few milliseconds faded, its offset removed: a take cut
+    mid-waveform (or with a DC offset) starts with a 1-2 ms spike, heard as a click."""
+    clip = np.asarray(clip, dtype=np.float64)
+    n = min(len(clip) // 4, int(ms / 1000 * SR))
+    if n < 2:
+        return clip
+    clip = clip - np.median(clip[:n * 4])                 # the offset a cut leaves behind
+    ramp = 0.5 - 0.5 * np.cos(np.linspace(0, np.pi, n))
+    clip[:n] *= ramp
+    clip[-n:] *= ramp[::-1]
+    return clip
 
 
 # --------------------------------------------------------------- the sounds
@@ -394,11 +527,16 @@ def gemini_models():
     return list(_gemini_models)
 
 
+CACHE_ONLY = False
+
+
 def gemini_speak(turns, voices, notes=""):
     """turns: [(speaker, text)] (one or two speakers). voices: {speaker:
     voice name}. notes: acting notes for the whole scene. Returns
     (samples, 24000). Newer speech models take one part per line tagged with
     its speaker; older ones a "Name: line" script. Both are tried."""
+    if CACHE_ONLY:          # the movie: the same takes as the published episode, never a new recording
+        raise SystemExit(f"voices_cache_only: {turns!r} is not in the voice cache (it would be a NEW recording)")
     import base64
     import requests
     import time
@@ -682,6 +820,8 @@ def gemini_lines(ep, cache_dir):
     borrowed = {}       # lines whose recording comes from another (cached) scene
     files = {}          # lines taken as they are from a recording in the repo
     own = set()         # lines recorded as a scene of their own, direction kept, used whole
+    starts = set()      # lines that always begin a new scene
+    fresh = set()       # lines added to the movie (new takes)
     for ev in ep["events"]:
         if "line" not in ev:
             continue
@@ -695,8 +835,12 @@ def gemini_lines(ep, cache_dir):
         todo.append((name, who, text, ev.get("nonverbal", False)))
         if ev.get("own_scene"):
             own.add(name)
+        if ev.get("scene_start"):          # a new scene starts here (keeps a recorded scene as it was)
+            starts.add(name)
         if ev.get("solo_text"):
             solos[name] = (who, ev["solo_text"], ev.get("nonverbal", False))
+        if ev.get("new_take"):                       # an added line: recorded fresh, all its takes, even in a cache-only run
+            fresh.add(name)
         if ev.get("solo_take") is not None:         # this take by number, not Whisper's pick
             pick[name] = ev["solo_take"]
         if ev.get("cut"):
@@ -714,7 +858,7 @@ def gemini_lines(ep, cache_dir):
     for item in todo:
         speakers = {w for _, w, _, _ in cur} | {item[1]}
         if cur and (item[3] or cur[-1][3] or len(speakers) > 2 or "null" in speakers and len(speakers) > 1
-                    or item[0] in own or cur[-1][0] in own):
+                    or item[0] in own or cur[-1][0] in own or item[0] in starts):
             scenes.append(cur)              # screams and Null are voiced on their own
             cur = []
         cur.append(item)
@@ -782,6 +926,9 @@ def gemini_lines(ep, cache_dir):
         both = {k: cut_lines(s, sr, spans, names, loose=k) for k in (False, True)}
         cuts = {n: both[loose[n]][n] for n in names if n in both[loose[n]]}
         for n, (a, b) in pinned.items():
+            if b > len(s) / sr + 0.05:
+                raise SystemExit(f"{n}: pinned cut {a}-{b}s is past the end of its scene "
+                                 f"({len(s) / sr:.2f}s): the scene was re-recorded or regrouped")
             seg = s[int(a * sr):int(b * sr)].copy()
             f = int(0.006 * sr)
             seg[:f] *= np.linspace(0, 1, f)
@@ -798,9 +945,13 @@ def gemini_lines(ep, cache_dir):
             print("  re-taking", n, "alone")
             clip, _ = gemini_solo(cast, w, _spoken(t), False, cache_dir)
             out[n] = (clip, sr)
+    global CACHE_ONLY
     for n, (w, text, nonverbal) in solos.items():
+        keep_only = CACHE_ONLY
+        CACHE_ONLY = CACHE_ONLY and n not in fresh
         out[n] = gemini_solo(cast, w, text, nonverbal, cache_dir, takes=ep.get("solo_takes", 3),
                              whole=ep.get("solo_whole", False), pick=pick.get(n))
+        CACHE_ONLY = keep_only
     for n, path in files.items():                    # a recording kept as it is
         clip, sr = sf.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", path))
         out[n] = (clip.mean(1) if clip.ndim > 1 else clip, sr)
@@ -832,6 +983,10 @@ def gemini_solo(cast, who, text, nonverbal, cache_dir, takes=3, whole=False, pic
         if key and os.path.exists(key):
             clip, sr = sf.read(key)
             print(f"  solo {label} {text!r} take {k}: from the cache")
+        elif CACHE_ONLY and best is not None:
+            # the movie: a take the published run never made (it had fewer takes); keep to the recorded ones
+            print(f"  solo {label} {text!r} take {k}: not in the cache, skipped (cache only)")
+            continue
         else:
             clip, sr = gemini_speak([(label, text)], voice)
             print(f"  solo {label} {text!r} take {k}: NEW recording")
@@ -924,13 +1079,13 @@ def sfx_sub_drop(dur):
     return norm(np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(x), 0.02, dur * 0.6), 0.9)
 
 
-def sfx_rumble_rise(dur):
-    """Null rising: a slow cinematic braam over a sub swell (no noise)."""
+def sfx_rumble_rise(dur, smooth=False):
+    """Null rising: a slow cinematic braam over a sub swell (no noise). smooth: the buzz-free boom."""
     import music
     x = t(dur + 1.5)
     sub = np.sin(2 * np.pi * 36 * x) * np.minimum(1, x / dur) ** 2
     b = np.zeros(len(x))
-    place(b, music.braam(min(3.5, dur + 1.2)), max(0.0, dur - 1.0))
+    place(b, music.braam(min(3.5, dur + 1.2), smooth=smooth), max(0.0, dur - 1.0))
     return norm(0.6 * sub + b, 0.9)
 
 
@@ -1006,6 +1161,140 @@ def sfx_groan(dur=0.9):
     return norm(voice * env(len(x), 0.08, dur * 0.4), 0.6)
 
 
+def sfx_growl(dur=1.2, pitch=1.0):
+    """A scary zombie (the movie): a deep, wet, rasping growl from the chest,
+    slow and uneven, with a gurgle and breath noise; no cartoon moan."""
+    x = t(dur)
+    f = pitch * (58 + 9 * np.sin(2 * np.pi * 1.7 * x) + 6 * np.sin(2 * np.pi * 5.3 * x + 1.0))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = sum(np.sin(k * ph) / k ** 0.8 for k in range(1, 18))            # a rough, buzzy throat
+    rasp = 1 + 0.6 * np.sin(2 * np.pi * (31 + 9 * np.sin(2 * np.pi * 0.9 * x)) * x)   # the rattle
+    breath = band(rng.standard_normal(len(x)), 300, 2600) * (0.6 + 0.4 * np.sin(2 * np.pi * 2.1 * x))
+    y = np.tanh(2.2 * (norm(tone) * rasp + 0.7 * norm(breath)))            # saturated, nasty
+    shape = np.minimum(1, x / 0.12) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.5
+    return norm(band(y * shape, 70, 4200), 0.75)
+
+
+def sfx_snarl(dur=0.7):
+    """A zombie lunging at someone: a short, rising, ragged shriek-growl."""
+    x = t(dur)
+    f = 90 + 160 * np.minimum(1, x / (dur * 0.35))
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = sum(np.sin(k * ph) / k for k in range(1, 14))
+    breath = band(rng.standard_normal(len(x)), 600, 5000)
+    y = np.tanh(2.6 * (norm(tone) * (1 + 0.5 * np.sin(2 * np.pi * 38 * x)) + 0.8 * norm(breath)))
+    return norm(y * env(len(x), 0.03, dur * 0.45), 0.85)
+
+
+def sfx_slowmo(dur=1.6):
+    """Slow motion: a low, stretched whoosh dropping in pitch, a sub under it."""
+    x = t(dur)
+    air = band(rng.standard_normal(len(x)), 120, 900) * np.sin(np.pi * x / dur) ** 1.5
+    f = 55 * np.exp(-x * 0.6) + 22
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.sin(np.pi * x / dur)
+    return norm(0.7 * norm(air) + norm(sub), 0.8)
+
+
+def sfx_grass_step(heavy=False):
+    """A foot on grass: a soft crunch of blades, and for a heavy body a dull thud under it."""
+    out = np.zeros(int(0.25 * SR))
+    for i in range(5):
+        n = int(0.025 * SR)
+        place(out, band(rng.standard_normal(n), 900, 5000) * env(n, 0.001, 0.008), 0.004 * i + 0.01 * rng.random(), 0.35)
+    n = int(0.12 * SR)
+    place(out, band(rng.standard_normal(n), 200, 1500) * env(n, 0.003, 0.03), 0.0, 0.6)
+    if heavy:
+        place(out, sfx_thump(70, 0.22, 0.4), 0.0, 0.9)
+    return norm(out, 0.6 if heavy else 0.4)
+
+
+def _formants(x, bands):
+    return sum(g * band(x, lo, hi) for lo, hi, g in bands)
+
+
+def sfx_zgroan(dur=1.2, pitch=1.0):
+    """A zombie's groan (v7, the creator 2026-11-25: no buzz): breath forced through a throat, shaped into a
+    low "uuurgh" by vowel formants, a soft rattle in its amplitude and only a faint sine voice under it (the old
+    harmonic stack read as an electric buzz)."""
+    x = t(dur)
+    f0 = pitch * (90 + 8 * np.sin(2 * np.pi * 1.7 * x) - 12 * x / dur)
+    ph = 2 * np.pi * np.cumsum(f0) / SR
+    voice = np.sin(ph) + 0.25 * np.sin(2 * ph)
+    breath = rng.standard_normal(len(x))
+    rattle = 1 + 0.3 * np.sin(2 * np.pi * (9 + 3 * np.sin(2 * np.pi * 0.8 * x)) * x)
+    throat = _formants(breath, ((250, 650, 1.0), (850, 1250, 0.45), (2300, 2800, 0.08)))
+    shape = np.minimum(1, x / 0.18) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.7
+    return norm((norm(throat) * rattle + 0.22 * voice) * shape, 0.7)
+
+
+def sfx_droar(dur=1.2):
+    """The dragon's roar (v7: no buzz): a huge breath through a throat, a deep chest under it (a few soft
+    harmonics, low-passed), rising then falling, a slow rattle in the air."""
+    x = t(dur)
+    f0 = 48 + 26 * np.sin(np.pi * x / dur) ** 1.4
+    ph = 2 * np.pi * np.cumsum(f0) / SR
+    chest = sum(np.sin(k * ph) / k ** 2 for k in range(1, 6))
+    chest = band(chest, 30, 420)
+    air = rng.standard_normal(len(x))
+    throat = _formants(air, ((180, 520, 1.0), (650, 1100, 0.6), (1400, 2600, 0.25)))
+    rattle = 1 + 0.25 * np.sin(2 * np.pi * 11 * x)
+    rise = 0.55 + 0.45 * np.sin(np.pi * x / dur)
+    shape = np.minimum(1, x / 0.1) * np.sin(np.pi * np.minimum(x / dur, 1)) ** 0.6
+    return norm((norm(throat) * rattle * rise + 0.5 * norm(chest)) * shape, 0.95)
+
+
+def sfx_clink():
+    """Iron on stone or iron: a short bright ring, inharmonic."""
+    x = t(0.5)
+    tone = sum(a * np.sin(2 * np.pi * f * x) for f, a in ((1240, 1.0), (2710, 0.6), (4130, 0.35), (5900, 0.2)))
+    return norm(tone * np.exp(-x / 0.07) + 0.3 * band(rng.standard_normal(len(x)), 3000, 9000) * np.exp(-x / 0.01), 0.7)
+
+
+def sfx_shatter():
+    """Stone and plastic shattering: a hard crack, a spray of fragments, then pieces pattering down."""
+    out = np.zeros(int(1.4 * SR))
+    place(out, sfx_thump(90, 0.35, 1.0), 0.0, 1.0)
+    n = int(0.05 * SR)
+    place(out, band(rng.standard_normal(n), 1500, 9000) * env(n, 0.0005, 0.015), 0.0, 1.0)
+    for i in range(22):
+        n = int(rng.uniform(0.01, 0.03) * SR)
+        place(out, band(rng.standard_normal(n), rng.uniform(1500, 3500), 9500) * env(n, 0.0005, 0.006),
+              0.02 + rng.exponential(0.12), rng.uniform(0.15, 0.5))
+    for i in range(9):
+        place(out, sfx_clink(), 0.35 + rng.uniform(0, 0.8), rng.uniform(0.04, 0.1))
+    return norm(out, 0.95)
+
+
+def sfx_glass():
+    """Glitch crystal shattering (Ep3's frozen players freed): a sharp crack, then a spray of bright ringing
+    shards (glassy, inharmonic partials high up), pattering down for over a second."""
+    out = np.zeros(int(1.8 * SR))
+    n = int(0.04 * SR)
+    place(out, band(rng.standard_normal(n), 2500, 12000) * env(n, 0.0003, 0.01), 0.0, 1.0)
+    place(out, sfx_thump(140, 0.2, 1.0), 0.0, 0.5)
+    for i in range(34):
+        f = rng.uniform(2600, 7500)
+        d = rng.uniform(0.08, 0.35)
+        x = t(d)
+        tone = sum(a * np.sin(2 * np.pi * f * r * x) for r, a in ((1, 1.0), (1.47, 0.5), (2.09, 0.3)))
+        place(out, tone * np.exp(-x / (d / 4)), 0.01 + rng.exponential(0.22), rng.uniform(0.08, 0.3))
+    return norm(out, 0.9)
+
+
+def sfx_wingbeat(dur=2.0, rate=1.1):
+    """Huge wings: a deep whump on every downstroke, the air torn by the membrane (no tone)."""
+    out = np.zeros(int((dur + 0.6) * SR))
+    k = 0.0
+    while k < dur:
+        n = int(0.45 * SR)
+        xx = np.arange(n) / SR
+        whump = band(rng.standard_normal(n), 30, 220) * np.sin(np.pi * xx / 0.45) ** 3
+        flap = band(rng.standard_normal(n), 250, 1400) * np.exp(-((xx - 0.12) / 0.06) ** 2)
+        place(out, norm(whump, 1.0) + 0.35 * norm(flap), k, 1.0)
+        k += 1 / rate
+    return norm(out, 0.9)
+
+
 def sfx_burst():
     """The Noob breaking apart: a pop, a plastic clatter."""
     out = np.zeros(int(0.9 * SR))
@@ -1042,8 +1331,8 @@ def sfx_rewind(dur):
     x = t(dur)
     f = 180 + 2600 * (x / dur) ** 2
     chirp = np.sign(np.sin(2 * np.pi * np.cumsum(f * (1 + 0.3 * np.sin(2 * np.pi * 23 * x))) / SR))
-    chirp = band(chirp, 300, 6000) * 0.35
-    air = band(rng.standard_normal(len(x)), 800, 9000) * (x / dur) ** 1.5
+    chirp = band(chirp, 300, 3500) * 0.35
+    air = band(rng.standard_normal(len(x)), 600, 3000) * (x / dur) ** 1.5 * 0.25   # a breath of air, not hiss
     return norm((chirp + air) * np.minimum(1, x / 0.08) * np.minimum(1, (dur - x) / 0.05 + 0.001), 0.6)
 
 
@@ -1135,7 +1424,233 @@ def sfx_flaps(dur=2.0, rate=1.3):
     return out
 
 
-SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
+def sfx_quack(n=2):
+    """A duck: a nasal, falling buzz, twice (a Roblox build of a duck can still quack)."""
+    out = []
+    for k in range(n):
+        d = 0.17 if k == 0 else 0.21
+        tt = np.arange(int(d * SR)) / SR
+        f = 520 - 140 * tt / d - 30 * k
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        saw = 2 * ((ph / (2 * np.pi)) % 1.0) - 1
+        x = saw + 0.15 * rng.standard_normal(len(tt))
+        X = np.fft.rfft(x)
+        fr = np.fft.rfftfreq(len(x), 1 / SR)
+        g = np.exp(-((fr - 1150) / 420) ** 2) + 0.6 * np.exp(-((fr - 2500) / 600) ** 2) + 0.15
+        x = np.fft.irfft(X * g, n=len(x))
+        env = np.minimum(1, tt / 0.012) * np.exp(-tt / (d * 0.6))
+        out += [x * env, np.zeros(int(0.09 * SR))]
+    return norm(np.concatenate(out), 0.8)
+
+
+def sfx_servo(dur=0.5, pitch=1.0):
+    """A robot joint moving (Patch's arms unfolding): a geared motor whine that rises
+    and settles, with the fine ratchet of its teeth."""
+    x = t(dur)
+    u = x / dur
+    f = pitch * (220 + 260 * np.sin(np.pi * u) ** 0.7)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    whine = np.sin(ph) + 0.5 * np.sin(2 * ph + 0.3) + 0.25 * np.sign(np.sin(3 * ph))
+    teeth = (np.sin(2 * np.pi * np.cumsum(f * 0.18) / SR) > 0.6).astype(float)
+    grit = band(rng.standard_normal(len(x)), 1500, 6000) * teeth * 0.5
+    e = np.minimum(1, x / 0.03) * np.minimum(1, (dur - x) / 0.06 + 1e-3)
+    return norm((whine * 0.35 + grit) * e, 0.5)
+
+
+def sfx_clunk(pitch=1.0):
+    """A heavy part locking into place: a hard low knock and a short metal ring."""
+    out = np.zeros(int(0.6 * SR))
+    place(out, sfx_thump(85 * pitch, 0.3, 0.9), 0.0, 1.0)
+    n = int(0.45 * SR)
+    x = np.arange(n) / SR
+    ring = sum(a * np.sin(2 * np.pi * f * pitch * x) for f, a in ((1240, 0.5), (1873, 0.35), (2690, 0.2))) * np.exp(-x / 0.08)
+    place(out, ring * 0.5, 0.004, 1.0)
+    n2 = int(0.02 * SR)
+    place(out, band(rng.standard_normal(n2), 2000, 8000) * env(n2, 0.0005, 0.006), 0.0, 0.6)
+    return norm(out, 0.85)
+
+
+def sfx_hiss(dur=0.4):
+    """Air let out of a piston: a sharp start, falling away."""
+    x = t(dur)
+    h = band(rng.standard_normal(len(x)), 3000, 11000) * np.exp(-x / (dur * 0.45)) * np.minimum(1, x / 0.005)
+    return norm(h, 0.45)
+
+
+def sfx_chime(pitch=1.0):
+    """An upgrade chime: a bright bell (inharmonic partials) with a sparkle tail."""
+    out = np.zeros(int(1.4 * SR))
+    for i, f in enumerate((1046.5, 1568.0)):
+        x = t(1.1)
+        bell = sum(np.sin(2 * np.pi * f * pitch * r * x) / (k + 1) ** 1.2 for k, r in enumerate((1, 2.0, 2.76, 4.07)))
+        place(out, bell * env(len(x), 0.002, 0.32), i * 0.07, 0.55)
+    x = t(0.6)
+    place(out, band(rng.standard_normal(len(x)), 5000, 12000) * env(len(x), 0.004, 0.18), 0.05, 0.18)
+    return norm(out, 0.8)
+
+
+def sfx_scan(dur=1.2):
+    """A scan line sweeping up a body: a soft rising digital tone with a shimmer."""
+    x = t(dur)
+    f = 300 + 900 * (x / dur) ** 1.4
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    tone = np.sin(ph) * 0.6 + np.sign(np.sin(ph * 2)) * 0.12
+    shimmer = band(rng.standard_normal(len(x)), 3000, 9000) * (0.5 + 0.5 * np.sin(2 * np.pi * 18 * x))
+    e = np.sin(np.pi * np.clip(x / dur, 0, 1)) ** 0.7
+    return norm((tone + 0.25 * norm(shimmer)) * e, 0.6)
+
+
+def sfx_hum(dur, semi=0.0, sub=0.0):
+    """The glitch block's hum: a soft low tone with a slow wobble and a faint digital grain (stepped, not
+    buzzed: a few sines, lightly quantised, low-passed). semi: lower as the block grows; sub: a sub-rumble."""
+    x = t(dur)
+    f = 98.0 * 2 ** (semi / 12)
+    wob = 1 + 0.004 * np.sin(2 * np.pi * 0.7 * x)
+    ph = 2 * np.pi * np.cumsum(f * wob) / SR
+    tone = np.sin(ph) + 0.35 * np.sin(2 * ph + 0.4) + 0.12 * np.sin(3 * ph + 1.1)
+    tone = np.round(tone * 10) / 10                           # the grain: a light bit crush
+    tone = band(tone, 30, 1400) * (0.8 + 0.2 * np.sin(2 * np.pi * 3.1 * x))
+    if sub:
+        tone = tone + sub * 1.4 * np.sin(np.pi * np.cumsum(f * wob) / SR)   # an octave under
+    e = np.minimum(1, x / 0.25) * np.minimum(1, (dur - x) / 0.15 + 1e-3)
+    return norm(tone * e, 0.5)
+
+
+def sfx_zap():
+    """A finger on the glitch: a crisp digital zap (a fast falling chirp and a hiss)."""
+    x = t(0.18)
+    f = 3200 * np.exp(-x * 30) + 380
+    z = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.4 + np.sin(2 * np.pi * np.cumsum(f) / SR)
+    z = band(z, 300, 7000) * env(len(x), 0.001, 0.05)
+    h = band(rng.standard_normal(len(x)), 4000, 11000) * env(len(x), 0.0005, 0.02)
+    return norm(z + 0.5 * norm(h), 0.85)
+
+
+def sfx_siphon(dur=0.6, big=False):
+    """The respawn drawn into the block: a rising electric zip along the tether, then the block swelling
+    (a heavy low thud). big: deeper, longer."""
+    x = t(dur)
+    f = 260 + (2600 if big else 2000) * (x / dur) ** 1.6
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    zip_ = (np.sin(ph) + 0.25 * np.sin(3 * ph)) * (0.6 + 0.4 * (np.sin(2 * np.pi * 34 * x) > 0))
+    crackle = band(rng.standard_normal(len(x)), 2500, 9000) * (rng.random(len(x)) < 0.02) * 3
+    out = np.zeros(int((dur + 0.9) * SR))
+    place(out, band(zip_, 150, 8000) * np.minimum(1, x / 0.05) + crackle * 0.3, 0.0, 0.55)
+    place(out, sfx_thump(48 if big else 60, 0.8 if big else 0.6, 0.4), dur, 1.0)
+    return norm(out, 0.9)
+
+
+def sfx_ping(pitch=1.0):
+    """A sonar ping from Patch's scan: a clean sine with a soft echo."""
+    out = np.zeros(int(1.2 * SR))
+    for i, g in enumerate((1.0, 0.35, 0.12)):
+        x = t(0.5)
+        place(out, np.sin(2 * np.pi * 1760 * pitch * x) * env(len(x), 0.002, 0.09), i * 0.18, g)
+    return norm(out, 0.6)
+
+
+def sfx_trill(dur=0.8):
+    """Data read out: tiny fast blips at random pitches."""
+    out = np.zeros(int((dur + 0.1) * SR))
+    k = 0.0
+    while k < dur:
+        x = t(0.03)
+        place(out, np.sin(2 * np.pi * float(rng.choice([1320, 1568, 1760, 2093, 2637])) * x) * env(len(x), 0.001, 0.012), k, 0.5)
+        k += 0.035 + 0.02 * rng.random()
+    return norm(out, 0.45)
+
+
+
+# ------------------------------------------------------- episode-5 sounds (the movie)
+
+def sfx_erase(dur=0.55, size=1.0):
+    """The one deletion sound (every erased thing gets it, so the ear learns the rule): a dry digital tear
+    (bit-crushed crackle) as the checkerboard sweeps over it, an inward air suction (a reversed breath,
+    swelling to the end) and a sub vacuum drop, 60 -> 30 Hz; it stops dead (the thing is gone).
+    size: bigger things tear longer and lower."""
+    x = t(dur)
+    n = len(x)
+    noise = rng.standard_normal(n)
+    held = np.repeat(noise[::24], 24)[:n]                       # sample-and-hold: a bit-crushed grain
+    held = np.round(held * 3) / 3
+    gate = (rng.random(n // 240 + 1) < 0.55).repeat(240)[:n]    # it tears in bursts
+    tear = band(held * gate, 1800, 9000) * np.minimum(1, x / 0.02)
+    suck = band(rng.standard_normal(n), 250 / size, 3200) * (x / dur) ** 2.2   # air pulled in, rising to the cut
+    f = 60 * (0.5 ** (x / dur)) / size ** 0.25
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, x / 0.05)
+    out = 0.25 * norm(tear) + 0.55 * norm(suck) + 0.8 * sub
+    out[-int(0.004 * SR):] *= np.linspace(1, 0, int(0.004 * SR))   # cut dead
+    return norm(out, 0.9)
+
+
+def sfx_btool(size=1.0):
+    """A BTools build: the selection box locks on (a magnetic UI click), a bright scan rises through it, and
+    the part pops in. size: 0.5 a light rubbery pop (a duck), 1 a block, 2+ heavy (the statue: see slam)."""
+    out = np.zeros(int(0.75 * SR))
+    for at, f in ((0.0, 3200), (0.035, 2100)):                     # click-lock
+        m = int(0.025 * SR)
+        place(out, band(rng.standard_normal(m), f * 0.7, f * 1.4) * env(m, 0.0002, 0.005), at, 0.8)
+    xs = t(0.36)
+    f = 600 + 2400 * (xs / 0.36) ** 1.5                            # the scan sweeping up
+    shimmer = np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.5 + 0.5 * np.sin(2 * np.pi * 38 * xs)) * env(len(xs), 0.03, 0.25)
+    place(out, shimmer, 0.06, 0.25)
+    xp = t(0.25)
+    f0 = 260 / size ** 0.5
+    pop = np.sin(2 * np.pi * f0 * xp * (1 + 0.8 * np.exp(-xp * 30))) * env(len(xp), 0.001, 0.06)
+    place(out, pop + 0.3 * band(rng.standard_normal(len(xp)), 1200, 5000) * env(len(xp), 0.0003, 0.01), 0.42, 0.9)
+    return norm(out, 0.85)
+
+
+def sfx_slam(dur=1.4):
+    """Something huge landing: a deep concrete boom with a dusty rumble tail (the statue)."""
+    x = t(dur)
+    f = 48 * np.exp(-x * 1.5) + 30
+    boom = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(x), 0.003, 0.45)
+    hit = band(rng.standard_normal(len(x)), 80, 1400) * env(len(x), 0.001, 0.07)
+    dust = band(rng.standard_normal(len(x)), 300, 3000) * np.exp(-x / 0.5) * np.minimum(1, x / 0.08)
+    return norm(boom + 0.6 * norm(hit) + 0.18 * norm(dust), 0.95)
+
+
+def sfx_door(dur=1.6):
+    """A wooden door swinging slowly open: a dry hinge creak (stick-slip squeaks speeding up then easing,
+    through a wooden body), no crack."""
+    x = t(dur)
+    rate = 14 + 30 * np.sin(np.pi * np.minimum(1, x / (dur * 0.85))) ** 1.5
+    ph = np.cumsum(rate) / SR
+    pulse = np.exp(-((ph % 1.0) * 26)) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.7 * x))
+    pitch = 520 + 260 * np.sin(np.pi * x / dur)
+    squeak = np.sin(2 * np.pi * np.cumsum(pitch) / SR) * pulse
+    body = band(squeak, 300, 2600) + 0.35 * band(pulse * rng.standard_normal(len(x)), 150, 900)
+    out = body * env(len(x), 0.05, dur * 0.5)
+    tail = np.ones(len(x))
+    tail[-int(0.25 * SR):] = np.linspace(1, 0, int(0.25 * SR))
+    return norm(out * tail, 0.8)
+
+
+def sfx_gust(dur=2.4):
+    """High-altitude wind whistling through an open doorway: a breathy roar with a hollow, wavering whistle."""
+    x = t(dur)
+    roar = band(rng.standard_normal(len(x)), 120, 1600) * (0.7 + 0.3 * np.sin(2 * np.pi * 0.4 * x))
+    f = 780 + 90 * np.sin(2 * np.pi * 0.55 * x) + 40 * np.sin(2 * np.pi * 1.7 * x)
+    whistle = band(rng.standard_normal(len(x)), 1, 20000) * 0.0 + np.sin(2 * np.pi * np.cumsum(f) / SR)
+    whistle *= 0.5 + 0.5 * np.sin(2 * np.pi * 0.9 * x + 1.0) ** 2
+    shape = np.minimum(1, x / 0.6) * np.minimum(1, (dur - x) / 0.7)
+    return norm((norm(roar) + 0.22 * whistle) * shape, 0.7)
+
+def sfx_warp(dur=0.7):
+    """Something squeezing out of a portal: a reversed shimmer rushing in, a pixel crackle, a bright chime."""
+    out = np.zeros(int((dur + 1.4) * SR))
+    x = t(dur)
+    rush = band(rng.standard_normal(len(x)), 1500, 9000) * (x / dur) ** 2.5
+    place(out, rush, 0.0, 0.45)
+    for i in range(7):
+        place(out, sfx_zap() * 0.25, dur * (0.45 + 0.07 * i), 0.4)
+    place(out, sfx_chime(1.25), dur, 0.9)
+    return norm(out, 0.85)
+
+
+SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0), e.get("smooth", False)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
+       "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
        "crunch": lambda e: sfx_crunch(), "click": lambda e: sfx_click(), "respawn": lambda e: sfx_respawn(),
        "groan": lambda e: sfx_groan(e.get("dur", 0.9)), "burst": lambda e: sfx_burst(),
@@ -1146,7 +1661,82 @@ SFX = {"place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1
        "jingle": lambda e: sfx_jingle(), "sub_drop": lambda e: sfx_sub_drop(e.get("dur", 1.0)),
        "fuse": lambda e: sfx_fuse(e.get("dur", 1.0)), "rewind": lambda e: sfx_rewind(e.get("dur", 1.0)),
        "charge": lambda e: sfx_charge(e.get("dur", 1.8)), "creak": lambda e: sfx_creak(e.get("dur", 1.0)),
-       "punch": lambda e: sfx_punch_wood()}
+       "punch": lambda e: sfx_punch_wood(), "bird": lambda e: sfx_bird(),
+       "heart": lambda e: sfx_heart(e.get("dub", False)),
+       "ring": lambda e: sfx_ring(e.get("dur", 4.0)),
+       "clip": lambda e: _clip_file(e["path"]), "quack": lambda e: sfx_quack(e.get("n", 2)),
+       "servo": lambda e: sfx_servo(e.get("dur", 0.5), e.get("pitch", 1.0)), "clunk": lambda e: sfx_clunk(e.get("pitch", 1.0)),
+       "hiss": lambda e: sfx_hiss(e.get("dur", 0.4)),
+       "growl": lambda e: sfx_growl(e.get("dur", 1.2), e.get("pitch", 1.0)),
+       "snarl": lambda e: sfx_snarl(e.get("dur", 0.7)), "slowmo": lambda e: sfx_slowmo(e.get("dur", 1.6)),
+       "gstep": lambda e: sfx_grass_step(e.get("heavy", False)),
+       "zgroan": lambda e: sfx_zgroan(e.get("dur", 1.2), e.get("pitch", 1.0)),
+       "clink": lambda e: sfx_clink(), "glass": lambda e: sfx_glass(), "shatter": lambda e: sfx_shatter(), "droar": lambda e: sfx_droar(e.get("dur", 1.2)),
+       "wingbeat": lambda e: sfx_wingbeat(e.get("dur", 2.0), e.get("rate", 1.1)),
+       "hum": lambda e: sfx_hum(e.get("dur", 2.0), e.get("semi", 0.0), e.get("sub", 0.0)), "zap": lambda e: sfx_zap(),
+       "siphon": lambda e: sfx_siphon(e.get("dur", 0.6), e.get("big", False)), "ping": lambda e: sfx_ping(e.get("pitch", 1.0)),
+       "trill": lambda e: sfx_trill(e.get("dur", 0.8)), "crackle": lambda e: sfx_crackle(e.get("dur", 0.6)),
+       "land": lambda e: sfx_land(0.6), "fall": lambda e: sfx_fall(e.get("dur", 0.6)), "warp": lambda e: sfx_warp(e.get("dur", 0.7)),
+       "erase": lambda e: sfx_erase(e.get("dur", 0.55), e.get("size", 1.0)), "btool": lambda e: sfx_btool(e.get("size", 1.0)),
+       "slam": lambda e: sfx_slam(e.get("dur", 1.4)), "door": lambda e: sfx_door(e.get("dur", 1.6)),
+       "gust": lambda e: sfx_gust(e.get("dur", 2.4))}
+
+
+def _clip_file(path):
+    """A ready-made sound from the repo (mono, at SR), placed like any effect."""
+    x, r = sf.read(path)
+    x = x.mean(axis=1) if x.ndim > 1 else x
+    if r != SR:
+        x = np.interp(np.linspace(0, len(x) - 1, int(len(x) * SR / r)), np.arange(len(x)), x)
+    return x
+
+
+def sfx_heart(dub=False):
+    """A heartbeat ("bom"): a deep, round thump (58 Hz), soft-attacked, with warm
+    harmonics so a phone speaker can still play it; no click and no knock (a knock
+    sounds like a table). "dub" is the softer second beat."""
+    n = 0.5
+    x = t(n)
+    f0 = 64 if dub else 56
+    sweep = 1 - 0.25 * x
+    attack = np.minimum(1, x / 0.018)                        # soft: a pulse, not a hit
+    decay = np.exp(-x / (0.09 if dub else 0.12))
+    e = attack * decay
+    body = np.sin(2 * np.pi * f0 * x * sweep)
+    harm = 0.75 * np.sin(2 * np.pi * 2 * f0 * x * sweep) + 0.5 * np.sin(2 * np.pi * 3 * f0 * x * sweep) \
+        + 0.28 * np.sin(2 * np.pi * 4 * f0 * x * sweep)
+    y = np.tanh(1.6 * (body + harm) * e) / np.tanh(1.6)
+    y = lowpass_simple(y, 520)                               # muffled, as if heard from inside
+    return norm(y, 0.75 if not dub else 0.58)
+
+
+def lowpass_simple(x, cutoff):
+    a = np.exp(-2 * np.pi * cutoff / SR)
+    y = np.zeros_like(x)
+    acc = 0.0
+    for k in range(len(x)):
+        acc = (1 - a) * x[k] + a * acc
+        y[k] = acc
+    return y
+
+
+def sfx_ring(dur):
+    """The ringing of total silence (anime slow motion): a thin high tone, swelling in and out."""
+    x = t(dur)
+    tone = np.sin(2 * np.pi * 3900 * x) + 0.4 * np.sin(2 * np.pi * 3907 * x)
+    shape = np.minimum(1, x / 0.8) * np.minimum(1, (dur - x) / 0.5)
+    return norm(tone * shape, 0.5)
+
+
+def sfx_bird():
+    """One small bird: three quick rising chirps (the silence breaking)."""
+    out = np.zeros(int(0.75 * SR))
+    for k, (t0, f0, f1) in enumerate(((0.0, 3200, 4300), (0.17, 3500, 4700), (0.36, 3000, 5200))):
+        n = int(0.11 * SR)
+        f = np.linspace(f0, f1, n)
+        ch = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.hanning(n)
+        out[int(t0 * SR):int(t0 * SR) + n] += ch * (0.7 + 0.15 * k)
+    return norm(out)
 
 
 def void_wind(length):
@@ -1155,11 +1745,125 @@ def void_wind(length):
     return norm(w) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.09 * np.arange(n) / SR))
 
 
-def null_voice(s, light=False):
+def whisperize_first(x, keep=0.12, n=1024, hop=256):
+    """The first whisper (the creator's choice). Turn a spoken take into a whisper. A whisper is breath through the same
+    mouth shapes, with no voice under it: keep each moment's spectrum (the
+    words) and throw away its phase (the pitch), so the vocal cords are gone
+    and only the breath is left. `keep` mixes a trace of the real voice back in
+    for clarity. A little extra air on top, the low end thinned."""
+    win = np.hanning(n)
+    pad = np.concatenate([np.zeros(n), x, np.zeros(n)])
+    frames = [pad[i:i + n] * win for i in range(0, len(pad) - n, hop)]
+    S = np.fft.rfft(np.array(frames), axis=1)
+    mag = np.abs(S)
+    f = np.fft.rfftfreq(n, 1 / SR)
+    shape = np.clip((f - 120) / 500, 0, 1) * (1 + 0.6 * np.clip((f - 2500) / 3000, 0, 1))   # thin lows, air on top
+    ph = np.exp(1j * rng.uniform(0, 2 * np.pi, mag.shape))
+    Y = np.fft.irfft(mag * shape * ph, n=n, axis=1)
+    out = np.zeros(len(pad))
+    wsum = np.zeros(len(pad))
+    for k, fr in enumerate(Y):
+        out[k * hop:k * hop + n] += fr * win
+        wsum[k * hop:k * hop + n] += win ** 2
+    out = (out / np.maximum(wsum, 1e-6))[n:n + len(x)]
+    out = norm(out, 0.9)
+    return norm((1 - keep) * out + keep * norm(x, 0.9), 0.9)
+
+
+def _lpc(frame, order):
+    """Linear prediction coefficients (Levinson-Durbin): the shape of the mouth
+    in this frame, as an all-pole filter 1 / A(z). -> (a[0..order], gain)."""
+    r = np.correlate(frame, frame, "full")[len(frame) - 1:len(frame) + order]
+    if r[0] <= 1e-9:
+        return np.r_[1.0, np.zeros(order)], 0.0
+    r = r.copy()
+    r[0] *= 1.0001                                          # a hair of noise floor: always stable
+    a = np.zeros(order + 1)
+    a[0] = 1.0
+    e = r[0]
+    for i in range(1, order + 1):
+        k = -(r[i] + np.dot(a[1:i], r[i - 1:0:-1])) / e
+        a[1:i + 1] = a[1:i + 1] + k * np.r_[a[i - 1:0:-1], 1.0]
+        e *= (1 - k * k)
+        if e <= 0:
+            break
+    return a, float(np.sqrt(max(e, 0.0)))
+
+
+def whisperize(x, keep=0.0, order=20, frame=0.025, hop=0.0125, air=0.35):
+    """A whisper made the way a whisper is made: the same mouth shapes, moved
+    by breath instead of voice. Each 25 ms frame's mouth shape (linear
+    prediction) filters soft noise at the frame's own energy; the pieces are
+    overlapped smoothly. `air` adds the breathy hiss on the consonants and
+    edges; `keep` mixes back a trace of the real voice (0 = a pure whisper)."""
+    n, h = int(frame * SR), int(hop * SR)
+    win = np.hanning(n)
+    pre = np.r_[x[0], x[1:] - 0.94 * x[:-1]]                 # pre-emphasis: the mouth's shape, not the throat's tilt
+    out = np.zeros(len(x) + n)
+    wsum = np.zeros(len(x) + n)
+    noise = rng.standard_normal(len(x) + 2 * n)
+    zi = np.zeros(order)
+    for s0 in range(0, len(x) - n, h):
+        seg = pre[s0:s0 + n] * win
+        a, g = _lpc(seg, order)
+        exc = noise[s0:s0 + n] * g
+        y = np.zeros(n)                                     # the all-pole filter, run by hand (no scipy here)
+        for t_ in range(n):
+            acc = exc[t_]
+            m = min(order, t_)
+            if m:
+                acc -= np.dot(a[1:m + 1], y[t_ - 1::-1][:m])
+            y[t_] = acc
+        out[s0:s0 + n] += y * win
+        wsum[s0:s0 + n] += win ** 2
+    out = out[:len(x)] / np.maximum(wsum[:len(x)], 1e-6)
+    de = np.zeros_like(out)                                 # undo the pre-emphasis
+    acc = 0.0
+    for t_ in range(len(out)):
+        acc = out[t_] + 0.94 * acc
+        de[t_] = acc
+    hiss = band(rng.standard_normal(len(x)), 2500, 9000) * _env(x, int(0.01 * SR))   # breath on the edges of words
+    de = norm(de, 0.9) + air * norm(hiss, 0.9) * 0.25
+    de = band(de, 140, 10000)
+    if keep > 0:
+        de = (1 - keep) * norm(de, 0.9) + keep * norm(x, 0.9)
+    return norm(de, 0.9)
+
+
+
+def patch_voice(s, soft=False):
+    """Patch, a small machine: the low end cut (180 Hz), a very short metallic slap and a slow flanger
+    blended in (about 10% wet, 5% when soft: the line that is meant to land as feeling)."""
+    v = band(s, 180, 11000)
+    n = len(v)
+    i = np.arange(n)
+    d = (0.0022 + 0.0014 * np.sin(2 * np.pi * 0.6 * i / SR)) * SR       # 0.8-3.6 ms, slowly moving
+    fl = np.interp(np.clip(i - d, 0, n - 1), i, v)
+    slap = np.concatenate([np.zeros(int(0.019 * SR)), v])[:n]
+    wet = 0.05 if soft else 0.10
+    out = v * (1 - wet) + wet * (0.6 * fl + 0.4 * band(slap, 900, 6000) * 2.0)
+    return norm(out, np.max(np.abs(s)) or 1.0)
+
+def null_voice(s, light=False, punch=False):
     """Null speaks with the Noob's voice: pitched down, doubled an octave
-    lower, bit-crushed, with a reversed reverb swelling into each word."""
+    lower, bit-crushed, with a reversed reverb swelling into each word.
+    punch: a shout that hits at once: the pitch goes down but the word keeps
+    its length (no slow-motion, no late octave echo), a short swell, driven."""
     def pitch(x, p):
         return np.interp(np.linspace(0, len(x) - 1, int(len(x) / p)), np.arange(len(x)), x)
+    if punch:
+        a = stretch(pitch(s, 0.76), 1 / 0.76)[:len(s)]      # deep, but the vowel stays a vowel
+        b = stretch(pitch(s, 0.38), 1 / 0.38)[:len(s)]      # and the monster an octave under it
+        a, b = np.pad(a, (0, len(s) - len(a))), np.pad(b, (0, len(s) - len(b)))
+        v = np.tanh(1.8 * (a + 0.3 * b)) / np.tanh(1.8)
+        v = np.round(v * 40) / 40
+        tail = rng.standard_normal(int(0.5 * SR)) * np.exp(-np.arange(int(0.5 * SR)) / (0.12 * SR))
+        rev = np.convolve(v[::-1], tail * 0.02)[:len(v)][::-1]
+        lead = int(0.12 * SR)
+        v = np.concatenate([np.zeros(lead), v])
+        rev = np.concatenate([rev, np.zeros(lead)])
+        room = np.convolve(v, rng.standard_normal(int(1.2 * SR)) * np.exp(-np.arange(int(1.2 * SR)) / (0.35 * SR)) * 0.012)[:len(v)]
+        return norm(v + 0.4 * rev + room, 0.95)
     a = pitch(s, 0.8 if light else 0.62)      # light: the words still clear (an echo of the Noob)
     b = pitch(s, 0.4 if light else 0.31)[:len(a)]
     b = np.pad(b, (0, len(a) - len(b)))
@@ -1185,7 +1889,8 @@ def build(episode_path, out_dir, keep=None):
     already rendered). New voices are placed at the old line starts; a take
     that runs long is sped up slightly (at most 10%) to fit."""
     ep = json.load(open(episode_path))
-    global WHISPER_LANG, PIN_MODEL
+    global WHISPER_LANG, PIN_MODEL, CACHE_ONLY
+    CACHE_ONLY = bool(ep.get("voices_cache_only"))
     WHISPER_LANG = ep.get("language", "en")
     PIN_MODEL = ep.get("tts_model")
     old = json.load(open(keep)) if keep else None
@@ -1193,7 +1898,38 @@ def build(episode_path, out_dir, keep=None):
     starts = sorted(a for a, _ in old["beats"].values()) if old else []
     cache_dir = os.getenv("VOICE_CACHE", os.path.join(out_dir, "voice_cache"))
     keeping = old is not None        # until an event says "retime"
-    pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
+    # the movie: every line exactly as an earlier run finished it (its voices-only track, cut at its line times)
+    prep = {}
+    vdir = os.getenv("VOICES_FROM")
+    vfile = next((os.path.join(vdir, f) for f in ("voice.wav", "voice.flac")
+                  if vdir and os.path.exists(os.path.join(vdir, f))), None)
+    if vfile:       # an earlier run's prep, or a chapter folder in the repo (movie/epNN)
+        vw, vsr = sf.read(vfile)
+        if vw.ndim > 1:
+            vw = vw.mean(axis=1)
+        assert vsr == SR, vsr
+        for ln in json.load(open(os.path.join(vdir, "timeline.json")))["lines"]:
+            prep[ln["name"]] = np.asarray(vw[int(round(ln["start"] * SR)):int(round(ln["end"] * SR))], dtype=np.float64)
+        print(f"voices from {vdir}: {sorted(prep)}")
+    need = [ev.get("name") for ev in ep["events"] if "line" in ev and not ev.get("unused")]
+    for ev in ep["events"]:                      # a line re-recorded on purpose is never taken from the old voices
+        if "line" in ev and ev.get("new_take"):
+            prep.pop(ev.get("name"), None)
+    if prep and all(n in prep for n in need):
+        pre = {}
+    elif prep:
+        # lines added to the movie ("new_take": the creator allowed new lines, November 15) are recorded in the
+        # same voices; every other line must come exactly as it was finished
+        added = [ev for ev in ep["events"] if "line" in ev and not ev.get("unused")
+                 and (ev.get("name") not in prep or ev.get("new_take"))]
+        if not all(ev.get("new_take") for ev in added):
+            raise SystemExit(f"VOICES_FROM is missing lines: {[ev.get('name') for ev in added if not ev.get('new_take')]}")
+        print(f"new takes (added lines): {[ev['name'] for ev in added]}")
+        CACHE_ONLY = False          # only the added lines are in this request; nothing else can be re-recorded
+        pre = gemini_lines(dict(ep, events=added), cache_dir) if ENGINE == "gemini" else {}
+        CACHE_ONLY = bool(ep.get("voices_cache_only"))
+    else:
+        pre = gemini_lines(ep, cache_dir) if ENGINE == "gemini" else {}
     os.makedirs(out_dir, exist_ok=True)
     cursor = 0.0
     beats, lines, clips, impacts = {}, [], [], []
@@ -1244,44 +1980,78 @@ def build(episode_path, out_dir, keep=None):
             who = ev["line"]
             c = ep["cast"][who]
             pre_name = ev.get("name", f"{who}_{counts.get(who, 0) + 1}")
-            if pre_name in pre:
-                s_, sr_ = pre[pre_name]
-                audio = finish(np.asarray(s_, dtype=np.float64), sr_, c["pitch"])
+            if pre_name in prep:                           # finished already: placed as it is
+                audio = prep[pre_name]
+                if c.get("fx") == "patch":                  # Patch's machine voice on his reused takes too
+                    audio = patch_voice(audio, soft=ev.get("patch_soft", False))
+                if ev.get("presence"):                     # urgency on a shouted take: dB at 2.5-4 kHz
+                    audio = audio + (10 ** (ev["presence"] / 20) - 1) * band(audio, 2500, 4000)
+                if ev.get("gain_db"):                      # a take sat louder or softer in the scene
+                    audio = audio * 10 ** (ev["gain_db"] / 20)
             else:
-                audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
-                        c["voice"], c["speed"], c["pitch"],
-                        emotion=ev.get("emotion", c.get("emotion", 0.5)),
-                        pace=ev.get("pace", c.get("pace", 0.5)),
-                        ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir,
-                        eleven_voice=c.get("eleven_voice"),
-                        stability=ev.get("stability", c.get("stability", 0.5)),
-                        sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
-            if ep.get("gate") is not None:              # breaths and mouth noise down
-                audio = gate(audio, ep["gate"])
-            if c.get("fx") == "null":
-                audio = null_voice(audio, light=ev.get("null_light", False))
-            if ev.get("fx") == "falling":
-                audio = norm(falling(audio), 0.95)
-            for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
-                i0, i1 = int(b0 * SR), min(len(audio), int(b1 * SR))
-                ramp = min(int(0.03 * SR), (i1 - i0) // 2)
-                g = np.full(i1 - i0, 10 ** (db / 20))
-                g[:ramp] = np.linspace(1, g[0], ramp)
-                g[len(g) - ramp:] = np.linspace(g[0], 1, ramp)
-                audio = audio.copy()
-                audio[i0:i1] *= g
-            if ev.get("tighten"):                     # shorter pauses inside the line
-                audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
-            if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
-                audio = audio[:int(ev["trim"] * SR)].copy()
-                f = int(ev.get("trim_fade", 0.25) * SR)
-                audio[-f:] *= np.linspace(1, 0, f)
-            if ev.get("mute_start"):                       # a click before the first word: silenced in place
-                m = int(ev["mute_start"] * SR)
-                f = int(0.01 * SR)
-                audio = audio.copy()
-                audio[:m - f] = 0.0
-                audio[m - f:m] *= np.linspace(0, 1, f)
+                if pre_name in pre:
+                    s_, sr_ = pre[pre_name]
+                    audio = finish(np.asarray(s_, dtype=np.float64), sr_, c["pitch"])
+                else:
+                    audio = say(ev.get("eleven_text", ev["text"]) if ENGINE == "elevenlabs" else ev["text"],
+                            c["voice"], c["speed"], c["pitch"],
+                            emotion=ev.get("emotion", c.get("emotion", 0.5)),
+                            pace=ev.get("pace", c.get("pace", 0.5)),
+                            ref_dir=os.path.join(out_dir, "voice_refs"), cache_dir=cache_dir,
+                            eleven_voice=c.get("eleven_voice"),
+                            stability=ev.get("stability", c.get("stability", 0.5)),
+                            sfx=ev.get("sfx_voice") if ENGINE == "elevenlabs" else None)
+                if ep.get("gate") is not None:              # breaths and mouth noise down
+                    audio = gate(audio, ep["gate"])
+                if c.get("fx") == "null":
+                    audio = null_voice(audio, light=ev.get("null_light", False), punch=ev.get("null_punch", False))
+                if c.get("fx") == "patch":                  # Patch: a machine's voice, softer on the line that lands
+                    audio = patch_voice(audio, soft=ev.get("patch_soft", False))
+                if ev.get("whisper"):                       # a real whisper: the words without the voice's pitch
+                    if ev.get("whisper") == "first":
+                        audio = whisperize_first(audio, keep=ev.get("whisper_keep", 0.12))
+                    else:
+                        audio = whisperize(audio, keep=ev.get("whisper_keep", 0.0), air=ev.get("whisper_air", 0.35))
+                if ev.get("fx") == "falling":
+                    audio = norm(falling(audio), 0.95)
+                if ev.get("slowmo"):                        # slow motion: the tape slowed (lower, longer), a dark room on it
+                    k = float(ev["slowmo"])
+                    audio = np.interp(np.linspace(0, len(audio) - 1, int(len(audio) / k)), np.arange(len(audio)), audio)
+                    tail = rng.standard_normal(int(0.8 * SR)) * np.exp(-np.arange(int(0.8 * SR)) / (0.22 * SR))
+                    audio = norm(audio + np.convolve(audio, tail * 0.01)[:len(audio)], 0.95)
+                for b0, b1, db in ev.get("boost", []):    # a quiet word lifted (seconds into the line)
+                    i0, i1 = int(b0 * SR), min(len(audio), int(b1 * SR))
+                    ramp = min(int(0.03 * SR), (i1 - i0) // 2)
+                    g = np.full(i1 - i0, 10 ** (db / 20))
+                    g[:ramp] = np.linspace(1, g[0], ramp)
+                    g[len(g) - ramp:] = np.linspace(g[0], 1, ramp)
+                    audio = audio.copy()
+                    audio[i0:i1] *= g
+                if ev.get("deess"):                       # harsh "s" sounds softened (dB off 4.5-9 kHz)
+                    audio = audio - (1 - 10 ** (-ev["deess"] / 20)) * band(audio, 4500, 9000)
+                if ev.get("tighten"):                     # shorter pauses inside the line
+                    audio = tighten(audio, ev["tighten"], floor=ep.get("tighten_floor", 0.03))
+                if ev.get("speed", 1.0) != 1.0:                 # a little faster, same pitch
+                    audio = stretch(audio, ev["speed"])
+                if ev.get("trim") and len(audio) > ev["trim"] * SR:   # cut short, fading out
+                    audio = audio[:int(ev["trim"] * SR)].copy()
+                    f = int(ev.get("trim_fade", 0.25) * SR)
+                    audio[-f:] *= np.linspace(1, 0, f)
+                if ev.get("mute_start"):                       # a click before the first word: silenced in place
+                    m = int(ev["mute_start"] * SR)
+                    f = int(0.01 * SR)
+                    audio = audio.copy()
+                    audio[:m - f] = 0.0
+                    audio[m - f:m] *= np.linspace(0, 1, f)
+                if not ev.get("trim"):                         # a cut-off line ends where it was cut
+                    audio = clean_tail(audio)
+                quiet = any(w in ev.get("direction_text", "").lower() for w in ("whisper", "very quiet"))
+                audio = level_line(audio, quiet=quiet)
+                if ev.get("shout"):                         # a shout: driven a little (grit) and louder
+                    pk = np.max(np.abs(audio)) or 1.0
+                    audio = audio - band(audio, 20, 150) + 0.45 * band(audio, 2500, 4000)   # no rumble, presence (urgency)
+                    pk = np.max(np.abs(audio)) or 1.0
+                    audio = np.tanh(2.2 * audio / pk) / np.tanh(2.2) * pk * 10 ** (ev["shout"] / 20)
             if ev.get("together") and lines:              # said at the same time as the last line
                 cursor = lines[-1]["start"]
             counts[who] = counts.get(who, 0) + 1
@@ -1296,9 +2066,15 @@ def build(episode_path, out_dir, keep=None):
                     ratio = min(ep.get("fit_max", 1.10), len(audio) / SR / room)
                     audio = stretch(audio, ratio)
                     print(f"  {name}: sped up x{ratio:.2f} to fit its {room:.2f}s")
+            if ep.get("declick"):                         # a take's first milliseconds faded in (a click at a cut)
+                n = int(ep["declick"] * SR)
+                z = int(ep.get("declick_blank", 0.0) * SR)     # a lone spike in the first samples: blanked, then the fade
+                audio = np.asarray(audio, dtype=np.float64).copy()
+                audio[:z] = 0.0
+                audio[z:z + n] *= np.linspace(0, 1, len(audio[z:z + n]))
             dur = len(audio) / SR
             lines.append({"name": name, "who": who, "text": ev["text"], "vo": ev.get("vo", False),
-                          "caption": ev.get("caption", True),
+                          "caption": ev.get("caption", True), **{k: ev[k] for k in ("caption_size", "caption_y") if ev.get(k)},
                           "start": round(cursor, 3), "end": round(cursor + dur, 3)})
             beats[name] = [cursor, cursor + dur]
             clips.append(("voice", cursor, audio))
@@ -1337,7 +2113,7 @@ def build(episode_path, out_dir, keep=None):
         place(mix, seg, a0, a.get("gain", 0.10))
     for kind, at, arg in clips:
         if kind == "voice":
-            place(voice, arg, at, 1.0)
+            place(voice, edge_fade(arg), at, 1.0)
         elif kind == "portal":
             place(mix, sfx_portal(arg), at, 0.5)
         elif kind == "fall":
@@ -1383,7 +2159,10 @@ def build(episode_path, out_dir, keep=None):
         if "to" in e and "count" not in e:       # a sound that lasts until a moment
             e = dict(e, dur=R(e["to"]) - R(e["at"]))
         for h in times:
-            place(mix, SFX[e["kind"]](e), h, e.get("gain", 0.6))
+            clip = SFX[e["kind"]](e)
+            if "cut" in e:                         # stopped dead at a moment (the freeze), not faded
+                clip = clip[:max(0, int((R(e["cut"]) - h) * SR))]
+            place(mix, clip, h, e.get("gain", 0.6))
     for name, ts in fx_times.items():
         for k, h in enumerate(ts):
             place(mix, sfx_pop(), h, 0.35 + 0.25 * (k % 3 == 0))
@@ -1401,7 +2180,34 @@ def build(episode_path, out_dir, keep=None):
             kw["minimal"] = True
         if m.get("hard_end"):
             kw["hard_end"] = True
-        x = music.render(m["cue"], m1 - m0, seed=k, **kw)
+        if m.get("offset"):                     # carrying on the cue the last chapter ended on
+            kw["offset"] = float(m["offset"])
+        if m.get("open_tail"):                  # the next chapter carries it on: no fade at the end
+            kw["open_tail"] = True
+        if m.get("smooth"):                     # no square-wave buzz in the tension
+            kw["smooth"] = True
+        if m.get("sustain"):                    # the tension goes on after its hit (to the cut)
+            kw["sustain"] = True
+        if m.get("rise_over"):                  # the rise's length fixed (carrying a cue on across a cut)
+            kw["rise_over"] = float(m["rise_over"])
+        if m.get("fall_at") is not None:        # "deleted": where its high note falls (cue time, offset included)
+            kw["fall_at"] = float(m["fall_at"])
+        x = music.render(m["cue"], m1 - m0, seed=m.get("seed", k), **kw)
+        if m.get("fade_out"):                   # dies away by its own end (no hard stop), whatever tail the cue has
+            end = min(len(x), int((m1 - m0) * SR))
+            n = min(end, int(m["fade_out"] * SR))
+            x = x[:end].copy()
+            x[end - n:] *= np.linspace(1, 0, n) ** 2
+        for q0, q1 in m.get("mutes", []):       # drops out dead for a gag (a shatter, a deadpan line), the groove
+            a_ = max(0, int((R(q0) - m0) * SR))  # keeping time underneath so it comes back on the beat
+            b_ = min(len(x), int((R(q1) - m0) * SR))
+            if b_ > a_:
+                f_ = min(int(0.012 * SR), (b_ - a_) // 2)
+                g = np.zeros(b_ - a_)
+                g[:f_] = np.linspace(1, 0, f_)
+                g[len(g) - f_:] = np.linspace(0, 1, f_)
+                x = x.copy()
+                x[a_:b_] *= g
         for sw in m.get("swell", []):           # louder while nobody speaks, eased in and out
             s0, s1 = int((R(sw["from"]) - m0) * SR), int((R(sw["to"]) - m0) * SR)
             ramp = int(sw.get("ramp", 0.3) * SR)
@@ -1414,27 +2220,42 @@ def build(episode_path, out_dir, keep=None):
                     g[a_:b_] = 1 + (sw["gain"] - 1) * (r if up else 1 - r)
             x = x * g
         place(score, x, m0, m.get("gain", 0.2))
+    if ep.get("voice_air"):
+        n_ = int(0.35 * SR)
+        ir = rng.standard_normal(n_) * np.exp(-np.arange(n_) / (0.07 * SR))
+        ir[:int(0.012 * SR)] = 0.0                               # the first reflection a little after the voice
+        air = np.convolve(band(voice, 250, 6000), ir)[:len(voice)]
+        air = air / (np.max(np.abs(air)) or 1) * np.max(np.abs(voice)) * float(ep["voice_air"])
+        mix = mix + air
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
-    out = voice + mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck)
-    out = norm(out, 0.89)
+    out = voice + keep_under(voice, mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck))
+    for st in ep.get("stutters", []):              # the sound itself freezes: a slice repeats, then dead silence
+        h, sl = int(R(st["at"]) * SR), int(st.get("slice", 0.06) * SR)
+        piece = out[h - sl:h].copy()
+        k = h
+        for i in range(st.get("n", 4)):
+            seg = piece * (st.get("decay", 0.85) ** i)
+            seg[:48] *= np.linspace(0, 1, 48)
+            out[k:k + sl] = seg[:len(out[k:k + sl])]
+            k += sl
+        quiet = int(st.get("silence", 0.0) * SR)     # what follows is cut (the voices stay)
+        if quiet:
+            out[k:k + quiet] = voice[k:k + quiet]
+    out = master(out, voice)
+    if ep.get("end_fade"):                         # the chapter's own ending: everything fades out by its last beat
+        e1 = int(length * SR)
+        n = int(ep["end_fade"] * SR)
+        out = out.copy()
+        out[max(0, e1 - n):e1] *= np.linspace(1, 0, min(n, e1)) ** 2
+        out[e1:] = 0.0
     sf.write(os.path.join(out_dir, "audio.wav"), np.stack([out, out], 1).astype(np.float32), SR)
     if os.getenv("VOICE_STEM"):                    # the voices alone, for checking dubs
         sf.write(os.path.join(out_dir, "voice.wav"), voice.astype(np.float32), SR)
 
-    overlays = []
-    for o in ep.get("overlays", []):
-        o = dict(o)
-        o["start"] = round(R(o.pop("from")), 3)
-        to = o.pop("to")
-        # "end" means the last frame: the video runs 0.4 s past the last beat
-        o["end"] = round(length + 0.4 if to == "end" else R(to), 3)
-        for key in ("grow", "full"):                 # extra moments an overlay keys on
-            if key in o:
-                o[key] = round(R(o[key]), 3)
-        if o.get("type") == "chat":                   # each message at its own moment
-            o["lines"] = [dict(m, at=round(R(m["at"]), 3)) for m in o["lines"]]
-        overlays.append(o)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from kit.timeref import resolve_overlays
+    overlays = resolve_overlays(ep.get("overlays", []), beats, length)
     timeline = {"id": ep["id"], "fps": 24, "length": round(length, 3),
                 "beats": {k: [round(a, 3), round(b, 3)] for k, (a, b) in beats.items()},
                 "impacts": [round(h, 3) for h in impacts], "fx_times": fx_times,

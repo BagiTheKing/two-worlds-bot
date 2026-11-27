@@ -1,0 +1,202 @@
+voices from prev_prep: ['noob_dragon', 'noob_fine', 'noob_this', 'steve_dont', 'steve_go', 'steve_never', 'steve_plan', 'steve_planb', 'steve_rule', 'steve_yes']
+new takes (added lines): ['steve_dont', 'steve_planb', 'steve_go']
+Gemini speech models, in order: gemini-3.8-flash-tts, gemini-3.1-flash-tts-preview, gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.8-flash-lite-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve "DON'T!" take 0: NEW recording
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  solo take 0 for "DON'T!": 1.00 " Don't"
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve "DON'T!" take 1: NEW recording
+  solo take 1 for "DON'T!": 1.00 " Don't"
+gemini-3.8-flash-tts with key 1: daily free quota used up, trying the next key or model
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  solo Steve "DON'T!" take 2: NEW recording
+  solo take 2 for "DON'T!": 1.00 " Don't."
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  solo Steve 'PLAN B!' take 0: NEW recording
+  solo take 0 for 'PLAN B!': 1.00 ' Plan  B'
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  solo Steve 'PLAN B!' take 1: NEW recording
+  solo take 1 for 'PLAN B!': 1.00 ' Plan  B!'
+Gemini speech ok (gemini-3.8-flash-tts, key 2, script)
+  solo Steve 'PLAN B!' take 2: NEW recording
+  solo take 2 for 'PLAN B!': 1.00 ' Plan  B!'
+  solo Steve 'INTO THE PORTAL! NOW!' take 0: from the cache
+  solo take 0 for 'INTO THE PORTAL! NOW!': 1.00 ' Into  the  portal  now!'
+  solo Steve 'INTO THE PORTAL! NOW!' take 1: from the cache
+  solo take 1 for 'INTO THE PORTAL! NOW!': 1.00 ' Into  the  portal  now'
+  solo Steve 'INTO THE PORTAL! NOW!' take 2: from the cache
+  solo take 2 for 'INTO THE PORTAL! NOW!': 1.00 ' Into  the  portal  now'
+{
+ "length": 68.113,
+ "beats": {
+  "eye": [
+   0.0,
+   2.6
+  ],
+  "look_up": [
+   2.6,
+   3.3
+  ],
+  "steve_rule": [
+   3.3,
+   5.383
+  ],
+  "steve_plan": [
+   5.983,
+   9.109
+  ],
+  "build": [
+   9.409,
+   12.409
+  ],
+  "noob_this": [
+   12.409,
+   12.994
+  ],
+  "steve_dont": [
+   13.044,
+   14.024
+  ],
+  "press": [
+   14.024,
+   14.524
+  ],
+  "portal_open": [
+   14.524,
+   17.124
+  ],
+  "pour_hand": [
+   17.124,
+   18.924
+  ],
+  "pour_out": [
+   18.924,
+   21.524
+  ],
+  "lunge": [
+   21.524,
+   23.124
+  ],
+  "steve_back": [
+   23.124,
+   24.424
+  ],
+  "hit_see": [
+   24.424,
+   25.224
+  ],
+  "hit_slow": [
+   25.224,
+   26.824
+  ],
+  "hit": [
+   26.824,
+   27.724
+  ],
+  "respawn": [
+   27.724,
+   28.524
+  ],
+  "noob_fine": [
+   28.524,
+   29.908
+  ],
+  "chaos": [
+   30.308,
+   33.308
+  ],
+  "notice": [
+   33.308,
+   35.708
+  ],
+  "steve_planb": [
+   35.708,
+   36.789
+  ],
+  "dash": [
+   36.839,
+   38.039
+  ],
+  "windup": [
+   38.039,
+   38.539
+  ],
+  "swing": [
+   38.539,
+   39.739
+  ],
+  "smash": [
+   39.739,
+   40.739
+  ],
+  "suck": [
+   40.739,
+   43.939
+  ],
+  "quiet": [
+   43.939,
+   45.139
+  ],
+  "steve_never": [
+   45.139,
+   46.573
+  ],
+  "sky_roar": [
+   47.173,
+   48.773
+  ],
+  "dive": [
+   48.773,
+   50.373
+  ],
+  "catch": [
+   50.373,
+   52.173
+  ],
+  "circle": [
+   52.173,
+   54.373
+  ],
+  "noob_dragon": [
+   54.373,
+   59.783
+  ],
+  "steve_yes": [
+   60.283,
+   61.353
+  ],
+  "dragon_turn": [
+   61.653,
+   62.653
+  ],
+  "steve_go": [
+   62.653,
+   64.513
+  ],
+  "run": [
+   64.613,
+   65.913
+  ],
+  "jump": [
+   65.913,
+   66.813
+  ],
+  "dive_after": [
+   66.813,
+   68.113
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    3.3s steve_rule         heard 'New rule.  We leave today.'
+  ok    6.0s steve_plan         heard 'Portal home, three steps. Nobody touches anything.'
+  ok   12.4s noob_this          heard 'This one.'
+  ok   13.0s steve_dont         heard "Don't!"
+  ok   28.5s noob_fine          heard "I'm fine. New record."
+  ok   35.7s steve_planb        heard 'Plan B!'
+  ok   45.1s steve_never        heard 'Never again.'
+  ok   54.4s noob_dragon        heard 'Whoa, is that a dragon? Does your world have dragons too?'
+  ok   60.3s steve_yes          heard 'Yes.'
+  ok   62.7s steve_go           heard 'Into the portal, now!'
+hearing check: 0 of 10 lines flagged

@@ -1,0 +1,141 @@
+{
+ "id": "ep10_p12_normal",
+ "number": 10,
+ "title": "The First Portal Was a Trap: back to normal",
+ "cut_loose": false,
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, falling, calm and at peace, a soft smile in his voice"
+  }
+ },
+ "music": [
+  {
+   "cue": "theme_soft",
+   "from": 0,
+   "to": "respawn",
+   "gain": 0.15,
+   "hard_end": false
+  },
+  {
+   "cue": "theme_full",
+   "from": "respawn",
+   "to": "end",
+   "gain": 0.2,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": 0,
+   "to": "respawn",
+   "gain": 0.25
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "whoosh",
+   "at": "pov",
+   "dur": 3.0,
+   "gain": 0.2
+  },
+  {
+   "kind": "heart",
+   "at": "pov+0.8",
+   "gain": 0.5
+  },
+  {
+   "kind": "heart",
+   "at": "pov+1.2",
+   "dub": true,
+   "gain": 0.38
+  },
+  {
+   "kind": "charge",
+   "at": "insert",
+   "dur": 1.8,
+   "gain": 0.3
+  },
+  {
+   "kind": "chime",
+   "at": "insert+0.6",
+   "gain": 0.3,
+   "pitch": 1.0
+  },
+  {
+   "kind": "burst",
+   "at": "respawn",
+   "gain": 0.6
+  },
+  {
+   "kind": "respawn",
+   "at": "respawn+0.1",
+   "gain": 0.6
+  },
+  {
+   "kind": "rumble_rise",
+   "at": "respawn+0.3",
+   "dur": 3.5,
+   "gain": 0.35
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "pov",
+   "dur": 3.2
+  },
+  {
+   "beat": "cu",
+   "dur": 0.4
+  },
+  {
+   "line": "noob",
+   "name": "noob_normal",
+   "caption_y": 1420,
+   "text": "Now I can bring everything back to normal.",
+   "direction_text": "[calm, at peace, a soft smile, falling, almost a whisper] Now I can bring everything back to normal.",
+   "pad": 0.2,
+   "solo_only": true,
+   "solo_text": "Now I can bring everything back to normal."
+  },
+  {
+   "beat": "insert",
+   "dur": 1.8
+  },
+  {
+   "beat": "respawn",
+   "dur": 4.6
+  },
+  {
+   "beat": "end",
+   "dur": 0.6
+  }
+ ]
+}

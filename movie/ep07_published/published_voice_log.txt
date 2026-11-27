@@ -1,0 +1,126 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['patch_back', 'noob_me'] placed ['patch_back', 'noob_me']
+  patch_back: words at 0.00-1.90s of the scene
+  noob_me: words at 2.88-4.04s of the scene
+  patch_back: pinned cut 0.00-2.70s
+  noob_me: pinned cut 3.02-4.49s
+scene ['steve_what', 'patch_behind'] placed ['steve_what', 'patch_behind']
+  steve_what: words at 2.82-3.24s of the scene
+  patch_behind: words at 7.56-10.22s of the scene
+  steve_what: pinned cut 2.50-3.93s
+  patch_behind: pinned cut 7.08-10.63s
+scene ['noob_where', 'noob_us', 'patch_last'] placed ['noob_where', 'noob_us', 'patch_last']
+  noob_where: words at 0.00-0.96s of the scene
+  noob_us: words at 1.84-3.60s of the scene
+  patch_last: words at 4.54-5.34s of the scene
+  noob_where: pinned cut 0.10-1.64s
+  noob_us: pinned cut 1.80-4.30s
+scene ['steve_times', 'patch_count'] placed ['steve_times', 'patch_count']
+  steve_times: words at 0.00-2.38s of the scene
+  patch_count: words at 3.30-4.80s of the scene
+  steve_times: pinned cut 0.00-2.97s
+  patch_count: pinned cut 3.08-5.16s
+  noob_deleted take 0 (2.81s): 1.00 " I  don't  want  to  be  deleted."
+  noob_deleted take 1 (3.13s): 1.00 " I  don't  want  to  be  deleted"
+  noob_deleted take 2 (2.57s): 1.00 " I  don't  want  to  be  deleted."
+  solo Noob "It's COPYING me!" take 0: from the cache
+  solo take 0 for "It's COPYING me!": 1.00 " It's  copying  me!"
+  solo Noob "It's COPYING me!" take 1: from the cache
+  solo take 1 for "It's COPYING me!": 1.00 " It's  copying  me!"
+  solo Noob "It's COPYING me!" take 2: from the cache
+  solo take 2 for "It's COPYING me!": 1.00 " It's  copying  me!"
+  solo Patch 'From last time.' take 0: from the cache
+  solo take 0 for 'From last time.': 1.00 ' From  last  time.'
+  solo Patch 'From last time.' take 1: from the cache
+  solo take 1 for 'From last time.': 1.00 ' from  last  time'
+  solo Patch 'From last time.' take 2: from the cache
+  solo take 2 for 'From last time.': 1.00 ' From  last  time...'
+{
+ "length": 33.081,
+ "beats": {
+  "open": [
+   0.0,
+   0.2
+  ],
+  "noob_copy": [
+   0.2,
+   2.084
+  ],
+  "patch_back": [
+   2.184,
+   4.544
+  ],
+  "eye": [
+   4.594,
+   5.294
+  ],
+  "memory": [
+   5.294,
+   5.894
+  ],
+  "noob_me": [
+   5.894,
+   7.079
+  ],
+  "replay": [
+   7.179,
+   9.179
+  ],
+  "steve_what": [
+   9.179,
+   10.225
+  ],
+  "patch_behind": [
+   10.325,
+   13.603
+  ],
+  "down": [
+   13.703,
+   15.103
+  ],
+  "noob_where": [
+   15.103,
+   16.172
+  ],
+  "forest": [
+   16.272,
+   17.572
+  ],
+  "noob_us": [
+   17.572,
+   19.546
+  ],
+  "patch_last": [
+   19.646,
+   20.889
+  ],
+  "pull": [
+   20.989,
+   21.489
+  ],
+  "steve_times": [
+   21.489,
+   24.321
+  ],
+  "crowd": [
+   24.421,
+   25.421
+  ],
+  "patch_count": [
+   25.421,
+   27.331
+  ],
+  "back": [
+   27.431,
+   27.831
+  ],
+  "noob_deleted": [
+   27.831,
+   30.331
+  ],
+  "end": [
+   30.681,
+   33.081
+  ]
+ }
+}

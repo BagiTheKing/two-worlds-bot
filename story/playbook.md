@@ -95,6 +95,17 @@ What it means:
   (2.1 each; Ep4 1.5).
 - **Ep4 got the creator's quality fixes** (continuity link, reframing,
   painted-on faces, a calm background): the episode people watched longest.
+- **A 3-minute Short gets no push (Ep9).** Ep9 ran 2:59. In 45 hours it got
+  58 views, against about 1,200-1,500 for every 27-35 s episode.
+  - Where the views came from: search 49%, Shorts feed only 34%, channel
+    pages 14%.
+  - YouTube never gave it the first test audience. No copyright claim, not
+    "made for kids".
+  - The few who watched: 48.6% stayed, average 0:43 (24%), most of them gone
+    within 20 s.
+  
+  Keep episodes around 30-45 s. A story that needs more becomes parts, each
+  ending on a cliffhanger. The finale is 40-45 s.
 
 ## 2. The creator's eye (quality and consistency)
 

@@ -1,0 +1,89 @@
+{
+ "id": "ep10_p9_sobs",
+ "number": 10,
+ "title": "sob takes (sound bank for part 9)",
+ "cut_loose": false,
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.7,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob crying, no words: soft sobs, shaky breaths, whimpers"
+  }
+ },
+ "music": [],
+ "ambience": [],
+ "sfx": [],
+ "overlays": [],
+ "sets": [],
+ "actors": {},
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "a",
+   "dur": 0.3
+  },
+  {
+   "line": "noob",
+   "name": "sob1",
+   "text": "Hh... hhh... hhh...",
+   "direction_text": "[crying softly, quiet sobs, sniffling, no words, just crying] Hh... hhh... hhh...",
+   "solo_only": true,
+   "solo_text": "Hh... hhh... hhh...",
+   "pad": 0.6
+  },
+  {
+   "line": "noob",
+   "name": "sob2",
+   "text": "Hhuh... hh... hh-hh...",
+   "direction_text": "[sobbing, shaky breaths, crying, no words] Hhuh... hh... hh-hh...",
+   "solo_only": true,
+   "solo_text": "Hhuh... hh... hh-hh...",
+   "pad": 0.6
+  },
+  {
+   "line": "noob",
+   "name": "sob3",
+   "text": "Mmh... hhh... mm...",
+   "direction_text": "[whimpering, crying quietly to himself, no words] Mmh... hhh... mm...",
+   "solo_only": true,
+   "solo_text": "Mmh... hhh... mm...",
+   "pad": 0.6
+  },
+  {
+   "line": "noob",
+   "name": "sob4",
+   "text": "Hh-hh... hhuh... hhh...",
+   "direction_text": "[crying hard, broken sobs, gasping between them, no words] Hh-hh... hhuh... hhh...",
+   "solo_only": true,
+   "solo_text": "Hh-hh... hhuh... hhh...",
+   "pad": 0.6
+  },
+  {
+   "line": "noob",
+   "name": "sob5",
+   "text": "Hhhh... hhh-huh... hhhh...",
+   "direction_text": "[a deep, broken, heartbroken sob, crying hard, no words] Hhhh... hhh-huh... hhhh...",
+   "solo_only": true,
+   "solo_text": "Hhhh... hhh-huh... hhhh...",
+   "pad": 0.6
+  },
+  {
+   "beat": "end",
+   "dur": 0.3
+  }
+ ]
+}

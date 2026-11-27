@@ -1,0 +1,109 @@
+{
+ "id": "ep10_p8_sorry",
+ "number": 10,
+ "title": "The First Portal Was a Trap: sorry",
+ "cut_loose": false,
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.7,
+   "pace": 0.5,
+   "stability": 0.4,
+   "gemini_voice": "Puck",
+   "acting": "the Noob, quiet, ashamed, a tear in his eye, his voice breaking"
+  }
+ },
+ "music": [
+  {
+   "cue": "theme_soft",
+   "from": "tear",
+   "to": "end",
+   "gain": 0.14,
+   "hard_end": true
+  }
+ ],
+ "ambience": [
+  {
+   "kind": "void",
+   "from": "pull+2.0",
+   "to": "end",
+   "gain": 0.25
+  }
+ ],
+ "sfx": [
+  {
+   "kind": "clip",
+   "path": "assets/clips/ep10/cells_chorus_out.wav",
+   "at": "pull",
+   "gain": 0.6
+  },
+  {
+   "kind": "whoosh",
+   "at": "pull+0.9",
+   "dur": 1.2,
+   "gain": 0.3
+  },
+  {
+   "kind": "rewind",
+   "at": "pull+1.2",
+   "gain": 0.15
+  },
+  {
+   "kind": "heart",
+   "at": "tear+0.1",
+   "gain": 0.45
+  },
+  {
+   "kind": "heart",
+   "at": "tear+0.45",
+   "dub": true,
+   "gain": 0.35
+  }
+ ],
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "from": 0,
+   "to": "end"
+  }
+ ],
+ "sets": [],
+ "clips": [],
+ "fx": [],
+ "shots": [],
+ "actors": {},
+ "skip_render": [
+  [
+   0,
+   "end.end+1"
+  ]
+ ],
+ "events": [
+  {
+   "beat": "pull",
+   "dur": 3.0
+  },
+  {
+   "beat": "tear",
+   "dur": 0.9
+  },
+  {
+   "line": "noob",
+   "name": "noob_sorry",
+   "caption_y": 1420,
+   "text": "I never came back for you guys... sorry.",
+   "direction_text": "[quiet, ashamed, a tear rolling, voice breaking, almost a whisper] I never came back for you guys... sorry.",
+   "pad": 0.0,
+   "solo_only": true,
+   "solo_text": "I never came back for you guys... sorry."
+  },
+  {
+   "beat": "end",
+   "dur": 0.8
+  }
+ ]
+}

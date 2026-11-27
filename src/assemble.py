@@ -452,9 +452,230 @@ def endnote(img, o, t, f, fonts):
     d.text((W // 2, y0 + 250 + dq), o["question_sub"], font=fonts["small"], fill=(220, 220, 230), anchor="mm")
 
 
-DRAW = {"grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
+_HOLO_CACHE = {}
+
+
+def holo(img, o, t, f, fonts):
+    """Patch's projected screen: a piece of an earlier episode inside a glowing
+    cyan frame, above the captions. It flickers on (a bright line opening
+    out) and off; scanlines, a slight cyan cast and a label ("ARCHIVE · EP 3").
+    The source is cropped to the middle of its picture (no HUD, no captions)."""
+    import numpy as np
+    from PIL import ImageFilter
+    a, b = o["start"], o["end"]
+    fps = o.get("fps", 24)
+    bw, bh = o.get("w", 900), o.get("h", 750)
+    cx, top = W // 2, o.get("y", 250)
+    # one clip ("video"), or several in turn ("clips": [{"at", "video", "offset"}]):
+    # the screen stays on and switches with a two-frame glitch
+    clips = o.get("clips") or [{"at": a, "video": o["video"], "offset": o.get("offset", 0.0)}]
+    cur = max((c for c in clips if c["at"] <= t + 1e-6), key=lambda c: c["at"], default=clips[0])
+    for k in list(_HOLO_CACHE):                     # only this screen's clips stay in memory
+        if k not in {c["video"] for c in clips}:
+            del _HOLO_CACHE[k]
+    if cur["video"] not in _HOLO_CACHE:
+        _HOLO_CACHE[cur["video"]] = read_holo_clip(os.path.join(HERE, "..", cur["video"]), bw, bh,
+                                                   crop=o.get("crop", False))
+    frames = _HOLO_CACHE[cur["video"]]
+    pic = frames[max(0, min(len(frames) - 1, int((t - cur["at"] + cur.get("offset", 0.0)) * fps)))]
+    switch = cur is not clips[0] and t - cur["at"] < 2 / fps
+    arr = np.asarray(pic, dtype=np.float32)
+    arr = (arr - 128) * 1.12 + 128                                              # a touch more contrast
+    arr = arr * 0.92 + np.array((40, 160, 200), np.float32) * 0.08              # a light cyan cast
+    arr[::4] *= 0.9                                                             # scanlines
+    if switch:                                                                  # a channel change
+        rr = random.Random(f)
+        for _ in range(6):
+            y0_, h_ = rr.randrange(0, bh - 40), rr.randrange(10, 60)
+            arr[y0_:y0_ + h_] = np.roll(arr[y0_:y0_ + h_], rr.randrange(-80, 80), axis=1)
+        arr = arr * 0.8 + 255 * 0.2
+    pic = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
+    k_on = min(1.0, (t - a) / 0.28)
+    k_off = min(1.0, (b - t) / 0.2)
+    k = max(0.0, min(k_on, k_off))
+    open_y = max(0.02, k ** 0.6)                                                # opening from a line
+    ph = max(2, int(bh * open_y))
+    pic = pic.resize((bw, ph))
+    x0, y0 = cx - bw // 2, top + (bh - ph) // 2
+    glow = Image.new("RGBA", (bw + 120, ph + 120), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.rounded_rectangle((60 - 8, 60 - 8, 60 + bw + 8, 60 + ph + 8), 18, outline=(60, 230, 255, 230), width=10)
+    glow = glow.filter(ImageFilter.GaussianBlur(14))
+    img.paste(glow, (x0 - 60, y0 - 60), glow)
+    alpha = int(255 * (0.93 if k >= 1 else 0.6 + 0.35 * k))
+    if random.Random(f).random() < 0.05:
+        alpha = int(alpha * 0.7)                                                # a flicker
+    mask = Image.new("L", (bw, ph), alpha)
+    img.paste(pic, (x0, y0), mask)
+    d = ImageDraw.Draw(img)
+    d.rounded_rectangle((x0 - 4, y0 - 4, x0 + bw + 4, y0 + ph + 4), 14, outline=(150, 245, 255), width=4)
+    if k_on < 1:                                                                # the bright opening line
+        d.rectangle((x0, top + bh // 2 - 3, x0 + bw, top + bh // 2 + 3), fill=(220, 255, 255))
+    if k > 0.6 and o.get("label"):
+        lab = o["label"]
+        fnt = fonts["mono_small"]
+        tw = fnt.getlength(lab)
+        # a tab on top of the frame, outside the picture: the old clips have
+        # their own banners (achievements) in their top corner
+        d.rounded_rectangle((x0 + 10, y0 - 62, x0 + 34 + tw, y0 + 2), 10, fill=(4, 24, 32),
+                            outline=(150, 245, 255), width=4)
+        d.rectangle((x0 + 14, y0 - 4, x0 + 30 + tw, y0 + 2), fill=(4, 24, 32))
+        d.text((x0 + 22, y0 - 56), lab, font=fnt, fill=(120, 240, 255))
+
+
+def comment(img, o, t, f, fonts):
+    """A YouTube comment, dark mode: round avatar with an initial, @handle,
+    the comment text (one phrase highlighted as it is read), like/dislike/Reply."""
+    a = o["start"]
+    k = min(1.0, (t - a) / 0.22)
+    s = 1.0 + 0.08 * math.sin(min(1.0, k) * math.pi)                          # a small overshoot
+    if k <= 0:
+        return
+    cw = 940
+    name_f = ImageFont.truetype(FONT, 40)
+    text_f = ImageFont.truetype(FONT, 50)
+    small_f = ImageFont.truetype(FONT, 34)
+    words = o["text"].split()
+    lines, cur = [], ""
+    for w_ in words:                                                            # wrap to the card
+        if text_f.getlength((cur + " " + w_).strip()) > cw - 190:
+            lines.append(cur)
+            cur = w_
+        else:
+            cur = (cur + " " + w_).strip()
+    lines.append(cur)
+    chh = 150 + 66 * len(lines) + 90
+    card = Image.new("RGBA", (cw, chh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(card)
+    d.rounded_rectangle((0, 0, cw - 1, chh - 1), 34, fill=(24, 24, 24, 245), outline=(70, 70, 70, 255), width=2)
+    d.ellipse((36, 40, 136, 140), fill=tuple(o.get("avatar_color", (0, 137, 123))))
+    d.text((86, 90), o.get("initial", "Y"), font=ImageFont.truetype(FONT, 56), fill=(255, 255, 255), anchor="mm")
+    d.text((162, 46), o["handle"], font=name_f, fill=(241, 241, 241))
+    hl = o.get("highlight", "")
+    y = 108
+    hk = max(0.0, min(1.0, (t - o.get("hl_start", a + 0.8)) / o.get("hl_dur", 1.6)))
+    for ln in lines:
+        x = 162
+        if hl and hk > 0:
+            lo = ln.lower()
+            i = lo.find(hl.lower()[:12]) if hl.lower()[:12] in lo else -1
+            if i >= 0 or any(w_.lower() in hl.lower() for w_ in ln.split()[:1]):
+                pass
+        d.text((x, y), ln, font=text_f, fill=(241, 241, 241))
+        y += 66
+    if hl and hk > 0:                                                           # the highlight sweep, under the phrase
+        full = " ".join(lines)
+        y = 108
+        for ln in lines:
+            for w_ in ln.split():
+                pass
+        # mark each word of the phrase where it sits
+        pos = []
+        y = 108
+        for ln in lines:
+            x = 162
+            for w_ in ln.split(" "):
+                ww = text_f.getlength(w_)
+                pos.append((w_, x, y, ww))
+                x += ww + text_f.getlength(" ")
+            y += 66
+        target = hl.lower().split()
+        n_t = len(target)
+        for i in range(len(pos) - n_t + 1):
+            if [p[0].lower().strip(".,!?\"'…") for p in pos[i:i + n_t]] == [w_.strip(".,!?\"'…") for w_ in target]:
+                upto = hk * n_t
+                for j, (w_, x, yy, ww) in enumerate(pos[i:i + n_t]):
+                    part = max(0.0, min(1.0, upto - j))
+                    if part > 0:
+                        ww = ww + (text_f.getlength(" ") if j < n_t - 1 and part >= 1 else 0)   # one continuous band
+                        hb = Image.new("RGBA", (int(ww * part) + 8, 60), (255, 210, 63, 90))
+                        card.alpha_composite(hb, (int(x) - 4, yy + 2))
+                        d.line((x, yy + 60, x + ww * part, yy + 60), fill=(255, 210, 63), width=5)
+                break
+    y = 108 + 66 * len(lines) + 24
+    gray = (170, 170, 170)
+
+    def thumb(x, y, down=False):                                                # a simple outline thumb
+        pts = [(x, y + 14), (x + 10, y + 14), (x + 10, y + 40), (x, y + 40)]
+        d.polygon(pts, outline=gray, width=3)
+        hand = [(x + 14, y + 16), (x + 22, y + 2), (x + 28, y + 4), (x + 26, y + 16), (x + 42, y + 16),
+                (x + 40, y + 40), (x + 14, y + 40)]
+        if down:
+            pts = [(px, 2 * y + 42 - py) for px, py in pts]
+            hand = [(px, 2 * y + 42 - py) for px, py in hand]
+            d.polygon(pts, outline=gray, width=3)
+        d.polygon(hand, outline=gray, width=3)
+
+    thumb(162, y)
+    thumb(262, y, down=True)
+    d.text((352, y + 2), "Reply", font=small_f, fill=gray)
+    if s != 1.0:
+        card = card.resize((int(cw * s), int(chh * s)), Image.LANCZOS)
+    al = card.split()[3].point(lambda v: int(v * k))
+    card.putalpha(al)
+    img.paste(card, (W // 2 - card.width // 2, o.get("y", 520) - card.height // 2), card)
+
+
+def stack(img, o, t, f, fonts):
+    """The loop: the picture steps back and shows the copies of itself behind
+    it, one more every beat, like a deck of cards (we have been here before)."""
+    u = t - o["start"]
+    k_in = min(1.0, u / 0.25, max(0.0, (o["end"] - t) / 0.2))
+    if k_in <= 0:
+        return
+    n = min(o.get("cards", 9), 1 + int(u / o.get("every", 0.16)))
+    s0 = 1 - 0.2 * k_in
+    base = img.copy()
+    img.paste((150, 96, 200), (0, 0, W, H))
+    rnd = random.Random(f // 2)
+    for i in range(n, -1, -1):                       # the oldest first, the live one on top
+        s = s0 * (0.93 ** i)
+        w, h = int(W * s), int(H * s)
+        card = base.resize((w, h), Image.BILINEAR)
+        if i:
+            tint = Image.new("RGB", (w, h), (255, 40, 220))
+            card = Image.blend(card, tint, min(0.6, 0.1 + 0.07 * i))
+        x = (W - w) // 2 + int((-34 * i + (rnd.choice((0, 0, 6, -6)) if i else 0)) * k_in)
+        y = int(H * 0.58 - h * 0.5 - 46 * i * k_in)
+        ImageDraw.Draw(img).rectangle((x - 5, y - 5, x + w + 4, y + h + 4), fill=(255, 255, 255) if i == 0 else (255, 120, 235))
+        img.paste(card, (x, y))
+
+
+def ffwd(img, o, t, f, fonts):
+    """A tape running fast: torn scan lines and the >> mark."""
+    import numpy as np
+    rnd = random.Random(f)
+    a = np.asarray(img).copy()
+    for _ in range(5):
+        y = rnd.randrange(0, H - 12)
+        h = rnd.randrange(3, 12)
+        a[y:y + h] = np.roll(a[y:y + h], rnd.randrange(-70, 70), axis=1)
+        a[y:y + 2] = np.minimum(255, a[y:y + 2].astype(np.int16) + 70).astype(np.uint8)
+    img.paste(Image.fromarray(a))
+    d = ImageDraw.Draw(img)
+    x, y = W - 250, 150
+    for i in range(2):
+        d.polygon([(x + i * 62, y), (x + i * 62 + 54, y + 34), (x + i * 62, y + 68)], fill=(255, 255, 255))
+    d.text((x - 96, y + 6), "x4", font=fonts["mono"], fill=(255, 255, 255))
+
+
+DRAW = {"stack": stack, "ffwd": ffwd, "holo": holo, "comment": comment, "grade": grade, "chat": chat, "warp": warp, "memory": memory, "endnote": endnote, "watermark": watermark, "timer": timer, "flash": flash, "hud": hud, "achievement": achievement, "card": card, "fade_in": fade_in,
         "label": label, "endcard": endcard, "hook": hook, "prompt": prompt, "tutorial": tutorial}
-FULL = ("grade", "memory", "card", "fade_in", "endcard")
+FULL = ("grade", "memory", "card", "fade_in", "endcard", "stack", "ffwd")
+
+
+def read_holo_clip(path, bw, bh, crop=False):
+    """A clip's frames as the holo screen shows them (bw x bh). The screen
+    shows the episode as it was published, whole (a vertical screen for a
+    vertical episode); crop=True keeps only the middle of a vertical picture."""
+    w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries",
+                                    "stream=width,height", "-of", "csv=p=0", path],
+                                   capture_output=True, text=True, check=True).stdout.strip().split(","))
+    crop = f"scale={W}:{H},crop={W}:900:0:210," if crop and h > w else ""
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-vf", f"{crop}scale={bw}:{bh}",
+                          "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
+    n = len(raw) // (bw * bh * 3)
+    return [Image.frombytes("RGB", (bw, bh), raw[i * bw * bh * 3:(i + 1) * bw * bh * 3]) for i in range(n)]
 
 
 def read_clip(path):
@@ -497,6 +718,43 @@ def retime_map(new_tl, old_tl):
     return to_old
 
 
+def rewind_frame(o, t, f, frames_dir, fps):
+    """A tape rewinding: earlier frames (o["src_from"]..o["src_to"]) played
+    backwards, faster and faster, with VHS tracking bands, a colour split,
+    noise lines and a rewind mark."""
+    import numpy as np
+    u = (t - o["start"]) / max(1e-6, o["end"] - o["start"])
+    st = o["src_to"] - (o["src_to"] - o["src_from"]) * min(1.0, u ** 1.5)
+    path = os.path.join(frames_dir, f"{int(round(st * fps)) + 1:04d}.png")
+    if not os.path.exists(path):
+        return None
+    img = Image.open(path).convert("RGB")
+    if img.size != (W, H):
+        img = img.resize((W, H), Image.LANCZOS)
+    a = np.asarray(img, dtype=np.float32)
+    rnd = random.Random(f)
+    out = a.copy()
+    out[..., 0] = np.roll(a[..., 0], 9, axis=1)                                 # colour split
+    out[..., 2] = np.roll(a[..., 2], -9, axis=1)
+    for _ in range(3):                                                          # tracking bands
+        y0 = rnd.randrange(0, H - 120)
+        hgt = rnd.randrange(30, 120)
+        out[y0:y0 + hgt] = np.roll(out[y0:y0 + hgt], rnd.randrange(-80, 80), axis=1) * 0.8 + 50
+    for _ in range(26):                                                         # noise lines
+        y0 = rnd.randrange(0, H)
+        out[y0:y0 + 3] = out[y0:y0 + 3] * 0.3 + 200
+    lum = out @ np.array([0.3, 0.59, 0.11], np.float32)
+    out = lum[..., None] + (out - lum[..., None]) * 0.75                        # tape colours
+    img = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+    d = ImageDraw.Draw(img)
+    if (f // 6) % 2 == 0:                                                       # the blinking mark
+        x, y = 90, 150
+        for dx in (0, 70):
+            d.polygon([(x + dx + 70, y), (x + dx + 70, y + 80), (x + dx, y + 40)], fill=(255, 255, 255))
+        d.text((x + 170, y + 40), "REWIND", font=ImageFont.truetype(MONO, 60), fill=(255, 255, 255), anchor="lm")
+    return img
+
+
 def main(timeline, frames_dir, audio, out, source_timeline=None):
     """source_timeline: the timeline the frames were rendered for, when the
     audio has since been re-voiced (frames are retimed to match)."""
@@ -509,7 +767,7 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         if not ln.get("caption", True):
             continue
         color = tl["cast"][ln["who"]]["caption"]
-        caps += [(a, b, txt, color) for a, b, txt in chunks(ln)]
+        caps += [(a, b, txt, color, ln.get("caption_size", 92), ln.get("caption_y", CAPTION_Y)) for a, b, txt in chunks(ln)]
     font = ImageFont.truetype(FONT, 92)
     fonts = {"mono": ImageFont.truetype(MONO, 54), "mono_small": ImageFont.truetype(MONO, 40),
              "big": ImageFont.truetype(FONT, 80), "mid": ImageFont.truetype(FONT, 50),
@@ -524,6 +782,9 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
                   "its last frame will be held")
         clips.append((o["start"], o["end"], frames, o.get("graded", False)))
     overlays = [o for o in overlays if o["type"] != "clip"]
+    for o in overlays:
+        if o["type"] == "rewind":
+            DRAW.setdefault("rewind", lambda *a_: None)       # drawn above, in place of the frame
     for o in overlays:
         if o.get("steps"):
             steps = o["steps"] if isinstance(o["steps"], list) else [o["steps"]]
@@ -543,6 +804,11 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
         path = os.path.join(frames_dir, f"{src:04d}.png")
         img = Image.open(path).convert("RGB") if os.path.exists(path) else black.copy()
         graded = False
+        for o in overlays:
+            if o["type"] == "rewind" and o["start"] <= t < o["end"]:
+                rw = rewind_frame(o, t, f, frames_dir, fps)
+                if rw is not None:
+                    img, graded = rw, True
         for c0, c1, frames, g in clips:
             if c0 <= t < c1 and frames:
                 img = frames[min(len(frames) - 1, int(round((t - c0) * fps)))].copy()
@@ -555,15 +821,21 @@ def main(timeline, frames_dir, audio, out, source_timeline=None):
             if o["type"] in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)
         row = 0
-        for a, b, txt, color in caps:
+        for a, b, txt, color, base, cy in caps:
             if a <= t < b:
-                y = CAPTION_Y + 115 * row                  # lines said together stack
+                y = cy + 115 * row                         # lines said together stack
                 row += 1
                 pop = min(1.0, (t - a) / 0.08)
-                size = int(92 * (0.82 + 0.18 * pop))
+                shout = base > 120                         # a shout punches in from bigger, and shakes
+                size = int(base * ((1.35 - 0.35 * pop) if shout else (0.82 + 0.18 * pop)))
                 fnt = fitted(txt, size, W - 140)
-                ImageDraw.Draw(img).text((W // 2, y), txt, font=fnt, fill=color,
-                                         anchor="mm", stroke_width=10, stroke_fill=(0, 0, 0))
+                x = W // 2
+                if shout:
+                    k = max(0.0, 1 - (t - a) / 0.6)
+                    x += int(14 * k * math.sin(t * 61))
+                    y += int(10 * k * math.sin(t * 47 + 1))
+                ImageDraw.Draw(img).text((x, y), txt, font=fnt, fill=color,
+                                         anchor="mm", stroke_width=max(10, base // 9), stroke_fill=(0, 0, 0))
         for o in overlays:
             if o["type"] not in FULL and o["start"] <= t < o["end"]:
                 DRAW[o["type"]](img, o, t, f, fonts)

@@ -1,0 +1,274 @@
+{
+ "id": "ep06_deleting_itself",
+ "fps": 24,
+ "length": 28.696,
+ "beats": {
+  "open": [
+   0.0,
+   0.2
+  ],
+  "noob_delete": [
+   0.2,
+   2.384
+  ],
+  "steve_stop": [
+   2.484,
+   3.831
+  ],
+  "react": [
+   3.931,
+   4.831
+  ],
+  "rise": [
+   4.831,
+   6.231
+  ],
+  "patch_ohno": [
+   6.231,
+   7.112
+  ],
+  "rise_end": [
+   7.212,
+   8.112
+  ],
+  "throw": [
+   8.112,
+   9.112
+  ],
+  "pick_gone": [
+   9.112,
+   9.712
+  ],
+  "steve_pick": [
+   9.712,
+   10.856
+  ],
+  "wall": [
+   10.906,
+   11.406
+  ],
+  "noob_wall": [
+   11.406,
+   12.089
+  ],
+  "wall_gone": [
+   12.189,
+   13.089
+  ],
+  "noob_nowall": [
+   13.089,
+   14.004
+  ],
+  "tnt": [
+   14.154,
+   14.954
+  ],
+  "tnt_gone": [
+   14.954,
+   15.854
+  ],
+  "noob_boom": [
+   15.854,
+   17.293
+  ],
+  "patch_correct": [
+   17.443,
+   20.752
+  ],
+  "face": [
+   20.902,
+   21.502
+  ],
+  "noob_hi": [
+   21.502,
+   22.729
+  ],
+  "copy": [
+   22.829,
+   23.329
+  ],
+  "null_hi": [
+   23.329,
+   24.696
+  ],
+  "hold": [
+   24.796,
+   25.996
+  ],
+  "gap": [
+   25.996,
+   27.196
+  ],
+  "endcard": [
+   27.196,
+   28.696
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_delete",
+   "who": "noob",
+   "text": "The world is DELETING itself!",
+   "vo": false,
+   "caption": true,
+   "start": 0.2,
+   "end": 2.384
+  },
+  {
+   "name": "steve_stop",
+   "who": "steve",
+   "text": "Then we stop it.",
+   "vo": false,
+   "caption": true,
+   "start": 2.484,
+   "end": 3.831
+  },
+  {
+   "name": "patch_ohno",
+   "who": "patch",
+   "text": "Oh no.",
+   "vo": false,
+   "caption": true,
+   "start": 6.231,
+   "end": 7.112
+  },
+  {
+   "name": "steve_pick",
+   "who": "steve",
+   "text": "...My pickaxe.",
+   "vo": false,
+   "caption": true,
+   "start": 9.712,
+   "end": 10.856
+  },
+  {
+   "name": "noob_wall",
+   "who": "noob",
+   "text": "Wall!",
+   "vo": false,
+   "caption": true,
+   "start": 11.406,
+   "end": 12.089
+  },
+  {
+   "name": "noob_nowall",
+   "who": "noob",
+   "text": "...No wall.",
+   "vo": false,
+   "caption": true,
+   "start": 13.089,
+   "end": 14.004
+  },
+  {
+   "name": "noob_boom",
+   "who": "noob",
+   "text": "It deleted the BOOM!",
+   "vo": false,
+   "caption": true,
+   "start": 15.854,
+   "end": 17.293
+  },
+  {
+   "name": "patch_correct",
+   "who": "patch",
+   "text": "It's not attacking. It's correcting.",
+   "vo": false,
+   "caption": true,
+   "start": 17.443,
+   "end": 20.752
+  },
+  {
+   "name": "noob_hi",
+   "who": "noob",
+   "text": "...Hi?",
+   "vo": false,
+   "caption": true,
+   "start": 21.502,
+   "end": 22.729
+  },
+  {
+   "name": "null_hi",
+   "who": "null",
+   "text": "...Hi?",
+   "vo": false,
+   "caption": true,
+   "start": 23.329,
+   "end": 24.696
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely"
+  },
+  "null": {
+   "voice": "am_puck",
+   "speed": 0.92,
+   "pitch": 1.0,
+   "caption": "#FF3BD4",
+   "fx": "null",
+   "emotion": 0.25,
+   "pace": 0.3,
+   "stability": 0.5,
+   "gemini_voice": "Puck",
+   "acting": "slow, cold, completely emotionless, like a machine announcing a verdict"
+  }
+ },
+ "overlays": [
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 29.096
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 52%",
+   "alert": true,
+   "start": 25.996,
+   "end": 27.196
+  },
+  {
+   "type": "endcard",
+   "over": true,
+   "next_label": "NEXT  \u00b7  EPISODE 7",
+   "next_title": "PATCH REMEMBERED ANOTHER WORLD",
+   "question": "WHY DID IT COPY HIM?",
+   "question_sub": "Comment your theory",
+   "pace": 0.25,
+   "start": 27.196,
+   "end": 29.096
+  }
+ ]
+}

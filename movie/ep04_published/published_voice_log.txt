@@ -1,0 +1,138 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['steve_touch', 'noob_touched', 'steve_grew', 'noob_again'] placed ['steve_touch', 'noob_touched', 'steve_grew', 'noob_again']
+  steve_touch: words at 0.00-1.34s of the scene
+  noob_touched: words at 1.72-3.06s of the scene
+  steve_grew: words at 4.60-6.44s of the scene
+  noob_again: words at 7.56-8.10s of the scene
+  noob_touched: pinned cut 1.90-3.35s
+  steve_grew: pinned cut 5.35-7.50s
+scene ['patch_stop', 'noob_cube', 'patch_grows', 'noob_helping'] placed ['patch_stop', 'noob_cube', 'patch_grows', 'noob_helping']
+  patch_stop: words at 0.00-2.06s of the scene
+  noob_cube: words at 2.82-3.78s of the scene
+  patch_grows: words at 4.78-6.92s of the scene
+  noob_helping: words at 7.82-8.46s of the scene
+  patch_stop: pinned cut 0.00-2.45s
+  noob_cube: pinned cut 2.54-4.26s
+  patch_grows: pinned cut 4.44-7.34s
+  noob_helping: pinned cut 7.48-8.80s
+scene ['steve_no', 'patch_know'] placed ['steve_no', 'patch_know']
+  steve_no: words at 0.51-0.88s of the scene
+  patch_know: words at 2.82-4.44s of the scene
+  steve_no: pinned cut 0.00-1.50s
+  patch_know: pinned cut 2.52-4.66s
+scene ['noob_doyou', 'patch_deleted'] placed ['noob_doyou', 'patch_deleted']
+  noob_doyou: words at 0.00-0.72s of the scene
+  patch_deleted: words at 1.60-3.42s of the scene
+  noob_doyou: pinned cut 0.00-1.19s
+  patch_deleted: pinned cut 1.35-3.81s
+  solo Noob 'A secret block!' take 0: from the cache
+  solo take 0 for 'A secret block!': 1.00 ' A  SECRET  BLOCK!'
+  solo Noob 'A secret block!' take 1: from the cache
+  solo take 1 for 'A secret block!': 1.00 ' A  SECRET  BLOCK!'
+  solo Noob 'A secret block!' take 2: from the cache
+  solo take 2 for 'A secret block!': 1.00 ' A  secret  block!'
+  solo Steve "It fell off the dragon. Don't touch it." take 0: from the cache
+  solo take 0 for "It fell off the dragon. Don't touch it.": 1.00 " It  fell  off  the  dragon,  don't  touch  it."
+  solo Steve "It fell off the dragon. Don't touch it." take 1: from the cache
+  solo take 1 for "It fell off the dragon. Don't touch it.": 1.00 " It  fell  off  the  dragon.  Don't  touch  it."
+  solo Steve "It fell off the dragon. Don't touch it." take 2: from the cache
+  solo take 2 for "It fell off the dragon. Don't touch it.": 1.00 " It  fell  off  the  dragon,  don't  touch  it."
+  solo Noob 'Again!' take 0: from the cache
+  solo take 0 for 'Again!': 1.00 ' AGAIN!'
+  solo Noob 'Again!' take 1: from the cache
+  solo take 1 for 'Again!': 1.00 ' AGAIN!'
+  solo Noob 'Again!' take 2: from the cache
+  solo take 2 for 'Again!': 1.00 ' Again!'
+{
+ "length": 29.577,
+ "beats": {
+  "open": [
+   0.0,
+   0.15
+  ],
+  "noob_secret": [
+   0.15,
+   1.804
+  ],
+  "steve_touch": [
+   1.904,
+   4.357
+  ],
+  "poke1": [
+   4.407,
+   4.757
+  ],
+  "die1": [
+   4.757,
+   5.157
+  ],
+  "respawn1": [
+   5.157,
+   5.507
+  ],
+  "noob_touched": [
+   5.507,
+   6.44
+  ],
+  "steve_grew": [
+   6.49,
+   8.034
+  ],
+  "noob_again": [
+   8.134,
+   9.288
+  ],
+  "spree": [
+   9.288,
+   11.088
+  ],
+  "patch_in": [
+   11.088,
+   11.688
+  ],
+  "patch_stop": [
+   11.688,
+   14.078
+  ],
+  "noob_cube": [
+   14.178,
+   15.693
+  ],
+  "scan": [
+   15.743,
+   16.643
+  ],
+  "patch_grows": [
+   16.643,
+   19.18
+  ],
+  "noob_helping": [
+   19.28,
+   20.204
+  ],
+  "steve_no": [
+   20.204,
+   21.547
+  ],
+  "turn": [
+   21.797,
+   22.297
+  ],
+  "patch_know": [
+   22.297,
+   24.437
+  ],
+  "noob_doyou": [
+   24.537,
+   25.657
+  ],
+  "patch_deleted": [
+   25.807,
+   27.677
+  ],
+  "endcard": [
+   28.077,
+   29.577
+  ]
+ }
+}
