@@ -306,7 +306,11 @@ def _clouds(E):
     col = bpy.data.collections.new("clouds")
     E.sc.collection.children.link(col)
 
+    E.cloud_groups = []
+
     def puff(c, r, n, flat=0.55):
+        grp = (c, [])
+        E.cloud_groups.append(grp)
         for _ in range(n):
             bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=2, radius=1.0)
             ob = bpy.context.active_object
@@ -318,6 +322,7 @@ def _clouds(E):
             ob.location = c + Vector((rnd.uniform(-1.6, 1.6) * r, rnd.uniform(-0.8, 0.8) * r, rnd.uniform(-0.2, 0.3) * r))
             ob.data.materials.append(m)
             ob.visible_shadow = False
+            grp[1].append((ob, Vector(ob.location)))
             for p in ob.data.polygons:
                 p.use_smooth = True
     for i in range(26):
@@ -809,7 +814,7 @@ def dragon(E, t):
         k = int(round(t * FPS))
         u = (t - b("glitch")) / max(0.1, b("glitch", 1) - b("glitch"))
         on = (k * 7919 % 13) / 13.0 < 0.25 + 0.5 * u
-        if t < b("glitch") + 0.12:
+        if t < b("glitch") + 0.12 or t >= b("glitch", 1) - 8.0 / FPS:   # held over the last frames: Ep4 opens on it
             on = True
     for ob in D.meshes:
         ob.material_slots[0].material = E.checker if on else D.mat
@@ -1602,6 +1607,23 @@ def players(E, t):
 
 
 # ------------------------------------------------------------------ one frame
+def _clear_head_sky(E, t, shot):
+    """The burst: the one big cloud that sat right behind the dragon's head is lifted out of the way (the creator,
+    2026-11-26: the dark head against blue sky), only in this shot."""
+    for c, obs in E.cloud_groups:
+        for ob, home in obs:
+            ob.location = home
+    if shot != "burst" or E.D.root.location.z < -100:
+        return
+    cam = _c(-4.6, -8.2, 1.2)
+    hd = (dragon_head(E) - cam).normalized()
+    for c, obs in E.cloud_groups:
+        d = c - cam
+        if d.length < 400 and d.normalized().dot(hd) > math.cos(math.radians(22)):
+            for ob, home in obs:
+                ob.location = home + Vector((0, 0, 0.32 * d.length))
+
+
 def apply(E, t):
     E._t_now = t
     name, t0, t1 = which(t)
@@ -1616,6 +1638,7 @@ def apply(E, t):
     ahead(E, t)
     hologram(E, t)
     dragon(E, t)
+    _clear_head_sky(E, t, name)
     wall(E, t)
     crystals(E, t)
     ledge(E, t)
