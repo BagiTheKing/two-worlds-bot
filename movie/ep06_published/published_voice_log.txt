@@ -1,0 +1,137 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['steve_stop', 'patch_ohno', 'steve_pick'] placed ['steve_stop', 'patch_ohno', 'steve_pick']
+  steve_stop: words at 0.00-0.98s of the scene
+  patch_ohno: words at 1.72-2.34s of the scene
+  steve_pick: words at 3.40-4.38s of the scene
+  steve_stop: pinned cut 0.00-1.55s
+  patch_ohno: pinned cut 1.72-3.19s
+  steve_pick: pinned cut 3.62-4.88s
+scene ['noob_wall', 'noob_nowall', 'noob_boom', 'patch_correct', 'noob_hi', 'patch_watch'] placed ['noob_wall', 'noob_nowall', 'noob_boom', 'patch_correct', 'noob_hi', 'patch_watch']
+  noob_wall: words at 0.00-0.30s of the scene
+  noob_nowall: words at 1.66-2.32s of the scene
+  noob_boom: words at 3.12-4.20s of the scene
+  patch_correct: words at 5.16-7.60s of the scene
+  noob_hi: words at 8.72-9.08s of the scene
+  patch_watch: words at 10.62-17.98s of the scene
+  noob_wall: pinned cut 0.00-0.84s
+  noob_nowall: pinned cut 1.66-2.91s
+  noob_boom: pinned cut 3.02-4.84s
+  patch_correct: pinned cut 4.90-8.43s
+  noob_hi: pinned cut 8.64-9.94s
+  solo Noob 'The world is DELETING itself!' take 0: from the cache
+  solo take 0 for 'The world is DELETING itself!': 1.00 ' The  world  is  deleting  itself!'
+  solo Noob 'The world is DELETING itself!' take 1: from the cache
+  solo take 1 for 'The world is DELETING itself!': 1.00 ' The  world  is  deleting  itself.'
+  solo Noob 'The world is DELETING itself!' take 2: from the cache
+  solo take 2 for 'The world is DELETING itself!': 1.00 ' The  world  is  deleting  itself.'
+  solo Null '...Hi?' take 0: from the cache
+  solo take 0 for '...Hi?': 1.00 ' Hi'
+  solo Null '...Hi?' take 1: from the cache
+  solo take 1 for '...Hi?': 1.00 ' Hi'
+  solo Null '...Hi?' take 2: from the cache
+  solo take 2 for '...Hi?': 1.00 ' Hi'
+{
+ "length": 28.696,
+ "beats": {
+  "open": [
+   0.0,
+   0.2
+  ],
+  "noob_delete": [
+   0.2,
+   2.384
+  ],
+  "steve_stop": [
+   2.484,
+   3.831
+  ],
+  "react": [
+   3.931,
+   4.831
+  ],
+  "rise": [
+   4.831,
+   6.231
+  ],
+  "patch_ohno": [
+   6.231,
+   7.112
+  ],
+  "rise_end": [
+   7.212,
+   8.112
+  ],
+  "throw": [
+   8.112,
+   9.112
+  ],
+  "pick_gone": [
+   9.112,
+   9.712
+  ],
+  "steve_pick": [
+   9.712,
+   10.856
+  ],
+  "wall": [
+   10.906,
+   11.406
+  ],
+  "noob_wall": [
+   11.406,
+   12.089
+  ],
+  "wall_gone": [
+   12.189,
+   13.089
+  ],
+  "noob_nowall": [
+   13.089,
+   14.004
+  ],
+  "tnt": [
+   14.154,
+   14.954
+  ],
+  "tnt_gone": [
+   14.954,
+   15.854
+  ],
+  "noob_boom": [
+   15.854,
+   17.293
+  ],
+  "patch_correct": [
+   17.443,
+   20.752
+  ],
+  "face": [
+   20.902,
+   21.502
+  ],
+  "noob_hi": [
+   21.502,
+   22.729
+  ],
+  "copy": [
+   22.829,
+   23.329
+  ],
+  "null_hi": [
+   23.329,
+   24.696
+  ],
+  "hold": [
+   24.796,
+   25.996
+  ],
+  "gap": [
+   25.996,
+   27.196
+  ],
+  "endcard": [
+   27.196,
+   28.696
+  ]
+ }
+}

@@ -20,15 +20,11 @@
 >    the previous chapter's, as Ep4 imports Ep3) -> local stills -> one CI preview -> send it -> notes -> fixes by
 >    range -> a section here on what was learned.
 > 5. **The original voice takes** of Episodes 4-8 are no longer in the CI voice cache. They live in the repo:
->    `movie/ep04_published` (finished; use as `voices_from`). **Episodes 5-8: rescue FIRST, before anything else,
->    if `movie/ep0N_published` is not in the repo yet** (a voices-only CI run with `voices_from=<run id>` on any movie
->    episode file stops fast but publishes the old prep to `preview-logs` as `prev_prep/`; copy it into
->    `movie/ep0N_published` (scenes, mix, timeline, voice log) at once: each run overwrites `preview-logs`; one at a
->    time). The published runs and when their prep artifacts expire (30 days, then the takes are gone for good):
->    Ep5 run 40886523331 (about 2026-11-28 14:00 UTC), Ep6 run 41223595607 (2026-11-30 ~17:00), Ep7 run 41463846907
->    (2026-12-02 ~14:00), Ep8 run 41851020512 (2026-12-04 ~15:00). On 2026-11-27 ~00:20 UTC the Ep5 rescue run
->    (45916058648) was queued while GitHub had no runner for it. Then turn the raw folder into a `voices_from`
->    folder the way Ep4's was made (see "Episode 4", Sound).
+>    `movie/ep04_published` (finished; use as `voices_from`). **Episodes 5-8 were rescued raw on 2026-11-27**
+>    (`movie/ep05_published` .. `ep08_published`: scenes, mix, timeline, voice log), downloaded straight from the
+>    Actions API (`download_workflow_run_artifact`; the environment allows the four blob hosts it needed). Before an
+>    episode is built, turn its raw folder into a `voices_from` folder the way Ep4's was made (see "Episode 4",
+>    Sound): the solo lines are not in the scenes.
 
 > **Open corrections (2026-11-23): read `story/movie/fixes_2026-11-23.md`
 > first.** The creator's fix list for chapters 0-2 (Ep0's fall restored, Ep1's
