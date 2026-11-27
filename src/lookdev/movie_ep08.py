@@ -305,6 +305,13 @@ def G(E, x, y):
 def prepare(E):
     """Measured once per shard (time-independent): the pat's arm pose, so the Noob's hand lands on Steve's left
     sleeve."""
+    piv = E.N.arms["sl"]                                  # the Noob's arm length (as ep10_p6_fall._measure)
+    zs = []
+    for ch in piv.children_recursive:
+        if ch.type == "MESH":
+            mm = piv.matrix_world.inverted() @ ch.matrix_world
+            zs += [(mm @ Vector(c)).z for c in ch.bound_box]
+    E.N.arm_len = -min(zs) * 0.93 if zs else 1.6
     s_loc, n_loc = G(E, *STEVE_T), G(E, *NOOB_PAT)
     s_yaw, n_yaw = PAT_STEVE_YAW, PAT_NOOB_YAW
     M.set_steve(E, s_loc, s_yaw, {}, {}, 0.0)
