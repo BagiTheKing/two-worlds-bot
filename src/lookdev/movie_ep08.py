@@ -69,15 +69,15 @@ LAND_S = (-1.5, 2.15)
 LAND_N = (1.4, 2.35)
 VINE_A = (-0.5, 3.72)                     # Steve pulling the left curtain
 VINE_B = (0.45, 3.72)                     # ... the right one
-NOOB_SEE = (2.0, 2.2)                   # the Noob, scrambled up behind him: "You had a PORTAL?!"
+NOOB_SEE = (2.6, 2.3)                   # the Noob, scrambled up behind him: "You had a PORTAL?!"
 STEVE_T = (-0.8, 2.3)                   # the talk, ~3.8 m in front of the frame
 NOOB_T = (0.7, 2.1)
 NOOB_PAT = (0.1, 2.15)                   # beside Steve for the pat
 PATCH_T = Vector((-1.7, 1.5, 2.2))
-PAST_S = (2.05, 3.85)                      # past-Steve setting the last block (the right column's middle)
-PAST_FLINT = (0.75, 3.75)
-PAST_BACK = (2.3, 2.5)
-LAST_BLOCK = 12                           # P.blocks index: right column, z 2.5
+PAST_S = (0.55, 3.8)                      # past-Steve setting the last block (the right column's middle)
+PAST_FLINT = (-0.35, 3.8)
+PAST_BACK = (0.4, 2.4)
+LAST_BLOCK = 2                            # P.blocks index: the sill, x 0.5 (the last one he set)
 CURTAIN_X = (-0.5, 0.5)
 PILE = ((-2.95, 3.55), (2.95, 3.45))
 
@@ -155,19 +155,25 @@ def _vines(E, assets):
     # fixed clusters: lumps of moss and leaves on the frame (7), and strands down its outer columns
     lumps = [(-1.6, 4.85, 0.9), (-0.6, 4.95, 0.7), (0.5, 4.9, 0.8), (1.55, 4.8, 0.95), (-1.85, 3.2, 0.6), (1.85, 2.4, 0.65),
              (1.85, 0.7, 0.55)]
-    mc, lc = [], []
-    for (x, z, r) in lumps:
+    E.moss = []
+    for n_, (x, z, r) in enumerate(lumps):
+        mc, lc = [], []
         for _ in range(int(40 * r)):
             v = Vector((rnd.gauss(0, r * 0.45), rnd.gauss(0, 0.22), rnd.gauss(0, r * 0.3)))
             if v.length > r:
                 continue
-            p = (P0.x + x + v.x, P0.y - 0.45 + v.y, z + v.z, rnd.uniform(0.8, 1.2))
-            (mc if rnd.random() < 0.45 else lc).append(p)
-    for x in (-1.75, -1.35, 1.3, 1.7):
+            (mc if rnd.random() < 0.45 else lc).append((v.x, v.y, v.z, rnd.uniform(0.8, 1.2)))
+        for nm, cells, sz, mt in (("moss", mc, 0.24, moss), ("leaves", lc, 0.17, leaves)):
+            if cells:
+                ob = _cubes(f"frame_{nm}_{n_}", cells, sz, mt, col)
+                ob.location = (P0.x + x, P0.y - 0.45, z)
+                E.moss.append(ob)
+    for n_, x in enumerate((-1.75, -1.35, 1.3, 1.7)):
         n = rnd.randint(10, 22)
-        for j in range(n):
-            lc.append((P0.x + x + rnd.uniform(-0.03, 0.03), P0.y - 0.56, 4.9 - 0.14 * j, rnd.uniform(0.8, 1.1)))
-    E.moss = [_cubes("frame_moss", mc, 0.24, moss, col), _cubes("frame_leaves", lc, 0.17, leaves, col)]
+        cells = [(rnd.uniform(-0.03, 0.03), 0, -0.14 * j, rnd.uniform(0.8, 1.1)) for j in range(n)]
+        ob = _cubes(f"frame_strand_{n_}", cells, 0.17, leaves, col)
+        ob.location = (P0.x + x, P0.y - 0.56, 4.9)
+        E.moss.append(ob)
 
 
 def _glimpse(E):
@@ -312,30 +318,36 @@ def prepare(E):
             mm = piv.matrix_world.inverted() @ ch.matrix_world
             zs += [(mm @ Vector(c)).z for c in ch.bound_box]
     E.N.arm_len = -min(zs) * 0.93 if zs else 1.6
-    s_loc, n_loc = G(E, *STEVE_T), G(E, *NOOB_PAT)
+    s_loc = G(E, *STEVE_T)
     s_yaw, n_yaw = PAT_STEVE_YAW, PAT_NOOB_YAW
     M.set_steve(E, s_loc, s_yaw, {}, {}, 0.0)
     bpy.context.view_layer.update()
     head = P6._head(E.S.face, E.S.holder)
     f = Vector((math.sin(math.radians(s_yaw)), -math.cos(math.radians(s_yaw)), 0))
-    left = Vector((-f.y, f.x, 0)) * -1                   # his left (the right is (f.y, -f.x))
-    target = head + left * 0.36 + Vector((0, 0, -0.62))
+    left = Vector((-f.y, f.x, 0))                          # his left (his right is (f.y, -f.x))
+    target = head + left * 0.5 + Vector((0, 0, -0.95))     # the upper sleeve
+    E.pat_target = target
     best = None
-    for side in ("sl", "sr"):
-        for fwd in range(20, 141, 8):
-            for out in range(-70, 71, 8):
-                M.set_noob(E, n_loc, n_yaw, {"arm_" + side: {"fwd": fwd, "out": out}}, {}, 0.0)
-                bpy.context.view_layer.update()
-                d = (P6._noob_hand(E.N, side) - target).length
-                if best is None or d < best[0]:
-                    best = (d, side, fwd, out)
-    E.pat = best
+    for gap in (1.35, 1.2, 1.05, 0.95):                    # the Noob as far off as still lets his hand land
+        n_loc = G(E, STEVE_T[0] + gap, NOOB_PAT[1])
+        for side in ("sr", "sl"):
+            for fwd in range(20, 161, 8):
+                for out in range(-80, 81, 8):
+                    M.set_noob(E, n_loc, n_yaw, {"arm_" + side: {"fwd": fwd, "out": out}}, {}, 0.0)
+                    bpy.context.view_layer.update()
+                    d = (P6._noob_hand(E.N, side) - target).length
+                    if best is None or d < best[0]:
+                        best = (d, side, fwd, out, gap)
+        if best[0] < 0.1:
+            break
+    E.pat_x = STEVE_T[0] + best[4]
+    E.pat = best[:4]
     E.pat_target = target
     print("pat:", best, flush=True)
 
 
-PAT_STEVE_YAW = 58.0
-PAT_NOOB_YAW = -58.0
+PAT_STEVE_YAW = 18.0
+PAT_NOOB_YAW = -38.0
 
 
 # ------------------------------------------------------------------ shots
@@ -544,7 +556,8 @@ def noob_now(E, t):
         face = mixf(NOOB_HURT, NOOB_CROOKED, u)
         pz = {"chest_lean": 5 * (1 - u), "head_nod": 7 * (1 - u), "head_tilt": 9 * ss(b("noob_blocks"), b("noob_blocks") + 0.5, t)}
     else:                                                       # stepping beside him; the pat; the grin
-        p, _, ph, k = move(E, NOOB_T, NOOB_PAT, b("step") + 0.2, b("step", 1) - 0.1, t, speed=2.0)
+        p, _, ph, k = move(E, NOOB_T, (getattr(E, "pat_x", NOOB_PAT[0]), NOOB_PAT[1]), b("step") + 0.2, b("step", 1) - 0.1, t,
+                           speed=2.0)
         loc = p
         yaw = lerp(yaw, PAT_NOOB_YAW, ss(b("step") + 0.2, b("step", 1), t))
         pz = walk(ph, k * 0.7, steve=False)
@@ -611,8 +624,12 @@ def patch_now(E, t, hidden=False):
 
 
 def overgrowth(E, t, past):
-    for o in E.moss:
-        o.hide_render = past
+    ig = b("ignite")
+    burn = 0.0 if past else ss(ig + 0.05, ig + 0.9, t)          # the plasma burns the overgrowth off the frame
+    for i, o in enumerate(E.moss):
+        o.hide_render = past or burn >= 0.999
+        k = max(1e-3, 1 - ss(0.1 * (i % 4) / 4, 0.75 + 0.25 * (i % 3) / 3, burn))
+        o.scale = (k, k, k)
     for k, root in enumerate(E.curtains):
         for c in root.children:
             c.hide_render = past
@@ -622,6 +639,10 @@ def overgrowth(E, t, past):
         u = ss(pull[0] + 0.15, pull[1], t)
         sx = -1 if k == 0 else 1
         pile = G(E, *PILE[k]) + Vector((0, 0, 0.12))
+        if burn >= 0.999:
+            for c in root.children:
+                c.hide_render = True
+        root.scale = (max(1e-3, 1 - burn),) * 3
         if u <= 0:
             root.location = home
             root.rotation_euler = (math.radians(1.5 * math.sin(t * 1.3 + k)), 0, 0)      # a breath of wind
@@ -675,7 +696,8 @@ def portal(E, t, past):
     k = ss(ig, ig + 0.4, t)
     mem.hide_render = k <= 0
     E.power.inputs[2].default_value = 0.42 + 0.9 * math.exp(-max(0.0, t - ig) / 0.6) * (t >= ig)
-    P.light.data.energy = 900 * k                                            # ep10_entrance's portal light
+    soft = lerp(0.42, 1.0, ss(b("reveal") - 0.1, b("reveal") + 0.8, t))     # gentler on their faces in 5A
+    P.light.data.energy = 900 * k * soft                                     # ep10_entrance's portal light by 5B
     c0 = b("crack") + 0.15
     if t >= c0:                                                              # the magenta crack ripples across
         n = len(E.crack)
@@ -722,13 +744,16 @@ def past_steve(E, t):
     if t < fl0:
         y = yaw_to(PAST_S, (blk_home.x, blk_home.y))
         u = ss(p0 + 0.3, p0 + 0.9, t)
-        pz = {"arm_sr": {"fwd": lerp(40, 125, u), "out": 8}, "chest_lean": 4 * u, "head_nod": -12 * u}
+        pz = {"arm_sr": {"fwd": lerp(30, 72, u), "out": 6}, "hips_drop": 0.45 * u, "chest_lean": 30 * u, "head_nod": 20 * u,
+              "foot_sr": {"y": 0.3 * u}}
         M.set_steve(E, G(E, *PAST_S), y, pz, STEVE_FLAT, t)
         bpy.context.view_layer.update()
         E.hand_now = P6._steve_hand(E.S, "sr")
         E.hand_place = E.hand_now
         if t >= p0 + 0.5:                                         # where the hand was when the block left it
-            M.set_steve(E, G(E, *PAST_S), y, {"arm_sr": {"fwd": lerp(40, 125, ss(p0 + 0.3, p0 + 0.9, p0 + 0.5)), "out": 8}},
+            u5 = ss(p0 + 0.3, p0 + 0.9, p0 + 0.5)
+            M.set_steve(E, G(E, *PAST_S), y, {"arm_sr": {"fwd": lerp(30, 72, u5), "out": 6}, "hips_drop": 0.45 * u5,
+                                              "chest_lean": 30 * u5, "head_nod": 20 * u5, "foot_sr": {"y": 0.3 * u5}},
                         STEVE_FLAT, t)
             bpy.context.view_layer.update()
             E.hand_place = P6._steve_hand(E.S, "sr")
@@ -798,10 +823,16 @@ def _over(E, who, other, dist, side_deg, lens, fstop, dz=-0.05):
 def camera(E, t, shot, layer):
     from ep10_p2_omg import handheld
     if layer == "past":
-        u = ss(b("dissolve"), b("back", 1), t)
-        loc = Vector((5.2 - 0.4 * u, -0.9 + 0.5 * u, 2.0))
-        look = Vector((0.6, 4.4, 2.3))
-        lens, fs, fd, sh = 30, 6.0, (Vector((1.6, 3.6, 2.0)) - loc).length, 0.05
+        if t < b("flare"):                                       # through the empty frame, from behind: his face
+            u = ss(b("dissolve"), b("flare"), t)
+            loc = G(E, 0.35, 8.3) + Vector((0, -0.4 * u, 2.15))
+            look = G(E, 0.1, 3.8) + Vector((0, 0, 1.9))
+            lens, fs, fd, sh = 30, 6.0, 4.6, 0.04
+        else:                                                    # beside the frame: his face in the violet light
+            u = ss(b("flare"), b("back", 1), t)
+            loc = G(E, 3.0, 4.1) + Vector((-0.15 * u, -0.1 * u, 1.85))
+            look = G(E, 0.2, 2.6) + Vector((0, 0, 2.25))
+            lens, fs, fd, sh = 30, 4.0, 3.2, 0.04
     elif shot in ("land", "past"):
         u = ss(0.0, b("dissolve", 1), t)
         loc = G(E, 3.2, -6.2) + Vector((-0.5 * u, 1.1 * u, 1.75))
@@ -811,7 +842,7 @@ def camera(E, t, shot, layer):
         loc, look, lens, fs, fd = _over(E, "noob", "steve", 2.3, 40, 50, 2.8)
         sh = 0.05
     elif shot == "steve":
-        loc, look, lens, fs, fd = _over(E, "steve", "noob", 2.8, 36, 65, 2.2)
+        loc, look, lens, fs, fd = _over(E, "steve", "noob", 2.0, 40, 65, 2.2)
         u = ss(b("guilt"), b("think"), t)
         loc = loc + (look - loc).normalized() * 0.25 * u                 # a slow creep in
         sh = 0.04
