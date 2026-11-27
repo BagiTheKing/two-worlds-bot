@@ -1,0 +1,372 @@
+{
+ "id": "movie_ep05_creative_mode",
+ "fps": 24,
+ "length": 55.651,
+ "beats": {
+  "still": [
+   0.0,
+   2.4
+  ],
+  "reach": [
+   2.4,
+   3.1
+  ],
+  "patch_wait": [
+   3.1,
+   4.33
+  ],
+  "poke3": [
+   4.33,
+   4.83
+  ],
+  "implode": [
+   4.83,
+   6.53
+  ],
+  "hammer": [
+   6.53,
+   7.43
+  ],
+  "duck": [
+   7.43,
+   8.43
+  ],
+  "noob_build": [
+   8.43,
+   10.484
+  ],
+  "lower": [
+   10.634,
+   11.134
+  ],
+  "steve_since": [
+   11.134,
+   12.664
+  ],
+  "noob_block": [
+   12.764,
+   13.767
+  ],
+  "statue": [
+   14.117,
+   15.917
+  ],
+  "noob_statue": [
+   15.917,
+   17.738
+  ],
+  "crane": [
+   17.938,
+   18.738
+  ],
+  "steve_big": [
+   18.738,
+   20.275
+  ],
+  "noob_see": [
+   20.375,
+   21.572
+  ],
+  "castle": [
+   21.872,
+   23.472
+  ],
+  "pinch": [
+   23.472,
+   24.372
+  ],
+  "steve_home": [
+   24.372,
+   25.443
+  ],
+  "salute": [
+   25.643,
+   26.243
+  ],
+  "door": [
+   26.243,
+   27.543
+  ],
+  "open": [
+   27.543,
+   29.043
+  ],
+  "noob_close": [
+   29.043,
+   29.787
+  ],
+  "stare": [
+   29.887,
+   31.487
+  ],
+  "chime": [
+   31.487,
+   32.487
+  ],
+  "duck_gone": [
+   32.487,
+   33.487
+  ],
+  "noob_duck": [
+   33.487,
+   35.169
+  ],
+  "scan": [
+   35.369,
+   36.169
+  ],
+  "patch_delete": [
+   36.169,
+   40.786
+  ],
+  "castle_gone": [
+   41.086,
+   42.486
+  ],
+  "statue_gone": [
+   42.486,
+   44.286
+  ],
+  "noob_no": [
+   44.286,
+   45.239
+  ],
+  "dragon": [
+   45.439,
+   46.539
+  ],
+  "hush": [
+   46.539,
+   47.339
+  ],
+  "stairs_gone": [
+   47.339,
+   50.939
+  ],
+  "void": [
+   50.939,
+   52.139
+  ],
+  "steve_us": [
+   52.139,
+   53.051
+  ],
+  "hold": [
+   53.451,
+   55.651
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "patch_wait",
+   "who": "patch",
+   "text": "Wait- don't-",
+   "vo": false,
+   "caption": true,
+   "start": 3.1,
+   "end": 4.33
+  },
+  {
+   "name": "noob_build",
+   "who": "noob",
+   "text": "I can BUILD stuff!",
+   "vo": false,
+   "caption": true,
+   "start": 8.43,
+   "end": 10.484
+  },
+  {
+   "name": "steve_since",
+   "who": "steve",
+   "text": "Since when?",
+   "vo": false,
+   "caption": true,
+   "start": 11.134,
+   "end": 12.664
+  },
+  {
+   "name": "noob_block",
+   "who": "noob",
+   "text": "Since the block!",
+   "vo": false,
+   "caption": true,
+   "start": 12.764,
+   "end": 13.767
+  },
+  {
+   "name": "noob_statue",
+   "who": "noob",
+   "text": "A statue of me!",
+   "vo": false,
+   "caption": true,
+   "start": 15.917,
+   "end": 17.738
+  },
+  {
+   "name": "steve_big",
+   "who": "steve",
+   "text": "Why is it so big?",
+   "vo": false,
+   "caption": true,
+   "start": 18.738,
+   "end": 20.275
+  },
+  {
+   "name": "noob_see",
+   "who": "noob",
+   "text": "So everyone can see me!",
+   "vo": false,
+   "caption": true,
+   "start": 20.375,
+   "end": 21.572
+  },
+  {
+   "name": "steve_home",
+   "who": "steve",
+   "text": "Build us a way home.",
+   "vo": false,
+   "caption": true,
+   "start": 24.372,
+   "end": 25.443
+  },
+  {
+   "name": "noob_close",
+   "who": "noob",
+   "text": "...Close enough!",
+   "vo": false,
+   "caption": true,
+   "start": 29.043,
+   "end": 29.787
+  },
+  {
+   "name": "noob_duck",
+   "who": "noob",
+   "text": "Hey! Where's my duck?",
+   "vo": false,
+   "caption": true,
+   "start": 33.487,
+   "end": 35.169
+  },
+  {
+   "name": "patch_delete",
+   "who": "patch",
+   "text": "It's not you. Something is deleting what doesn't belong.",
+   "vo": false,
+   "caption": true,
+   "start": 36.169,
+   "end": 40.786
+  },
+  {
+   "name": "noob_no",
+   "who": "noob",
+   "text": "NO!",
+   "vo": false,
+   "caption": true,
+   "start": 44.286,
+   "end": 45.239
+  },
+  {
+   "name": "steve_us",
+   "who": "steve",
+   "text": "...That wasn't us.",
+   "vo": false,
+   "caption": true,
+   "start": 52.139,
+   "end": 53.051
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely",
+   "fx": "patch"
+  }
+ },
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 85%",
+   "start": 0.0,
+   "end": 33.087
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 82%",
+   "alert": true,
+   "start": 33.087,
+   "end": 41.886
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 80%",
+   "alert": true,
+   "start": 41.886,
+   "end": 43.586
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 77%",
+   "alert": true,
+   "start": 43.586,
+   "end": 48.489
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 75%",
+   "alert": true,
+   "start": 48.489,
+   "end": 49.439
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 73%",
+   "alert": true,
+   "start": 49.439,
+   "end": 50.889
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 71%",
+   "alert": true,
+   "start": 50.889,
+   "end": 56.051
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 56.051
+  }
+ ]
+}

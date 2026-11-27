@@ -409,7 +409,7 @@ def curious(sec, seed=0):
     return reverb(out, 2.6, 0.4, seed)[:int(sec * SR)]
 
 
-def deleted(sec, seed=0):
+def deleted(sec, seed=0, fall_at=None):
     """"From a world that got deleted": a deep sub swell that blooms and rings, and one faint, sad high
     note (a sine with a slow vibrato) held over it, falling a step at the end. Nothing else."""
     x = _t(sec + 3)
@@ -417,7 +417,8 @@ def deleted(sec, seed=0):
     sub = (np.sin(2 * np.pi * hz(D - 36) * x) + 0.5 * np.sin(2 * np.pi * hz(D - 24) * x)
            + 0.15 * np.sin(2 * np.pi * hz(D - 17) * x)) * sw
     vib = 1 + 0.004 * np.sin(2 * np.pi * 5.0 * x) * np.minimum(1, x / 1.5)
-    fall = np.where(x > sec - 1.6, -2.0 * np.minimum(1, (x - (sec - 1.6)) / 0.5), 0.0)
+    fa = sec - 1.6 if fall_at is None else fall_at        # carried on into the next chapter: fallen where it fell
+    fall = np.where(x > fa, -2.0 * np.minimum(1, (x - fa) / 0.5), 0.0)
     f = hz(D + 21) * vib * 2 ** (fall / 12)
     hi = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, np.maximum(0, x - 0.4) / 1.2) * 0.22
     return reverb(sub * 0.9 + hi, 3.2, 0.45, seed)[:int(sec * SR)]

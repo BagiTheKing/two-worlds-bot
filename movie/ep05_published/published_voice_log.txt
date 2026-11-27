@@ -1,0 +1,120 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+scene ['steve_since', 'noob_block', 'noob_statue', 'steve_big', 'noob_see', 'steve_home', 'noob_close', 'noob_duck'] placed ['steve_since', 'noob_block', 'noob_statue', 'steve_big', 'noob_see', 'steve_home', 'noob_close', 'noob_duck']
+  steve_since: words at 0.00-1.00s of the scene
+  noob_block: words at 1.76-2.46s of the scene
+  noob_statue: words at 3.46-4.38s of the scene
+  steve_big: words at 5.14-6.26s of the scene
+  noob_see: words at 6.96-7.90s of the scene
+  steve_home: words at 8.52-9.20s of the scene
+  noob_close: words at 11.14-11.50s of the scene
+  noob_duck: words at 12.44-13.74s of the scene
+  steve_since: pinned cut 0.00-1.60s
+  noob_block: pinned cut 1.64-2.96s
+  noob_statue: pinned cut 2.96-5.03s
+  steve_big: pinned cut 5.03-6.81s
+  noob_see: pinned cut 6.81-8.24s
+  steve_home: pinned cut 8.24-9.53s
+  noob_close: pinned cut 11.00-12.08s
+  noob_duck: pinned cut 12.22-14.13s
+scene ['patch_delete', 'steve_us'] placed ['patch_delete', 'steve_us']
+  patch_delete: words at 0.00-4.04s of the scene
+  steve_us: words at 5.18-6.06s of the scene
+  patch_delete: pinned cut 0.00-4.92s
+  steve_us: pinned cut 5.20-6.39s
+  solo Noob 'I can BUILD stuff!' take 0: from the cache
+  solo take 0 for 'I can BUILD stuff!': 1.00 ' I  can  build  stuff!'
+  solo Noob 'I can BUILD stuff!' take 1: from the cache
+  solo take 1 for 'I can BUILD stuff!': 1.00 ' I  can  build  stuff!'
+  solo Noob 'I can BUILD stuff!' take 2: from the cache
+  solo take 2 for 'I can BUILD stuff!': 1.00 ' I  can  build  stuff!'
+  solo Noob 'NO!' take 0: from the cache
+  solo take 0 for 'NO!': 1.00 ' No!'
+  solo Noob 'NO!' take 1: from the cache
+  solo take 1 for 'NO!': 1.00 ' No!'
+  solo Noob 'NO!' take 2: from the cache
+  solo take 2 for 'NO!': 1.00 ' No!'
+{
+ "length": 29.221,
+ "beats": {
+  "open": [
+   0.0,
+   0.2
+  ],
+  "noob_build": [
+   0.2,
+   2.254
+  ],
+  "steve_since": [
+   2.354,
+   3.884
+  ],
+  "noob_block": [
+   3.934,
+   4.937
+  ],
+  "statue": [
+   5.037,
+   5.637
+  ],
+  "noob_statue": [
+   5.637,
+   7.458
+  ],
+  "steve_big": [
+   7.508,
+   9.045
+  ],
+  "noob_see": [
+   9.095,
+   10.292
+  ],
+  "castle": [
+   10.392,
+   11.592
+  ],
+  "steve_home": [
+   11.592,
+   12.663
+  ],
+  "door": [
+   12.763,
+   13.763
+  ],
+  "noob_close": [
+   13.763,
+   14.507
+  ],
+  "duck_gone": [
+   14.657,
+   15.457
+  ],
+  "noob_duck": [
+   15.457,
+   17.139
+  ],
+  "patch_delete": [
+   17.239,
+   21.856
+  ],
+  "wave": [
+   21.956,
+   24.156
+  ],
+  "noob_no": [
+   24.156,
+   25.109
+  ],
+  "steve_us": [
+   25.209,
+   26.121
+  ],
+  "gap": [
+   26.521,
+   27.721
+  ],
+  "endcard": [
+   27.721,
+   29.221
+  ]
+ }
+}

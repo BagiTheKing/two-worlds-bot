@@ -1560,6 +1560,83 @@ def sfx_trill(dur=0.8):
     return norm(out, 0.45)
 
 
+
+# ------------------------------------------------------- episode-5 sounds (the movie)
+
+def sfx_erase(dur=0.55, size=1.0):
+    """The one deletion sound (every erased thing gets it, so the ear learns the rule): a dry digital tear
+    (bit-crushed crackle) as the checkerboard sweeps over it, an inward air suction (a reversed breath,
+    swelling to the end) and a sub vacuum drop, 60 -> 30 Hz; it stops dead (the thing is gone).
+    size: bigger things tear longer and lower."""
+    x = t(dur)
+    n = len(x)
+    noise = rng.standard_normal(n)
+    held = np.repeat(noise[::24], 24)[:n]                       # sample-and-hold: a bit-crushed grain
+    held = np.round(held * 3) / 3
+    gate = (rng.random(n // 240 + 1) < 0.55).repeat(240)[:n]    # it tears in bursts
+    tear = band(held * gate, 1800, 9000) * np.minimum(1, x / 0.02)
+    suck = band(rng.standard_normal(n), 250 / size, 3200) * (x / dur) ** 2.2   # air pulled in, rising to the cut
+    f = 60 * (0.5 ** (x / dur)) / size ** 0.25
+    sub = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.minimum(1, x / 0.05)
+    out = 0.25 * norm(tear) + 0.55 * norm(suck) + 0.8 * sub
+    out[-int(0.004 * SR):] *= np.linspace(1, 0, int(0.004 * SR))   # cut dead
+    return norm(out, 0.9)
+
+
+def sfx_btool(size=1.0):
+    """A BTools build: the selection box locks on (a magnetic UI click), a bright scan rises through it, and
+    the part pops in. size: 0.5 a light rubbery pop (a duck), 1 a block, 2+ heavy (the statue: see slam)."""
+    out = np.zeros(int(0.75 * SR))
+    for at, f in ((0.0, 3200), (0.035, 2100)):                     # click-lock
+        m = int(0.025 * SR)
+        place(out, band(rng.standard_normal(m), f * 0.7, f * 1.4) * env(m, 0.0002, 0.005), at, 0.8)
+    xs = t(0.36)
+    f = 600 + 2400 * (xs / 0.36) ** 1.5                            # the scan sweeping up
+    shimmer = np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.5 + 0.5 * np.sin(2 * np.pi * 38 * xs)) * env(len(xs), 0.03, 0.25)
+    place(out, shimmer, 0.06, 0.25)
+    xp = t(0.25)
+    f0 = 260 / size ** 0.5
+    pop = np.sin(2 * np.pi * f0 * xp * (1 + 0.8 * np.exp(-xp * 30))) * env(len(xp), 0.001, 0.06)
+    place(out, pop + 0.3 * band(rng.standard_normal(len(xp)), 1200, 5000) * env(len(xp), 0.0003, 0.01), 0.42, 0.9)
+    return norm(out, 0.85)
+
+
+def sfx_slam(dur=1.4):
+    """Something huge landing: a deep concrete boom with a dusty rumble tail (the statue)."""
+    x = t(dur)
+    f = 48 * np.exp(-x * 1.5) + 30
+    boom = np.sin(2 * np.pi * np.cumsum(f) / SR) * env(len(x), 0.003, 0.45)
+    hit = band(rng.standard_normal(len(x)), 80, 1400) * env(len(x), 0.001, 0.07)
+    dust = band(rng.standard_normal(len(x)), 300, 3000) * np.exp(-x / 0.5) * np.minimum(1, x / 0.08)
+    return norm(boom + 0.6 * norm(hit) + 0.18 * norm(dust), 0.95)
+
+
+def sfx_door(dur=1.6):
+    """A wooden door swinging slowly open: a dry hinge creak (stick-slip squeaks speeding up then easing,
+    through a wooden body), no crack."""
+    x = t(dur)
+    rate = 14 + 30 * np.sin(np.pi * np.minimum(1, x / (dur * 0.85))) ** 1.5
+    ph = np.cumsum(rate) / SR
+    pulse = np.exp(-((ph % 1.0) * 26)) * (0.6 + 0.4 * np.sin(2 * np.pi * 0.7 * x))
+    pitch = 520 + 260 * np.sin(np.pi * x / dur)
+    squeak = np.sin(2 * np.pi * np.cumsum(pitch) / SR) * pulse
+    body = band(squeak, 300, 2600) + 0.35 * band(pulse * rng.standard_normal(len(x)), 150, 900)
+    out = body * env(len(x), 0.05, dur * 0.5)
+    tail = np.ones(len(x))
+    tail[-int(0.25 * SR):] = np.linspace(1, 0, int(0.25 * SR))
+    return norm(out * tail, 0.8)
+
+
+def sfx_gust(dur=2.4):
+    """High-altitude wind whistling through an open doorway: a breathy roar with a hollow, wavering whistle."""
+    x = t(dur)
+    roar = band(rng.standard_normal(len(x)), 120, 1600) * (0.7 + 0.3 * np.sin(2 * np.pi * 0.4 * x))
+    f = 780 + 90 * np.sin(2 * np.pi * 0.55 * x) + 40 * np.sin(2 * np.pi * 1.7 * x)
+    whistle = band(rng.standard_normal(len(x)), 1, 20000) * 0.0 + np.sin(2 * np.pi * np.cumsum(f) / SR)
+    whistle *= 0.5 + 0.5 * np.sin(2 * np.pi * 0.9 * x + 1.0) ** 2
+    shape = np.minimum(1, x / 0.6) * np.minimum(1, (dur - x) / 0.7)
+    return norm((norm(roar) + 0.22 * whistle) * shape, 0.7)
+
 def sfx_warp(dur=0.7):
     """Something squeezing out of a portal: a reversed shimmer rushing in, a pixel crackle, a bright chime."""
     out = np.zeros(int((dur + 1.4) * SR))
@@ -1599,7 +1676,10 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "hum": lambda e: sfx_hum(e.get("dur", 2.0), e.get("semi", 0.0), e.get("sub", 0.0)), "zap": lambda e: sfx_zap(),
        "siphon": lambda e: sfx_siphon(e.get("dur", 0.6), e.get("big", False)), "ping": lambda e: sfx_ping(e.get("pitch", 1.0)),
        "trill": lambda e: sfx_trill(e.get("dur", 0.8)), "crackle": lambda e: sfx_crackle(e.get("dur", 0.6)),
-       "land": lambda e: sfx_land(0.6), "fall": lambda e: sfx_fall(e.get("dur", 0.6)), "warp": lambda e: sfx_warp(e.get("dur", 0.7))}
+       "land": lambda e: sfx_land(0.6), "fall": lambda e: sfx_fall(e.get("dur", 0.6)), "warp": lambda e: sfx_warp(e.get("dur", 0.7)),
+       "erase": lambda e: sfx_erase(e.get("dur", 0.55), e.get("size", 1.0)), "btool": lambda e: sfx_btool(e.get("size", 1.0)),
+       "slam": lambda e: sfx_slam(e.get("dur", 1.4)), "door": lambda e: sfx_door(e.get("dur", 1.6)),
+       "gust": lambda e: sfx_gust(e.get("dur", 2.4))}
 
 
 def _clip_file(path):
@@ -1904,6 +1984,10 @@ def build(episode_path, out_dir, keep=None):
                 audio = prep[pre_name]
                 if c.get("fx") == "patch":                  # Patch's machine voice on his reused takes too
                     audio = patch_voice(audio, soft=ev.get("patch_soft", False))
+                if ev.get("presence"):                     # urgency on a shouted take: dB at 2.5-4 kHz
+                    audio = audio + (10 ** (ev["presence"] / 20) - 1) * band(audio, 2500, 4000)
+                if ev.get("gain_db"):                      # a take sat louder or softer in the scene
+                    audio = audio * 10 ** (ev["gain_db"] / 20)
             else:
                 if pre_name in pre:
                     s_, sr_ = pre[pre_name]
@@ -2106,6 +2190,8 @@ def build(episode_path, out_dir, keep=None):
             kw["sustain"] = True
         if m.get("rise_over"):                  # the rise's length fixed (carrying a cue on across a cut)
             kw["rise_over"] = float(m["rise_over"])
+        if m.get("fall_at") is not None:        # "deleted": where its high note falls (cue time, offset included)
+            kw["fall_at"] = float(m["fall_at"])
         x = music.render(m["cue"], m1 - m0, seed=m.get("seed", k), **kw)
         if m.get("fade_out"):                   # dies away by its own end (no hard stop), whatever tail the cue has
             end = min(len(x), int((m1 - m0) * SR))

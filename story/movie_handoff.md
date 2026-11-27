@@ -1,34 +1,51 @@
 # The movie: handoff brief
 
-> ## START HERE (a new chat, 2026-11-27): the next job is Episode 5
+> ## START HERE (a new chat, 2026-11-27): the next job is Episode 6 (Episode 5 is being finished in parallel)
 >
-> 1. Branch: work on `claude/episode-3-sound-preview-kwg1rk` (it holds everything through Episode 4; commit and
->    push there unless the creator names another). Never put a model name in commits or files.
-> 2. Read, in order: `CLAUDE.md`, `story/creator_notes.md`, this file's last three sections ("Episode 2", "Episode 3",
->    "Episode 4: how it was made and what it taught us", the last one ending in **"What Episode 5 picks up"**), and
->    `story/movie/ep04_shots.md`.
-> 3. The creator's standing rules for the movie now (2026-11-26): no reviewer-agent passes unless asked; build
->    carefully, render once, send every preview video as soon as it is ready; re-render only what changed
->    (`reuse_run_id` + `new_range`); a sound-only change with the same timing goes onto the existing picture with
->    ffmpeg (no render); cheap local test stills (360p, 8 samples, one per shot) before any CI render; switch the
->    session's network to the creator's "two-worlds-bot" environment (the MCprep pack comes from Google Drive) and
->    `pip install bpy`; never ask the creator to approve steps (decide, say what you chose; push back only if an idea
+> **Two chats are working at once.** Chat A finishes Episode 5 (its sound preview, stills, CI preview, notes). Chat B
+> (you, if you were asked to build Episode 6) builds Episode 6. Rules so you don't collide:
+> - **Branch:** Episode 6 works on its **own branch, `claude/movie-ep06`, cut from `claude/episode-3-sound-preview-kwg1rk`**
+>   (which holds everything through Episode 4 plus Episode 5 so far). Before each push, `git fetch origin
+>   claude/episode-3-sound-preview-kwg1rk` and merge it in, so you always build on Episode 5's latest picture and sound.
+>   Never push to the Episode 5 branch. Never put a model name in commits or files.
+> - **CI:** `preview-logs` is overwritten by every voices run, and the runner queue is shared. Start one run at a time,
+>   and copy anything you need out of `preview-logs` (the sound preview) as soon as your run finishes.
+> - **Files you own:** `episodes/movie_ep06_*.json`, `src/lookdev/movie_ep06.py`, `story/movie/ep06_shots.md`, `movie/ep06*`.
+>   Shared code (`src/audio.py`, `src/music.py`, the rigs): add to it, never change what an existing option does.
+>
+> 1. Read, in order: `CLAUDE.md`, `story/creator_notes.md`, this file's last sections ("Episode 4: how it was made",
+>    "Episode 5: how it was made", ending in **"What Episode 6 picks up"**), `story/movie/ep05_shots.md`.
+> 2. The creator's standing rules for the movie now (2026-11-26): no reviewer-agent passes unless asked (CLAUDE.md's
+>    gate is superseded by this); build carefully, render once, send every preview video as soon as it is ready;
+>    re-render only what changed (`reuse_run_id` + `new_range`); a sound-only change with the same timing goes onto the
+>    existing picture with ffmpeg (no render); cheap local test stills (360p, 8 samples, one per shot) before any CI
+>    render; switch the session's network to the creator's **"two-worlds-bot"** environment and `pip install bpy
+>    soundfile scipy`; never ask the creator to approve steps (decide, say what you chose; push back only if an idea
 >    can't work); keep the original voice takes of lines that already existed, new takes only for added lines.
-> 4. The loop for an episode: the published Short (`preview-<id>` branch, `episodes/<id>.json`) and the creator's
->    notes -> the movie episode file `episodes/movie_epNN_<name>.json` -> voices-only CI run (`voices_from` = the
->    rescued takes, see below) -> send the sound preview (m4a) -> the renderer `src/lookdev/movie_epNN.py` (import
->    the previous chapter's, as Ep4 imports Ep3) -> local stills -> one CI preview -> send it -> notes -> fixes by
->    range -> a section here on what was learned.
-> 5. **The original voice takes** of Episodes 4-8 are no longer in the CI voice cache. They live in the repo:
->    `movie/ep04_published` (finished; use as `voices_from`). **Episodes 5-8: rescue FIRST, before anything else,
->    if `movie/ep0N_published` is not in the repo yet** (a voices-only CI run with `voices_from=<run id>` on any movie
->    episode file stops fast but publishes the old prep to `preview-logs` as `prev_prep/`; copy it into
->    `movie/ep0N_published` (scenes, mix, timeline, voice log) at once: each run overwrites `preview-logs`; one at a
->    time). The published runs and when their prep artifacts expire (30 days, then the takes are gone for good):
->    Ep5 run 40886523331 (about 2026-11-28 14:00 UTC), Ep6 run 41223595607 (2026-11-30 ~17:00), Ep7 run 41463846907
->    (2026-12-02 ~14:00), Ep8 run 41851020512 (2026-12-04 ~15:00). On 2026-11-27 ~00:20 UTC the Ep5 rescue run
->    (45916058648) was queued while GitHub had no runner for it. Then turn the raw folder into a `voices_from`
->    folder the way Ep4's was made (see "Episode 4", Sound).
+> 3. Local stills need the MCprep pack (allowed host in that environment):
+>    `curl -sSL -o mcprep.zip "https://drive.usercontent.google.com/download?id=19RXVH0N1BIs_4OxtOooqqLpZ5jK_F1ZC&export=download&confirm=t"`,
+>    unzip it, `ln -s <unzipped>/MCprep_addon/MCprep_resources <assets>/mcprep`; `python src/textures.py <tex>`; then
+>    `python src/lookdev/movie_epNN.py <timeline.json> <voice.wav> <tex> <assets> <out> --times 1.0,5.0 --res 360 --samples 8`
+>    (~50 s to build the scene, ~20 s a still). A timeline for stills before CI: build the sound locally (below).
+> 4. The loop for an episode: the published Short (`preview-<id>` branch, `episodes/<id>.json`) and the creator's notes
+>    -> the movie episode file `episodes/movie_epNN_<name>.json` -> voices-only CI run (`voices_from` = the rescued
+>    takes) -> send the sound preview (m4a) -> the renderer `src/lookdev/movie_epNN.py` (import the previous chapter's,
+>    as Ep5 imports Ep4) -> local stills -> one CI preview -> send it -> notes -> fixes by range -> a section here.
+> 5. **The original voice takes** are no longer in the CI voice cache; they live in the repo. Episodes 4 and 5 are
+>    finished `voices_from` folders (`movie/ep04_published`, `movie/ep05_published`). **Episodes 6-8 are rescued raw**
+>    (`movie/ep06_published` .. `ep08_published`: the scene recordings, the published mix, timeline, voice log), saved
+>    2026-11-27 straight from the Actions API before their preps expired. To make one a `voices_from` folder:
+>    `git worktree add <dir> <the published run's head commit>` (Ep6: run 41223595607; get its `head_sha` with
+>    `gh api repos/BagiTheKing/two-worlds-bot/actions/runs/41223595607 --jq .head_sha`), then
+>    `python tools/rebuild_published_voices.py episodes/ep06_deleting_itself.json movie/ep06_published <dir>`. It runs
+>    the published run's own sound code with the speech service replaced by the rescued scenes, places lines at their
+>    exact times, and lifts the solo lines from the mix minus the exactly rebuilt bed. Check its report: the scene
+>    lines' residual should be about -80 dB. If a line is missing from the scenes and is not `solo_only` (Ep6 has
+>    Null's "...Hi?": check `published_voice_log.txt`), lift it the same way (add it to the solo handling).
+>    **Local sound builds** (no speech key here): `VOICES_FROM=movie/ep0N_published` and stub `audio.gemini_solo` for
+>    added lines (see `tools/` or the Ep5 section); the real new takes come from the CI voices run.
+> 6. **CI was stuck on 2026-11-27** (runs queued for over an hour with no runner: GitHub's side). If runs are still
+>    queued, keep working locally and check them again (`gh api repos/BagiTheKing/two-worlds-bot/actions/runs?per_page=6`).
 
 > **Open corrections (2026-11-23): read `story/movie/fixes_2026-11-23.md`
 > first.** The creator's fix list for chapters 0-2 (Ep0's fall restored, Ep1's
@@ -455,3 +472,56 @@ the castle, the door, the duck (one of the Noob's builds: in the Short it is bui
 you. Something is deleting what doesn't belong.", the wave, REALITY to 71% (the movie meter, one drop per event).
 The same obby world (`movie_ep04.build` / `movie_ep03`), the same rigs and Patch (`patch.py`). Its takes:
 `movie/ep05_published` (rescued raw: rescue it first if missing; then build the `voices_from` folder).
+
+
+## Episode 5: how it was made (2026-11-27, in progress)
+
+**State.** Episode file `episodes/movie_ep05_creative_mode.json`; sound `movie/ep05` (55.65 s, voices run 45918732916,
+13/13 lines pass the hearing check), sent. Renderer `src/lookdev/movie_ep05.py`; three rounds of local stills; CI
+preview runs 45922474466 (one shard crashed: a camera used state from the previous frame) + 45930883334 (range
+5.37-7.05 on top) -> `preview-movie_ep05`, sent to the creator 2026-11-27. Awaiting notes. Lesson: `_cam` must never
+read state set by an earlier frame (shards start anywhere). Shot list `story/movie/ep05_shots.md` (the decisions, the places, every shot).
+
+**The voice rescue that worked (for Ep6-8).** The prep artifacts download straight from the Actions API
+(`download_workflow_run_artifact` gives a signed URL on a `productionresultssaN.blob.core.windows.net` host; the
+environment allows sa5, sa16, sa30, sa31). Rebuilding with the *published run's own code* (a worktree at its head
+commit) and the lines at their unrounded times makes the bed bit-exact (-80 dB residual), so the solo lines lift out
+cleanly (corr 0.999). With today's code or a rounded timeline the bed is off (Ep4 needed Wiener subtraction).
+
+**Sound lessons.**
+- New: `erase` (the one deletion sound: bit-crushed tear, inward suction, 60 -> 30 Hz vacuum, cut dead; `size`),
+  `btool` (click-lock, scan, pop by `size`), `slam`, `door` (hinge creak, no crack), `gust` (wind through a doorway);
+  `"stutters": [{"at": .., "n": 0, "silence": 0.15}]` gives 0.15 s of dead air after an erase.
+- A reused take can be lifted without re-recording: `presence` (dB at 2.5-4 kHz) and `gain_db` on the line.
+- Carrying on the `deleted` cue: `offset` = the seconds already heard, and `fall_at` (cue time) so its note stays
+  fallen. The master level is set per chapter from its dialogue: match the carried cue's gain to the previous
+  chapter's last second at the cut (Ep5 needed 0.62 vs Ep4's 0.3).
+
+**Picture lessons.**
+- The grey spawn pad is under the sealed dragon's crystal and the hanging cobblestones: nothing goes on it.
+- One erase material (`erase`: object attributes `e_hi`, `e_cut`, `e_line` read from custom properties; the colour
+  from the object colour) builds and erases everything: swap the slots to it (link OBJECT) for the window, restore after.
+- Studio's selection box is `roblox.Gizmos` (`mode: "snap"`, `k` > 0.5 = the white first frame).
+- The Noob's hand tool: a child of `E.N.arms["sr"]` at (0, -0.05, -1.38), handle along -y (arm space): raised it
+  stands up, lowered it points forward (never behind the hip).
+
+**What Episode 6 picks up** (from `movie_ep05.py`'s last instant; confirm against its final version before staging):
+- **Where:** Ep3's obby with the course erased: the five stones west of the terrace, the orange stepping stone,
+  the checkpoint (pad, flag), the truss tower and its high stage are gone. Left: the grey spawn pad, the blue
+  terrace with the violet ledge (castle gone), Ep4's white spawn ring (empty: the duck was erased), the **door**
+  standing open at the terrace's front edge (hinge (-8.08, -2.2), opened 95 degrees over the drop), the **dragon
+  sealed in crystal** over the spawn pad, the portal flickering behind, the far world in the haze. The sun 25% dimmer
+  and cooler.
+- **Who:** the Noob on the terrace near (-5.4, -1.3) (`N_BUILD` + (-0.05, 0.25): he recoiled from the edge), scared, the BTools hammer in his
+  right hand; Steve at (-2.35, -1.2) (`STEVE_D`) facing the Noob, flat brow, after "...That wasn't us."; Patch near
+  (-7.1, -1.7, 2.6) looking at the Noob. REALITY 71%.
+- **Sound at the cut:** the void wind (ambience `void`, 0.05) and a faint `drone` (seed 4, gain 0.07, `open_tail`,
+  from `stairs_gone+1.2`): carry it on with `offset`.
+- **Ep6's published opening** (`episodes/ep06_deleting_itself.json`, `preview-ep06_deleting_itself`) erases the
+  dragon, then the duck's pad and the door: in the movie that is the sealed dragon, the empty spawn ring and the
+  door, **by Ep5's erase rule** (import `movie_ep05`: `_erase_material`, the `erase` sfx), REALITY ticking down from
+  71. Then "The world is DELETING itself!" / "Then we stop it." / Patch's "Oh no." / the pickaxe, the wall, the TNT
+  erased in turn ("...My pickaxe.", "Wall!", "...No wall.", "It deleted the BOOM!") / "It's not attacking. It's
+  correcting." / the face: Null's first "...Hi?" copying the Noob's / "Someone is watching... you." Null is new on
+  screen: he must be seen coming from somewhere (the bible: he is made of the Noob's respawned bodies; the dark cubes
+  that drifted off at each of Ep4's deaths are the planted clue).
