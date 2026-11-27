@@ -680,3 +680,34 @@ wind unchanged). Sfx `obsidian_boom` (45 Hz THOOM, leaves rattling), `plasma_hum
 
 **What the finale picks up:** Ep8 ends on shot 5B, the blazing violet portal on the finale's opening camera plane,
 the magenta crack, the stone groan already sounding: hard cut to frame 1 of `ep10_part1_null_entrance`. REALITY 12%.
+
+
+## FINALE 1/5: how it was made (2026-11-27, in progress)
+
+**State.** Branch `claude/movie-finale1` (Ep8 merged in). Sound `movie/finale1` (27.12 s, stereo): P1 and P2 are the
+published mixes as they are; P3 re-paced on the creator's notes (`episodes/movie_finale1_p3.json`, the published takes
+lifted into `movie/finale1_published/p3`), joined by `tools/movie_finale1_join.py`; the local sound preview
+`movie/finale1/finale1_sound_preview_local.m4a` was sent. Renderer `src/lookdev/movie_finale1.py` (one scene for the
+chapter); shot list `story/movie/finale1_shots.md` (every note and its fix, the seam, every shot). Local stills: five
+rounds at 360-720p. CI preview: `prep_dir=movie/finale1`, `new_look=src/lookdev/movie_finale1.py`, `parts=new`,
+`movie_end=27.119`, `movie_id=movie_finale1` -> `preview-movie_finale1`.
+
+**The creator's notes on the published FINALE 1/5 (2026-11-27)** changed P3's pacing and music (allowed: the
+creator asked): the 6 s slow motion after "RUN!" and the whip-pan cut, a 1.2 s shock beat before it, a hard cut into
+the sprint, the chase on war drums, the split held, Null's flick and snap, a wide of Null banking after the Noob.
+Lines and takes unchanged.
+
+**Lessons.**
+- The ep10 parts' prep artifacts (30-day retention) are gone; their voices were lifted from the published
+  episode.mp4 with `tools/rebuild_published_voices.py` (the run's own code in a worktree). The AAC decode can be off
+  by a few samples (P3: 14): cross-correlate the rebuilt bed with the mix and shift first.
+- **A lifted take is louder than the raw take the mixer saw** (it comes out at mix scale / k): `master()` levels the
+  dialogue, and `keep_under()` caps the background at an absolute -26 dB, so the whole background comes out ~8 dB
+  low. Give reused lifted lines `gain_db` (-8 here) and check the section loudness against the published part.
+- A cue for `keep_under`'s cap must live in the mids: sub-heavy drums use up the cap and measure quiet (LUFS).
+  `war_drums` is mid-weighted (taikos at D2, toms, a snare rattle, the bass and strings an octave up).
+- The pink "floor rectangle" was `world_fx`'s erase (the sky's horizon through the deleted chunks), not a light.
+- The Noob's arms have no elbow: a bent-arm run is a forward-biased, shorter swing.
+
+**What FINALE 2/5 picks up:** see the end of `story/movie/finale1_shots.md` (Steve on the left path, the Noob on the
+right with Patch, Null banking after the Noob; war drums and Null's drone hard-ended at 27.12 s).
