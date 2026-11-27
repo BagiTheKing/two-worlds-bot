@@ -1,0 +1,346 @@
+{
+ "id": "movie_ep04_the_block",
+ "fps": 24,
+ "length": 53.237,
+ "beats": {
+  "shudder": [
+   0.0,
+   1.6
+  ],
+  "tearoff": [
+   1.6,
+   2.5
+  ],
+  "fall": [
+   2.5,
+   3.8
+  ],
+  "crystal": [
+   3.8,
+   5.6
+  ],
+  "noob_secret": [
+   5.6,
+   7.354
+  ],
+  "lean": [
+   7.554,
+   8.054
+  ],
+  "steve_touch": [
+   8.054,
+   10.607
+  ],
+  "poke1": [
+   10.757,
+   11.357
+  ],
+  "die1": [
+   11.357,
+   12.057
+  ],
+  "respawn1": [
+   12.057,
+   13.457
+  ],
+  "noob_touched2": [
+   13.457,
+   14.437
+  ],
+  "stare": [
+   14.537,
+   15.437
+  ],
+  "steve_grew": [
+   15.437,
+   16.982
+  ],
+  "noob_again": [
+   17.432,
+   18.686
+  ],
+  "chop": [
+   18.686,
+   19.386
+  ],
+  "die2": [
+   19.386,
+   20.086
+  ],
+  "respawn2": [
+   20.086,
+   21.986
+  ],
+  "patch_in": [
+   21.986,
+   23.886
+  ],
+  "patch_stop": [
+   23.886,
+   26.276
+  ],
+  "react": [
+   26.426,
+   27.326
+  ],
+  "noob_cube": [
+   27.326,
+   28.841
+  ],
+  "patch_name": [
+   29.141,
+   31.352
+  ],
+  "scan": [
+   31.552,
+   33.352
+  ],
+  "patch_feed": [
+   33.352,
+   35.702
+  ],
+  "patch_grows": [
+   35.802,
+   38.34
+  ],
+  "noob_helping": [
+   38.54,
+   39.464
+  ],
+  "sigh": [
+   39.464,
+   40.364
+  ],
+  "steve_no": [
+   40.364,
+   41.707
+  ],
+  "turn": [
+   41.907,
+   43.707
+  ],
+  "patch_know": [
+   43.707,
+   45.847
+  ],
+  "noob_doyou": [
+   46.197,
+   47.317
+  ],
+  "drift": [
+   47.667,
+   48.667
+  ],
+  "patch_deleted": [
+   48.667,
+   50.537
+  ],
+  "hold": [
+   50.837,
+   53.237
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_secret",
+   "who": "noob",
+   "text": "A secret block!",
+   "vo": false,
+   "caption": true,
+   "start": 5.6,
+   "end": 7.354
+  },
+  {
+   "name": "steve_touch",
+   "who": "steve",
+   "text": "It fell off the dragon. Don't touch it.",
+   "vo": false,
+   "caption": true,
+   "start": 8.054,
+   "end": 10.607
+  },
+  {
+   "name": "noob_touched2",
+   "who": "noob",
+   "text": "I touched it!",
+   "vo": false,
+   "caption": true,
+   "start": 13.457,
+   "end": 14.437
+  },
+  {
+   "name": "steve_grew",
+   "who": "steve",
+   "text": "...It grew.",
+   "vo": false,
+   "caption": true,
+   "start": 15.437,
+   "end": 16.982
+  },
+  {
+   "name": "noob_again",
+   "who": "noob",
+   "text": "Again!",
+   "vo": false,
+   "caption": true,
+   "start": 17.432,
+   "end": 18.686
+  },
+  {
+   "name": "patch_stop",
+   "who": "patch",
+   "text": "Please stop doing that.",
+   "vo": false,
+   "caption": true,
+   "start": 23.886,
+   "end": 26.276
+  },
+  {
+   "name": "noob_cube",
+   "who": "noob",
+   "text": "A talking cube!",
+   "vo": false,
+   "caption": true,
+   "start": 27.326,
+   "end": 28.841
+  },
+  {
+   "name": "patch_name",
+   "who": "patch",
+   "text": "I'm Patch. I find glitches.",
+   "vo": false,
+   "caption": true,
+   "start": 29.141,
+   "end": 31.352
+  },
+  {
+   "name": "patch_feed",
+   "who": "patch",
+   "text": "It's feeding on your respawn loop.",
+   "vo": false,
+   "caption": true,
+   "start": 33.352,
+   "end": 35.702
+  },
+  {
+   "name": "patch_grows",
+   "who": "patch",
+   "text": "It grows every time you come back.",
+   "vo": false,
+   "caption": true,
+   "start": 35.802,
+   "end": 38.34
+  },
+  {
+   "name": "noob_helping",
+   "who": "noob",
+   "text": "So I'm helping!",
+   "vo": false,
+   "caption": true,
+   "start": 38.54,
+   "end": 39.464
+  },
+  {
+   "name": "steve_no",
+   "who": "steve",
+   "text": "No.",
+   "vo": false,
+   "caption": true,
+   "start": 40.364,
+   "end": 41.707
+  },
+  {
+   "name": "patch_know",
+   "who": "patch",
+   "text": "Wait. I know you.",
+   "vo": false,
+   "caption": true,
+   "start": 43.707,
+   "end": 45.847
+  },
+  {
+   "name": "noob_doyou",
+   "who": "noob",
+   "text": "...You do?",
+   "vo": false,
+   "caption": true,
+   "start": 46.197,
+   "end": 47.317
+  },
+  {
+   "name": "patch_deleted",
+   "who": "patch",
+   "text": "From a world that got deleted.",
+   "vo": false,
+   "caption": true,
+   "start": 48.667,
+   "end": 50.537
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely",
+   "fx": "patch"
+  }
+ },
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 92%",
+   "start": 0.0,
+   "end": 12.657
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 89%",
+   "alert": true,
+   "start": 12.657,
+   "end": 20.786
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 85%",
+   "alert": true,
+   "start": 20.786,
+   "end": 53.637
+  },
+  {
+   "type": "watermark",
+   "text": "@GLITCHBOUND2469",
+   "start": 0.0,
+   "end": 53.637
+  }
+ ]
+}
