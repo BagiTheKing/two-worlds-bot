@@ -1,0 +1,185 @@
+voices from prev_prep: ['noob_block', 'noob_build', 'noob_close', 'noob_duck', 'noob_no', 'noob_see', 'noob_statue', 'patch_delete', 'steve_big', 'steve_home', 'steve_since', 'steve_us']
+new takes (added lines): ['patch_wait']
+Gemini speech models, in order: gemini-3.8-flash-tts, gemini-3.1-flash-tts-preview, gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.8-flash-lite-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch "Wait! Don't-" take 0: NEW recording
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  solo take 0 for "Wait! Don't-": 1.00 " Wait,  don't..."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch "Wait! Don't-" take 1: NEW recording
+  solo take 1 for "Wait! Don't-": 1.00 " Wait!  Don't..."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch "Wait! Don't-" take 2: NEW recording
+  solo take 2 for "Wait! Don't-": 0.76 " Wait,  I  don't..."
+{
+ "length": 55.651,
+ "beats": {
+  "still": [
+   0.0,
+   2.4
+  ],
+  "reach": [
+   2.4,
+   3.1
+  ],
+  "patch_wait": [
+   3.1,
+   4.33
+  ],
+  "poke3": [
+   4.33,
+   4.83
+  ],
+  "implode": [
+   4.83,
+   6.53
+  ],
+  "hammer": [
+   6.53,
+   7.43
+  ],
+  "duck": [
+   7.43,
+   8.43
+  ],
+  "noob_build": [
+   8.43,
+   10.484
+  ],
+  "lower": [
+   10.634,
+   11.134
+  ],
+  "steve_since": [
+   11.134,
+   12.664
+  ],
+  "noob_block": [
+   12.764,
+   13.767
+  ],
+  "statue": [
+   14.117,
+   15.917
+  ],
+  "noob_statue": [
+   15.917,
+   17.738
+  ],
+  "crane": [
+   17.938,
+   18.738
+  ],
+  "steve_big": [
+   18.738,
+   20.275
+  ],
+  "noob_see": [
+   20.375,
+   21.572
+  ],
+  "castle": [
+   21.872,
+   23.472
+  ],
+  "pinch": [
+   23.472,
+   24.372
+  ],
+  "steve_home": [
+   24.372,
+   25.443
+  ],
+  "salute": [
+   25.643,
+   26.243
+  ],
+  "door": [
+   26.243,
+   27.543
+  ],
+  "open": [
+   27.543,
+   29.043
+  ],
+  "noob_close": [
+   29.043,
+   29.787
+  ],
+  "stare": [
+   29.887,
+   31.487
+  ],
+  "chime": [
+   31.487,
+   32.487
+  ],
+  "duck_gone": [
+   32.487,
+   33.487
+  ],
+  "noob_duck": [
+   33.487,
+   35.169
+  ],
+  "scan": [
+   35.369,
+   36.169
+  ],
+  "patch_delete": [
+   36.169,
+   40.786
+  ],
+  "castle_gone": [
+   41.086,
+   42.486
+  ],
+  "statue_gone": [
+   42.486,
+   44.286
+  ],
+  "noob_no": [
+   44.286,
+   45.239
+  ],
+  "dragon": [
+   45.439,
+   46.539
+  ],
+  "hush": [
+   46.539,
+   47.339
+  ],
+  "stairs_gone": [
+   47.339,
+   50.939
+  ],
+  "void": [
+   50.939,
+   52.139
+  ],
+  "steve_us": [
+   52.139,
+   53.051
+  ],
+  "hold": [
+   53.451,
+   55.651
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    3.1s patch_wait         heard "Wait, don't..."
+  ok    8.4s noob_build         heard 'I can build stuff!'
+  ok   11.1s steve_since        heard 'Since when?'
+  ok   12.8s noob_block         heard 'Since the block?'
+  ok   15.9s noob_statue        heard 'A statue of me!'
+  ok   18.7s steve_big          heard 'Why is it so big?'
+  ok   20.4s noob_see           heard 'so everyone can see me!'
+  ok   24.4s steve_home         heard 'Build us a way home.'
+  ok   29.0s noob_close         heard 'Close enough.'
+  ok   33.5s noob_duck          heard "Hey, where's my duck?"
+  ok   36.2s patch_delete       heard "It's not you. Something is deleting what doesn't belong."
+  ok   44.3s noob_no            heard 'No!'
+  ok   52.1s steve_us           heard "That wasn't us."
+hearing check: 0 of 13 lines flagged
