@@ -552,14 +552,14 @@
       "direction_text": "[the Noob's own whisper, copied, deep and hollow] ...Hi?",
       "mimic_of": "noob_hi",
       "mimic": {
-        "semi": -6.0,
-        "keep": 0.55,
+        "semi": -5.0,
+        "keep": 0.8,
         "pre_echo": 1.2,
-        "ring": 0.15,
-        "crush": 0.15,
+        "ring": 0.1,
+        "crush": 0.1,
         "room": 0.25
       },
-      "note": "the creator's blueprint: the Noob's own recorded '...Hi?' copied back (-6 semitones, partly stretched; a reversed 1.5 s dark-hall pre-echo breathing into it; ring-mod/bit-crush 15% wet); a hairline white-magenta static ripple twitches for 6-8 frames deep in the black on the word; no body, no face",
+      "note": "the creator's blueprint: the Noob's own recorded '...Hi?' copied back (-5 semitones, a little stretched; a reversed 1.5 s dark-hall pre-echo breathing into it; ring-mod/bit-crush 10% each); a hairline white-magenta static ripple twitches for 6-8 frames deep in the black on the word; no body, no face",
       "slot": 2.7
     },
     {

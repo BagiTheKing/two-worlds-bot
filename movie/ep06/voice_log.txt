@@ -1,0 +1,206 @@
+voices from prev_prep: ['noob_boom', 'noob_delete', 'noob_hi', 'noob_nowall', 'noob_wall', 'null_hi', 'patch_correct', 'patch_ohno', 'steve_pick', 'steve_stop']
+new takes (added lines): ['steve_nowall', 'patch_stop', 'noob_copy', 'patch_hold']
+Gemini speech models, in order: gemini-3.8-flash-tts, gemini-3.1-flash-tts-preview, gemini-2.5-flash-preview-tts, gemini-2.5-pro-preview-tts, gemini-3.8-flash-lite-tts
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve '...No wall.' take 0: NEW recording
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  solo take 0 for '...No wall.': 1.00 ' No  wall.'
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve '...No wall.' take 1: NEW recording
+  solo take 1 for '...No wall.': 1.00 ' No  wall.'
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Steve '...No wall.' take 2: NEW recording
+  solo take 2 for '...No wall.': 1.00 ' No  wall.'
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch 'Stop throwing things at it!' take 0: NEW recording
+  solo take 0 for 'Stop throwing things at it!': 1.00 ' Stop  throwing  things  at  it!'
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 30s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch 'Stop throwing things at it!' take 1: NEW recording
+  solo take 1 for 'Stop throwing things at it!': 1.00 ' Stop  throwing  things  at  it.'
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 30s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch 'Stop throwing things at it!' take 2: NEW recording
+  solo take 2 for 'Stop throwing things at it!': 1.00 ' Stop  throwing  things  at  it.'
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Noob "It's copying me!" take 0: NEW recording
+  solo take 0 for "It's copying me!": 1.00 " It's  copying  me."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Noob "It's copying me!" take 1: NEW recording
+  solo take 1 for "It's copying me!": 1.00 " It's  copying  me."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Noob "It's copying me!" take 2: NEW recording
+  solo take 2 for "It's copying me!": 1.00 " It's  copying  me."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch "Hold still- I'm pulling us out!" take 0: NEW recording
+  solo take 0 for "Hold still- I'm pulling us out!": 1.00 " Hold  still.  I'm  pulling  us  out."
+gemini-3.8-flash-tts: busy or per-minute limit (HTTP 429); retrying in 30s
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch "Hold still- I'm pulling us out!" take 1: NEW recording
+  solo take 1 for "Hold still- I'm pulling us out!": 1.00 " Hold  still.  I'm  pulling  us  out."
+Gemini speech ok (gemini-3.8-flash-tts, key 1, script)
+  solo Patch "Hold still- I'm pulling us out!" take 2: NEW recording
+  solo take 2 for "Hold still- I'm pulling us out!": 1.00 " Hold  still,  I'm  pulling  us  out."
+{
+ "length": 46.769,
+ "beats": {
+  "open": [
+   0.0,
+   0.8
+  ],
+  "void_in": [
+   0.8,
+   3.2
+  ],
+  "dragon_gone": [
+   3.2,
+   4.9
+  ],
+  "noob_delete": [
+   4.9,
+   7.084
+  ],
+  "resolve": [
+   7.384,
+   8.484
+  ],
+  "steve_stop": [
+   8.484,
+   9.831
+  ],
+  "windup": [
+   10.081,
+   11.081
+  ],
+  "throw": [
+   11.081,
+   12.081
+  ],
+  "pick_gone": [
+   12.081,
+   12.781
+  ],
+  "blink": [
+   12.781,
+   13.481
+  ],
+  "steve_pick": [
+   13.481,
+   14.625
+  ],
+  "raise": [
+   14.975,
+   15.475
+  ],
+  "noob_wall": [
+   15.475,
+   16.158
+  ],
+  "build_wall": [
+   16.208,
+   17.208
+  ],
+  "glide": [
+   17.208,
+   18.008
+  ],
+  "wall_gone": [
+   18.008,
+   19.308
+  ],
+  "disbelief": [
+   19.308,
+   19.708
+  ],
+  "steve_nowall": [
+   19.708,
+   20.573
+  ],
+  "tnt_pull": [
+   20.973,
+   21.773
+  ],
+  "tnt_throw": [
+   21.773,
+   23.173
+  ],
+  "tnt_gone": [
+   23.173,
+   23.873
+  ],
+  "whip": [
+   23.873,
+   24.373
+  ],
+  "noob_boom": [
+   24.373,
+   25.812
+  ],
+  "bank": [
+   26.212,
+   27.112
+  ],
+  "patch_stop": [
+   27.112,
+   29.183
+  ],
+  "patch_correct": [
+   29.333,
+   32.642
+  ],
+  "hush": [
+   33.042,
+   34.342
+  ],
+  "noob_hi": [
+   34.342,
+   35.569
+  ],
+  "listen": [
+   35.769,
+   36.969
+  ],
+  "void_hi": [
+   36.969,
+   40.803
+  ],
+  "stare": [
+   39.669,
+   40.269
+  ],
+  "surge": [
+   40.269,
+   41.169
+  ],
+  "noob_copy": [
+   41.169,
+   42.529
+  ],
+  "patch_hold": [
+   42.629,
+   44.919
+  ],
+  "warp": [
+   45.019,
+   46.519
+  ],
+  "flash": [
+   46.519,
+   46.769
+  ]
+ }
+}
+hearing check (Whisper on the final mix, line by line):
+  ok    4.9s noob_delete        heard 'The world is deleting itself.'
+  ok    8.5s steve_stop         heard 'Then we stop it.'
+  ok   13.5s steve_pick         heard 'My pickaxe.'
+  !!   15.5s noob_wall          heard 'Wow'  missing: wall  extra: wow
+  ok   19.7s steve_nowall       heard 'No wall'
+  ok   24.4s noob_boom          heard 'It deleted the boom.'
+  ok   27.1s patch_stop         heard 'Stop throwing things at it!'
+  ok   29.3s patch_correct      heard "It's not attacking. It's correcting."
+  ok   34.3s noob_hi            heard 'Hi'
+  !!   37.0s void_hi            heard 'Bye.'  missing: hi  extra: bye
+  ok   41.2s noob_copy          heard "It's copying me!"
+  ok   42.6s patch_hold         heard "Hold still. I'm pulling us out."
+hearing check: 2 of 12 lines flagged
