@@ -48,10 +48,16 @@ def main(episode, pub, code_dir):
 
     lines = [ev for ev in ep["events"] if "line" in ev]
     by_text = {ev.get("direction_text") or ev["text"]: ev["name"] for ev in lines}
-    solos = [ev["name"] for ev in lines if ev.get("solo_only")]
+    # solo takes are not in the scenes: solo_only lines, lines with their own solo_text (the scene take is
+    # replaced by a solo recording) and own_scene lines (a recording of their own): all lifted from the mix
+    solos = [ev["name"] for ev in lines if ev.get("solo_only") or ev.get("solo_text") or ev.get("own_scene")]
+    own = {ev["direction_text"] if ev.get("direction_text") else ev["text"]: ev["name"] for ev in lines if ev.get("own_scene")}
     pub_lines = {ln["name"]: ln for ln in tl_pub["lines"]}
 
     def speak(turns, voices, notes=""):
+        if len(turns) == 1 and turns[0][1] in own:     # an own_scene line: a placeholder of its published length
+            n = own[turns[0][1]]
+            return np.random.default_rng(1).standard_normal(solo_len[n]) * 0.1, 48000
         first = by_text[turns[0][1]]
         x, sr = sf.read(os.path.join(pub, "scenes", first + ".flac"))
         print(f"  scene {first}: from the rescued recording ({len(x) / sr:.2f}s)")
@@ -63,11 +69,13 @@ def main(episode, pub, code_dir):
     solo_len = {n: int(round((pub_lines[n]["end"] - pub_lines[n]["start"]) * 48000)) for n in solos}
 
     def solo(cast, who, text, nonverbal, cache_dir, **kw):
-        n = next(ev["name"] for ev in lines if ev.get("solo_only") and A._spoken(ev.get("direction_text") or ev["text"]) == text)
+        n = next(ev["name"] for ev in lines if ev["name"] in solos
+                 and (ev.get("solo_text") or A._spoken(ev.get("direction_text") or ev["text"])) == text)
         r = np.random.default_rng(0)       # at the mix rate, so its length in samples is exact
         return r.standard_normal(solo_len[n]) * 0.1, 48000
 
     A.gemini_speak, A.split_scene, A.gemini_solo = speak, split, solo
+    A.transcribe = lambda s, sr: []         # own_scene takes: Whisper is not reachable here; any take will do
     P, psr = sf.read(os.path.join(pub, "published_audio.flac"))
     P = P.mean(axis=1) if P.ndim > 1 else P
     from scipy.signal import correlate
@@ -105,6 +113,14 @@ def main(episode, pub, code_dir):
     n = min(len(P), len(V))
     P, V, M, S = P[:n], V[:n], M[:n], S[:n]
     span = {ln["name"]: (int(ln["start"] * SR), int(ln["end"] * SR)) for ln in tl["lines"]}
+    # a solo take can ring on past its timeline span (or start a little before it): lift it over the gap to the
+    # neighbouring lines too (at most 0.25 s each side); where nothing sounds, the lift is ~0 there anyway
+    ordered = sorted(span.items(), key=lambda kv: kv[1][0])
+    for i, (nm, (a, b)) in enumerate(ordered):
+        if nm in solos:
+            lo = ordered[i - 1][1][1] if i else 0
+            hi = ordered[i + 1][1][0] if i + 1 < len(ordered) else n
+            span[nm] = (max(lo, a - SR // 4), min(hi, b + SR // 4))
     for ln in tl["lines"]:
         p = pub_lines[ln["name"]]
         if abs(p["start"] - ln["start"]) > 0.002 or abs(p["end"] - ln["end"]) > 0.02:

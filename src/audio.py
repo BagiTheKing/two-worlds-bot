@@ -2306,6 +2306,33 @@ def build(episode_path, out_dir, keep=None):
     duck = np.convolve(np.abs(voice) > 0.02, np.ones(SR // 10) / (SR // 10), "same")
     duck = np.clip(duck * 3, 0, 1)
     out = voice + keep_under(voice, mix * (1 - 0.45 * duck) + score * (1 - 0.75 * duck))
+    if ep.get("voice_hall"):
+        # a wide digital hall on the dialogue (Ep7's Memory Grid: an infinite hollow archive): a dense noise tail
+        # falling 60 dB over `decay` s after a 25 ms pre-delay, fed the voices high-passed at `hp`; `wet` is the
+        # plugin-style mix (the tail's RMS is wet / (1 - wet) of the voices'); optional `from`/`to` (refs) limit
+        # it to part of the chapter. Added after the ducking so the tails between words are heard.
+        from scipy.signal import fftconvolve
+        vh = ep["voice_hall"]
+        dec = float(vh.get("decay", 1.1))
+        n_ = int(dec * 1.2 * SR)
+        t_ = np.arange(n_) / SR
+        hr = np.random.default_rng(int(vh.get("seed", 3)))
+        ir = hr.standard_normal(n_) * np.exp(-6.91 * t_ / dec)
+        ir[:int(0.025 * SR)] = 0.0
+        ir = band(ir, 200, float(vh.get("lp", 6500)))                # a soft, slightly dark digital hall
+        src = voice.copy()
+        if "from" in vh or "to" in vh:
+            h0 = int(R(vh.get("from", 0)) * SR)
+            h1 = int(R(vh.get("to", "end")) * SR)
+            src[:max(0, h0)] = 0.0
+            src[h1:] = 0.0
+        hall = fftconvolve(band(src, float(vh.get("hp", 250)), 9000), ir)[:len(voice)]
+        w = float(vh.get("wet", 0.13))
+        talk = np.abs(src) > 0.01
+        rv = np.sqrt(np.mean(src[talk] ** 2)) if talk.any() else 0.0
+        rh = np.sqrt(np.mean(hall[talk] ** 2)) if talk.any() else 0.0
+        if rh > 0:
+            out = out + hall * (rv / rh) * (w / (1 - w))
     for st in ep.get("stutters", []):              # the sound itself freezes: a slice repeats, then dead silence
         h, sl = int(R(st["at"]) * SR), int(st.get("slice", 0.06) * SR)
         piece = out[h - sl:h].copy()

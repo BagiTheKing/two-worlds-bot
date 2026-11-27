@@ -1,0 +1,532 @@
+{
+  "id": "movie_ep07_another_world",
+  "number": 7,
+  "title": "Patch Remembered Another World",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely",
+      "fx": "patch"
+    }
+  },
+  "movie_note": "Movie Episode 7 (the creator's 16:9 blueprint, 2026-11-27; story/movie/ep07_shots.md): picks up Ep6's cyan-white warp flash; the three tumble onto the Memory Grid; the hologram replay of the Noob dying on a kill-brick leaves a dark cube each time; the cubes rain down into a dark corrupted core (no Null shape); the past loop and the infinite pullback; Patch: '...I stopped counting.'; 'I don't want to be deleted.'; the void cracks the archive (REALITY 52 -> 30) and Patch warps them out to Steve's hidden portal (Ep8). Never back to the obby, Null never seen. The original takes (movie/ep07_published); one new take (Patch's 'It found the archive- I only have one stable coordinate left!').",
+  "voices_cache_only": true,
+  "declick": 0.004,
+  "declick_blank": 0.0025,
+  "voice_hall": {
+    "decay": 1.1,
+    "wet": 0.13,
+    "hp": 250,
+    "to": "breach",
+    "note": "the creator: the dialogue inside the Memory Grid in a subtle wide digital hall (decay 1.1 s, 12-15% wet, high-pass 250 Hz): an infinite hollow archive, so Ep8's forest feels physical"
+  },
+  "music": [
+    {
+      "cue": "memory",
+      "from": "wash+0.3",
+      "to": "breach",
+      "gain": 0.3,
+      "hit_at": "pull",
+      "hard_end": true,
+      "note": "the melancholic piano/music-box bed of the archive (the published cue); the hit on the pullback; cut dead on the breach"
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "void",
+      "from": 0,
+      "to": "tumble+0.35",
+      "gain": 0.05,
+      "note": "Ep6's void wind goes on, cut under the landing"
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "chime",
+      "at": -0.25,
+      "pitch": 1.25,
+      "gain": 0.6,
+      "note": "Ep6's warp chime (hit at Ep6's flash, 0.25 s before the cut): its tail rings on"
+    },
+    {
+      "kind": "hum",
+      "at": "tumble+0.3",
+      "to": "breach",
+      "semi": -5,
+      "gain": 0.05,
+      "note": "the archive's faint electric room tone"
+    },
+    {
+      "kind": "land",
+      "at": "tumble+0.45",
+      "dur": 0.6,
+      "gain": 0.45,
+      "note": "Steve drops to one knee"
+    },
+    {
+      "kind": "land",
+      "at": "tumble+0.75",
+      "dur": 0.6,
+      "gain": 0.5,
+      "note": "the Noob flat on his back"
+    },
+    {
+      "kind": "servo",
+      "at": "tumble+0.9",
+      "dur": 0.5,
+      "pitch": 1.2,
+      "gain": 0.22,
+      "note": "Patch steadying"
+    },
+    {
+      "kind": "step",
+      "at": "settle+0.5",
+      "gain": 0.3
+    },
+    {
+      "kind": "step",
+      "at": "settle+1.0",
+      "gain": 0.35,
+      "note": "the Noob hops up"
+    },
+    {
+      "kind": "respawn",
+      "at": "spot+0.4",
+      "gain": 0.2,
+      "note": "the hologram on its pad"
+    },
+    {
+      "kind": "zap",
+      "at": "replay+0.55",
+      "gain": 0.3,
+      "note": "the kill-brick"
+    },
+    {
+      "kind": "shatter",
+      "at": "replay+0.6",
+      "gain": 0.32,
+      "note": "the hologram breaks into glowing wireframe limbs"
+    },
+    {
+      "kind": "clunk",
+      "at": "replay+1.15",
+      "gain": 0.45,
+      "note": "a heavy dark cube thuds onto the floor"
+    },
+    {
+      "kind": "respawn",
+      "at": "replay+1.7",
+      "gain": 0.3
+    },
+    {
+      "kind": "zap",
+      "at": "replay2+0.8",
+      "gain": 0.25
+    },
+    {
+      "kind": "shatter",
+      "at": "replay2+0.85",
+      "gain": 0.25
+    },
+    {
+      "kind": "clunk",
+      "at": "replay2+1.4",
+      "gain": 0.45
+    },
+    {
+      "kind": "sub_drop",
+      "at": "drop",
+      "dur": 2.4,
+      "gain": 0.4,
+      "note": "down through the layers"
+    },
+    {
+      "kind": "crackle",
+      "at": "drop+1.4",
+      "dur": 2.6,
+      "gain": 0.18,
+      "note": "the core's magenta static"
+    },
+    {
+      "kind": "hum",
+      "at": "drop+0.8",
+      "to": "past",
+      "semi": -14,
+      "sub": 0.6,
+      "gain": 0.12,
+      "note": "the core churning"
+    },
+    {
+      "kind": "glitch",
+      "at": "past+0.3",
+      "dur": 0.25,
+      "gain": 0.1,
+      "note": "the recorded loop flickers"
+    },
+    {
+      "kind": "glitch",
+      "at": "patch_count+0.75",
+      "dur": 0.15,
+      "gain": 0.08,
+      "note": "his eye flickers once"
+    },
+    {
+      "kind": "glass",
+      "at": "breach",
+      "gain": 0.75,
+      "note": "the crystalline shatter (replaces the published whip-zing)"
+    },
+    {
+      "kind": "sub_drop",
+      "at": "breach",
+      "dur": 1.8,
+      "gain": 0.8,
+      "note": "the low sub-bass void tear"
+    },
+    {
+      "kind": "erase",
+      "at": "breach+0.1",
+      "dur": 1.2,
+      "size": 2.4,
+      "gain": 0.5,
+      "note": "the hologram cells dissolving into black"
+    },
+    {
+      "kind": "crackle",
+      "at": "breach+0.3",
+      "dur": 3.0,
+      "gain": 0.3
+    },
+    {
+      "kind": "rumble_rise",
+      "at": "breach+0.6",
+      "dur": 3.6,
+      "smooth": true,
+      "gain": 0.35
+    },
+    {
+      "kind": "turbine",
+      "at": "patch_archive+1.0",
+      "dur": 2.9,
+      "gain": 0.45,
+      "cut": "flash",
+      "note": "the emergency warp spinning up"
+    },
+    {
+      "kind": "charge",
+      "at": "warp",
+      "dur": 1.4,
+      "gain": 0.35
+    },
+    {
+      "kind": "chime",
+      "at": "flash",
+      "pitch": 1.25,
+      "gain": 0.6,
+      "note": "Patch's warp chime, the same as Ep6's: rings over the cut into Ep8"
+    },
+    {
+      "kind": "whoosh",
+      "at": "flash",
+      "dur": 0.4,
+      "gain": 0.5
+    }
+  ],
+  "overlays": [
+    {
+      "type": "hud",
+      "text": "REALITY: 52%",
+      "alert": true,
+      "from": 0,
+      "to": "breach+0.15"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 41%",
+      "alert": true,
+      "from": "breach+0.15",
+      "to": "breach+0.3"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 52%",
+      "alert": true,
+      "from": "breach+0.3",
+      "to": "breach+0.4"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 30%",
+      "alert": true,
+      "from": "breach+0.4",
+      "to": "end"
+    }
+  ],
+  "events": [
+    {
+      "beat": "wash",
+      "dur": 0.7,
+      "note": "Shot 1 (28 mm wide, low): Ep6's cyan-white flash fades down (the lens wash, cyan) onto the Memory Grid: a glowing blue translucent floor stretching into deep navy-cyan fog; the warp chime still ringing"
+    },
+    {
+      "beat": "tumble",
+      "dur": 1.5,
+      "note": "Steve, the Noob and Patch tumble out of the warp onto the floor: Steve lands and drops to one knee (empty hands: no pickaxe), the Noob lands flat on his back, Patch wobbles in the air, steadying himself"
+    },
+    {
+      "beat": "settle",
+      "dur": 2.0,
+      "note": "Steve rises from his knee, looks round; the Noob hops up, fascinated, turning; Patch's eye adjusts (servo)"
+    },
+    {
+      "beat": "spot",
+      "dur": 2.6,
+      "note": "the Noob spots a glowing translucent hologram of himself 3 m ahead on a memory pad; it walks cheerfully toward a faint translucent red kill-brick"
+    },
+    {
+      "beat": "replay",
+      "dur": 2.4,
+      "note": "Shot 2 (35 mm medium-wide: the real pair left, the hologram right): hologram-Noob hops onto the kill-brick, shatters cleanly into glowing wireframe limbs, and one heavy pitch-black starry cube thuds onto the floor; a new hologram pops back up on the pad"
+    },
+    {
+      "line": "noob",
+      "name": "noob_me",
+      "text": "Hey, that's me!",
+      "direction_text": "[delighted, surprised] Hey, that's me!",
+      "pad": 0.1,
+      "cut_at": [
+        3.02,
+        4.49
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; he points, raised brows, full lip-sync"
+    },
+    {
+      "beat": "replay2",
+      "dur": 1.6,
+      "note": "the new hologram walks to the brick again; the second death, a second dark cube thuds down beside the first; cut on the thud"
+    },
+    {
+      "line": "steve",
+      "name": "steve_what",
+      "text": "What are those?",
+      "direction_text": "[quiet, wary] What are those?",
+      "pad": 0.1,
+      "cut_at": [
+        2.5,
+        3.93
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; Shot 3 (50 mm on Steve): he looks DOWN at the dark cubes on the floor (eye-line down, never into the lens)"
+    },
+    {
+      "beat": "residue",
+      "dur": 1.6,
+      "note": "Shot 4: a slow tilt down onto three trembling dark cubes on the glass pad; Patch drifts into frame beside them"
+    },
+    {
+      "line": "patch",
+      "name": "patch_behind",
+      "text": "Every time you respawn, something stays behind.",
+      "direction_text": "[calm, quiet, serious] Every time you respawn, something stays behind.",
+      "pad": 0.1,
+      "cut_at": [
+        7.08,
+        10.63
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take"
+    },
+    {
+      "beat": "drop",
+      "dur": 3.2,
+      "note": "Shot 5 (24 mm, a smooth vertical crane drop down through the grid layers): dozens of dark cubes rain down from the upper layers like dark snow, spiralling into a churning pitch-black core of corrupted blocks pulsing with faint magenta cracks far below; no head, no arms, no face"
+    },
+    {
+      "line": "noob",
+      "name": "noob_where",
+      "text": "...Where does it go?",
+      "direction_text": "[quiet, uneasy] ...Where does it go?",
+      "pad": 0.1,
+      "cut_at": [
+        0.1,
+        1.64
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; the Noob leans over the pad's edge, his smile fading, worried brows"
+    },
+    {
+      "beat": "core",
+      "dur": 1.6,
+      "note": "the core turns, magenta static pulsing; the cubes keep falling into it"
+    },
+    {
+      "beat": "past",
+      "dur": 2.0,
+      "note": "Shot 6 (45 mm medium past a glowing hologram trio: Steve, the Noob and Patch reaching helplessly toward a looming jagged black-and-magenta void fissure; horizontal scanlines, a Fresnel edge)"
+    },
+    {
+      "line": "noob",
+      "name": "noob_us",
+      "text": "That's... us?",
+      "direction_text": "[stunned, quiet] That's... us?",
+      "pad": 0.1,
+      "cut_at": [
+        1.8,
+        4.3
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; Shot 7 (65 mm close-up on the Noob): he blinks slowly, brows furrowed, a solemn open mouth that moves with the words"
+    },
+    {
+      "line": "patch",
+      "name": "patch_last",
+      "text": "From last time.",
+      "direction_text": "[quiet, flat] Last time.",
+      "pad": 0.1,
+      "solo_text": "From last time.",
+      "taken_in": "movie/ep07_published",
+      "note": "the original take (its own solo recording); on the Noob's face: worried brows, a solemn mouth, no smile"
+    },
+    {
+      "beat": "pull",
+      "dur": 1.4,
+      "note": "Shot 8 (24 mm, one continuous crane pullback, high and wide): hundreds of glowing memory cells stretching into the fog, each slightly different (four poses, turned), each shadowed by its own dark fissure"
+    },
+    {
+      "line": "steve",
+      "name": "steve_times",
+      "text": "How many times have we done this?",
+      "direction_text": "[calm voice finally cracking, shaken, quiet] How many times have we done this?",
+      "pad": 0.1,
+      "cut_at": [
+        0.0,
+        2.97
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; his quiet voice over the vastness"
+    },
+    {
+      "beat": "crowd",
+      "dur": 2.2,
+      "note": "the pullback ends on the infinite field fading into the cyan-navy mist"
+    },
+    {
+      "beat": "weight",
+      "dur": 1.3,
+      "note": "Shot 9A (85 mm, shallow focus: Patch alone, centred, the grid blurred behind): Patch exhales"
+    },
+    {
+      "line": "patch",
+      "name": "patch_count",
+      "text": "...I stopped counting.",
+      "direction_text": "[quiet, tired, glitching] ...I stopped counting.",
+      "pad": 0.1,
+      "cut_at": [
+        3.08,
+        5.16
+      ],
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; his cyan eye dims ~40%, flickers once, drops ~5 degrees (exhaustion)"
+    },
+    {
+      "beat": "look",
+      "dur": 1.4,
+      "note": "Shot 9B (50 mm two-shot): the Noob looks out over the endless ghosts of himself; Steve glances over at him with quiet guilt (Ep8's secret)"
+    },
+    {
+      "line": "noob",
+      "name": "noob_deleted",
+      "text": "I don't want to be deleted.",
+      "direction_text": "[scared, trembling, quiet, almost crying] I don't want to be deleted.",
+      "pad": 0.35,
+      "own_scene": true,
+      "trim": 2.5,
+      "trim_fade": 0.1,
+      "taken_in": "movie/ep07_published",
+      "note": "the original take; he lowers his hands, small and genuinely scared"
+    },
+    {
+      "beat": "hush",
+      "dur": 1.2,
+      "note": "a held beat in the hall; the piano breathes; the HUD flickers"
+    },
+    {
+      "beat": "breach",
+      "dur": 1.8,
+      "note": "Shot 10 (28 mm wide, low): jagged black-and-magenta cracks rip across the glowing floor under their feet, the memory pads round them shatter, nearby hologram cells dissolve into black; the piano cut dead under a crystalline shatter and a sub-bass tear; REALITY 52 -> 30"
+    },
+    {
+      "line": "patch",
+      "name": "patch_archive",
+      "text": "It found the archive- I only have one stable coordinate left!",
+      "direction_text": "[alarmed, urgent, fast] It found the archive- I only have one stable coordinate left!",
+      "pad": 0.1,
+      "solo_only": true,
+      "new_take": true,
+      "note": "added (the creator's Ep6->Ep8 bridge, 2026-11-27): Patch's eye flashes amber in panic"
+    },
+    {
+      "beat": "warp",
+      "dur": 1.4,
+      "note": "Patch flares bright cyan, an emergency warp ring expanding from his chassis round all three"
+    },
+    {
+      "beat": "flash",
+      "dur": 0.3,
+      "note": "the whole frame flashes white-cyan: hard cut into Ep8's sunset forest clearing (Steve's hidden mossy portal)"
+    },
+    {
+      "line": "noob",
+      "name": "noob_copy",
+      "text": "It's COPYING me!",
+      "direction_text": "[panicked, shouting] It's COPYING me!",
+      "pad": 0.1,
+      "solo_only": true,
+      "unused": true,
+      "note": "the published opening line: moved to Ep6 (a new take there); kept so the published scene grouping stays"
+    },
+    {
+      "line": "patch",
+      "name": "patch_back",
+      "text": "Hold still. I'm taking us back.",
+      "direction_text": "[calm, quiet, sudden] Hold still. I'm taking us back.",
+      "pad": 0.05,
+      "cut_at": [
+        0.0,
+        2.7
+      ],
+      "unused": true,
+      "note": "the published line: replaced by Ep6's 'Hold still- I'm pulling us out!'; kept unused so its scene stays as recorded"
+    }
+  ]
+}
