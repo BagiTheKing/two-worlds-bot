@@ -1,0 +1,641 @@
+{
+  "id": "movie_ep06_deleting_itself",
+  "number": 6,
+  "title": "The World Started Deleting Itself",
+  "cast": {
+    "noob": {
+      "voice": "am_puck",
+      "speed": 1.12,
+      "pitch": 1.0,
+      "caption": "#FFD23F",
+      "emotion": 0.6,
+      "pace": 0.45,
+      "stability": 0.0,
+      "gemini_voice": "Puck",
+      "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+    },
+    "steve": {
+      "voice": "am_michael",
+      "speed": 0.95,
+      "pitch": 1.0,
+      "caption": "#3FE0D0",
+      "emotion": 0.4,
+      "pace": 0.5,
+      "stability": 0.5,
+      "gemini_voice": "Charon",
+      "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+    },
+    "patch": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#B6F0FF",
+      "emotion": 0.3,
+      "pace": 0.4,
+      "stability": 0.5,
+      "gemini_voice": "Achernar",
+      "acting": "calm, literal, slightly too quiet; announces disasters politely",
+      "fx": "patch"
+    },
+    "void": {
+      "voice": "am_puck",
+      "speed": 1.0,
+      "pitch": 1.0,
+      "caption": "#FF3BD4",
+      "emotion": 0.2,
+      "pace": 0.3,
+      "stability": 0.5,
+      "gemini_voice": "Puck",
+      "acting": "unseen: the void copying the Noob's own voice"
+    }
+  },
+  "movie_note": "Movie Episode 6 (the creator's rewritten 16:9 blueprint, 2026-11-27; story/movie/ep06_shots.md): picks up Ep5's last instant; an unseen Void Wall (no Null on screen) erases the dragon, the pickaxe, the Noob's wall and the TNT in turn (Ep5's erase rule and sound); Patch: 'Stop throwing things at it! It's not attacking... it's correcting.'; the Noob's '...Hi?' to the black, copied back by the void in his own voice; the wall surges, Patch warps them out in a cyan flash straight into Ep7's Memory Grid. REALITY 71 -> 66 -> 62 -> 57 -> 52. The original takes for the original lines (movie/ep06_published); new takes only for the added lines (Steve's '...No wall.', Patch's 'Stop throwing things at it!' and 'Hold still- I'm pulling us out!', the Noob's 'It's copying me!'); the void's '...Hi?' is made from the Noob's own take.",
+  "voices_cache_only": true,
+  "declick": 0.004,
+  "declick_blank": 0.0025,
+  "voice_air": 0.12,
+  "music": [
+    {
+      "cue": "drone",
+      "from": 0,
+      "to": "void_in+1.6",
+      "gain": 0.07,
+      "seed": 4,
+      "offset": 7.112,
+      "fade_out": 1.6,
+      "note": "Ep5's faint void drone goes on (the same seed, level, offset = the seconds already heard), handing over to the industrial pulse"
+    },
+    {
+      "cue": "industrial",
+      "from": "void_in",
+      "to": "bank",
+      "gain": 0.16,
+      "seed": 11,
+      "fade_out": 0.8,
+      "mutes": [
+        [
+          "tnt_gone",
+          "tnt_gone+0.45"
+        ]
+      ],
+      "note": "low pulsing industrial tension, no melody, under the attempts; out dead with the TNT"
+    },
+    {
+      "cue": "tremolo",
+      "from": "bank",
+      "to": "patch_correct.end",
+      "gain": 0.12,
+      "seed": 12,
+      "hard_end": true,
+      "note": "a faint high dissonant tremolo under Patch's scan; cut dead into total silence"
+    }
+  ],
+  "ambience": [
+    {
+      "kind": "void",
+      "from": 0,
+      "to": "end",
+      "gain": 0.05,
+      "note": "Ep5's void wind goes on"
+    }
+  ],
+  "sfx": [
+    {
+      "kind": "rumble_rise",
+      "at": "void_in",
+      "dur": 2.6,
+      "smooth": true,
+      "gain": 0.35,
+      "note": "the rift rolling in"
+    },
+    {
+      "kind": "crackle",
+      "at": "void_in+0.8",
+      "dur": 1.6,
+      "gain": 0.25,
+      "note": "the jagged edge crackling"
+    },
+    {
+      "kind": "erase",
+      "at": "dragon_gone+0.15",
+      "dur": 1.3,
+      "size": 2.8,
+      "gain": 0.9,
+      "note": "the dragon, tail to head"
+    },
+    {
+      "kind": "step",
+      "at": "resolve+0.6",
+      "gain": 0.3,
+      "note": "Steve sets his stance"
+    },
+    {
+      "kind": "step",
+      "at": "windup+0.5",
+      "gain": 0.3
+    },
+    {
+      "kind": "whoosh",
+      "at": "throw",
+      "dur": 0.5,
+      "gain": 0.45,
+      "note": "the throw"
+    },
+    {
+      "kind": "whir",
+      "at": "throw+0.1",
+      "dur": 0.9,
+      "gain": 0.3,
+      "cut": "pick_gone",
+      "note": "the pickaxe spinning; stops on the hit-freeze"
+    },
+    {
+      "kind": "erase",
+      "at": "pick_gone+0.17",
+      "dur": 0.45,
+      "size": 0.7,
+      "gain": 0.8
+    },
+    {
+      "kind": "btool",
+      "at": "build_wall-0.2",
+      "size": 1.6,
+      "gain": 0.6
+    },
+    {
+      "kind": "slam",
+      "at": "build_wall+0.45",
+      "dur": 1.0,
+      "gain": 0.6,
+      "note": "the stone barrier drops in"
+    },
+    {
+      "kind": "erase",
+      "at": "wall_gone",
+      "dur": 1.2,
+      "size": 2.0,
+      "gain": 0.85,
+      "note": "one continuous dissolve, bottom to top"
+    },
+    {
+      "kind": "click",
+      "at": "tnt_pull+0.3",
+      "gain": 0.35
+    },
+    {
+      "kind": "hiss",
+      "at": "tnt_pull+0.45",
+      "dur": 0.3,
+      "gain": 0.4,
+      "note": "lit: sparks"
+    },
+    {
+      "kind": "fuse_rise",
+      "at": "tnt_pull+0.5",
+      "dur": 1.7,
+      "gain": 0.6,
+      "cut": "tnt_gone",
+      "note": "the fuse crescendo, cut dead on the frame it turns checkerboard"
+    },
+    {
+      "kind": "whoosh",
+      "at": "tnt_throw",
+      "dur": 0.5,
+      "gain": 0.4
+    },
+    {
+      "kind": "erase",
+      "at": "tnt_gone+0.45",
+      "dur": 0.22,
+      "size": 0.35,
+      "gain": 0.22,
+      "note": "after the dead silence: a faint dry hollow blip-vacuum"
+    },
+    {
+      "kind": "servo",
+      "at": "bank",
+      "dur": 0.4,
+      "pitch": 1.3,
+      "gain": 0.25
+    },
+    {
+      "kind": "ping",
+      "at": "bank+0.45",
+      "gain": 0.3
+    },
+    {
+      "kind": "scan",
+      "at": "bank+0.5",
+      "dur": 4.8,
+      "gain": 0.18
+    },
+    {
+      "kind": "pressure",
+      "at": "hush",
+      "dur": 6.6,
+      "gain": 0.3,
+      "note": "total silence but sub-50 Hz room pressure, both '...Hi?' lines"
+    },
+    {
+      "kind": "glitch",
+      "at": "void_hi+1.25",
+      "dur": 0.3,
+      "gain": 0.15,
+      "note": "the faint static ripple on the word"
+    },
+    {
+      "kind": "rumble_rise",
+      "at": "surge-0.1",
+      "dur": 1.2,
+      "smooth": true,
+      "gain": 0.4
+    },
+    {
+      "kind": "erase",
+      "at": "surge+0.1",
+      "dur": 0.9,
+      "size": 2.2,
+      "gain": 0.85,
+      "note": "the terrace's front corner swallowed"
+    },
+    {
+      "kind": "step",
+      "at": "surge+0.35",
+      "gain": 0.35,
+      "note": "the Noob stumbles back"
+    },
+    {
+      "kind": "turbine",
+      "at": "patch_hold",
+      "dur": 3.15,
+      "gain": 0.55,
+      "cut": "flash",
+      "note": "the emergency warp spinning up"
+    },
+    {
+      "kind": "charge",
+      "at": "warp",
+      "dur": 1.4,
+      "gain": 0.35
+    },
+    {
+      "kind": "chime",
+      "at": "flash",
+      "pitch": 1.25,
+      "gain": 0.6,
+      "note": "the bright resonant cyan warp chime: rings over the cut into Ep7"
+    },
+    {
+      "kind": "whoosh",
+      "at": "flash",
+      "dur": 0.4,
+      "gain": 0.5
+    }
+  ],
+  "stutters": [
+    {
+      "at": "tnt_gone",
+      "n": 0,
+      "silence": 0.45,
+      "note": "the boom deleted: dead silence (voices stay)"
+    }
+  ],
+  "overlays": [
+    {
+      "type": "hud",
+      "text": "REALITY: 71%",
+      "from": 0,
+      "to": "dragon_gone.end"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 66%",
+      "alert": true,
+      "from": "dragon_gone.end",
+      "to": "pick_gone+0.3"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 62%",
+      "alert": true,
+      "from": "pick_gone+0.3",
+      "to": "tnt_gone"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 57%",
+      "alert": true,
+      "from": "tnt_gone",
+      "to": "surge+0.4"
+    },
+    {
+      "type": "hud",
+      "text": "REALITY: 52%",
+      "alert": true,
+      "from": "surge+0.4",
+      "to": "end"
+    }
+  ],
+  "events": [
+    {
+      "beat": "open",
+      "dur": 0.8,
+      "note": "Ep5's last instant goes on: the Noob on the blue terrace (scared, hammer in his right hand), Steve on the grey pad's edge, Patch near the Noob, the sealed dragon overhead, the open door, the empty spawn ring; void wind. Shot 1 (28 mm, low, behind Steve and the Noob looking up at the dragon; slow push-in)"
+    },
+    {
+      "beat": "void_in",
+      "dur": 2.4,
+      "note": "beyond where Ep5's stones vanished, a towering pitch-black Void Rift (jagged edge crackling with magenta checkerboard, cubic debris tearing off) rolls across the blue sky; the arena drops into overcast shadow (sky strength -50%, a magenta-violet area light on the wall)"
+    },
+    {
+      "beat": "dragon_gone",
+      "dur": 1.7,
+      "note": "the wall's leading edge touches the sealed dragon: Ep5's erase rule, tail to head, into rising dead pixels; REALITY 71 -> 66"
+    },
+    {
+      "line": "noob",
+      "name": "noob_delete",
+      "text": "The world is DELETING itself!",
+      "direction_text": "[panicked, shouting] The world is DELETING itself!",
+      "pad": 0.3,
+      "solo_only": true,
+      "note": "the original take; panicked, looking up as the last pixels rise",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "resolve",
+      "dur": 1.1,
+      "note": "Shot 2 (50 mm MCU on Steve, the void's magenta rim on his face): his eyes track the last falling pixels, then harden; he shifts into a combat stance, the diamond pickaxe in both hands"
+    },
+    {
+      "line": "steve",
+      "name": "steve_stop",
+      "text": "Then we stop it.",
+      "direction_text": "[calm, flat, determined] Then we stop it.",
+      "pad": 0.25,
+      "cut_at": [
+        0.0,
+        1.55
+      ],
+      "note": "the original take; grim, firm",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "windup",
+      "dur": 1.0,
+      "note": "Shot 3A (35 mm, three-quarter front on Steve): he winds up, twists his torso"
+    },
+    {
+      "beat": "throw",
+      "dur": 1.0,
+      "note": "the overhand throw, left to right; Shot 3B (40 mm side tracking): the pickaxe spins along its arc (-720 deg over 12 frames) across the open gap toward the wall"
+    },
+    {
+      "beat": "pick_gone",
+      "dur": 0.7,
+      "note": "it hits the dark boundary: a 4-frame hit-freeze mid-air, checkerboard, implodes in silence; REALITY 66 -> 62"
+    },
+    {
+      "beat": "blink",
+      "dur": 0.7,
+      "note": "cut to Steve's stunned blink; he looks down at his empty hands"
+    },
+    {
+      "line": "steve",
+      "name": "steve_pick",
+      "text": "...My pickaxe.",
+      "direction_text": "[flat, deadpan, a little hurt] ...My pickaxe.",
+      "pad": 0.35,
+      "cut_at": [
+        3.62,
+        4.88
+      ],
+      "note": "the original take; deflated, staring at his empty hands",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "raise",
+      "dur": 0.5,
+      "note": "Shot 4 (32 mm wide two-shot: the Noob's blue terrace left, the wall creeping in from the right): the Noob raises his BTools hammer (parented to Hand.R, nothing at the hip)"
+    },
+    {
+      "line": "noob",
+      "name": "noob_wall",
+      "text": "Wall!",
+      "direction_text": "[proud, quick] Wall!",
+      "pad": 0.05,
+      "cut_at": [
+        0.0,
+        0.84
+      ],
+      "note": "the original take; determined",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "build_wall",
+      "dur": 1.0,
+      "note": "the hammer comes down: a crisp cyan wireframe on the terrace's front edge, a thick stone barrier drops in with a thud; his confident grin"
+    },
+    {
+      "beat": "glide",
+      "dur": 0.8,
+      "note": "the wall glides straight into the barrier"
+    },
+    {
+      "beat": "wall_gone",
+      "dur": 1.3,
+      "note": "one continuous checkerboard dissolve, bottom to top, nothing left floating; his grin drops to disbelief"
+    },
+    {
+      "beat": "disbelief",
+      "dur": 0.4,
+      "note": "the empty edge; a beat"
+    },
+    {
+      "line": "steve",
+      "name": "steve_nowall",
+      "text": "...No wall.",
+      "direction_text": "[flat, deadpan] ...No wall.",
+      "solo_only": true,
+      "new_take": true,
+      "pad": 0.4,
+      "note": "added (the creator's blueprint, 2026-11-27): in the movie Steve says it, deadpan (the published take was the Noob's: kept as unused below)"
+    },
+    {
+      "beat": "tnt_pull",
+      "dur": 0.8,
+      "note": "Shot 5A (45 mm medium on Steve): he pulls a TNT block and lights it; sparks hiss"
+    },
+    {
+      "beat": "tnt_throw",
+      "dur": 1.4,
+      "note": "he hurls it overhand toward the void; Shot 5B (35 mm wide, the Noob on the left third, the TNT on the right two-thirds): the fuse sizzles louder as it flies, the block swelling white"
+    },
+    {
+      "beat": "tnt_gone",
+      "dur": 0.7,
+      "note": "at its brightest white flash, the void's glitch field snatches it: checkerboard, gone; dead silence on that frame, then a faint dry blip-vacuum; REALITY 62 -> 57"
+    },
+    {
+      "beat": "whip",
+      "dur": 0.5,
+      "note": "the Noob whips his head to Steve, unobstructed in frame"
+    },
+    {
+      "line": "noob",
+      "name": "noob_boom",
+      "text": "It deleted the BOOM!",
+      "direction_text": "[outraged, comic] It deleted the BOOM!",
+      "pad": 0.4,
+      "cut_at": [
+        3.02,
+        4.84
+      ],
+      "note": "the original take; wide-eyed, shouting",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "bank",
+      "dur": 0.9,
+      "note": "Shot 6 (40 mm: Patch front-left, Steve and the Noob mid-left, the jagged wall filling the right half): Patch banks sharply forward, the cyan scan cone locks onto the wall's magenta edge (Patch_ScanTarget), tiny glitching waveform readouts on the boundary"
+    },
+    {
+      "line": "patch",
+      "name": "patch_stop",
+      "text": "Stop throwing things at it!",
+      "direction_text": "[urgent, sharp, quick] Stop throwing things at it!",
+      "solo_only": true,
+      "new_take": true,
+      "pad": 0.15,
+      "note": "added (the creator's blueprint): Patch, urgent, before the original line"
+    },
+    {
+      "line": "patch",
+      "name": "patch_correct",
+      "text": "It's not attacking. It's correcting.",
+      "direction_text": "[calm, quiet, serious] It's not attacking. It's correcting.",
+      "pad": 0.4,
+      "cut_at": [
+        4.9,
+        8.43
+      ],
+      "note": "the original take; his eye narrows with dread as he rotates back toward them",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "hush",
+      "dur": 1.3,
+      "note": "Shot 7A (65 mm tight on the Noob, no hammer in frame): total music silence; he leans cautiously toward the abyss, brows pinched, shoulders hunched; one trembling hand raised to chest height for a tiny wave"
+    },
+    {
+      "line": "noob",
+      "name": "noob_hi",
+      "text": "...Hi?",
+      "direction_text": "[tiny, nervous, a forced smile] ...Hi?",
+      "pad": 0.2,
+      "cut_at": [
+        8.64,
+        9.94
+      ],
+      "note": "the original take; a tiny nervous whisper (the face: worried brows, a hesitant 'h-eye' mouth, no smile)",
+      "taken_in": "movie/ep06_published"
+    },
+    {
+      "beat": "listen",
+      "dur": 1.2,
+      "note": "Shot 7B (35 mm, dead centre into the black rift, slow push-in): empty endless black; two full beats of suffocating silence"
+    },
+    {
+      "line": "void",
+      "name": "void_hi",
+      "text": "...Hi?",
+      "direction_text": "[the Noob's own whisper, copied, deep and hollow] ...Hi?",
+      "mimic_of": "noob_hi",
+      "mimic": {
+        "semi": -6.0,
+        "keep": 0.55,
+        "pre_echo": 1.2,
+        "ring": 0.15,
+        "crush": 0.15,
+        "room": 0.25
+      },
+      "note": "the creator's blueprint: the Noob's own recorded '...Hi?' copied back (-6 semitones, partly stretched; a reversed 1.5 s dark-hall pre-echo breathing into it; ring-mod/bit-crush 15% wet); a hairline white-magenta static ripple twitches for 6-8 frames deep in the black on the word; no body, no face",
+      "slot": 2.7
+    },
+    {
+      "beat": "stare",
+      "dur": 0.6,
+      "note": "the Noob frozen"
+    },
+    {
+      "beat": "surge",
+      "dur": 0.9,
+      "note": "Shot 8 (28 mm wide pullback): the wall surges forward and swallows the front corner of the blue terrace (the erase rule, big); the Noob stumbles back; REALITY 57 -> 52"
+    },
+    {
+      "line": "noob",
+      "name": "noob_copy",
+      "text": "It's copying me!",
+      "direction_text": "[terrified, shouting] It's copying me!",
+      "solo_only": true,
+      "new_take": true,
+      "pad": 0.1,
+      "note": "added (the creator's blueprint)"
+    },
+    {
+      "line": "patch",
+      "name": "patch_hold",
+      "text": "Hold still- I'm pulling us out!",
+      "direction_text": "[urgent, fast] Hold still- I'm pulling us out!",
+      "solo_only": true,
+      "new_take": true,
+      "pad": 0.1,
+      "note": "added (the creator's blueprint): Patch's eye dilates wide, he whips between them and the collapsing edge"
+    },
+    {
+      "beat": "warp",
+      "dur": 1.5,
+      "note": "Patch charges a blinding cyan ring/sphere expanding outward from his chassis"
+    },
+    {
+      "beat": "flash",
+      "dur": 0.25,
+      "note": "the whole frame flashes cyan-white (4+ frames): hard cut into Ep7's Memory Grid, which opens on the same flash"
+    },
+    {
+      "line": "patch",
+      "name": "patch_ohno",
+      "text": "Oh no.",
+      "direction_text": "[quiet, small, polite] Oh no.",
+      "pad": 0.1,
+      "cut_at": [
+        1.72,
+        3.19
+      ],
+      "unused": true,
+      "note": "the published 'Oh no.': not in the movie's blueprint; kept so its scene stays as recorded"
+    },
+    {
+      "line": "noob",
+      "name": "noob_nowall",
+      "text": "...No wall.",
+      "direction_text": "[deflated] ...No wall.",
+      "pad": 0.15,
+      "cut_at": [
+        1.66,
+        2.91
+      ],
+      "unused": true,
+      "note": "the published Noob '...No wall.': the movie gives the line to Steve (steve_nowall)"
+    },
+    {
+      "line": "patch",
+      "name": "patch_watch",
+      "text": "Someone is watching... you. Should we run, or hide?",
+      "direction_text": "[quiet, serious, turning to the audience] Someone is watching... you. Should we run, or hide?",
+      "pad": 0.3,
+      "unused": true,
+      "note": "unused in the published episode too"
+    }
+  ]
+}

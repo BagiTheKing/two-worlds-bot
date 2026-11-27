@@ -424,8 +424,51 @@ def deleted(sec, seed=0, fall_at=None):
     return reverb(sub * 0.9 + hi, 3.2, 0.45, seed)[:int(sec * SR)]
 
 
+def industrial(sec, seed=0):
+    """The world deleting itself (Ep6): a low, pulsing industrial tension drone; a dark fifth-less chord
+    breathing on the beat (a slow pump, never a groove), a sub under it, and a dull metallic clank every
+    bar (inharmonic partials, struck and choked), with a grinding noise band slowly rising. No melody."""
+    r = np.random.default_rng(seed)
+    t = _t(sec + 2)
+    out = np.zeros(len(t))
+    for m, a in ((D - 24, 0.5), (D - 23, 0.18), (D - 12, 0.22), (D - 6, 0.1)):     # a minor second and a tritone
+        f = hz(m)
+        out += a * (np.sin(2 * np.pi * f * t) + 0.25 * np.sign(np.sin(2 * np.pi * f * t)) * 0.3)
+    pump = 0.55 + 0.45 * (1 - (t % BEAT) / BEAT) ** 2.5          # a slow pump on every beat
+    out *= pump
+    out += 0.45 * np.sin(2 * np.pi * hz(D - 36) * t)
+    grind = np.convolve(r.standard_normal(len(t)), np.ones(40) / 40, "same")
+    grind = grind - np.convolve(grind, np.ones(400) / 400, "same")   # a band of grinding noise
+    out += 0.6 * grind * np.minimum(1, t / max(1.0, sec)) ** 1.5
+    bar = BEAT * 4
+    k = 0
+    while k * bar < sec:
+        n = int(0.6 * SR)
+        x = np.arange(n) / SR
+        clank = sum(np.sin(2 * np.pi * f * x) * np.exp(-x * d) for f, d in ((187, 9), (431, 14), (977, 22), (1613, 30)))
+        place(out, clank * (0.25 + 0.05 * r.random()), k * bar + BEAT * 2, 0.5)
+        k += 1
+    out *= np.minimum(1, t / 1.0)
+    return reverb(out, 2.4, 0.32, seed)[:int(sec * SR)]
+
+
+def tremolo(sec, seed=0):
+    """A faint, high dissonant string-synth tremolo (a cluster a semitone apart, bowed fast at ~9 Hz),
+    swelling in slowly: dread under a calm voice."""
+    t = _t(sec + 1)
+    out = np.zeros(len(t))
+    for m, a in ((D + 19, 0.5), (D + 20, 0.4), (D + 26, 0.25)):
+        f = hz(m) * (1 + 0.003 * np.sin(2 * np.pi * 4.7 * t + m))
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        out += a * (np.sin(ph) + 0.3 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph))
+    out *= 0.45 + 0.55 * np.abs(np.sin(2 * np.pi * 4.5 * t))       # the bow: ~9 strokes a second
+    out *= np.minimum(1, t / max(0.5, sec * 0.6)) ** 1.5
+    return reverb(out, 2.8, 0.45, seed)[:int(sec * SR)]
+
+
 CUES = {"drone": drone, "memory": memory, "theme_soft": theme_soft, "chase": chase, "null": null_theme, "theme_full": theme_full,
-        "dread": dread, "bounce": bounce, "curious": curious, "deleted": deleted}
+        "dread": dread, "bounce": bounce, "curious": curious, "deleted": deleted, "industrial": industrial,
+        "tremolo": tremolo}
 
 
 def render(cue, sec, seed=0, hard_end=False, offset=0.0, open_tail=False, **kw):

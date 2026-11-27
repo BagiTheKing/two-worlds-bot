@@ -1649,6 +1649,76 @@ def sfx_warp(dur=0.7):
     return norm(out, 0.85)
 
 
+def sfx_fuse_rise(dur=1.4):
+    """A lit TNT fuse in flight (Ep6): the hiss and crackle growing brighter and louder all the way
+    ("tssssss-"); meant to be cut dead (`cut`) on the frame the TNT is deleted."""
+    x = t(dur)
+    u = x / dur
+    hiss = band(rng.standard_normal(len(x)), 2000, 9500) * (0.6 + 0.4 * np.sin(2 * np.pi * (13 + 10 * u) * x))
+    sizzle = band(rng.standard_normal(len(x)), 5000, 11000) * u ** 1.5
+    crack = np.zeros(len(x))
+    for _ in range(int(dur * 22)):
+        i = rng.integers(0, max(1, len(x) - 200))
+        crack[i:i + 120] += rng.uniform(0.3, 1.0) * (0.3 + 0.7 * i / len(x)) * np.exp(-np.arange(120) / 25) * rng.choice((-1, 1))
+    out = (hiss * (0.35 + 0.65 * u ** 1.3) + 0.8 * sizzle + 1.5 * crack) * np.minimum(1, x / 0.04)
+    return norm(out, 0.7)
+
+
+def sfx_turbine(dur=1.6):
+    """An emergency warp spinning up (Ep6's end): an electronic turbine whine rising fast in pitch, a
+    rushing air bed and a sub swelling under it, ending at full tilt (the flash takes it)."""
+    x = t(dur)
+    u = x / dur
+    f = 90 * (1 + 14 * u ** 2.2)
+    ph = 2 * np.pi * np.cumsum(f) / SR
+    whine = (np.sin(ph) + 0.5 * np.sin(2.002 * ph) + 0.25 * np.sin(3.01 * ph)) * (0.15 + 0.85 * u ** 1.6)
+    air = band(rng.standard_normal(len(x)), 500, 8000) * u ** 2.2
+    sub = np.sin(2 * np.pi * np.cumsum(40 + 25 * u) / SR) * u ** 1.2
+    return norm(0.5 * whine + 0.5 * air + 0.6 * sub, 0.9)
+
+
+def sfx_pressure(dur=4.0):
+    """Room pressure in total silence: a faint sub-50 Hz swell, felt more than heard."""
+    x = t(dur)
+    sub = np.convolve(rng.standard_normal(len(x)), np.ones(SR // 60) / (SR // 60), "same")
+    sub = band(sub, 18, 50) + 0.4 * np.sin(2 * np.pi * 38 * x) * (0.7 + 0.3 * np.sin(2 * np.pi * 0.23 * x))
+    return norm(sub * np.minimum(1, x / 0.6) * np.minimum(1, (dur - x) / 0.4 + 0.001), 0.8)
+
+
+def mimic_voice(s, semi=-6.0, keep=0.55, pre_echo=1.5, ring=0.15, crush=0.15, room=0.25):
+    """Something copying a character's own take (Ep6's unseen void "...Hi?"): the take pitched down `semi`
+    semitones with its length only partly stretched (`keep`: 1 keeps the length, 0 a plain slowed tape: the
+    voice still recognisably the Noob's, stretched wrong); a reverse-reverb pre-echo (`pre_echo` seconds of dark
+    hall, reversed) sucking in before the word; a ring-mod and bit-crush layer `ring`/`crush` wet (hollow,
+    digital); a dark room after."""
+    p = 2 ** (semi / 12)
+    slow = np.interp(np.linspace(0, len(s) - 1, int(len(s) / p)), np.arange(len(s)), s)   # down, longer
+    v = stretch(slow, (1 / p) ** keep)                                                    # partly back
+    i = np.arange(len(v))
+    rm = v * np.sin(2 * np.pi * 63 * i / SR)
+    cr = np.round(v / (np.max(np.abs(v)) or 1) * 12) / 12 * (np.max(np.abs(v)) or 1)
+    v = v * (1 - ring - crush) + ring * rm * 1.6 + crush * cr
+    n = int(pre_echo * SR)
+    ir = rng.standard_normal(n) * np.exp(-np.arange(n) / (0.38 * SR))
+    ir = np.convolve(ir, np.ones(24) / 24, "same")                       # a dark hall
+    wet = np.convolve(v[::-1], ir)[::-1]                                 # reversed: it swells into the word
+    lead = len(wet) - len(v)
+    wet = band(wet, 120, 3500)
+    wet = wet / (np.max(np.abs(wet)) or 1) * (np.max(np.abs(v)) or 1) * 0.55
+    out = wet.copy()
+    out[lead:] += v
+    m = int(1.2 * SR)
+    tail = rng.standard_normal(m) * np.exp(-np.arange(m) / (0.4 * SR))
+    tail = np.convolve(tail, np.ones(16) / 16, "same")
+    rm_ = np.convolve(out, tail)[:len(out) + m]
+    rm_ = rm_ / (np.max(np.abs(rm_)) or 1) * (np.max(np.abs(out)) or 1) * room
+    out = np.concatenate([out, np.zeros(m)])
+    out[:len(rm_)] += rm_[:len(out)]
+    f = int(0.3 * SR)
+    out[-f:] *= np.linspace(1, 0, f)
+    return norm(out, 0.95)
+
+
 SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0), e.get("step", 0.16)), "rumble_rise": lambda e: sfx_rumble_rise(e.get("dur", 2.0), e.get("smooth", False)), "chime": lambda e: sfx_chime(e.get("pitch", 1.0)), "scan": lambda e: sfx_scan(e.get("dur", 1.2)),
        "place": lambda e: sfx_place(), "roar": lambda e: sfx_roar(e.get("dur", 1.2)),
        "flaps": lambda e: sfx_flaps(e.get("dur", 2.0), e.get("rate", 1.3)), "suck": lambda e: sfx_suck(e.get("dur", 1.2)),
@@ -1679,7 +1749,8 @@ SFX = {"step": lambda e: sfx_step(), "run": lambda e: sfx_run(e.get("dur", 2.0),
        "land": lambda e: sfx_land(0.6), "fall": lambda e: sfx_fall(e.get("dur", 0.6)), "warp": lambda e: sfx_warp(e.get("dur", 0.7)),
        "erase": lambda e: sfx_erase(e.get("dur", 0.55), e.get("size", 1.0)), "btool": lambda e: sfx_btool(e.get("size", 1.0)),
        "slam": lambda e: sfx_slam(e.get("dur", 1.4)), "door": lambda e: sfx_door(e.get("dur", 1.6)),
-       "gust": lambda e: sfx_gust(e.get("dur", 2.4))}
+       "gust": lambda e: sfx_gust(e.get("dur", 2.4)), "fuse_rise": lambda e: sfx_fuse_rise(e.get("dur", 1.4)),
+       "turbine": lambda e: sfx_turbine(e.get("dur", 1.6)), "pressure": lambda e: sfx_pressure(e.get("dur", 4.0))}
 
 
 def _clip_file(path):
@@ -1911,6 +1982,9 @@ def build(episode_path, out_dir, keep=None):
         for ln in json.load(open(os.path.join(vdir, "timeline.json")))["lines"]:
             prep[ln["name"]] = np.asarray(vw[int(round(ln["start"] * SR)):int(round(ln["end"] * SR))], dtype=np.float64)
         print(f"voices from {vdir}: {sorted(prep)}")
+        for ev in ep["events"]:                  # a line copying another line's own take (processed when placed)
+            if "line" in ev and ev.get("mimic_of") in prep:
+                prep[ev["name"]] = prep[ev["mimic_of"]]
     need = [ev.get("name") for ev in ep["events"] if "line" in ev and not ev.get("unused")]
     for ev in ep["events"]:                      # a line re-recorded on purpose is never taken from the old voices
         if "line" in ev and ev.get("new_take"):
@@ -1984,6 +2058,8 @@ def build(episode_path, out_dir, keep=None):
                 audio = prep[pre_name]
                 if c.get("fx") == "patch":                  # Patch's machine voice on his reused takes too
                     audio = patch_voice(audio, soft=ev.get("patch_soft", False))
+                if ev.get("mimic_of"):                     # something copying that take (Ep6's void "...Hi?")
+                    audio = mimic_voice(audio, **ev.get("mimic", {}))
                 if ev.get("presence"):                     # urgency on a shouted take: dB at 2.5-4 kHz
                     audio = audio + (10 ** (ev["presence"] / 20) - 1) * band(audio, 2500, 4000)
                 if ev.get("gain_db"):                      # a take sat louder or softer in the scene
