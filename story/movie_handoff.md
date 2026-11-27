@@ -1,6 +1,72 @@
 # The movie: handoff brief
 
-> ## START HERE (a new chat, 2026-11-27 evening): the next job is Episode 8 (Episodes 6 and 7 are being finished in parallel)
+> ## START HERE (a new chat, 2026-11-27 night): the next job is the movie's FINALE 1/5 (Episode 8 is being finished in parallel)
+>
+> **Where things stand.** Ep6 and Ep7 are still being finished on `claude/movie-ep06` / `claude/movie-ep07` (their
+> renderers are not on those branches yet). **Ep8** (`claude/movie-ep08`) has its sound done and sent (`movie/ep08`,
+> 61.24 s, voices run 46064416479) but **no picture yet**: the renderer `src/lookdev/movie_ep08.py` is not written,
+> nothing has been rendered. The Ep8 chat goes on with it. **The finale 1/5 works on its own branch,
+> `claude/movie-finale1`, cut from `claude/movie-ep08`.** Before each push: `git fetch origin claude/movie-ep08` and
+> merge it in (it carries Ep6 and Ep7). Never push to the Ep6/7/8 branches. **Files you own:**
+> `episodes/movie_finale1_*.json`, `src/lookdev/movie_finale1.py` (and `movie_finale1_*.py` if you split it),
+> `story/movie/finale1_shots.md`, `movie/finale1*`. Shared code (`src/audio.py`, `src/music.py`,
+> `src/movie_assemble.py`, the rigs, the `ep10_*` renderers): add to it, never change what an existing option does
+> (the published finale parts must still render as they did). One CI run at a time across all chats.
+>
+> 1. Read the rules below (the Ep6 START HERE and the Ep8 START HERE still hold for every chapter: the loop, local
+>    stills, the environment "two-worlds-bot" + `pip install bpy soundfile scipy`, no model names, keep the original
+>    takes, decide without asking), then "Episode 8: how it was made" at the end of this file and
+>    `story/movie/ep08_shots.md` (how Ep8 hands over), `story/ep10_handoff.md` (how the finale was built),
+>    `story/ep10_finale_novel.md`, `story/ep10_upload.md`, and the finale part of `story/movie/ep00_shots.md` ("How the
+>    finale answers Episode 0": the finale must land on pictures Ep0 already showed).
+> 2. **What FINALE 1/5 is:** the published Short "The Glitch Said HI... Then It Chose the Noob (FINALE 1/5)" =
+>    **parts 1-3**, each already built in the new look, vertical:
+>    - P1 `episodes/ep10_p1_entrance.json`, `src/lookdev/ep10_entrance.py`, `preview-ep10_p1_entrance` (run
+>      42937616639, 7.08 s): Null's claws already through the small first portal's membrane (frame 1), grip and rip the
+>      frame, his head bursts out: "HI!".
+>    - P2 `episodes/ep10_p2_omg.json`, `src/lookdev/ep10_p2_omg.py` (imports `ep10_entrance`), `preview-ep10_p2_omg`
+>      (run 42952199184, 6.52 s): "Oh... My... God...", the foot sliding back, the Noob's "...Steve?".
+>    - P3 `episodes/ep10_p3_run.json`, `src/lookdev/ep10_p3_run.py`, `preview-ep10_p3_run` (run 43015597357, 17.92 s):
+>      "On my signal... we split." / "What's the signal?" / "RUN!", the slow-motion turn, the run, the fork round the
+>      oak, Null choosing the Noob.
+>    **The movie brief: the finale is reframed for 16:9 and re-rendered, not re-staged and not re-voiced.** Same
+>    story, lines, sound and timing; each part's finished soundtrack and `timeline.json` (its preview branch / run)
+>    are reused as they are (`prep_from=<the part's approved run>`, or a `prep_dir` folder in `movie/finale1`). What
+>    changes: the frame (16:9, `res * 16 // 9` as in `movie_ep00.py`, not `res * 9 // 16`), every camera reframed
+>    (wider, side-by-side staging, the world filling the sides), the Shorts packaging dropped (the "FINALE 1/5" badge,
+>    end cards), the captions and the REALITY HUD in the movie's landscape layout (`src/movie_assemble.py`,
+>    `movie_end`, `movie_id=movie_finale1`). Add an aspect switch to the `ep10_*` renderers (default vertical, so the
+>    published parts still render) or subclass them in `movie_finale1.py` by overriding the cameras; don't fork them.
+> 3. **The seam with Ep8 (the creator's Ep8 blueprint, 2026-11-27): Ep8 hard-cuts into P1's frame 1.** Ep8's last
+>    shot (5B) is a slow push-in on the freestanding obsidian portal blazing with the finale's violet plasma, dark oaks
+>    and snowy peaks behind, deep indigo twilight sky (#070B1A), violet bounce on the tall grass; a magenta crack
+>    ripples across the sheet; a stone groan starts 0.25 s (6 frames) before the cut and pre-laps Null's claws
+>    gripping the frame. REALITY 12% at Ep8's end. Check P1 against that before reframing anything:
+>    - P1 was built as "the small first portal in the forest under Null's storm". The creator wants **no visual
+>      seam**: same clearing, same portal (size, place, plasma), same light, the camera of P1's first shot on Ep8 5B's
+>      plane. Whichever chapter is off gets matched (P1's set is the reference Ep8 was told to match: the Ep8 chat
+>      builds on `ep10_entrance.build`; agree the portal's place and the 5B camera with that chat through the code,
+>      i.e. read `movie_ep08.py` once it is pushed).
+>    - The storm: if P1 opens under a full storm sky, the storm must be seen arriving (nothing appears from nowhere):
+>      it rolls in on P1's first second, or Ep8's twilight already carries it. Decide and write it in the shot list.
+>    - Who is in frame: Ep8 ends on Steve and the Noob (Patch landed with them at Ep8's start). P3 has Patch hovering
+>      behind them: make sure he is placed (and seen) in P1-P2 or arrives visibly.
+>    - Sound: Ep8's last 0.25 s is the stone groan; P1's soundtrack starts at its own 0: no double hit, no gap. The
+>      REALITY meter must read 12% (or the same value) on both sides of the cut.
+>    - Steve's empty hands, the Noob without the hammer (lost in Ep6) hold in the finale too: check the published
+>      parts for a pickaxe or hammer and remove it.
+> 4. **Episode 9 is not in the movie between Ep8 and the finale.** The published Ep9 ("Before the Finale",
+>    `episodes/ep09_before_finale.json`) is a recap for new Shorts viewers ("Hi, new people! You have no idea what's
+>    going on."), and the creator's Ep8 blueprint cuts Ep8 straight into P1. Its "the end AND the beginning" idea is
+>    already carried by Ep0 / the finale (one core, two perspectives). This was decided in the Ep8 chat from the
+>    creator's blueprint; if the creator says otherwise, it goes back in before the finale.
+> 5. The loop for this chapter: study the three published parts frame by frame (`tools/review_part.py <dir> <mp4>
+>    --every 0.125`) -> `story/movie/finale1_shots.md` (every shot, 16:9 framing decided) -> the chapter's sound
+>    (the three parts' finished mixes joined on their own timing: no re-voicing; a joined `timeline.json`; send it as
+>    the sound preview) -> the reframed renderer(s) -> local stills (360p, 8 samples, one per shot; side by side with
+>    the published frames) -> one CI preview -> send it -> notes -> fixes by range -> a section at the end of this file.
+
+> ## (earlier) START HERE (a new chat, 2026-11-27 evening): the next job is Episode 8 (Episodes 6 and 7 are being finished in parallel)
 >
 > **Three chats are working at once.** Ep6 is finished on `claude/movie-ep06`, Ep7 on `claude/movie-ep07` (cut
 > from Ep6). **Episode 8 works on its own branch, `claude/movie-ep08`, cut from `claude/movie-ep07`.** Before each
