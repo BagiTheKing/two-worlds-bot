@@ -45,14 +45,20 @@ HOVER = 0.15                             # its bottom above the terrace
 N_LOOK = Vector((-5.75, -1.0, 0.0))      # the Noob crouching to it ("A secret block!")
 POKE_N = Vector((-5.42, -1.2, 0.0))      # stepping in to poke
 CHOP_N = Vector((-5.78, -1.32, 0.0))     # the karate chop (it is 0.85 m now)
-WIND_N = Vector((-6.5, -1.15, 0.0))      # the third swing, wound up (1.45 m now)
+WIND_N = Vector((-6.75, -1.05, 0.0))     # the third swing, wound up (1.45 m now): an arm's length clear of it
 REACT_N = Vector((-6.95, -0.8, 0.0))     # he hops back from Patch
+STEVE_CLEAR = Vector((-2.5, -2.25, 0.0))  # Steve's step back out from under the shuddering dragon (clear of the stones)
 STEVE_EDGE = Vector((-2.55, -1.0, 0.0))  # Steve at the grey pad's west edge, across the 1 m gap
 STEVE_BACK = Vector((-2.1, -1.3, 0.0))   # his half step back when Patch appears
 P_OUT = Vector((-1.6, 4.3, 3.3))         # Patch, just out of the portal's membrane (y 4.6, facing -y)
 P_STOP = Vector((-5.98, -1.2, 1.55))     # between the fist and the cube
 P_SCAN = Vector((-4.25, -3.3, 1.6))      # the front right of the cube: a clear line to it
-P_TWIST = Vector((-5.45, -3.0, 1.85))     # drifting closer to the Noob
+P_TURN = Vector((-6.1, -2.4, 1.75))      # recognising him, it drifts close to the Noob
+P_TWIST = Vector((-6.0, -2.6, 1.95))     # the two-shot: between the Noob and Steve, clear of Steve's silhouette
+# the Noob's faces (the creator, 2026-11-27: happy lines need a happy face, an open smile; sad only for "You do?")
+JOY = {"both_h": 1.95, "both_w": 1.05, "both_bm": 0.2, "both_py": 0.3, "m_arch": -1.2, "m_w": 2.6, "m_o": 0.55,
+       "m_up": 0.6, "m_r": 0.4, "m_vee": 0.0, "_joy": 1}
+GRIN = {"both_h": 1.8, "both_bm": 0.3, "m_arch": -0.9, "m_w": 2.3, "m_o": 0.3, "m_up": 0.7, "m_vee": 0.0, "_joy": 1}
 
 
 def b(name, i=0):
@@ -230,7 +236,8 @@ def _patch(E):
     E.sc.collection.objects.link(lo)
     lo.parent = E.PA.root
     lo.location = (0, -0.32, 0.0)
-    lo.rotation_euler = (math.radians(90), 0, 0)                 # facing -y, with the screen
+    lo.rotation_euler = (math.radians(-90), 0, 0)                # emitting toward -y, away from the screen (it used to
+                                                                  # face into the glossy screen and wash the eye out)
     E.PA.glow = lo
 
 
@@ -306,7 +313,20 @@ def prepare(E):
     ep3_world(E, 0.0)
     _use(E, 3)
     E3.steve(E, E.T3)
-    E3.noob(E, E.T3)
+    cap = {}
+    set0 = M.set_noob
+
+    def keep(E_, loc, yaw, pz, face, t, **kw):                    # the Noob's pose on the neck (the slide starts there)
+        if kw.get("N") is None:
+            cap["pz"] = dict(pz)
+        return set0(E_, loc, yaw, pz, face, t, **kw)
+    M.set_noob = keep
+    try:
+        E3.noob(E, E.T3)
+    finally:
+        M.set_noob = set0
+    E.e3_pz = {k: v for k, v in cap.get("pz", {}).items() if k != "root_yaw"}
+    E.noob_scale0 = getattr(E, "noob_scale0", E.N.root.scale[0])
     bpy.context.view_layer.update()
     E.cam_open = E3._neck_side(E, 26, dist=8.5)
     _use(E, 4)
@@ -319,13 +339,26 @@ def prepare(E):
     rnd = random.Random(5)
     E.shell = []
     far = 0.0
+    # the shell's own crystal: the frozen players' material with about 70% fewer pink/cyan flecks and a softer glow
+    # (the creator, 2026-11-27: the dense confetti behind every close-up competed with the faces)
+    sm = E.cry_mat.copy()
+    sm.name = "glitch_crystal_shell"
+    for n_ in sm.node_tree.nodes:
+        if n_.type == "VALTORGB":
+            els = n_.color_ramp.elements
+            els[2].position = 0.75                               # the cyan first (the ramp keeps its order)
+            els[1].position = 0.71                               # then the pink
+        if n_.type == "BSDF_PRINCIPLED":
+            n_.inputs["Emission Strength"].default_value = 0.55
+    E.shell_mat = sm
+    E.burst_scale = {k: tuple(o.scale) for k, o in E.burst_parts.items()}
     for ob in D.meshes:
         c = ob.matrix_world @ (sum((Vector(v) for v in ob.bound_box), Vector()) / 8)
         far = max(far, (c - E.d_root).length)
         sh = bpy.data.objects.new(ob.name + "_crystal", ob.data)
         E.sc.collection.objects.link(sh)
         sh.material_slots[0].link = "OBJECT"
-        sh.material_slots[0].material = E.cry_mat
+        sh.material_slots[0].material = E.shell_mat
         sh.matrix_world = Matrix.Translation(c) @ Matrix.Scale(1.07, 4) @ Matrix.Translation(-c) @ ob.matrix_world
         sh.hide_render = True
         E.shell.append((sh, c, (c - E.d_root).length, rnd.uniform(-0.08, 0.08), Matrix(sh.matrix_world)))
@@ -428,15 +461,19 @@ def tether(E, t):
         return
     rb, big = on
     u = (t - b(rb) - 0.1) / 0.5
-    a = RING + Vector((0, 0, 0.25))
     c = cube_centre(E, t)
+    s = cube_size(t)
+    d = Vector((c.x - RING.x, c.y - RING.y, 0)).normalized()
+    a = RING + d * 0.82 + Vector((0, 0, 0.07))                   # out of the ring's neon edge, never out of the Noob
     sp = E.teth.data.splines[0]
     p0, p1 = sp.bezier_points
-    reach = min(1.0, u / 0.35)                                   # it shoots from the ring to the cube, then holds
-    end = a.lerp(c, reach)
-    up = Vector((0, 0, 1.3 + 0.4 * big))
-    p0.co, p0.handle_left, p0.handle_right = a, a, a + up
-    p1.co, p1.handle_right, p1.handle_left = end, end, end + up * 0.7
+    reach = min(1.0, u / 0.35)                                   # it runs from the ring to the cube, then holds
+    tip = c - d * (s / 2) + Vector((0, 0, -0.1 * s))             # into the cube's near face
+    end = a.lerp(tip, reach)
+    span = (end - a).length
+    up = Vector((0, 0, 0.35 + 0.15 * big))                       # a low arc skimming the floor
+    p0.co, p0.handle_left, p0.handle_right = a, a, a + d * span * 0.4 + up
+    p1.co, p1.handle_right, p1.handle_left = end, end, end - d * span * 0.35 + up * 0.6
     E.teth.data.bevel_depth = (0.05 if big else 0.035) * (1 + 0.3 * math.sin(t * 60))
     E.teth.hide_render = int(round(t * FPS)) % 5 == 4            # a flicker
     E.teth_map.inputs["Location"].default_value = (-3.0 * t, 0, 0)
@@ -530,9 +567,39 @@ def _patch_keys():
         (T("patch_in") + 1.75, P_STOP),
         (T("scan") + 0.05, P_STOP),
         (T("scan") + 0.85, P_SCAN),
-        (T("drift"), P_SCAN),
+        (T("turn") + 0.45, P_SCAN),
+        (T("turn") + 1.6, P_TURN),                                # recognising him: it drifts in close
+        (T("drift"), P_TURN),
         (T("drift", 1), P_TWIST),
     ]
+
+
+LINES_P = ("patch_stop", "patch_name", "patch_feed", "patch_grows", "patch_know", "patch_deleted")
+
+
+def _speaking(t, who_lines, pre=0.15, post=0.25):
+    return any(b(x) - pre <= t < b(x, 1) + post for x in who_lines)
+
+
+def _patch_yaw(E, t, p, v, cam):
+    """Where Patch faces: along its flight; the Noob (or the cube while scanning, Steve on his "No."), always cheated
+    toward the camera, most while it talks, so its screen reads three-quarter front (never its blank side)."""
+    N_ = (REACT_N if t >= b("react") else WIND_N) + Vector((0, 0, 1.3))
+    if t < b("patch_in") + 1.75 and v.length > 0.6:
+        tgt = p + v
+    elif b("scan") + 0.3 <= t < b("patch_feed") - 0.1:
+        tgt = cube_centre(E, t)
+    elif b("sigh") <= t < b("turn"):
+        tgt = gp(E, STEVE_BACK) + Vector((0, 0, 1.5))
+    else:
+        tgt = N_
+    to = tgt - p
+    yaw = _yaw(Vector((to.x, to.y, 0)))
+    if t >= b("patch_stop") and not (b("scan") + 0.3 <= t < b("patch_feed") - 0.1):
+        tc = cam - p
+        k = 0.6 if _speaking(t, LINES_P) else 0.3
+        yaw = yaw + _wrap(_yaw(Vector((tc.x, tc.y, 0))) - yaw) * k
+    return yaw
 
 
 def patch_pos(t):
@@ -564,35 +631,34 @@ def patch(E, t):
     v = (patch_pos(t + dt) - patch_pos(t - dt)) / (2 * dt)
     a = (patch_pos(t + dt) - 2 * p + patch_pos(t - dt)) / (dt * dt)
     bob = 0.05 * math.sin(t * 2.4) + 0.02 * math.sin(t * 5.3 + 1)
-    N_ = (REACT_N if t >= b("react") else WIND_N) + Vector((0, 0, 1.3))
     cam = Vector(E.cam_loc_now)
-    # where it looks: along its flight, then at the Noob (cheated a little toward the camera so the eye reads)
-    tgt = N_
-    if b("scan") + 0.3 <= t < b("patch_feed") + 0.2:
-        tgt = cube_centre(E, t)
-    if t < b("patch_in") + 1.75 and v.length > 0.6:
-        tgt = p + v
-    to = tgt - p
-    yaw = _yaw(Vector((to.x, to.y, 0)))
-    if b("patch_stop") <= t < b("turn") + 0.2 and not (b("scan") + 0.3 <= t < b("patch_feed") + 0.2):
-        tc = cam - p
-        yaw = yaw + _wrap(_yaw(Vector((tc.x, tc.y, 0))) - yaw) * 0.35
-    if t >= b("turn") + 0.2:                                      # the sharp turn to the Noob
-        tc = cam - p
-        yaw = yaw + _wrap(_yaw(Vector((tc.x, tc.y, 0))) - yaw) * 0.3
-    # a drone: leaning into its acceleration (pitch forward, bank into turns), settling with a counter-tilt
+    yaw = _patch_yaw(E, t, p, v, cam)
+    T0 = b("turn")
+    if T0 - 0.05 <= t < T0 + 0.6:                                 # the sharp turn: whip round, overshoot, settle
+        y0 = _patch_yaw(E, T0 - 0.06, patch_pos(T0 - 0.06), Vector(), cam)
+        y1 = _patch_yaw(E, T0 + 0.6, patch_pos(T0 + 0.6), Vector(), cam)
+        yaw = y0 + _wrap(y1 - y0) * _back((t - T0) / 0.3)
+    # a drone: nose down as it speeds forward, nose up to brake, banking into turns
     fw = Vector((math.sin(math.radians(yaw)), -math.cos(math.radians(yaw)), 0))
     side = Vector((-fw.y, fw.x, 0))
-    pitch = _clamp(-a.dot(fw) * 0.9 - v.dot(fw) * 4.0, -16, 16)
+    pitch = _clamp(a.dot(fw) * 0.6 + v.dot(fw) * 3.0, -16, 16)
     roll = _clamp(a.dot(side) * 0.9, -16, 16)
+    if b("scan") + 0.6 <= t < b("patch_feed") - 0.1:              # aiming down into the cube's centre
+        c = cube_centre(E, t)
+        d = c - p
+        aim = math.degrees(math.atan2(-d.z, Vector((d.x, d.y, 0)).length))
+        pitch += aim * ss(b("scan") + 0.6, b("scan") + 0.85, t) * (1 - ss(b("patch_feed") - 0.35, b("patch_feed") - 0.1, t))
+    if T0 <= t < T0 + 0.5:                                        # recoil: a small tip back as it recognises him
+        pitch -= 9 * math.sin(math.pi * (t - T0) / 0.5)
     pop = 1.0
     if t < t_in + 0.25:                                           # squeezing out: a pop with an overshoot
         pop = _back((t - t_in) / 0.25)
     P.root.location = p + Vector((0, 0, bob))
     P.root.rotation_euler = (math.radians(pitch), math.radians(roll), math.radians(yaw))
     P.root.scale = (pop, pop, pop)
+    flare = 25 * math.exp(-((t - T0 - 0.15) / 0.2) ** 2)           # the fins flare on the recognition
     for side_, sx in (("l", -1), ("r", 1)):
-        P.fins[side_].rotation_euler = (math.radians(8 * math.sin(t * 9 + sx) + pitch * 0.6), 0, 0)
+        P.fins[side_].rotation_euler = (math.radians(8 * math.sin(t * 9 + sx) + pitch * 0.6 - flare), 0, 0)
     # the eye
     talk = 0.0
     mo = E.mouth.get("patch", {})
@@ -606,21 +672,27 @@ def patch(E, t):
             "glitch": 0.0, "scan": 0.0, "smile": 0.0, "sad": 0.0}
     if b("patch_stop") <= t < b("patch_stop", 1) + 0.2:          # annoyed
         vals["squint"] = 0.6
-    if b("scan") + 0.7 <= t < b("scan") + 1.7:
+    if b("scan") + 0.95 <= t < b("scan") + 1.75:                  # the beam only once parked and aimed
         vals["scan"] = 1.0
-    if b("turn") + 0.45 <= t:                                     # recognition: dilates, a scanline flicker, freezes
-        u = ss(b("turn") + 0.45, b("turn") + 0.6, t)
-        vals["wide"] = 1.0 * u
-        vals["open"] = 1.0
-        g = b("turn") + 0.55 <= t < b("turn") + 0.8
-        vals["glitch"] = (0.8 if (f % 2) else 0.3) if g else 0.0
-        vals["look_x"] = 0.0
+    if b("scan") + 0.6 <= t < b("scan") + 0.95:
+        vals["squint"] = 0.35                                     # focusing
+    if b("turn") + 0.2 <= t:                                      # recognition: the eye widens (not blown out), a
+        u = ss(b("turn") + 0.2, b("turn") + 0.4, t)               # short scanline stutter, then a slow look
+        vals["wide"] = 0.55 * u
+        vals["open"] = max(0.05, 1 - blink) if t > b("turn") + 1.2 else 1.0
+        g = b("turn") + 0.3 <= t < b("turn") + 0.5
+        vals["glitch"] = (0.6 if (f % 2) else 0.2) if g else 0.0
+        vals["look_y"] = -0.15 * math.sin(t * 0.9)
+        vals["look_x"] = 0.12 * math.sin(t * 0.7)
     if b("drift") <= t:                                           # dim and soft
-        vals["wide"] = 0.6
-        vals["sad"] = 0.3
-        vals["open"] = max(0.05, 1 - blink)
+        vals["wide"] = 0.3
+        vals["sad"] = 0.35
+        vals["open"] = max(0.05, 0.85 - blink)
     set_patch(P, vals)
-    P.glow.data.energy = 12.0 * (0.6 if b("drift") <= t else 1.0) * pop
+    if vals["scan"] > 0.5:                                        # the beam ends in the cube (not through it)
+        dist = (cube_centre(E, t) - p).length
+        P.beam.scale = (1.0, dist / (3.0 * 0.42 * 3), 1.0)
+    P.glow.data.energy = 8.0 * (0.6 if b("drift") <= t else 1.0) * pop
 
 
 def warp(E, t):
@@ -640,217 +712,467 @@ def warp(E, t):
         p.hide_render = u > 0.8
 
 
+# ------------------------------------------------------------------ the cast: shared helpers
+HC = 1.0                                  # the Noob's body centre above his feet (m): he turns about it bouncing up
+SLIDE_D = Vector((-0.738, -0.674, 0.0))   # off the neck's west side, toward the terrace (across the neck's line)
+
+
+def _blend(a, c, k):
+    out = {}
+    for key in set(a) | set(c):
+        va, vc = a.get(key), c.get(key)
+        if isinstance(va, dict) or isinstance(vc, dict):
+            out[key] = _blend(va or {}, vc or {}, k)
+        else:
+            out[key] = lerp(va or 0.0, vc or 0.0, k)
+    return out
+
+
+def _stride(pz, t, t0, t1, a, c, amp=24.0, stride=0.5, steve=False):
+    """Walk from a to c, eased in and out. The legs swing with the speed (still at the start and the end, never
+    held apart); the Noob Roblox style (stiff legs, the arms swinging against them), Steve his own cycle."""
+    x = _clamp((t - t0) / max(1e-3, t1 - t0), 0.0, 1.0)
+    u = x * x * (3 - 2 * x)
+    p = a.lerp(c, u)
+    dist = (c - a).length
+    k = min(1.0, 6 * x * (1 - x) / 1.5) * min(1.0, dist / 0.6)
+    ph = math.pi * dist * u / stride
+    if steve:
+        pz.update(M.run_cycle(ph, 0.4 * k, True))
+        return p
+    sw = math.sin(ph)
+    pz["leg_sl"] = {"fwd": amp * k * sw}
+    pz["leg_sr"] = {"fwd": -amp * k * sw}
+    pz["arm_sl"] = {"fwd": -0.9 * amp * k * sw, "out": 8}
+    pz["arm_sr"] = {"fwd": 0.9 * amp * k * sw, "out": 8}
+    pz["chest_lean"] = pz.get("chest_lean", 0) + 5 * k
+    return p + Vector((0, 0, 0.04 * k * abs(sw)))
+
+
+def _look_mix(yaw, p, a, c, k, h=1.6, lim=70.0):
+    t1, n1 = _look(yaw, p, a, h=h, lim=lim)
+    t2, n2 = _look(yaw, p, c, h=h, lim=lim)
+    return lerp(t1, t2, k), lerp(n1, n2, k)
+
+
+def _turn_to(y0, y1, k):
+    return y0 + _wrap(y1 - y0) * k
+
+
+def _set_noob(E, loc, yaw, pz, face, t):
+    """M.set_noob, keeping a happy face happy while he talks (the voice opens the mouth; the smile stays)."""
+    from noob import pose_noob
+    from faceplate import set_face, MOUTH_DEFAULTS, NOOB_EYES, NOOB_EYE_DEFAULTS, NOOB_MOUTH
+    from ep09_new import talk
+    face = dict(face)
+    joy = face.pop("_joy", 0)
+    N = E.N
+    pz = dict(pz)
+    pz["root_yaw"] = yaw
+    pose_noob(N, pz)
+    N.root.location = loc
+    fn = {f"{e}_{k}": v for e in NOOB_EYES for k, v in NOOB_EYE_DEFAULTS.items()}
+    fn.update(MOUTH_DEFAULTS)
+    fn.update(NOOB_MOUTH)
+    fn.update(M._face(NOOB_EYES, NOOB_EYE_DEFAULTS, face))
+    talk(fn, E.mouth.get("noob", {}).get(int(round(t * FPS))))
+    if joy:
+        fn["m_arch"] = min(fn["m_arch"], -0.85)
+        fn["m_vee"] = 0.0
+    set_face(N.face, fn)
+
+
+def _up(theta, yaw):
+    """The body's long axis for a root turned (theta about x, then yaw): pitch 90 lies him face down, head forward."""
+    th, y = math.radians(theta), math.radians(yaw)
+    v = Vector((0, -math.sin(th), math.cos(th)))
+    return Vector((v.x * math.cos(y) - v.y * math.sin(y), v.x * math.sin(y) + v.y * math.cos(y), v.z))
+
+
 # ------------------------------------------------------------------ the Noob
+def _fall_times():
+    t_slide = b("tearoff") + 0.25
+    land = b("fall") + 0.85
+    return t_slide, land
+
+
+def _land_yaw():
+    return _yaw(SLIDE_D)                                          # head first, the way he was flung
+
+
+def _slide_end(E):
+    return E.n0 + SLIDE_D * 0.55 + Vector((0, 0, -0.35))
+
+
+def _fall_split(E):
+    """When the slide ends and the drop starts: the drop is a plain fall (no throw upward), timed to land on the beat."""
+    t_slide, land = _fall_times()
+    p1 = _slide_end(E)
+    vd = 1.2
+    dz = p1.z - 0.22
+    T = (-vd + math.sqrt(vd * vd + 2 * 9.81 * dz)) / 9.81
+    return max(t_slide + 0.25, land - T), vd
+
+
+def _feet_land():
+    y = _land_yaw()
+    return RING - Vector((math.sin(math.radians(y)), -math.cos(math.radians(y)), 0)) * HC
+
+
 def _noob_fall(E, t):
-    """Flung off the neck at the shudder: up a little, a tumble, a belly-flop onto the spawn ring."""
-    t0, t1 = b("tearoff") + 0.25, b("fall") + 0.85
-    T = t1 - t0
-    u = (t - t0) / T
-    a = E.n0
-    vz = (0.0 - a.z + 4.9 * T * T) / T
-    tt = u * T
-    p = a.lerp(RING, u)
-    p.z = a.z + vz * tt - 4.9 * tt * tt
-    return p, u
+    """Off the neck: he slides down its side clawing at it, slips off and drops (arms windmilling, legs kicking),
+    turning only as far as a belly-flop needs; head first, the way he was flung."""
+    from mathutils import Euler
+    N = E.N
+    t_slide, land = _fall_times()
+    t_drop, vd = _fall_split(E)
+    q0 = Euler(E.n0_rot, "XYZ").to_quaternion()
+    q1 = Euler((math.radians(90), 0, math.radians(_land_yaw())), "XYZ").to_quaternion()
+    flail = {"arm_sl": {"fwd": 150 + 35 * math.sin(t * 13), "out": 45}, "arm_sr": {"fwd": 130 + 35 * math.sin(t * 13 + 2.2), "out": 55},
+             "leg_sl": {"fwd": 25 * math.sin(t * 11)}, "leg_sr": {"fwd": -25 * math.sin(t * 11)}, "head_nod": -15}
+    if t < t_drop:                                                 # the slide down the neck's side
+        x = (t - t_slide) / (t_drop - t_slide)
+        e = x * x
+        p = E.n0 + SLIDE_D * 0.55 * e + Vector((0, 0, -0.35 * e))
+        pz = _blend(E.e3_pz, flail, ss(0.0, 0.6, x))
+        q = q0.slerp(q1, 0.2 * e)
+    else:                                                          # the drop
+        tau = t - t_drop
+        T = land - t_drop
+        p1 = _slide_end(E)
+        L = _feet_land() + Vector((0, 0, 0.22))
+        v1 = SLIDE_D * (2 * 0.55 / (t_drop - t_slide))
+        acc = 2 * (Vector((L.x - p1.x, L.y - p1.y, 0)) - v1 * T) / (T * T)
+        p = p1 + v1 * tau + acc * (0.5 * tau * tau)
+        p.z = p1.z - vd * tau - 4.905 * tau * tau
+        pz = flail
+        u = tau / T
+        q = q0.slerp(q1, 0.2 + 0.8 * (u * u * (3 - 2 * u)))
+        if u > 0.75:                                               # bracing for the flop: arms forward
+            pz = _blend(flail, {"arm_sl": {"fwd": 170, "out": 30}, "arm_sr": {"fwd": 170, "out": 30}}, ss(0.75, 1.0, u))
+    M.set_noob(E, p, 0.0, pz, dict(_nf("shock")), t)
+    N.root.rotation_mode = "QUATERNION"
+    N.root.rotation_quaternion = q
+
+
+def _nf(name):
+    from ep09_new import NF
+    return NF[name]
+
+
+def _get_up(E, t):
+    """Belly-flop on the ring (a squash, a bounce), then up in eight frames: a push off the floor, a hop about his
+    middle onto his feet, a squash on landing. Returns True while it is running."""
+    N = E.N
+    _, land = _fall_times()
+    dt = t - land
+    y = _land_yaw()
+    F = _feet_land()
+    s0 = E.noob_scale0
+    N.root.rotation_mode = "XYZ"
+    if dt < 0.4:                                                   # flat on the ring
+        pz = {"arm_sl": {"fwd": 170, "out": 30}, "arm_sr": {"fwd": 170, "out": 30}, "head_nod": -20}
+        M.set_noob(E, F + Vector((0, 0, 0.1 * math.sin(min(dt, 0.22) / 0.22 * math.pi))), y, pz, dict(_nf("shock")), t)
+        _lie(N.root, 90.0)
+        sq = 1 - 0.14 * math.exp(-dt * 12)
+        N.root.scale = (s0 / sq ** 0.5, s0 / sq ** 0.5, s0 * sq)
+        return True
+    if dt < 0.52:                                                  # the push: arms press down, the chest comes up
+        u = ss(0.4, 0.52, dt)
+        th = 90 - 18 * u
+        pz = {"arm_sl": {"fwd": 170 - 80 * u, "out": 30 - 15 * u}, "arm_sr": {"fwd": 170 - 80 * u, "out": 30 - 15 * u},
+              "head_nod": -20 - 10 * u}
+        M.set_noob(E, F + Vector((0, 0, 0.22 * math.sin(math.radians(th)))), y, pz, dict(_nf("confused")), t)
+        N.root.rotation_euler = (math.radians(th), 0, math.radians(y))
+        return True
+    if dt < 0.85:                                                  # the hop about his middle onto his feet
+        u = ss(0.52, 0.85, dt)
+        th = 72 * (1 - u)
+        c0 = F + _up(72, y) * HC + Vector((0, 0, 0.22 * math.sin(math.radians(72))))
+        c1 = RING + Vector((0, 0, HC))
+        c = c0.lerp(c1, u) + Vector((0, 0, 0.3 * math.sin(math.pi * u)))
+        feet = c - _up(th, y) * HC
+        pz = {"arm_sl": {"fwd": 90 * (1 - u), "out": 15 + 55 * math.sin(math.pi * u)},
+              "arm_sr": {"fwd": 90 * (1 - u), "out": 15 + 55 * math.sin(math.pi * u)},
+              "leg_sl": {"fwd": 10 * math.sin(math.pi * u)}, "leg_sr": {"fwd": -6 * math.sin(math.pi * u)}}
+        M.set_noob(E, feet, y, pz, dict(_nf("shock")), t)
+        N.root.rotation_euler = (math.radians(th), 0, math.radians(y))
+        return True
+    return False
+
+
+def _burst4(E, dt, span, seed):
+    """He comes apart Roblox style: head, torso, both arms, both legs, each flung on its own (in world space, so no
+    part drags another), tumbling, shrinking away to nothing exactly as he respawns (`span` after the death)."""
+    if dt < 0:
+        return
+    bpy.context.view_layer.update()
+    order = ["torso", "neck", "arm_sl", "arm_sr", "leg_sl", "leg_sr"]
+    home = {k: E.burst_parts[k].matrix_world.copy() for k in order}
+    rnd = random.Random(seed)
+    away = Vector((E.N.root.location.x - CUBE.x, E.N.root.location.y - CUBE.y, 0)).normalized()
+    a0 = math.atan2(away.y, away.x)
+    s = 1.0 - ss(span - 0.28, span, dt)
+    mid = Vector(E.N.root.location) + Vector((0, 0, 1.0))
+    drag = 3.5                                                     # a pop: fast out of his middle, then slowing
+    reach = (1 - math.exp(-drag * dt)) / drag
+    for i, k in enumerate(order):
+        loc, rot, sc = home[k].decompose()
+        out = loc - mid
+        out.z = 0
+        out = out.normalized() if out.length > 1e-3 else away
+        a = math.atan2(out.y, out.x) * 0.6 + a0 * 0.4 + math.radians(rnd.uniform(-35, 35))
+        dev = _wrap(math.degrees(a - a0))                         # never back over the cube
+        if abs(dev) > 75:
+            a = a0 + math.radians(75 if dev > 0 else -75)
+        sp = rnd.uniform(3.0, 4.2)
+        v = Vector((math.cos(a) * sp, math.sin(a) * sp, rnd.uniform(2.4, 3.4) + (1.2 if k == "neck" else 0.0)))
+        if k.startswith("leg"):
+            v.z *= 0.6
+        ax = Vector((rnd.uniform(-1, 1), rnd.uniform(-1, 1), rnd.uniform(-1, 1))).normalized()
+        w = rnd.uniform(7.0, 12.0) * (1 if rnd.random() < 0.5 else -1)
+        pos = loc + v * reach + Vector((0, 0, -3.5 * dt * dt))
+        pos.z = max(pos.z, 0.05)                                   # they hit the floor, they do not sink
+        q = Quaternion(ax, w * dt) @ rot
+        E.burst_parts[k].matrix_world = Matrix.LocRotScale(pos, q, sc * max(0.001, s))
+        if i == 0:
+            bpy.context.view_layer.update()
+    for ob in E.N.root.children_recursive:
+        ob.hide_render = s < 0.02
+    _dark_cube(E, dt, Vector(E.N.root.location))
+
+
+def _burst_reset4(E):
+    E3._burst_reset(E)
+    for k, o in E.burst_parts.items():
+        o.scale = E.burst_scale[k]
 
 
 def noob(E, t):
-    from ep09_new import NF
     N = E.N
-    HYPE = E3.HYPE
-    E3._burst_reset(E)
-    face = dict(NF["happy"])
+    _burst_reset4(E)
+    E.N.root.rotation_mode = "XYZ"
+    face = dict(_nf("happy"))
     pz = {"arm_sl": {"out": 8, "fwd": 4}, "arm_sr": {"out": 8, "fwd": 4}}
-    t_fly = b("tearoff") + 0.25
-    land = b("fall") + 0.85
+    t_slide, land = _fall_times()
     cube_c = cube_centre(E, t) or CUBE
-    if t < t_fly:                                                 # on the neck, jolted by the shudder
+    if t < t_slide:                                               # on the neck, jolted by the shudder
         _use(E, 3)
         E3.noob(E, E.T3)
         _use(E, 4)
         if t > b("tearoff"):
             N.root.location = Vector(N.root.location) + Vector((0, 0, 0.12 * math.sin((t - b("tearoff")) * 40)))
         return
-    if t < land:                                                  # flung, tumbling
-        p, u = _noob_fall(E, t)
-        pz = {"arm_sl": {"fwd": 150, "out": 70}, "arm_sr": {"fwd": 150, "out": 70}, "leg_sl": {"fwd": 30, "out": 20},
-              "leg_sr": {"fwd": -20, "out": 20}}
-        yaw = _face_to(E.n0, RING)
-        M.set_noob(E, p, yaw, pz, dict(NF["shock"]), t)
-        pitch = 90 + 360 * (1 - u) * 1.0
-        N.root.rotation_euler = (math.radians(pitch), 0, math.radians(yaw))
+    if t < land:
+        _noob_fall(E, t)
         return
-    dt = t - land
-    yaw_cube = _face_to(RING, cube_c)
-    if dt < 0.5:                                                  # belly-flop: flat on the ring, a bounce
-        pz = {"arm_sl": {"fwd": 170, "out": 40}, "arm_sr": {"fwd": 170, "out": 40}}
-        M.set_noob(E, RING + Vector((0, 0, 0.12 * math.sin(min(dt, 0.25) / 0.25 * math.pi))), yaw_cube, pz,
-                   dict(NF["shock"]), t)
-        _lie(N.root, 90.0)
-        sq = 1 - 0.12 * math.exp(-dt * 10)
-        s0 = getattr(E, "noob_scale0", N.root.scale[0])
-        N.root.scale = (s0 / sq ** 0.5, s0 / sq ** 0.5, s0 * sq)
+    if _get_up(E, t):
         return
-    if dt < 0.85:                                                 # pops up onto his feet
-        u = ss(0.5, 0.8, dt)
-        p = RING + Vector((0, 0, 0.25 * math.sin(u * math.pi)))
-        M.set_noob(E, p, yaw_cube, {"arm_sl": {"out": 60 * (1 - u)}, "arm_sr": {"out": 60 * (1 - u)}}, dict(NF["happy"]), t)
-        N.root.rotation_euler = (math.radians(90 * (1 - u)), 0, N.root.rotation_euler[2])
-        return
-    # standing from here: where he is, where he faces
-    p, yaw = RING.copy(), yaw_cube
-    up = Vector(E.D.root.location) + Vector((0, 0, 1))
-    if t < b("crystal") + 1.05:                                   # he looks up at the dragon being sealed
-        tl, nd = _look(yaw, p, up, h=1.4)
-        k = ss(land + 0.85, land + 1.1, t)
+    up_t = land + 0.85                                            # on his feet
+    _squash(E, t - up_t, grow=False)
+    p, yaw = RING.copy(), _land_yaw()
+    if t < b("crystal") + 1.05:                                   # looks up at the dragon being sealed
+        dragon_up = Vector(E.D.root.location) + Vector((0, 0, 0.5))
+        yaw = _turn_to(_land_yaw(), _face_to(RING, dragon_up), 0.45 * ss(up_t + 0.1, up_t + 0.5, t))
+        tl, nd = _look(yaw, p, dragon_up, h=1.4)
+        k = ss(up_t + 0.05, up_t + 0.35, t)
         pz["head_turn"], pz["head_nod"] = tl * k, nd * k
-        face = dict(NF["awe"])
+        pz["chest_lean"] = -6 * k
+        face = dict(_nf("awe"))
     elif t < b("noob_secret"):                                    # spots the cube; hurries over
-        u = ss(b("crystal") + 1.1, b("noob_secret") - 0.05, t)
-        p = RING.lerp(N_LOOK, u)
-        yaw = _face_to(RING, N_LOOK)
-        if 0.02 < u < 0.98:
-            _run(pz, t, b("crystal") + 1.1, 2.6, k=0.7, steve=False)
-        face = dict(HYPE)
-    elif t < b("poke1"):                                          # crouched to it: "A secret block!", reaching
+        t0 = b("crystal") + 1.05
+        y0 = _turn_to(_land_yaw(), _face_to(RING, Vector(E.D.root.location)), 0.45)
+        yaw = _turn_to(y0, _face_to(RING, N_LOOK), ss(t0, t0 + 0.2, t))
+        p = _stride(pz, t, t0 + 0.05, b("noob_secret") - 0.02, RING, N_LOOK, amp=26, stride=0.45)
+        face = dict(GRIN)
+    elif t < b("poke1"):                                          # "A secret block!": bent over it, bouncing, delighted
         p = N_LOOK.copy()
         yaw = _face_to(p, cube_c)
         cr = ss(b("noob_secret"), b("noob_secret") + 0.3, t)
-        pz.update({"hips_drop": 0.28 * cr, "chest_lean": 28 * cr, "head_nod": 12 * cr,
-                   "arm_sl": {"fwd": 25, "out": 20}, "arm_sr": {"fwd": 25, "out": 20}})
-        face = dict(NF["awe"])
-        if t >= b("lean"):
+        tl, nd = _look(yaw, p, cube_c, h=1.4)
+        pz.update({"chest_lean": 14 * cr, "head_nod": nd * 0.5 * cr, "head_turn": tl,
+                   "arm_sl": {"fwd": 35 * cr, "out": 22}, "arm_sr": {"fwd": 35 * cr, "out": 22}})
+        if t < b("noob_secret", 1):
+            p = p + Vector((0, 0, 0.04 * abs(math.sin((t - b("noob_secret")) * 9))))
+        face = dict(JOY)
+        if t >= b("lean"):                                        # a hand hovers toward it
             r = ss(b("lean"), b("lean") + 0.35, t)
-            pz["arm_sr"] = {"fwd": 25 + 50 * r, "out": 12}
-            face = dict(HYPE)
-        if b("steve_touch") <= t:                                 # he glances back at Steve, hand hovering
+            pz["arm_sr"] = {"fwd": 35 + 20 * r, "out": 14}
+            face = dict(GRIN)
+        if b("steve_touch") <= t:                                 # a glance back at Steve, the hand still hovering
             g = ss(b("steve_touch") + 0.4, b("steve_touch") + 0.8, t) * (1 - ss(b("steve_touch", 1) - 0.2, b("poke1"), t))
-            tl, nd = _look(yaw, p, gp(E, STEVE_EDGE) + Vector((0, 0, 1.6)), h=1.2)
-            pz["head_turn"] = tl * g
-            face = dict(NF["happy"])
-    elif t < b("die1"):                                           # the poke: a wind back, the touch, zapped
-        p = N_LOOK.lerp(POKE_N, ss(b("poke1"), b("poke1") + 0.25, t))
+            tl2, nd2 = _look(yaw, p, gp(E, STEVE_EDGE) + Vector((0, 0, 1.6)), h=1.2)
+            pz["head_turn"] = lerp(tl, tl2, g)
+            pz["head_nod"] = lerp(pz["head_nod"], nd2, g)
+            face = dict(GRIN)
+    elif t < b("die1"):                                           # one step in and a poke with one hand; zapped
+        p = _stride(pz, t, b("poke1"), b("poke1") + 0.25, N_LOOK, POKE_N, amp=18, stride=0.4)
         yaw = _face_to(p, cube_c)
-        back = ss(b("poke1"), b("poke1") + 0.15, t) * (1 - ss(b("poke1") + 0.18, b("poke1") + 0.3, t))
-        hit = ss(b("poke1") + 0.18, b("poke1") + 0.3, t)
-        pz.update({"chest_lean": 18 + 8 * hit, "arm_sr": {"fwd": 75 - 30 * back + 15 * hit, "out": 8, "elbow": 10}})
-        face = dict(HYPE)
-        if t >= b("poke1") + 0.3:                                 # zapped: twitching
+        poke = ss(b("poke1") + 0.18, b("poke1") + 0.28, t)
+        pz["chest_lean"] = 14 + 10 * poke
+        pz["arm_sr"] = {"fwd": 55 - 15 * ss(b("poke1"), b("poke1") + 0.15, t) + 25 * poke, "out": 6}
+        tl, nd = _look(yaw, p, cube_c, h=1.4)
+        pz["head_nod"] = nd * 0.5
+        face = dict(GRIN)
+        if t >= b("poke1") + 0.3:                                 # zapped: a jolt through him
             z = math.sin(t * 90)
-            pz["chest_lean"] += 6 * z
-            pz["arm_sl"] = {"fwd": 40 + 30 * z, "out": 60}
-            face = dict(NF["shock"])
-    elif t < b("respawn1") + 0.1:                                 # bursts
+            pz["chest_lean"] = 14 + 4 * z
+            pz["arm_sl"] = {"fwd": 30 + 15 * z, "out": 50 + 10 * z}
+            pz["arm_sr"] = {"fwd": 80 + 8 * z, "out": 6}
+            face = dict(_nf("shock"))
+    elif t < b("respawn1") - 0.06:                                # bursts (the parts last up to the respawn's flash)
         p = POKE_N.copy()
         yaw = _face_to(p, cube_c)
-        M.set_noob(E, p, yaw, {"arm_sr": {"fwd": 90}}, dict(NF["shock"]), t)
-        E3._burst_apply(E, t - b("die1"))
-        _dark_cube(E, t - b("die1"), p)
+        M.set_noob(E, p, yaw, {"arm_sr": {"fwd": 80}, "arm_sl": {"fwd": 30, "out": 55}, "chest_lean": 14}, dict(_nf("shock")), t)
+        _burst4(E, t - b("die1"), b("respawn1") - b("die1"), 11)
         return
     elif t < b("chop") + 0.7:
-        r1 = b("respawn1") + 0.1
+        r1 = b("respawn1") - 0.06
         p = RING.copy()
         yaw = _face_to(RING, cube_c)
-        face = dict(HYPE)
+        face = dict(GRIN)
         _squash(E, t - r1)
-        if t < b("noob_touched2"):                                # a fist pump
-            k = ss(r1 + 0.35, r1 + 0.55, t)
-            pz["arm_sr"] = {"fwd": 20, "out": 40 + 120 * k, "elbow": 60 + 30 * math.sin(t * 18) * k}
-        elif t < b("noob_again"):                                 # "I touched it!" proud, hands on hips; looks at it
-            pz["arm_sl"] = {"out": 45, "fwd": -15, "elbow": 100}
-            pz["arm_sr"] = {"out": 45, "fwd": -15, "elbow": 100}
-            pz["chest_lean"] = -8
-            if t >= b("stare"):
+        if t < b("noob_again"):
+            if t < b("noob_touched2", 1) + 0.3:                   # "I touched it!": a fist pump, bouncing
+                k = ss(r1 + 0.35, r1 + 0.55, t) * (1 - ss(b("noob_touched2", 1), b("noob_touched2", 1) + 0.3, t))
+                pump = math.sin((t - r1) * 14)
+                pz["arm_sr"] = {"fwd": 10, "out": 8 + (130 + 15 * pump) * k}
+                pz["chest_lean"] = -4 * k
+                p = p + Vector((0, 0, 0.05 * k * abs(pump)))
+                face = dict(JOY)
+            else:                                                 # pleased with himself, looking at it
                 tl, nd = _look(yaw, p, cube_c, h=1.4)
-                pz["head_turn"], pz["head_nod"] = tl, nd
-        else:                                                     # "Again!" and off he goes: the karate chop
+                k = ss(b("noob_touched2", 1) + 0.2, b("stare"), t)
+                pz["head_turn"], pz["head_nod"] = tl * k, nd * k
+                pz["arm_sl"] = {"fwd": 6, "out": 10}
+                pz["arm_sr"] = {"fwd": 6, "out": 10}
+                pz["head_tilt"] = 8 * math.sin(t * 1.3)
+        else:                                                     # "Again!": arms up, then off he goes: the karate chop
             r0 = b("noob_again") + 0.55
-            u = ss(r0, b("chop") + 0.25, t)
-            p = RING.lerp(CHOP_N, u)
-            yaw = _face_to(p, cube_c)
-            if 0.02 < u < 0.98:
-                _run(pz, t, r0, 2.8, k=0.9, steve=False)
-            if t >= b("chop") + 0.2:
-                up_ = ss(b("chop") + 0.2, b("chop") + 0.33, t)
-                dn = ss(b("chop") + 0.33, b("chop") + 0.4, t)
-                pz["arm_sr"] = {"fwd": 40 + 120 * up_ - 70 * dn, "out": 30 - 20 * dn, "elbow": 10}
-                pz["chest_lean"] = 10 + 15 * dn
-            if t >= b("chop") + 0.4:
-                z = math.sin(t * 90)
-                pz["chest_lean"] += 6 * z
-                pz["arm_sl"] = {"fwd": 40 + 30 * z, "out": 60}
-                face = dict(NF["shock"])
+            face = dict(JOY)
+            if t < r0:
+                k = ss(b("noob_again"), b("noob_again") + 0.15, t)
+                pz["arm_sl"] = {"fwd": 20, "out": 8 + 130 * k}
+                pz["arm_sr"] = {"fwd": 20, "out": 8 + 130 * k}
+                p = p + Vector((0, 0, 0.15 * math.sin(math.pi * ss(b("noob_again") + 0.05, b("noob_again") + 0.4, t))))
             else:
-                face = dict(NF["shout"]) if t < b("noob_again", 1) else dict(HYPE)
-        if t < b("chop"):
-            pz["_skip"] = 0
-    elif t < b("respawn2") + 0.1:                                 # bursts again
+                p = _stride(pz, t, r0, b("chop") + 0.2, RING, CHOP_N, amp=30, stride=0.55)
+                yaw = _face_to(RING, CHOP_N) if t < b("chop") + 0.1 else _face_to(p, cube_c)
+                if t >= b("chop") + 0.12:
+                    up_ = ss(b("chop") + 0.12, b("chop") + 0.3, t)
+                    dn = ss(b("chop") + 0.3, b("chop") + 0.38, t)
+                    pz["arm_sr"] = {"fwd": 40 + 125 * up_ - 95 * dn, "out": 6}
+                    pz["arm_sl"] = {"fwd": 10, "out": 12}
+                    pz["chest_lean"] = 4 + 14 * dn
+                if t >= b("chop") + 0.4:
+                    z = math.sin(t * 90)
+                    pz["chest_lean"] = 18 + 4 * z
+                    pz["arm_sl"] = {"fwd": 30 + 15 * z, "out": 50 + 10 * z}
+                    face = dict(_nf("shock"))
+    elif t < b("respawn2") - 0.06:                                # bursts again
         p = CHOP_N.copy()
         yaw = _face_to(p, cube_c)
-        M.set_noob(E, p, yaw, {"arm_sr": {"fwd": 30}}, dict(NF["shock"]), t)
-        E3._burst_apply(E, t - b("die2"))
-        _dark_cube(E, t - b("die2"), p)
+        M.set_noob(E, p, yaw, {"arm_sr": {"fwd": 70}, "arm_sl": {"fwd": 30, "out": 55}, "chest_lean": 18}, dict(_nf("shock")), t)
+        _burst4(E, t - b("die2"), b("respawn2") - b("die2"), 12)
         return
-    elif t < b("react"):                                          # back; a look up at the huge cube; the third swing
-        r2 = b("respawn2") + 0.1
+    elif t < b("react"):                                          # back; looks up at the huge cube; winds up again
+        r2 = b("respawn2") - 0.06
         _squash(E, t - r2)
-        u = ss(r2 + 0.75, r2 + 1.4, t)
-        p = RING.lerp(WIND_N, u)
-        yaw = _face_to(p, cube_c)
-        face = dict(NF["awe"]) if t < r2 + 0.75 else dict(HYPE)
+        p = _stride(pz, t, r2 + 0.75, r2 + 1.4, RING, WIND_N, amp=22, stride=0.45)
+        yaw = _face_to(RING, cube_c) if t < r2 + 0.75 else _face_to(p, cube_c)
+        face = dict(_nf("awe")) if t < r2 + 0.75 else dict(GRIN)
         if t < r2 + 0.75:
             tl, nd = _look(yaw, p, cube_c + Vector((0, 0, 0.5)), h=1.4)
             pz["head_turn"], pz["head_nod"] = tl, nd
-        elif u < 0.98:
-            _run(pz, t, r2 + 0.75, 2.4, k=0.6, steve=False)
+            pz["chest_lean"] = -5
         wind = ss(r2 + 1.4, r2 + 1.75, t)
-        pz["arm_sr"] = {"fwd": 30 + 100 * wind, "out": 40, "elbow": 80 * wind}
-        pz["chest_lean"] = pz.get("chest_lean", 0) - 10 * wind
-        if t >= b("patch_in") + 1.65:                             # Patch is there: frozen mid-swing, blinking
-            face = dict(NF["shock"])
-        if t >= b("patch_stop"):
-            lw = ss(b("patch_stop") + 0.6, b("patch_stop", 1), t)
-            pz["arm_sr"] = {"fwd": 130 - 90 * lw, "out": 40, "elbow": 80 - 60 * lw}
-            face = dict(NF["confused"])
-    else:                                                         # the hop back, pointing; then watching Patch
+        arm = {"fwd": 8 + 150 * wind, "out": 10}
+        lean = -6 * wind
+        P_ = Vector(E.PA.root.location)
+        portal = Vector((-1.6, 4.4, 3.0))
+        if t >= b("patch_in"):                                    # the portal flickers: he turns his head to it,
+            k = ss(b("patch_in"), b("patch_in") + 0.35, t)        # the raised arm sagging, wobbling
+            tgt = portal if P_.z < -100 else P_
+            tl, nd = _look(yaw, p, tgt, h=1.4, lim=75)
+            pz["head_turn"], pz["head_nod"] = tl * k, nd * k
+            arm = {"fwd": 158 - 30 * k + 6 * math.sin(t * 5), "out": 10}
+            face = dict(_nf("confused"))
+        fl = ss(b("patch_in") + 1.5, b("patch_in") + 1.7, t)      # Patch stops in his face: a flinch, hands up
+        if fl > 0:
+            arm = _blend(arm, {"fwd": 75, "out": -4}, fl)
+            pz["arm_sl"] = _blend(pz.get("arm_sl", {}), {"fwd": 65, "out": -4}, fl)
+            lean = lean * (1 - fl) - 12 * fl
+            face = dict(_nf("shock"))
+        if t >= b("patch_stop"):                                  # "Please stop doing that.": hands down, head tilted,
+            k = ss(b("patch_stop") + 0.3, b("patch_stop") + 1.0, t)   # leaning in to look at the talking thing
+            arm = _blend(arm, {"fwd": 6, "out": 8}, k)
+            pz["arm_sl"] = _blend(pz.get("arm_sl", {}), {"fwd": 6, "out": 8}, k)
+            lean = lerp(lean, 7, k)
+            pz["head_tilt"] = 14 * k
+            face = dict(_nf("confused"))
+        pz["arm_sr"] = arm
+        pz["chest_lean"] = pz.get("chest_lean", 0) + lean
+    else:                                                         # the hop back; then with Patch
         hop = ss(b("react"), b("react") + 0.3, t)
-        p = WIND_N.lerp(REACT_N, hop) + Vector((0, 0, 0.25 * math.sin(math.pi * hop)))
+        p = WIND_N.lerp(REACT_N, hop) + Vector((0, 0, 0.22 * math.sin(math.pi * hop)))
         P_ = Vector(E.PA.root.location)
         yaw = _face_to(p, P_)
-        point = ss(b("react") + 0.2, b("react") + 0.4, t) * (1 - ss(b("noob_cube", 1), b("noob_cube", 1) + 0.4, t))
-        pz["arm_sl"] = {"fwd": 85 * point + 4, "out": 20 - 10 * point}
-        pz["arm_sr"] = {"fwd": 85 * point + 4, "out": 20 - 10 * point}
         tl, nd = _look(yaw, p, P_, h=1.4)
         pz["head_turn"], pz["head_nod"] = tl, nd
-        pz["head_tilt"] = 12 * point
-        face = dict(NF["shock"]) if t < b("patch_name") else dict(HYPE)
-        if b("scan") + 0.3 <= t < b("patch_feed"):
-            tl, nd = _look(yaw, p, cube_centre(E, t), h=1.4)
-            pz["head_turn"], pz["head_nod"] = tl, nd
-            face = dict(NF["awe"])
-        if b("noob_helping") - 0.1 <= t < b("turn"):              # "So I'm helping!": fists on hips, chest out
-            k = ss(b("noob_helping") - 0.1, b("noob_helping") + 0.15, t)
-            pz["arm_sl"] = {"out": 45 * k + 8, "fwd": -15 * k, "elbow": 100 * k}
-            pz["arm_sr"] = {"out": 45 * k + 8, "fwd": -15 * k, "elbow": 100 * k}
-            pz["chest_lean"] = -10 * k
-            face = dict(HYPE)
-            if t >= b("steve_no"):
-                tl, nd = _look(yaw, p, gp(E, STEVE_EDGE) + Vector((0, 0, 1.6)), h=1.4)
-                pz["head_turn"], pz["head_nod"] = tl, nd
+        pz["arm_sl"] = {"fwd": 20 * (1 - hop) + 6, "out": 8 + 40 * math.sin(math.pi * hop)}
+        pz["arm_sr"] = {"fwd": 20 * (1 - hop) + 6, "out": 8 + 40 * math.sin(math.pi * hop)}
+        face = dict(_nf("shock")) if t < b("noob_cube") - 0.1 else dict(GRIN)
+        if b("noob_cube") - 0.15 <= t < b("patch_name"):          # "A talking cube!": one hand pointing at it, the other
+            k = ss(b("noob_cube") - 0.15, b("noob_cube") + 0.1, t) * (1 - ss(b("noob_cube", 1), b("patch_name"), t))
+            d = P_ - (p + Vector((0, 0, 1.45)))                   # up waving, bouncing on his toes
+            elev = math.degrees(math.atan2(d.z, Vector((d.x, d.y, 0)).length))
+            pz["arm_sr"] = _blend(pz["arm_sr"], {"fwd": 90 + elev, "out": 4}, k)
+            pz["arm_sl"] = _blend(pz["arm_sl"], {"fwd": 15, "out": 140 + 18 * math.sin(t * 11)}, k)
+            p = p + Vector((0, 0, 0.05 * k * abs(math.sin(t * 8))))
+            face = dict(JOY)
+        if b("patch_name") <= t < b("scan") + 0.3:                # listening, delighted
+            face = dict(GRIN)
+            pz["head_tilt"] = 10
+        if b("scan") + 0.3 <= t < b("patch_feed"):                # watching the scan
+            tl2, nd2 = _look(yaw, p, cube_centre(E, t), h=1.4)
+            k = ss(b("scan") + 0.3, b("scan") + 0.6, t) * (1 - ss(b("patch_feed") - 0.3, b("patch_feed"), t))
+            pz["head_turn"], pz["head_nod"] = lerp(tl, tl2, k), lerp(nd, nd2, k)
+            face = dict(_nf("awe"))
+        if b("patch_feed") <= t < b("noob_helping") - 0.1:        # listening: it is his doing; a grin grows
+            face = dict(_nf("awe")) if t < b("patch_grows") + 0.6 else dict(GRIN)
+            pz["head_tilt"] = 6 * math.sin(t * 0.8)
+        if b("noob_helping") - 0.1 <= t < b("turn"):              # "So I'm helping!": chest out, a fist up, a hop
+            k = ss(b("noob_helping") - 0.1, b("noob_helping") + 0.12, t)
+            pz["arm_sr"] = {"fwd": 10 + 100 * k, "out": 12}
+            pz["arm_sl"] = {"fwd": 6, "out": 10}
+            pz["chest_lean"] = -8 * k
+            p = p + Vector((0, 0, 0.14 * math.sin(math.pi * ss(b("noob_helping") - 0.1, b("noob_helping") + 0.25, t))))
+            face = dict(JOY)
+            if t >= b("sigh"):                                    # Steve: "No." He looks at him, still grinning
+                k2 = ss(b("sigh"), b("sigh") + 0.4, t)
+                pz["arm_sr"] = _blend(pz["arm_sr"], {"fwd": 6, "out": 10}, k2)
+                tl2, nd2 = _look(yaw, p, gp(E, STEVE_BACK) + Vector((0, 0, 1.6)), h=1.4, lim=75)
+                pz["head_turn"], pz["head_nod"] = lerp(tl, tl2, k2), lerp(nd, nd2, k2)
+                face = dict(GRIN)
         if t >= b("turn") + 0.3:                                  # the smile goes
-            face = dict(NF["confused"]) if t < b("noob_doyou") else dict(NF["worried"])
+            face = dict(_nf("confused")) if t < b("noob_doyou") else dict(_nf("worried"))
+            pz["chest_lean"] = 3
             if t >= b("patch_deleted"):
                 face = {"both_h": 1.9, "both_w": 1.05, "m_arch": 0.15, "both_ps": 0.8}
-    pz.pop("_skip", None)
+            if t >= b("hold"):                                    # stunned: a slow blink, a breath
+                bl = math.exp(-((t - b("hold") - 0.75) / 0.06) ** 2)
+                face["both_h"] = lerp(face["both_h"], 0.15, bl)
+                pz["chest_lean"] = 3 + 1.5 * math.sin((t - b("hold")) * 2.2)
     pz = life(E, "noob", pz, face, t, 1.6)
-    M.set_noob(E, p, yaw, pz, face, t)
+    if face.get("_joy"):
+        _set_noob(E, p, yaw, pz, face, t)
+    else:
+        M.set_noob(E, p, yaw, pz, face, t)
 
 
-def _squash(E, dt):
-    """Popping back onto the ring: a stretch, a squash, settled in 8 frames."""
+def _squash(E, dt, grow=True):
+    """Popping back onto the ring: grown out of the ring's flash in 3 frames, a stretch, a squash, settled."""
     N = E.N
-    if not hasattr(E, "noob_scale0"):
-        E.noob_scale0 = N.root.scale[0]
     s0 = E.noob_scale0
     if dt < 0:
         return
@@ -859,7 +1181,8 @@ def _squash(E, dt):
     for (a, za), (c, zc) in zip(keys, keys[1:]):
         if a <= dt < c:
             z = lerp(za, zc, ss(a, c, dt))
-    N.root.scale = (s0 / z ** 0.5, s0 / z ** 0.5, s0 * z)
+    g = (0.3 + 0.7 * ss(0.0, 0.12, dt)) if grow else 1.0
+    N.root.scale = (g * s0 / z ** 0.5, g * s0 / z ** 0.5, g * s0 * z)
 
 
 def _dark_cube(E, dt, p):
@@ -874,6 +1197,17 @@ def _dark_cube(E, dt, p):
 
 
 # ------------------------------------------------------------------ Steve
+RELAX_R = {"fwd": 16, "out": 9, "elbow": 28}                       # the pickaxe hanging at his side
+RELAX_L = {"fwd": 6, "out": 7, "elbow": 14}
+
+
+def _blink(face, t, at, steve=True):
+    bl = math.exp(-((t - at) / 0.05) ** 2)
+    if bl > 0.05:
+        for k in ("both_to", "both_tm", "both_ti"):
+            face[k] = lerp(face.get(k, 0.0), -1.0, bl)
+
+
 def steve(E, t):
     from ep09_new import SF
     S = E.S
@@ -883,100 +1217,124 @@ def steve(E, t):
         _use(E, 4)
         return
     face = dict(SF["flat"])
-    pz = {"arm_sr": {"fwd": 25, "out": 12, "elbow": 35}, "arm_sl": {"fwd": 10, "out": 8, "elbow": 20}}
+    pz = {"arm_sr": dict(RELAX_R), "arm_sl": dict(RELAX_L)}
     p0 = gp(E, E3.STEVE_PLAN)
+    clear = gp(E, STEVE_CLEAR)
     p, yaw = p0.copy(), 35.0
     up = Vector(E.D.root.location) + Vector((0, 0, 1))
-    N_ = Vector(E.N.root.location) + Vector((0, 0, 1.0))
+    N_ = Vector(E.N.root.location) + Vector((0, 0, 1.5))           # his head, more or less
+    if N_.z < -100 or N_.z > 4.0:
+        N_ = RING + Vector((0, 0, 1.5))
     cube_c = cube_centre(E, t) or CUBE
-    w0, w1 = b("crystal") + 1.0, b("lean") + 0.3
-    if t < w0:                                                    # watching the Noob fall, then the dragon sealed
-        yaw = lerp(35.0, _face_to(p0, RING), ss(b("tearoff"), b("fall") + 0.6, t))
-        tgt = N_ if t < b("crystal") else up
-        tl, nd = _look(yaw, p, tgt)
+    w0, w1 = b("crystal") + 1.0, b("crystal") + 2.6
+    breath = math.sin(2 * math.pi * 0.27 * t)
+    if t < w0:                                                    # backs out from under the shuddering dragon,
+        p = _stride(pz, t, b("tearoff") + 0.15, b("fall") + 0.5, p0, clear, steve=True)   # watching the Noob fall
+        yaw = _turn_to(35.0, _face_to(clear, RING), ss(b("tearoff") + 0.1, b("fall") + 0.6, t))
+        tgt_k = ss(b("crystal") - 0.1, b("crystal") + 0.4, t)
+        tl, nd = _look_mix(yaw, p, N_, up, tgt_k)
         pz["head_turn"], pz["head_nod"] = tl, nd
         flinch = math.exp(-((t - (b("fall") + 0.85)) / 0.12) ** 2)
-        pz["chest_lean"] = -10 * flinch
+        pz["chest_lean"] = pz.get("chest_lean", 0) - 10 * flinch
         face = dict(SF["stunned"]) if t < b("crystal") + 0.4 else dict(SF["worried"])
-    elif t < w1:                                                  # walks to the pad's west edge
-        u = ss(w0, w1, t)
-        p = p0.lerp(STEVE_EDGE, (t - w0) / (w1 - w0))
-        yaw = _face_to(p0, STEVE_EDGE)
-        if t < w1 - 0.1:
-            _run(pz, t, w0, 1.55, k=0.45, steve=True)
+    elif t < w1:                                                  # to the pad's west edge
+        yaw = _turn_to(_face_to(clear, RING), _face_to(clear, STEVE_EDGE), ss(w0, w0 + 0.25, t))
+        p = _stride(pz, t, w0 + 0.1, w1, clear, STEVE_EDGE, steve=True)
         tl, nd = _look(yaw, p, N_)
         pz["head_turn"], pz["head_nod"] = tl * 0.6, nd * 0.4
         face = dict(SF["worried"])
-        if t >= b("lean"):
-            r = ss(b("lean"), w1, t)
-            pz["arm_sr"] = {"fwd": 25 + 15 * r, "out": 15 + 7 * r, "elbow": 35 + 15 * r}
     else:
         p = STEVE_EDGE.copy()
-        yaw = _face_to(p, N_)
-        guard = {"fwd": 35, "out": 25, "elbow": 20}                # the pickaxe up
-        pz["arm_sr"] = dict(guard)
+        yaw = _turn_to(_face_to(clear, STEVE_EDGE), _face_to(p, N_), ss(w1, w1 + 0.3, t))
         tl, nd = _look(yaw, p, N_)
         pz["head_turn"], pz["head_nod"] = tl, nd
-        if t < b("poke1"):                                        # "It fell off the dragon. Don't touch it." leaning, waving
+        if t < b("poke1"):                                        # "It fell off the dragon. Don't touch it."
             k = ss(b("steve_touch"), b("steve_touch") + 0.3, t) * (1 - ss(b("steve_touch", 1), b("poke1"), t))
-            pz["chest_lean"] = 14 * ss(b("lean"), b("lean") + 0.4, t)
-            pz["arm_sl"] = {"fwd": 70 * k + 10, "out": 25 + 25 * math.sin(t * 9) * k, "elbow": 40}
+            pz["chest_lean"] = 10 * ss(b("lean"), b("lean") + 0.4, t)
+            wag = math.sin(t * 9)                                  # the left hand out, palm up, wagging "no"
+            pz["arm_sl"] = {"fwd": 8 + 55 * k, "out": 8 + 10 * k + 8 * wag * k, "elbow": 14 + 20 * k + 14 * wag * k}
             face = dict(SF["worried"])
         elif t < b("stare"):                                      # the poke: a reach, too late; the flinch
             k = ss(b("poke1"), b("poke1") + 0.25, t)
-            pz["arm_sl"] = {"fwd": 80 * k, "out": 15}
+            pz["arm_sl"] = {"fwd": 75 * k + 6, "out": 10, "elbow": 14}
             fl = math.exp(-((t - b("die1") - 0.05) / 0.1) ** 2)
             pz["chest_lean"] = 10 * k - 12 * fl
             face = dict(SF["scared"]) if t < b("respawn1") + 0.5 else dict(SF["stunned"])
-            if t >= b("respawn1") + 0.5:
-                tl, nd = _look(yaw, p, cube_c)
-                pz["head_turn"], pz["head_nod"] = tl, nd
+            if t >= b("respawn1") + 0.3:
+                tl2, nd2 = _look(yaw, p, cube_c)
+                k2 = ss(b("respawn1") + 0.3, b("respawn1") + 0.6, t)
+                pz["head_turn"], pz["head_nod"] = lerp(tl, tl2, k2), lerp(nd, nd2, k2)
         elif t < b("noob_again"):                                 # he stares at the bigger cube: "...It grew."
             tl, nd = _look(yaw, p, cube_c)
             pz["head_turn"], pz["head_nod"] = tl, nd
-            pz["arm_sr"] = {"fwd": 15, "out": 14, "elbow": 15}
             face = dict(SF["stunned"]) if t < b("steve_grew") else dict(SF["flat"])
         elif t < b("respawn2") + 0.4:                             # the lunge: a step, an arm out, too late
             lu = ss(b("chop") - 0.1, b("chop") + 0.25, t) * (1 - ss(b("die2") + 0.2, b("respawn2") + 0.4, t))
             p = STEVE_EDGE + Vector((-0.35, -0.05, 0)) * lu
-            pz["arm_sl"] = {"fwd": 85 * lu, "out": 10}
+            pz["arm_sl"] = {"fwd": 85 * lu + 6, "out": 10, "elbow": 14}
             pz["chest_lean"] = 18 * lu
             face = dict(SF["scared"])
         elif t < b("react"):                                      # the portal flickers: he looks; then Patch
             P_ = Vector(E.PA.root.location)
-            tgt = cube_c if t < b("patch_in") else (Vector((-1.6, 4.4, 3.3)) if P_.z < -100 else P_)
-            tl, nd = _look(yaw, p, tgt, lim=80)
+            tgt = Vector((-1.6, 4.4, 3.3)) if P_.z < -100 else P_
+            k = ss(b("patch_in") - 0.05, b("patch_in") + 0.3, t)
+            tl, nd = _look_mix(yaw, p, cube_c, tgt, k, lim=80)
             pz["head_turn"], pz["head_nod"] = tl, nd
             face = dict(SF["stunned"]) if t >= b("patch_in") + 0.4 else dict(SF["worried"])
-        else:                                                     # the jump back into a guard; wary
+        else:                                                     # the jump back into a guard; wary, then listening
             P_ = Vector(E.PA.root.location)
             jb = ss(b("react"), b("react") + 0.25, t)
             p = STEVE_EDGE.lerp(STEVE_BACK, jb) + Vector((0, 0, 0.12 * math.sin(math.pi * jb)))
-            yaw = _face_to(p, P_)
-            low = ss(b("patch_name"), b("patch_feed"), t)
-            pz["arm_sr"] = {"fwd": 30 - 10 * low, "out": 50 - 25 * low, "elbow": 35 - 20 * low}
-            pz["arm_sl"] = {"fwd": 40 - 20 * low, "out": 30, "elbow": 40}
+            y_p = _face_to(p, P_)
+            low = ss(b("patch_name") + 0.3, b("patch_name") + 1.3, t)
+            guard_r = {"fwd": 30, "out": 20, "elbow": 14}
+            pz["arm_sr"] = _blend(guard_r, RELAX_R, low)
+            pz["arm_sl"] = _blend({"fwd": 40, "out": 26, "elbow": 40}, RELAX_L, low)
             pz["hips_drop"] = 0.15 * (1 - low)
             pz["chest_lean"] = -6 * (1 - low)
-            look_at = P_
-            if b("scan") + 0.3 <= t < b("patch_feed"):
-                look_at = cube_c
-            if b("sigh") <= t < b("turn"):                        # down goes the pickaxe; a look Noob, Patch, Noob
-                d = ss(b("sigh"), b("sigh") + 0.4, t)
-                pz["arm_sr"] = {"fwd": 30 - 20 * d, "out": 10, "elbow": 40 - 20 * d}
-                pz["arm_sl"] = {"fwd": 5, "out": 6}
-                pz["chest_lean"] = 6 * d
-                seq = (t - b("sigh")) / 0.7
-                look_at = N_ if seq < 0.35 or seq > 0.7 else P_
-            tl, nd = _look(yaw, p, look_at, lim=70)
+            # where he looks (eased, never snapped): Patch; the cube while it is scanned; the Noob on "No."
+            k_cube = ss(b("scan") + 0.3, b("scan") + 0.6, t) * (1 - ss(b("patch_feed") - 0.3, b("patch_feed"), t))
+            k_noob = ss(b("sigh"), b("sigh") + 0.45, t) * (1 - ss(b("turn") + 0.1, b("turn") + 0.5, t))
+            yaw = _turn_to(y_p, _face_to(p, N_), 0.5 * k_noob)      # the torso turns with the look
+            tl, nd = _look(yaw, p, P_, lim=70)
+            tl2, nd2 = _look(yaw, p, cube_c, lim=70)
+            tl3, nd3 = _look(yaw, p, N_, lim=70)
+            tl, nd = lerp(tl, tl2, k_cube), lerp(nd, nd2, k_cube)
+            tl, nd = lerp(tl, tl3, k_noob), lerp(nd, nd3, k_noob)
             pz["head_turn"], pz["head_nod"] = tl, nd
             face = dict(SF["scared"]) if t < b("noob_cube") else dict(SF["worried"])
-            if b("sigh") <= t < b("turn"):
+            if b("patch_name") + 0.5 <= t < b("sigh"):
+                face = dict(SF["flat"]) if t < b("scan") else dict(SF["worried"])
+            if b("sigh") <= t < b("turn"):                        # the pickaxe sinks, a breath out: "No."
+                d = ss(b("sigh"), b("sigh") + 0.4, t)
+                pz["arm_sr"] = _blend(RELAX_R, {"fwd": 8, "out": 6, "elbow": 18}, d)
+                drop = ss(b("steve_no"), b("steve_no") + 0.2, t)        # the shoulders drop on the word
+                pz["chest_lean"] = 2 * d + 3 * drop
+                pz["head_nod"] = pz["head_nod"] + 3 * drop
+                for arm in ("arm_sl", "arm_sr"):
+                    pz[arm] = dict(pz[arm])
+                    pz[arm]["out"] = pz[arm].get("out", 8) - 3 * drop
                 face = dict(SF["flat"])
-            if t >= b("turn"):
+                _blink(face, t, b("steve_no") + 0.08)
+            if t >= b("turn"):                                    # tense, the pickaxe low, watching it
                 face = dict(SF["worried"])
-            if t >= b("hold") + 1.3:
+                pz["arm_sr"] = {"fwd": 14, "out": 8, "elbow": 30}
+                pz["chest_lean"] = 2
+            if t >= b("patch_deleted"):
                 face = dict(SF["stunned"])
+            if t >= b("hold") + 1.3:                              # the glance: alarmed, a look to the Noob, a blink
+                g = ss(b("hold") + 1.3, b("hold") + 1.55, t)
+                tl3, nd3 = _look(yaw, p, N_, lim=70)
+                pz["head_turn"] = lerp(pz["head_turn"], tl3, g)
+                pz["head_nod"] = lerp(pz["head_nod"], nd3, g)
+                pz["chest_lean"] = 2 - 4 * g
+                face = dict(SF["scared"])
+                _blink(face, t, b("hold") + 1.9)
+    pz["chest_lean"] = pz.get("chest_lean", 0) + 1.3 * breath     # breathing
+    for arm in ("arm_sl", "arm_sr"):
+        a_ = dict(pz.get(arm, {}))
+        a_["out"] = a_.get("out", 8) + 1.2 * breath
+        pz[arm] = a_
     pz = life(E, "steve", pz, face, t, 2.7)
     M.set_steve(E, p, yaw, pz, face, t)
 
@@ -1063,35 +1421,49 @@ def _cam(E, t, shot, t0, t1):
         return _c(-6.0, -4.9, 1.5), _c(-6.0, -1.2, 1.4), 30, 3.2, None, 0.2
     if shot == "react":                                           # Steve jumps back into a guard
         return _c(-4.5, -2.45, 1.45), STEVE_BACK + _c(0, 0, 1.4), 30, 3.0, None, 0.35
-    if shot == "cube":                                            # the Noob, pointing: "A talking cube!"
-        return REACT_N + _c(1.0, -3.4, 1.5), REACT_N + _c(0.4, 0, 1.4), 32, 2.8, None, 0.25
+    if shot == "cube":                                            # the Noob, pointing at it: "A talking cube!"
+        return REACT_N + _c(2.3, -2.7, 1.45), REACT_N + _c(0.35, -0.2, 1.45), 32, 2.8, None, 0.25
     if shot == "name":                                            # Patch, three-quarter: "I'm Patch."
         return _c(-6.9, -3.2, 1.5), P_STOP + _c(0, 0, 0.05), 42, 2.8, None, 0.2
-    if shot == "scan":                                            # the scan: from the side, the cone onto the huge cube
-        return _c(-8.0, -6.0, 1.7), _c(-4.2, -2.7, 1.2), 28, 30, None, 0.2
-    if shot == "feed":                                            # Patch, close, talking to the Noob
-        return P_SCAN + _c(-0.5, -2.4, -0.05), P_SCAN + _c(0, 0, 0.05), 44, 2.8, None, 0.2
+    if shot == "scan":                                            # the scan: from the west, Patch clear of Steve, the cone
+        return _c(-4.6, -7.5, 1.4), _c(-4.6, -2.2, 1.1), 28, 30, None, 0.2   # down into the huge cube (from the south:
+                                                                  # the Noob left, the cube, Patch, Steve right)
+    if shot == "feed":                                            # Patch talking to the Noob: from the Noob's side, so its
+        c = P_SCAN + (REACT_N - P_SCAN) * 0.6 + _c(0, -0.6, 0)      # screen faces us (never its blank side); south of
+        return _c(c.x, c.y, 1.72), P_SCAN + _c(0, 0, 0.05), 40, 2.8, None, 0.2   # the cube's corner, out of shot
     if shot == "helping":                                         # the Noob, proud
         return REACT_N + _c(0.8, -3.2, 1.5), REACT_N + _c(0, 0, 1.45), 34, 2.8, None, 0.2
     if shot == "no":                                              # Steve: "No."
-        return _c(-3.6, -2.95, 1.5), STEVE_BACK + _c(0, 0, 1.5), 34, 2.8, None, 0.15
-    if shot == "turn":                                            # over the Noob's shoulder: Patch turns to him
-        n = REACT_N + _c(0, 0, 1.55)
-        d = (n - P_SCAN)
+        return _c(-4.0, -0.45, 1.5), STEVE_BACK + _c(0, 0, 1.45), 34, 2.8, None, 0.15   # from the Noob's side: his look
+                                                                  # at the Noob comes toward us
+    if shot == "turn":                                            # over the Noob's shoulder: Patch whips round, drifts in
+        n = REACT_N + _c(0, 0, 1.75)
+        d = (n - P_TURN)
         d.z = 0
         d.normalize()
         r = Vector((-d.y, d.x, 0))
-        return n + d * 3.4 + r * 1.25 + _c(0, 0, 0.75), P_SCAN + _c(0.0, 0, 0.25), 55, 2.6, (P_SCAN - n).length + 3.4, 0.1
-    if shot == "doyou":                                           # the Noob, the smile gone
-        return REACT_N + _c(0.9, -3.0, 1.55), REACT_N + _c(0, 0, 1.6), 40, 2.6, None, 0.1
+        loc = n + d * 1.25 - r * 0.55 + _c(0, 0, 0.12)
+        P_ = Vector(E.PA.root.location) if E.PA.root.location.z > -100 else P_TURN
+        look = P_.lerp(n, 0.2) + _c(0, 0, -0.05)
+        return loc, look, 50, 2.8, (P_ - loc).length, 0.1
+    if shot == "doyou":                                           # the reverse: over Patch's shoulder, the Noob, the
+        n = REACT_N + _c(0, 0, 1.7)                                # smile gone
+        d = P_TURN - n
+        d.z = 0
+        d.normalize()
+        r = Vector((-d.y, d.x, 0))
+        loc = P_TURN + d * 1.8 + r * 1.3 + _c(0, 0, 0.05)
+        return loc, n.lerp(P_TURN, 0.12), 45, 2.6, (n - loc).length, 0.1
     if shot == "two":                                             # a slow push in: the Noob left, Patch right, the sky between
         a = _c(-9.0, -6.0, 1.3)
         c = _c(-8.5, -5.3, 1.38)
         return a.lerp(c, u), _c(-3.5, 1.5, 3.0), 28, 30, None, 0.05
-    if shot == "stunned":                                         # the Noob's stunned face
-        return REACT_N + _c(0.6, -3.1, 1.55), REACT_N + _c(0, 0, 1.6), 42, 2.6, None, 0.05
-    if shot == "glance":                                          # Steve's alarmed glance
-        return STEVE_BACK + _c(-2.6, -1.8, 1.5), STEVE_BACK + _c(0, 0, 1.5), 42, 2.8, None, 0.05
+    if shot == "stunned":                                         # the Noob's stunned face: a slow push in
+        a, look = REACT_N + _c(-0.5, -3.1, 1.55), REACT_N + _c(0, 0, 1.6)   # (from the west: Patch out of shot)
+        return a.lerp(look, 0.12 * ss(t0, t1, t)), look, 42, 2.6, None, 0.12
+    if shot == "glance":                                          # Steve's alarmed glance: a slow push in
+        a, look = STEVE_BACK + _c(-2.6, -1.8, 1.5), STEVE_BACK + _c(0, 0, 1.5)
+        return a.lerp(look, 0.12 * ss(t0, t1 if t1 < 1e8 else t0 + 1.2, t)), look, 42, 2.8, None, 0.12
     return _c(-5, -12, 3), _c(-5, 0, 2), 24, 30, None, 0.3
 
 
