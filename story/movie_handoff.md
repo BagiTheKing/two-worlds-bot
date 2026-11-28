@@ -575,8 +575,16 @@ cleanly (corr 0.999). With today's code or a rounded timeline the bed is off (Ep
 from run 41463846907 (scene lines -78..-87 dB; the solos "From last time." (`solo_text`) and "I don't want to be
 deleted." (`own_scene`) were missed by the tool at first: it now lifts them). Episode file
 `episodes/movie_ep07_another_world.json` (~51.5 s, local build); shot plan `story/movie/ep07_shots.md`; a local sound
-preview `movie/ep07/ep07_sound_preview_local.m4a` (Patch's one new line a placeholder). Next: the voices-only CI run
-(the new take), the sound preview, the renderer `src/lookdev/movie_ep07.py`, stills, the CI preview.
+preview `movie/ep07/ep07_sound_preview_local.m4a` (Patch's one new line a placeholder).
+
+**2026-11-28.** Renderer `src/lookdev/movie_ep07.py` done. The v1 CI preview (run 46142119649; see
+`movie/ep07/preview/timeline_v1.json`) was held back by the reviewer (landing, cubes, core, Patch's dim and amber
+eye, breach staging, a 0.2 s silence before the warp); all fixed. Sound v2: the turbine runs 3.4 s (was 2.9) into
+the charge, rebuilt on CI (run 46165042927) from `movie/ep07_published` so Patch's filter is applied once: identical
+before 47 s; warp [50.792, 52.192], flash [52.192, 52.492], **length 52.492**. The v1 sound is kept in
+`movie/ep07/v1/`; `movie/ep07/ep07_sound_preview_v2.m4a`. v2 preview: run 46166619245 (branch
+`preview-movie_ep07`; `movie/ep07/preview/timeline_v2.json`). Rebuilding sound locally from `movie/ep07/voice.flac`
+would filter Patch twice: always rebuild on CI with `voices_from=movie/ep07_published`.
 
 **Sound additions.** `voice_hall` (episode): a wide digital hall on the dialogue (`decay`, `wet` as a plugin-style mix,
 `hp`, optional `from`/`to`), added after the ducking. Ep7 uses decay 1.1, wet 0.13, hp 250, to the breach.

@@ -67,7 +67,7 @@ checkerboard head, no smile): the dark residue becomes a shapeless core; his sil
 | 8 | 29.6-36.1 | 24 mm, one continuous crane pullback (up and back from the trio to ~40 m high) | hundreds of varied cells, each with its fissure, into the mist; the music's hit at 29.6 | "How many times have we done this?" (31.0) |
 | 9A | 36.1-39.4 | 85 mm, shallow focus, Patch centred | Patch exhales; on the line his eye dims ~40%, flickers once, drops ~5 degrees | "...I stopped counting." (37.4) |
 | 9B | 39.4-44.9 | 50 mm two-shot | the Noob looks out over the ghosts, lowers his hands; Steve glances at him with quiet guilt | "I don't want to be deleted." (40.8) |
-| 10 | 44.9-51.5 | 28 mm wide, low | black-and-magenta cracks spiderweb across the floor under their feet; pads shatter, near cells dissolve into black; REALITY 52 -> 30; Patch's eye flashes amber; his warp ring flares cyan; the frame flashes white-cyan: cut to Ep8 | "It found the archive- I only have one stable coordinate left!" (46.7) |
+| 10 | 44.9-52.5 | 28 mm wide, low | black-and-magenta cracks spiderweb across the floor under their feet; pads shatter, near cells dissolve into black; REALITY 52 -> 30; Patch's eye flashes amber; his warp ring flares cyan; the frame flashes white-cyan: cut to Ep8 | "It found the archive- I only have one stable coordinate left!" (46.7) |
 
 ## Picture recipes (from the blueprint)
 - World: a gradient sky (#030B14 at the horizon to #0A2438 above), a volume (density 0.008-0.015) so the far grid
