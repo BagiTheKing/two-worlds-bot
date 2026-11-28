@@ -8,7 +8,7 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
   solo Patch 'It found the archive- I only have one stable coordinate left!' take 2: from the cache
   solo take 2 for 'It found the archive- I only have one stable coordinate left!': 1.00 ' It  found  the  archive.  I  only  have  one  stable  coordinate  left.'
 {
- "length": 52.502,
+ "length": 52.492,
  "beats": {
   "wash": [
    0.0,
@@ -112,15 +112,15 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
   ],
   "patch_archive": [
    46.687,
-   50.702
+   50.692
   ],
   "warp": [
-   50.802,
-   52.202
+   50.792,
+   52.192
   ],
   "flash": [
-   52.202,
-   52.502
+   52.192,
+   52.492
   ]
  }
 }

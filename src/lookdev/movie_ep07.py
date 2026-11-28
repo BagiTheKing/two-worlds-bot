@@ -50,7 +50,7 @@ def _hash(*a):
 # ------------------------------------------------------------------ the place (metres, z up; the cameras look +y)
 S_LAND = Vector((-0.9, -0.3, 0.0))       # Steve lands (one knee), facing +y
 N_LAND = Vector((0.9, -0.1, 0.0))        # the Noob lands flat on his back
-P_HOME = Vector((-0.2, 0.55, 2.8))         # Patch steadies here
+P_HOME = Vector((0.15, 0.75, 2.55))         # Patch steadies here
 S_STAND = Vector((-1.0, 0.2, 0.0))       # Steve after he rises
 N_STAND = Vector((0.7, 0.4, 0.0))        # the Noob after he hops up
 PAD_R = Vector((3.6, 3.6, 0.0))          # the replay pad
@@ -414,10 +414,21 @@ def _crack_mat(name):
     lt = nt.nodes.new("ShaderNodeMath")
     lt.operation = "LESS_THAN"
     nt.links.new(vo.outputs["Distance"], lt.inputs[0])
-    lt.inputs[1].default_value = 0.025
+    lt.inputs[1].default_value = 0.02
+    nz = nt.nodes.new("ShaderNodeTexNoise")                         # cracks only here and there
+    nz.inputs["Scale"].default_value = 1.6
+    nt.links.new(tc.outputs["Object"], nz.inputs["Vector"])
+    gt = nt.nodes.new("ShaderNodeMath")
+    gt.operation = "GREATER_THAN"
+    nt.links.new(nz.outputs["Fac"], gt.inputs[0])
+    gt.inputs[1].default_value = 0.56
+    both = nt.nodes.new("ShaderNodeMath")
+    both.operation = "MULTIPLY"
+    nt.links.new(lt.outputs[0], both.inputs[0])
+    nt.links.new(gt.outputs[0], both.inputs[1])
     mu = nt.nodes.new("ShaderNodeMix")
     mu.data_type = "RGBA"
-    nt.links.new(lt.outputs[0], mu.inputs[0])
+    nt.links.new(both.outputs[0], mu.inputs[0])
     mu.inputs[6].default_value = (0, 0, 0, 1)
     mu.inputs[7].default_value = (1.0, 0.1, 0.75, 1)
     nt.links.new(mu.outputs[2], bs.inputs["Emission Color"])
@@ -447,6 +458,37 @@ def _core(E):
         E.core_blocks.append((ob, rad, r.uniform(0, 2 * math.pi), r.uniform(-1, 1), r.uniform(0.25, 0.9),
                               r.uniform(0.3, 1.0), r.uniform(0, 6.3)))
         ob.location = FAR
+    # a glow at its heart: the black blocks read as a swirl against it
+    bpy.ops.mesh.primitive_uv_sphere_add(radius=2.6, segments=32, ring_count=16)
+    gl = bpy.context.active_object
+    gl.name = "mg_core_glow"
+    gm = bpy.data.materials.new("mg_core_glow")
+    gnt = _nt(gm)
+    lw = gnt.nodes.new("ShaderNodeLayerWeight")
+    lw.inputs["Blend"].default_value = 0.5
+    inv = gnt.nodes.new("ShaderNodeMath")
+    inv.operation = "POWER"
+    fr = gnt.nodes.new("ShaderNodeMath")
+    fr.operation = "SUBTRACT"
+    fr.inputs[0].default_value = 1.0
+    nt_link = gnt.links.new
+    nt_link(lw.outputs["Facing"], fr.inputs[1])
+    nt_link(fr.outputs[0], inv.inputs[0])
+    inv.inputs[1].default_value = 4.0
+    em = gnt.nodes.new("ShaderNodeEmission")
+    em.inputs["Color"].default_value = (1.0, 0.1, 0.7, 1)
+    em.inputs["Strength"].default_value = 1.6
+    tr = gnt.nodes.new("ShaderNodeBsdfTransparent")
+    mx = gnt.nodes.new("ShaderNodeMixShader")
+    nt_link(inv.outputs[0], mx.inputs[0])
+    nt_link(tr.outputs[0], mx.inputs[1])
+    nt_link(em.outputs[0], mx.inputs[2])
+    out = gnt.nodes.new("ShaderNodeOutputMaterial")
+    nt_link(mx.outputs[0], out.inputs["Surface"])
+    gl.data.materials.append(gm)
+    gl.visible_shadow = False
+    gl.location = FAR
+    E.core_glow = gl
     L = bpy.data.lights.new("mg_core_light", "POINT")
     L.color = (1.0, 0.15, 0.75)
     L.energy = 0.0
@@ -950,6 +992,7 @@ def core(E, t):
     vis = b("drop") - 0.2 <= t < b("noob_us")
     E.core_light.data.energy = 600.0 * (0.7 + 0.3 * math.sin(t * 5)) if vis else 0.0
     E.core_em.default_value = 8.0 * (0.6 + 0.4 * math.sin(t * 7.0) * math.sin(t * 2.3))
+    E.core_glow.location = CORE if vis else FAR
     for ob, rad, a0, h, s, w, ph in E.core_blocks:
         if not vis:
             ob.location = FAR
@@ -989,7 +1032,7 @@ def fx(E, t):
         E.cracks.location = (0, 0, 0.012)
         g = ss(br, br + 1.4, t)
         E.cracks.scale = (0.15 + 0.85 * g, 0.15 + 0.85 * g, 1)
-        E.cracks_em.default_value = 6.0 + 4.0 * math.sin(t * 30) ** 2
+        E.cracks_em.default_value = 3.5 + 2.0 * math.sin(t * 30) ** 2
         E.breach_light.data.energy = 40.0 * g
         for e in E.cells:
             d = Vector(e.location).length
@@ -1342,7 +1385,7 @@ def steve(E, t):
             br = b("breach")
             n_ = _noob_breach_pos(E, t)
             go = ss(br + 0.3, br + 1.1, t)
-            p = p.lerp(n_ + Vector((-0.8, -0.35, 0)), go)
+            p = p.lerp(n_ + Vector((-1.05, 0.15, 0)), go)
             yaw = lerp(_face_to(p, E.crack_origin), _face_to(p, n_), go)
             look_at = E.crack_origin if t < br + 0.5 else n_ + Vector((0, 0, 1.2))
             face = dict(SF["scared"])
@@ -1453,7 +1496,7 @@ def _cam(E, t, shot, t0, t1):
     if shot == "s1":                                              # 28 mm wide, low: the arrival; a slow push-in
         return _c(-1.2, -8.0, 1.1).lerp(_c(-0.6, -6.6, 1.2), u), _c(1.0, 2.0, 1.1), 28, 30, None, 0.15
     if shot == "s2":                                              # 35 mm medium-wide: the pair left, the replay right
-        return _c(6.4, -4.6, 1.8), _c(2.2, 2.6, 1.0), 32, 30, None, 0.1
+        return _c(7.0, -5.6, 1.9), _c(1.7, 2.3, 1.05), 32, 30, None, 0.1
     if shot == "s3":                                              # 50 mm MCU Steve, front-left; he looks down
         s = S_STAND
         return s + _c(0.7, 3.3, 1.55), s + _c(0.1, 0, 1.4), 45, 2.8, None, 0.06
@@ -1467,7 +1510,7 @@ def _cam(E, t, shot, t0, t1):
         lk = (N_EDGE + _c(1.0, 2.0, -0.5)).lerp(CORE, ss(t0, t0 + 1.6, t))
         if t >= b("noob_where") - 0.1:                            # up at the Noob leaning over the edge, through the glass
             loc = N_EDGE + _c(1.7, 3.3, -2.4)                    # under the glass, up at his face; then down to the core
-            lk = (N_EDGE + _c(0, 0, 1.3)).lerp(CORE + _c(0, 0, 2.0), ss(b("core"), b("core", 1), t))
+            lk = (N_EDGE + _c(0, 0, 1.3)).lerp(CORE + _c(0, 0, 2.0), ss(b("core"), b("core") + 0.6, t))
         return loc, lk, 24, 30, None, 0.05
     if shot == "s6":                                              # 45 mm past the recorded trio toward its fissure
         return CELL_P + _c(-4.2, -6.4, 1.7).lerp(_c(-3.6, -5.6, 1.7), u), CELL_P + _c(0.3, 1.6, 1.4), 45, 5.0, None, 0.05

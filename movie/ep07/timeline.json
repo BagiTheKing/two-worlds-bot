@@ -1,7 +1,7 @@
 {
  "id": "movie_ep07_another_world",
  "fps": 24,
- "length": 52.502,
+ "length": 52.492,
  "beats": {
   "wash": [
    0.0,
@@ -105,15 +105,15 @@
   ],
   "patch_archive": [
    46.687,
-   50.702
+   50.692
   ],
   "warp": [
-   50.802,
-   52.202
+   50.792,
+   52.192
   ],
   "flash": [
-   52.202,
-   52.502
+   52.192,
+   52.492
   ]
  },
  "impacts": [],
@@ -207,7 +207,7 @@
    "vo": false,
    "caption": true,
    "start": 46.687,
-   "end": 50.702
+   "end": 50.692
   }
  ],
  "cast": {
@@ -273,7 +273,7 @@
    "text": "REALITY: 30%",
    "alert": true,
    "start": 45.287,
-   "end": 52.902
+   "end": 52.892
   }
  ]
 }
