@@ -300,9 +300,9 @@
    "kind": "servo",
    "at": "patch_in+0.85",
    "dur": 0.6,
-   "pitch": 1.3,
-   "gain": 0.25,
-   "note": "hover whirr, banking"
+   "pitch": 0.6,
+   "gain": 0.12,
+   "note": "a low hover whirr, banking (the creator, 2026-11-27: no cartoon whine)"
   },
   {
    "kind": "step",
@@ -316,27 +316,28 @@
   },
   {
    "kind": "servo",
-   "at": "scan",
+   "at": "scan+0.05",
    "dur": 0.5,
-   "pitch": 1.2,
-   "gain": 0.2
+   "pitch": 0.6,
+   "gain": 0.1
   },
   {
    "kind": "ping",
-   "at": "scan+0.25",
-   "gain": 0.45
+   "at": "scan+0.9",
+   "gain": 0.28,
+   "note": "parked and aimed: the scan starts"
   },
   {
    "kind": "scan",
-   "at": "scan+0.35",
-   "dur": 1.1,
-   "gain": 0.3
+   "at": "scan+0.95",
+   "dur": 0.8,
+   "gain": 0.28
   },
   {
    "kind": "trill",
-   "at": "scan+0.7",
-   "dur": 0.7,
-   "gain": 0.3
+   "at": "scan+1.15",
+   "dur": 0.55,
+   "gain": 0.12
   },
   {
    "kind": "step",
@@ -344,27 +345,29 @@
    "gain": 0.2
   },
   {
-   "kind": "servo",
-   "at": "turn+0.2",
-   "dur": 0.25,
-   "pitch": 1.6,
-   "gain": 0.3,
-   "note": "the sharp turn"
-  },
-  {
    "kind": "glitch",
-   "at": "turn+0.55",
+   "at": "turn+0.3",
    "dur": 0.12,
-   "gain": 0.55,
-   "cut": "turn+0.72",
-   "note": "the eye dilates: a digital stutter"
+   "gain": 0.3,
+   "cut": "turn+0.45",
+   "note": "the eye widens: a small digital stutter"
   },
   {
-   "kind": "servo",
-   "at": "drift+0.1",
-   "dur": 0.6,
-   "pitch": 0.9,
-   "gain": 0.12
+   "kind": "step",
+   "at": "fall+1.7",
+   "gain": 0.3,
+   "note": "the Noob hops up onto his feet"
+  },
+  {
+   "kind": "step",
+   "at": "tearoff+0.55",
+   "gain": 0.18,
+   "note": "Steve backs out from under the dragon"
+  },
+  {
+   "kind": "step",
+   "at": "tearoff+0.95",
+   "gain": 0.16
   }
  ],
  "overlays": [
