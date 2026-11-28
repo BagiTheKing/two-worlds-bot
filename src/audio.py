@@ -2311,7 +2311,10 @@ def build(episode_path, out_dir, keep=None):
         # falling 60 dB over `decay` s after a 25 ms pre-delay, fed the voices high-passed at `hp`; `wet` is the
         # plugin-style mix (the tail's RMS is wet / (1 - wet) of the voices'); optional `from`/`to` (refs) limit
         # it to part of the chapter. Added after the ducking so the tails between words are heard.
-        from scipy.signal import fftconvolve
+        def fftconvolve(a, b):                  # numpy only (CI has no scipy)
+            m = len(a) + len(b) - 1
+            k = 1 << (m - 1).bit_length()
+            return np.fft.irfft(np.fft.rfft(a, k) * np.fft.rfft(b, k), k)[:m]
         vh = ep["voice_hall"]
         dec = float(vh.get("decay", 1.1))
         n_ = int(dec * 1.2 * SR)
