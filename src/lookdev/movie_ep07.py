@@ -50,7 +50,7 @@ def _hash(*a):
 # ------------------------------------------------------------------ the place (metres, z up; the cameras look +y)
 S_LAND = Vector((-0.9, -0.3, 0.0))       # Steve lands (one knee), facing +y
 N_LAND = Vector((0.9, -0.1, 0.0))        # the Noob lands flat on his back
-P_HOME = Vector((0.0, 0.5, 2.2))         # Patch steadies here
+P_HOME = Vector((-0.2, 0.55, 2.8))         # Patch steadies here
 S_STAND = Vector((-1.0, 0.2, 0.0))       # Steve after he rises
 N_STAND = Vector((0.7, 0.4, 0.0))        # the Noob after he hops up
 PAD_R = Vector((3.6, 3.6, 0.0))          # the replay pad
@@ -62,7 +62,8 @@ CORE = Vector((5.0, 9.0, -30.0))         # the dark core far below
 CELL_P = Vector((-6.5, 8.0, 0.0))        # the recorded past loop
 FISSURE_P = CELL_P + Vector((0.6, 3.2, 0.0))
 CUBE_S = 0.34
-P_WEIGHT = Vector((-0.6, 2.2, 2.4))   # Patch for '...I stopped counting.' (clear of them)
+P_WEIGHT = Vector((-0.6, 2.2, 2.4))
+P_BREACH = Vector((-0.3, -0.3, 2.3))   # Patch in the breach: in front of them, high, clear of the Noob's arms   # Patch for '...I stopped counting.' (clear of them)
 LOOK_OUT = Vector((10.0, 12.0, 0.5))   # where the Noob looks out over the ghosts
 
 
@@ -346,7 +347,10 @@ def _dark_mat(name):
     nt = m.node_tree
     bs = nt.nodes["Principled BSDF"]
     bs.inputs["Base Color"].default_value = (0.004, 0.003, 0.008, 1)
-    bs.inputs["Roughness"].default_value = 0.18
+    bs.inputs["Roughness"].default_value = 0.55
+    for nm in ("Specular IOR Level", "Specular"):
+        if nm in bs.inputs:
+            bs.inputs[nm].default_value = 0.15
     vo = nt.nodes.new("ShaderNodeTexVoronoi")
     vo.inputs["Scale"].default_value = 28.0
     tc = nt.nodes.new("ShaderNodeTexCoord")
@@ -363,13 +367,13 @@ def _dark_mat(name):
     nt.links.new(mu.outputs[2], bs.inputs["Emission Color"])
     bs.inputs["Emission Strength"].default_value = 2.0
     lw = nt.nodes.new("ShaderNodeLayerWeight")                 # a faint magenta rim: it reads on the navy
-    lw.inputs["Blend"].default_value = 0.25
+    lw.inputs["Blend"].default_value = 0.08
     rim = nt.nodes.new("ShaderNodeMix")
     rim.data_type = "RGBA"
     rim.blend_type = "ADD"
     nt.links.new(lw.outputs["Fresnel"], rim.inputs[0])
     nt.links.new(mu.outputs[2], rim.inputs[6])
-    rim.inputs[7].default_value = (0.9, 0.1, 0.7, 1)
+    rim.inputs[7].default_value = (0.25, 0.02, 0.2, 1)
     nt.links.new(rim.outputs[2], bs.inputs["Emission Color"])
     return m
 
@@ -398,16 +402,19 @@ def _crack_mat(name):
     nt = m.node_tree
     bs = nt.nodes["Principled BSDF"]
     bs.inputs["Base Color"].default_value = (0.003, 0.002, 0.006, 1)
-    bs.inputs["Roughness"].default_value = 0.35
+    bs.inputs["Roughness"].default_value = 0.7
+    for nm in ("Specular IOR Level", "Specular"):
+        if nm in bs.inputs:
+            bs.inputs[nm].default_value = 0.1
     vo = nt.nodes.new("ShaderNodeTexVoronoi")
     vo.feature = "DISTANCE_TO_EDGE"
-    vo.inputs["Scale"].default_value = 2.2
+    vo.inputs["Scale"].default_value = 1.3
     tc = nt.nodes.new("ShaderNodeTexCoord")
     nt.links.new(tc.outputs["Object"], vo.inputs["Vector"])
     lt = nt.nodes.new("ShaderNodeMath")
     lt.operation = "LESS_THAN"
     nt.links.new(vo.outputs["Distance"], lt.inputs[0])
-    lt.inputs[1].default_value = 0.08
+    lt.inputs[1].default_value = 0.025
     mu = nt.nodes.new("ShaderNodeMix")
     mu.data_type = "RGBA"
     nt.links.new(lt.outputs[0], mu.inputs[0])
@@ -546,13 +553,13 @@ def _ghost(E):
         if o.name == "ghost_face":
             o.hide_render = True
     # the break: each limb a wireframe copy that drifts apart and fades
-    E.wire_mat, E.wire_em = _wire_mat("mg_ghost_wire", strength=6.0)
+    E.wire_mat, E.wire_em = _wire_mat("mg_ghost_wire", strength=2.5)
     E.ghost_bits = []
     for o in E.ghost_parts:
         w = bpy.data.objects.new(o.name + "_bit", o.data)
         E.sc.collection.objects.link(w)
         md = w.modifiers.new("wire", "WIREFRAME")
-        md.thickness = 0.03
+        md.thickness = 0.018
         md.use_relative_offset = False
         _override(w, E.wire_mat)
         w.location = FAR
@@ -680,7 +687,7 @@ def _lights(E):
     E.breach_light.data.color = (1.0, 0.12, 0.7)
     E.breach_light.data.energy = 0.0
     E.breach_light.data.shadow_soft_size = 2.0
-    E.breach_light.location = (0.4, 0.6, 0.4)
+    E.breach_light.location = (0.4, 0.6, 0.05)
 
 
 def _patch_screen(E):
@@ -693,11 +700,19 @@ def _patch_screen(E):
     link = bs.inputs["Emission Color"].links[0]
     src = link.from_socket
     nt.links.remove(link)
+    bw = nt.nodes.new("ShaderNodeRGBToBW")                          # the eye's shape as brightness...
+    nt.links.new(src, bw.inputs[0])
+    am = nt.nodes.new("ShaderNodeMix")                              # ...in amber
+    am.data_type = "RGBA"
+    am.blend_type = "MULTIPLY"
+    am.inputs[0].default_value = 1.0
+    nt.links.new(bw.outputs[0], am.inputs[6])
+    am.inputs[7].default_value = (1.6, 0.62, 0.04, 1)
     mu = nt.nodes.new("ShaderNodeMix")
     mu.data_type = "RGBA"
-    mu.blend_type = "MULTIPLY"
+    mu.blend_type = "MIX"
     nt.links.new(src, mu.inputs[6])
-    mu.inputs[7].default_value = (6.0, 1.1, 0.05, 1)                 # cyan * this = amber
+    nt.links.new(am.outputs[2], mu.inputs[7])
     mu.inputs[0].default_value = 0.0
     nt.links.new(mu.outputs[2], bs.inputs["Emission Color"])
     E.eye_amber = mu.inputs[0]
@@ -880,7 +895,7 @@ def ghost(E, t):
                 spin = Quaternion((1, 0, 0) if i % 2 else (0, 1, 0), u * 2.5 * (1 if i % 3 else -1))
                 s = 1.0 - 0.7 * u
                 w.matrix_world = Matrix.LocRotScale(loc + out.normalized() * 0.9 * u, rot @ spin, scl * s)
-            E.wire_em.inputs["Strength"].default_value = 6.0 * (1 - u)
+            E.wire_em.inputs["Strength"].default_value = 2.5 * (1 - u)
         return
     # the pop (squash and stretch), the walk, the hop onto the brick
     pop = ss(t0, t0 + 0.25, t)
@@ -933,7 +948,7 @@ def residue(E, t):
 
 def core(E, t):
     vis = b("drop") - 0.2 <= t < b("noob_us")
-    E.core_light.data.energy = 4000.0 * (0.7 + 0.3 * math.sin(t * 5)) if vis else 0.0
+    E.core_light.data.energy = 600.0 * (0.7 + 0.3 * math.sin(t * 5)) if vis else 0.0
     E.core_em.default_value = 8.0 * (0.6 + 0.4 * math.sin(t * 7.0) * math.sin(t * 2.3))
     for ob, rad, a0, h, s, w, ph in E.core_blocks:
         if not vis:
@@ -975,7 +990,7 @@ def fx(E, t):
         g = ss(br, br + 1.4, t)
         E.cracks.scale = (0.15 + 0.85 * g, 0.15 + 0.85 * g, 1)
         E.cracks_em.default_value = 6.0 + 4.0 * math.sin(t * 30) ** 2
-        E.breach_light.data.energy = 250.0 * g
+        E.breach_light.data.energy = 40.0 * g
         for e in E.cells:
             d = Vector(e.location).length
             k_ = ss(br + 0.2 + d * 0.03, br + 0.8 + d * 0.03, t)
@@ -983,10 +998,17 @@ def fx(E, t):
                 e.hide_render = True
             else:
                 e.scale = (1, 1, 1 - k_)
-        for (sl, w) in E.pad_deco:
-            sl.hide_render = t > br + 0.4
-            if w:
-                w.hide_render = t > br + 0.4
+        for i, (sl, w) in enumerate(E.pad_deco):
+            f = ss(br + 0.15 + 0.15 * i, br + 1.6 + 0.15 * i, t)
+            for o in (sl, w):
+                if o is None:
+                    continue
+                if "p0" not in o:
+                    o["p0"] = tuple(o.location)
+                p0 = Vector(o["p0"])
+                o.location = p0 + Vector((0, 0, -9.0 * f * f))
+                o.rotation_euler = (0.9 * f * (1 if i % 2 else -1), 0.6 * f, 0)
+                o.hide_render = f > 0.98
         E.floor_em.inputs[1].default_value = 4.0 * (1 - 0.5 * ss(br, br + 1.0, t)) * (0.85 + 0.15 * math.sin(t * 40))
     else:
         E.cracks.location = FAR
@@ -995,9 +1017,13 @@ def fx(E, t):
         for e in E.cells:
             e.scale = (1, 1, 1)
         for (sl, w) in E.pad_deco:
-            sl.hide_render = False
-            if w:
-                w.hide_render = False
+            for o in (sl, w):
+                if o is None:
+                    continue
+                if "p0" in o:
+                    o.location = Vector(o["p0"])
+                o.rotation_euler = (0, 0, 0)
+                o.hide_render = False
     E.brick.hide_render = not (b("spot") <= t < b("drop") + 0.2)
     E.brick_em.default_value = 1.6 + 1.2 * math.exp(-((t - _death_t(0)) / 0.1) ** 2) + 1.2 * math.exp(-((t - _death_t(1)) / 0.1) ** 2)
 
@@ -1025,13 +1051,22 @@ def warp(E, t):
 def _arrive(t, delay, h0):
     """Falling out of the warp: (height, tumble angle, landed fraction)."""
     t0 = b("tumble") + delay
-    T = 0.55
+    T = t0 - 0.05                     # falling from the first frames (nobody hangs in the air)
     if t < t0 - T:
         return h0, 1.0, 0.0
     if t < t0:
         u = (t - (t0 - T)) / T
         return h0 * (1 - u * u), 1.0 - u, 0.0
     return 0.0, 0.0, min(1.0, (t - t0) / 0.25)
+
+
+def _noob_breach_pos(E, t):
+    """Where the Noob is during the breach (time only: Steve reads it before the Noob is posed)."""
+    p0 = Vector((0.9, 0.9, 0.0))
+    away = p0 - E.crack_origin
+    away.z = 0.0
+    away.normalize()
+    return p0 + away * 0.45 * ss(b("breach") + 0.05, b("breach") + 0.75, t)
 
 
 def patch_pos(E, t):
@@ -1052,7 +1087,7 @@ def patch_pos(E, t):
     if t < b("breach"):
         return P_WEIGHT
     u = ss(b("breach") + 0.2, b("patch_archive"), t)
-    return P_WEIGHT.lerp(Vector((0.0, 0.6, 1.9)), u)
+    return P_WEIGHT.lerp(P_BREACH, u)
 
 
 def patch(E, t):
@@ -1067,7 +1102,7 @@ def patch(E, t):
         tgt = GHOST0 + Vector((0, 1.5, 1.0))
     if b("residue") <= t < b("past"):
         tgt = CUBES[1] + Vector((0, 0, 0.2)) if t < b("patch_behind") else N_
-    if b("weight") <= t < b("look"):
+    if b("weight") <= t < b("look") or b("breach") + 0.2 <= t:
         tgt = Vector(E.cam_loc_now)
     to = tgt - p
     yaw = _yaw(Vector((to.x, to.y, 0)))
@@ -1088,7 +1123,7 @@ def patch(E, t):
         vals.update({"wide": 0.3})
     if b("weight") <= t < b("look"):                             # "...I stopped counting.": dims, one flicker, down
         k = ss(b("weight") + 0.3, b("patch_count") + 0.4, t)
-        bright = 1.0 - 0.4 * k
+        bright = 1.0 - 0.8 * k
         fl = b("patch_count") + 0.75
         if fl <= t < fl + 0.08:
             bright *= 0.15
@@ -1096,7 +1131,7 @@ def patch(E, t):
         pitch += 5.0 * k
         vals["open"] = max(0.05, 1 - blink) * (1 - 0.2 * k)
     if b("look") <= t < b("breach"):
-        bright = 0.7
+        bright = 0.35
         vals.update({"look_y": -0.3})
     amber = 0.0
     if b("breach") <= t:                                          # panic: amber, wide
@@ -1125,22 +1160,41 @@ def noob(E, t):
     p, yaw = N_STAND.copy(), 20.0
     look_at = GHOST0 + Vector((0, 1.0, 1.0))
     lie = 0.0
-    h, tum, land = _arrive(t, 0.3, 2.6)
-    worried = {"both_to": -0.4, "both_ti": 0.2, "both_h": 1.75, "m_arch": 0.25, "m_o": 0.0}
-    if t < b("settle") + 0.9:                                     # out of the warp, flat on his back, then hops up
+    h, tum, land = _arrive(t, 0.75, 2.6)
+    worried = {"both_to": -0.6, "both_ti": 0.35, "both_h": 1.7, "m_arch": 0.3, "m_o": 0.0}
+    if t < b("settle") + 0.9:                                     # out of the warp, flat on his back, then springs up
+        t_l = b("tumble") + 0.75                                  # touchdown (the thud)
         p = N_LAND + Vector((0, 0, h))
         yaw = -30.0 + 200 * tum
-        lie = 1.0 - ss(b("settle") + 0.4, b("settle") + 0.85, t)
-        if t < b("tumble") + 0.3:
-            lie = 0.2 + 0.8 * (1 - tum)
-        pz = {"arm_sl": {"fwd": 30 + 60 * tum, "out": 60}, "arm_sr": {"fwd": 30 + 60 * tum, "out": 60},
-              "leg_sl": {"fwd": 30 * tum}, "leg_sr": {"fwd": -20 * tum}}
         look_at = p + Vector((0, 0, 6))
         face = dict(NF["shock"])
-        if b("settle") + 0.4 <= t:                               # the hop up
-            hop = math.sin(math.pi * ss(b("settle") + 0.4, b("settle") + 0.9, t))
-            p = N_LAND.lerp(N_STAND, ss(b("settle") + 0.4, b("settle") + 0.9, t)) + Vector((0, 0, 0.35 * hop))
-            face = dict(NF["awe"])
+        if t < t_l:                                               # falling, turning onto his back
+            lie = 0.2 + 0.8 * (1 - tum)
+            pz = {"arm_sl": {"fwd": 30 + 60 * tum, "out": 60}, "arm_sr": {"fwd": 30 + 60 * tum, "out": 60},
+                  "leg_sl": {"fwd": 30 * tum}, "leg_sr": {"fwd": -20 * tum}}
+        else:
+            a0, a1 = b("settle") + 0.1, b("settle") + 0.35        # the tuck (anticipation), then the spring
+            s1 = b("settle") + 0.8
+            d = t - t_l
+            bounce = 0.12 * abs(math.sin(d * 10)) * math.exp(-d * 7)      # the bump on landing
+            tuck = ss(a0, a1, t) * (1 - ss(a1, a1 + 0.2, t))
+            spring = ss(a1, s1, t)
+            lie = 1.0 - spring
+            hop = math.sin(math.pi * spring) * 0.55
+            p = N_LAND.lerp(N_STAND, spring) + Vector((0, 0, bounce + hop))
+            arms_up = tuck * (1 - spring)
+            pz = {"arm_sl": {"fwd": lerp(lerp(20, 150, arms_up), 25, spring), "out": lerp(45, 30, spring), "elbow": 20},
+                  "arm_sr": {"fwd": lerp(lerp(20, 150, arms_up), 25, spring), "out": lerp(45, 30, spring), "elbow": 20},
+                  "leg_sl": {"fwd": 70 * tuck + 20 * math.sin(math.pi * spring)},
+                  "leg_sr": {"fwd": 70 * tuck - 10 * math.sin(math.pi * spring)}}
+            if t >= s1:                                           # lands on his feet: arms fling out, a wobble
+                w = math.exp(-(t - s1) * 8)
+                pz["arm_sl"] = {"fwd": 25 + 20 * w, "out": 30 + 35 * w, "elbow": 15}
+                pz["arm_sr"] = {"fwd": 25 + 20 * w, "out": 30 + 35 * w, "elbow": 15}
+                pz["chest_lean"] = 12 * w * math.cos((t - s1) * 18)
+            look_at = p + Vector((0, 2.0, 6.0 * (1 - spring) + 1.4))
+            if spring > 0.5:
+                face = dict(NF["awe"])
     elif t < b("replay"):                                         # fascinated, turning; spots his hologram
         yaw = lerp(-30.0, _face_to(N_STAND, GHOST0), ss(b("settle") + 1.0, b("spot") + 0.6, t))
         look_at = GHOST0 + Vector((0, 0.5 * ss(b("spot"), b("replay"), t), 1.0)) if t >= b("spot") else N_STAND + Vector((-3, 6, 2.5))
@@ -1177,7 +1231,7 @@ def noob(E, t):
         look_at = CELL_P + Vector((0, 0.8, 1.2))
         face = dict(worried)
         if b("noob_us") - 0.2 <= t < b("pull"):                  # "That's... us?" / "From last time.": a slow blink
-            face = {"both_to": -0.45, "both_ti": 0.25, "both_h": 1.7, "both_ps": 0.85, "m_arch": 0.3, "m_o": 0.0}
+            face = {"both_to": -0.6, "both_ti": 0.35, "both_h": 1.65, "both_ps": 0.85, "m_arch": 0.32, "m_o": 0.0}
             bl = math.exp(-((t - (b("noob_us") + 0.6)) / 0.12) ** 2)
             face["both_h"] = lerp(face["both_h"], 0.15, bl)
         if b("look") <= t:                                        # looks out over the ghosts, hands lowering
@@ -1188,14 +1242,23 @@ def noob(E, t):
             pz["arm_sr"] = {"fwd": 30 * (1 - k) + 5, "out": 12, "elbow": 40 * (1 - k)}
             pz["chest_lean"] = 6 * k
             pz["head_nod"] = 6 * k
-            face = {"both_to": -0.5, "both_ti": 0.3, "both_h": 1.6, "both_ps": 0.8, "m_arch": 0.32, "m_o": 0.0}
-        if b("breach") <= t:                                      # the floor cracks under him
+            face = {"both_to": -0.62, "both_ti": 0.38, "both_h": 1.6, "both_ps": 0.8, "m_arch": 0.34, "m_o": 0.0}
+        if b("breach") <= t:                                      # the floor cracks under him: he stumbles back
+            br = b("breach")
             yaw = _face_to(p, E.crack_origin + Vector((0, -1, 0)))
+            p = _noob_breach_pos(E, t)
             look_at = E.crack_origin
             face = dict(NF["scared"])
-            pz["arm_sl"] = {"fwd": 50, "out": 45, "elbow": 20}
-            pz["arm_sr"] = {"fwd": 50, "out": 45, "elbow": 20}
-            pz["chest_lean"] = -10
+            if br + 0.05 < t < br + 0.75:
+                _run(pz, t, br + 0.05, 1.7, k=0.3 * (1 - ss(br + 0.55, br + 0.75, t)), steve=False)
+            wob = math.exp(-max(0.0, t - br - 0.6) * 1.2)                 # arms windmilling for balance, settling
+            pz["arm_sl"] = {"fwd": 55 + 35 * math.sin(t * 9.0) * wob, "out": 45 + 15 * math.sin(t * 7.0), "elbow": 20}
+            pz["arm_sr"] = {"fwd": 55 - 35 * math.sin(t * 9.0 + 0.6) * wob, "out": 45 + 15 * math.sin(t * 6.3), "elbow": 20}
+            pz["chest_lean"] = -10 + 8 * math.sin(t * 5.0) * wob
+            if b("warp") - 0.2 <= t:                              # shields his eyes from the warp
+                k = ss(b("warp") - 0.2, b("warp") + 0.3, t)
+                pz["arm_sl"] = {"fwd": lerp(55, 125, k), "out": lerp(45, 15, k), "elbow": lerp(20, 70, k)}
+                pz["chest_lean"] = lerp(-10, 12, k)
             if b("patch_archive") <= t:
                 look_at = Vector(E.PA.root.location)
     tl, nd = _look(yaw, p, look_at, h=1.4, lim=75)
@@ -1205,7 +1268,7 @@ def noob(E, t):
     if lie > 0.001:                                               # on his back: the body pivots up at his feet
         N.root.rotation_euler = (math.radians(-88 * lie), 0, math.radians(yaw))
         N.root.location = p + Vector((0, 0, 0.18 * lie))
-    if t < b("tumble") + 0.3 and tum > 0:
+    if tum > 0:
         N.root.rotation_euler = (math.radians(-88 * lie - 140 * tum), math.radians(30 * tum), math.radians(yaw))
 
 
@@ -1218,19 +1281,29 @@ def steve(E, t):
     p, yaw = S_STAND.copy(), 0.0
     N_ = Vector(E.N.root.location) + Vector((0, 0, 1.3))
     look_at = N_
-    h, tum, land = _arrive(t, 0.0, 2.4)
-    if t < b("settle") + 1.2:                                     # lands, drops to one knee, rises
+    h, tum, land = _arrive(t, 0.45, 2.4)
+    if t < b("settle") + 1.2:                                     # lands, drops to one knee, looks round, rises
         p = S_LAND + Vector((0, 0, h))
         yaw = 0.0 + 120 * tum
-        kneel = (1 - ss(b("settle") + 0.2, b("settle") + 1.1, t)) * (1 if land > 0 or t > b("tumble") else 0)
-        if kneel > 0:
-            pz = _crouch(lib, kneel)
-            pz["arm_sl"] = {"fwd": 40 * kneel, "out": 25, "elbow": 30}
-            pz["arm_sr"] = {"fwd": 25 * kneel, "out": 30, "elbow": 20}
+        t_l = b("tumble") + 0.45                                  # touchdown (the thud)
+        if t >= t_l - 0.02:
+            imp = math.exp(-max(0.0, t - t_l) * 7) * ss(t_l - 0.02, t_l + 0.04, t)   # the impact dip
+            k = ss(t_l - 0.04, t_l + 0.12, t) * (1 - ss(b("settle") + 0.05, b("settle") + 0.85, t))
+            pz = _kneel(lib, k, imp)
+            # breathing, then a look round the place from his knee
+            br = 0.5 + 0.5 * math.sin((t - t_l) * 4.2)
+            pz["chest_lean"] = pz.get("chest_lean", 0) + 3 * br * k
+            look_at = p + Vector((0.4, 2.0, -0.6))
+            g = ss(t_l + 0.45, t_l + 0.9, t)
+            if g > 0:
+                sweep = math.sin(ss(t_l + 0.45, b("settle") + 0.2, t) * math.pi * 1.3)
+                look_at = look_at.lerp(p + Vector((4.0 * sweep - 1.0, 6.0, 1.6)), g)
         else:
             pz = {"arm_sr": {"fwd": 70 * tum, "out": 50, "elbow": 30}, "arm_sl": {"fwd": 70 * tum, "out": 50, "elbow": 30}}
-        p = p.lerp(S_STAND, ss(b("settle") + 0.3, b("settle") + 1.2, t))
-        look_at = p + Vector((2.0, 6.0, 1.2))
+            look_at = p + Vector((2.0, 6.0, 1.2))
+        p = p.lerp(S_STAND, ss(b("settle") + 0.6, b("settle") + 1.2, t))
+        if b("settle") + 0.8 < t < b("settle") + 1.15:            # a step as he settles
+            _run(pz, t, b("settle") + 0.8, 1.4, k=0.12 * (1 - ss(b("settle") + 1.0, b("settle") + 1.15, t)), steve=True)
         face = dict(SF["stunned"])
     elif t < b("replay"):
         yaw = _face_to(p, GHOST0 + Vector((0, 1, 0)))
@@ -1242,7 +1315,8 @@ def steve(E, t):
         face = dict(SF["worried"])
         if b("replay2") + 1.0 <= t:
             look_at = CUBES[0] + Vector((0, 0, 0.1))
-            pz["head_nod"] = 8
+            pz["head_nod"] = 14
+            face["both_py"] = -0.6                                # the eyes down too, never the lens
     elif t < b("past"):
         yaw = _face_to(p, CUBES[1])
         look_at = Vector(E.PA.root.location) if t < b("drop") else Vector(E.N.root.location) + Vector((0, 0, 1.0))
@@ -1261,24 +1335,51 @@ def steve(E, t):
         if b("look") <= t:                                        # a guilty glance at the Noob, then away, down
             g = ss(b("look") + 0.3, b("look") + 0.8, t) * (1 - ss(b("noob_deleted") + 1.2, b("noob_deleted") + 1.8, t))
             look_at = LOOK_OUT.lerp(Vector(E.N.root.location) + Vector((0, 0, 1.3)), g)
-            if t >= b("noob_deleted") + 1.5:
-                look_at = Vector((-1.0, 3.0, 0.0))
+            dn = ss(b("noob_deleted") + 1.2, b("noob_deleted") + 2.1, t)
+            look_at = look_at.lerp(Vector((-1.0, 3.0, 0.0)), dn)
             face = {"both_to": -0.3, "both_ti": 0.1, "bb_tilt": -0.5, "bb_raise": 0.0, "m_arch": 0.15}
-        if b("breach") <= t:
-            yaw = _face_to(p, E.crack_origin)
-            look_at = E.crack_origin
+        if b("breach") <= t:                                      # he steps in and grabs the Noob's arm
+            br = b("breach")
+            n_ = _noob_breach_pos(E, t)
+            go = ss(br + 0.3, br + 1.1, t)
+            p = p.lerp(n_ + Vector((-0.8, -0.35, 0)), go)
+            yaw = lerp(_face_to(p, E.crack_origin), _face_to(p, n_), go)
+            look_at = E.crack_origin if t < br + 0.5 else n_ + Vector((0, 0, 1.2))
             face = dict(SF["scared"])
             face["m_o"] = 0.2
-            pz["arm_sr"] = {"fwd": 70, "out": 60, "elbow": 10}       # a hand out to the Noob
+            if br + 0.3 < t < br + 1.1:
+                _run(pz, t, br + 0.3, 1.8, k=0.35 * (1 - ss(br + 0.9, br + 1.1, t)), steve=True)
+            pz["arm_sr"] = {"fwd": 70 + 10 * go, "out": 60 - 35 * go, "elbow": 10}       # a hand out, then on his arm
             pz["arm_sl"] = {"fwd": 30, "out": 30, "elbow": 20}
+            pz["hips_drop"] = 0.2 * ss(br + 1.0, br + 1.6, t)                          # braced
+            pz["chest_lean"] = 8 * ss(br + 1.0, br + 1.6, t)
+            if b("warp") - 0.2 <= t:                              # a forearm up against the flash
+                k = ss(b("warp") - 0.2, b("warp") + 0.3, t)
+                pz["arm_sl"] = {"fwd": lerp(30, 120, k), "out": lerp(30, 10, k), "elbow": lerp(20, 80, k)}
             if b("patch_archive") <= t:
                 look_at = Vector(E.PA.root.location)
     tl, nd = _look(yaw, p, look_at, h=1.55, lim=80)
+    if b("look") <= t < b("breach"):                              # the head leads, the shoulders follow
+        pz["chest_twist"] = pz.get("chest_twist", 0) + 0.35 * tl
+        tl *= 0.65
     pz["head_turn"], pz["head_nod"] = tl, nd + pz.get("head_nod", 0)
     pz = life(E, "steve", pz, face, t, 2.3)
     M.set_steve(E, p, yaw, pz, face, t)
-    if t < b("tumble") and tum > 0:                               # tumbling out of the warp
+    if tum > 0:                                                   # tumbling out of the warp
         S.holder.rotation_euler = (math.radians(70 * tum), math.radians(-40 * tum), math.radians(yaw))
+
+
+def _kneel(lib, k, imp=0.0):
+    """Steve on one knee (his right knee down, his left foot planted in front), k 0..1; imp: the landing's dip."""
+    pz = _crouch(lib, k)
+    pz["hips_drop"] = (0.95 + 0.12 * imp) * k
+    pz["chest_lean"] = (22 + 14 * imp) * k
+    pz["head_nod"] = (10 + 14 * imp) * k
+    pz["foot_sl"] = {"x": -0.12 * k, "y": -0.6 * k, "z": 0.0}
+    pz["foot_sr"] = {"x": 0.14 * k, "y": 0.78 * k, "z": 0.0, "pitch": -55 * k}
+    pz["arm_sl"] = {"fwd": 30 * k, "out": 18, "elbow": 45 * k}          # a hand on the front knee
+    pz["arm_sr"] = {"fwd": (25 + 15 * imp) * k, "out": 26, "elbow": 15}  # the other hand down to the floor
+    return pz
 
 
 def _crouch(lib, k):
@@ -1312,6 +1413,7 @@ def apply(E, t):
     w = 1.0 - ss(0.0, b("wash", 1) + 0.15, t)
     w = max(w, ss(b("flash") - 0.12, b("flash") + 0.02, t))
     E2.set_wash(E, w)
+    WASH[0] = w
 
 
 # ------------------------------------------------------------------ the camera
@@ -1351,7 +1453,7 @@ def _cam(E, t, shot, t0, t1):
     if shot == "s1":                                              # 28 mm wide, low: the arrival; a slow push-in
         return _c(-1.2, -8.0, 1.1).lerp(_c(-0.6, -6.6, 1.2), u), _c(1.0, 2.0, 1.1), 28, 30, None, 0.15
     if shot == "s2":                                              # 35 mm medium-wide: the pair left, the replay right
-        return _c(6.2, -3.2, 1.7), _c(1.6, 1.8, 1.05), 35, 30, None, 0.1
+        return _c(6.4, -4.6, 1.8), _c(2.2, 2.6, 1.0), 32, 30, None, 0.1
     if shot == "s3":                                              # 50 mm MCU Steve, front-left; he looks down
         s = S_STAND
         return s + _c(0.7, 3.3, 1.55), s + _c(0.1, 0, 1.4), 45, 2.8, None, 0.06
@@ -1427,6 +1529,9 @@ def main():
     M._render(E, frames, out, apply, finish_grid)
 
 
+WASH = [0.0]        # the lens wash this frame: the fog stays off it (the mist pass looks through the sheet)
+
+
 def finish_grid(path, mist_path):
     """The depth fog: far things fade into the cyan-navy mist (the mist pass), then the movie's grade."""
     import numpy as np
@@ -1436,7 +1541,7 @@ def finish_grid(path, mist_path):
     if mist_path and os.path.exists(mist_path):
         m = np.asarray(Image.open(mist_path).convert("L").resize(im.size)).astype(np.float32) / 255.0
         fog = np.array([int(h, 16) for h in ("0E", "2C", "44")], np.float32)          # the mist (#0A2438, a touch lifted)
-        k = np.clip(m, 0, 1)[..., None] ** 1.3 * 0.85
+        k = np.clip(m, 0, 1)[..., None] ** 1.3 * 0.85 * (1.0 - WASH[0])
         a = a * (1 - k) + fog * k
     im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
     import assemble

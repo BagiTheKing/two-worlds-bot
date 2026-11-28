@@ -236,7 +236,7 @@
     {
       "kind": "turbine",
       "at": "patch_archive+1.0",
-      "dur": 2.9,
+      "dur": 3.4,
       "gain": 0.45,
       "cut": "flash",
       "note": "the emergency warp spinning up"
