@@ -1,0 +1,279 @@
+{
+ "id": "movie_ep07_another_world",
+ "fps": 24,
+ "length": 52.502,
+ "beats": {
+  "wash": [
+   0.0,
+   0.7
+  ],
+  "tumble": [
+   0.7,
+   2.2
+  ],
+  "settle": [
+   2.2,
+   4.2
+  ],
+  "spot": [
+   4.2,
+   6.8
+  ],
+  "replay": [
+   6.8,
+   9.2
+  ],
+  "noob_me": [
+   9.2,
+   10.385
+  ],
+  "replay2": [
+   10.485,
+   12.085
+  ],
+  "steve_what": [
+   12.085,
+   13.131
+  ],
+  "residue": [
+   13.231,
+   14.831
+  ],
+  "patch_behind": [
+   14.831,
+   18.109
+  ],
+  "drop": [
+   18.209,
+   21.409
+  ],
+  "noob_where": [
+   21.409,
+   22.478
+  ],
+  "core": [
+   22.578,
+   24.178
+  ],
+  "past": [
+   24.178,
+   26.178
+  ],
+  "noob_us": [
+   26.178,
+   28.152
+  ],
+  "patch_last": [
+   28.252,
+   29.495
+  ],
+  "pull": [
+   29.595,
+   30.995
+  ],
+  "steve_times": [
+   30.995,
+   33.827
+  ],
+  "crowd": [
+   33.927,
+   36.127
+  ],
+  "weight": [
+   36.127,
+   37.427
+  ],
+  "patch_count": [
+   37.427,
+   39.337
+  ],
+  "look": [
+   39.437,
+   40.837
+  ],
+  "noob_deleted": [
+   40.837,
+   43.337
+  ],
+  "hush": [
+   43.687,
+   44.887
+  ],
+  "breach": [
+   44.887,
+   46.687
+  ],
+  "patch_archive": [
+   46.687,
+   50.702
+  ],
+  "warp": [
+   50.802,
+   52.202
+  ],
+  "flash": [
+   52.202,
+   52.502
+  ]
+ },
+ "impacts": [],
+ "fx_times": {},
+ "lines": [
+  {
+   "name": "noob_me",
+   "who": "noob",
+   "text": "Hey, that's me!",
+   "vo": false,
+   "caption": true,
+   "start": 9.2,
+   "end": 10.385
+  },
+  {
+   "name": "steve_what",
+   "who": "steve",
+   "text": "What are those?",
+   "vo": false,
+   "caption": true,
+   "start": 12.085,
+   "end": 13.131
+  },
+  {
+   "name": "patch_behind",
+   "who": "patch",
+   "text": "Every time you respawn, something stays behind.",
+   "vo": false,
+   "caption": true,
+   "start": 14.831,
+   "end": 18.109
+  },
+  {
+   "name": "noob_where",
+   "who": "noob",
+   "text": "...Where does it go?",
+   "vo": false,
+   "caption": true,
+   "start": 21.409,
+   "end": 22.478
+  },
+  {
+   "name": "noob_us",
+   "who": "noob",
+   "text": "That's... us?",
+   "vo": false,
+   "caption": true,
+   "start": 26.178,
+   "end": 28.152
+  },
+  {
+   "name": "patch_last",
+   "who": "patch",
+   "text": "From last time.",
+   "vo": false,
+   "caption": true,
+   "start": 28.252,
+   "end": 29.495
+  },
+  {
+   "name": "steve_times",
+   "who": "steve",
+   "text": "How many times have we done this?",
+   "vo": false,
+   "caption": true,
+   "start": 30.995,
+   "end": 33.827
+  },
+  {
+   "name": "patch_count",
+   "who": "patch",
+   "text": "...I stopped counting.",
+   "vo": false,
+   "caption": true,
+   "start": 37.427,
+   "end": 39.337
+  },
+  {
+   "name": "noob_deleted",
+   "who": "noob",
+   "text": "I don't want to be deleted.",
+   "vo": false,
+   "caption": true,
+   "start": 40.837,
+   "end": 43.337
+  },
+  {
+   "name": "patch_archive",
+   "who": "patch",
+   "text": "It found the archive- I only have one stable coordinate left!",
+   "vo": false,
+   "caption": true,
+   "start": 46.687,
+   "end": 50.702
+  }
+ ],
+ "cast": {
+  "noob": {
+   "voice": "am_puck",
+   "speed": 1.12,
+   "pitch": 1.0,
+   "caption": "#FFD23F",
+   "emotion": 0.6,
+   "pace": 0.45,
+   "stability": 0.0,
+   "gemini_voice": "Puck",
+   "acting": "bright, fast, cheerful cartoon character, impulsive and oblivious, great comic timing"
+  },
+  "steve": {
+   "voice": "am_michael",
+   "speed": 0.95,
+   "pitch": 1.0,
+   "caption": "#3FE0D0",
+   "emotion": 0.4,
+   "pace": 0.5,
+   "stability": 0.5,
+   "gemini_voice": "Charon",
+   "acting": "calm, low, dry and deadpan; a practical survivor who rarely raises his voice"
+  },
+  "patch": {
+   "voice": "am_puck",
+   "speed": 1.0,
+   "pitch": 1.0,
+   "caption": "#B6F0FF",
+   "emotion": 0.3,
+   "pace": 0.4,
+   "stability": 0.5,
+   "gemini_voice": "Achernar",
+   "acting": "calm, literal, slightly too quiet; announces disasters politely",
+   "fx": "patch"
+  }
+ },
+ "overlays": [
+  {
+   "type": "hud",
+   "text": "REALITY: 52%",
+   "alert": true,
+   "start": 0.0,
+   "end": 45.037
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 41%",
+   "alert": true,
+   "start": 45.037,
+   "end": 45.187
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 52%",
+   "alert": true,
+   "start": 45.187,
+   "end": 45.287
+  },
+  {
+   "type": "hud",
+   "text": "REALITY: 30%",
+   "alert": true,
+   "start": 45.287,
+   "end": 52.902
+  }
+ ]
+}
