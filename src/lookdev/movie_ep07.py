@@ -62,6 +62,8 @@ CORE = Vector((5.0, 9.0, -30.0))         # the dark core far below
 CELL_P = Vector((-6.5, 8.0, 0.0))        # the recorded past loop
 FISSURE_P = CELL_P + Vector((0.6, 3.2, 0.0))
 CUBE_S = 0.34
+P_WEIGHT = Vector((-0.6, 2.2, 2.4))   # Patch for '...I stopped counting.' (clear of them)
+LOOK_OUT = Vector((10.0, 12.0, 0.5))   # where the Noob looks out over the ghosts
 
 
 # ------------------------------------------------------------------ the build
@@ -71,6 +73,7 @@ def build(tl, tex_dir, assets, res, samples):
     E.B7 = {k: tuple(v) for k, v in tl["beats"].items()}
     E.T6 = t6["length"]
     _hide_world(E)
+    E_COL[0] = E.sc.collection
     _sky(E)
     _floor(E)
     _pads(E)
@@ -227,7 +230,7 @@ def _plane(name, size, z, mat, cut=None):
 
 
 def _floor(E):
-    m, st = _grid_mat("mg_floor", 3.2, step=3.0, width=0.03)
+    m, st = _grid_mat("mg_floor", 4.0, step=3.0, width=0.06, base=0.0)
     E.floor = _plane("mg_floor", 600, 0.0, m)
     E.floor_em = st
     E.layers = []
@@ -271,39 +274,45 @@ def _wire_mat(name, rgb=(0.3, 0.95, 1.0), strength=5.0):
     return m, em
 
 
+def _box_mesh(name, size):
+    me = bpy.data.meshes.new(name)
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.scale(bm, vec=Vector(size), verts=bm.verts)
+    bm.to_mesh(me)
+    bm.free()
+    return me
+
+
 def _slab(name, size, loc, mat, wire=None, col=None):
-    """A box; `wire`: a thin glowing border (its edges as a wireframe)."""
-    bpy.ops.mesh.primitive_cube_add(size=1)
-    ob = bpy.context.active_object
-    ob.name = name
-    ob.scale = size
+    """A box (its size in the mesh, scale 1); `wire`: a thin glowing border (its edges as a 2.5 cm wireframe)."""
+    col = col or E_COL[0]
+    ob = bpy.data.objects.new(name, _box_mesh(name, size))
     ob.location = loc
     ob.data.materials.append(mat)
     ob.visible_shadow = False
+    col.objects.link(ob)
     w = None
     if wire is not None:
-        bpy.ops.mesh.primitive_cube_add(size=1)
-        w = bpy.context.active_object
-        w.name = name + "_wire"
-        w.scale = size
+        w = bpy.data.objects.new(name + "_wire", ob.data.copy())
+        w.data.materials.clear()
+        w.data.materials.append(wire)
         w.location = loc
         md = w.modifiers.new("wire", "WIREFRAME")
-        md.thickness = 0.03 / max(min(size), 0.05)
+        md.thickness = 0.025
         md.use_relative_offset = False
-        w.data.materials.append(wire)
+        md.use_even_offset = True
         w.visible_shadow = False
-    if col is not None:
-        for o in (ob, w):
-            if o is not None:
-                for c in list(o.users_collection):
-                    c.objects.unlink(o)
-                col.objects.link(o)
+        col.objects.link(w)
     return ob, w
+
+
+E_COL = [None]
 
 
 def _pads(E):
     E.pad_mat = _glass_mat("mg_pad")
-    E.pad_wire, E.pad_wire_em = _wire_mat("mg_pad_wire", strength=4.0)
+    E.pad_wire, E.pad_wire_em = _wire_mat("mg_pad_wire", rgb=(0.2, 0.85, 1.0), strength=2.5)
     E.pad_a = _slab("mg_pad_a", (5.0, 4.4, 0.18), (0, 0.1, -0.09), E.pad_mat, E.pad_wire)
     E.pad_r = _slab("mg_pad_r", (2.6, 6.2, 0.18), PAD_R + Vector((0, 0.4, -0.09)), E.pad_mat, E.pad_wire)
     E.pad_p = _slab("mg_pad_p", (5.0, 5.0, 0.18), CELL_P + Vector((0, 1.0, -0.09)), E.pad_mat, E.pad_wire)
@@ -353,6 +362,15 @@ def _dark_mat(name):
     mu.inputs[7].default_value = (0.8, 0.5, 1.0, 1)
     nt.links.new(mu.outputs[2], bs.inputs["Emission Color"])
     bs.inputs["Emission Strength"].default_value = 2.0
+    lw = nt.nodes.new("ShaderNodeLayerWeight")                 # a faint magenta rim: it reads on the navy
+    lw.inputs["Blend"].default_value = 0.25
+    rim = nt.nodes.new("ShaderNodeMix")
+    rim.data_type = "RGBA"
+    rim.blend_type = "ADD"
+    nt.links.new(lw.outputs["Fresnel"], rim.inputs[0])
+    nt.links.new(mu.outputs[2], rim.inputs[6])
+    rim.inputs[7].default_value = (0.9, 0.1, 0.7, 1)
+    nt.links.new(rim.outputs[2], bs.inputs["Emission Color"])
     return m
 
 
@@ -383,20 +401,20 @@ def _crack_mat(name):
     bs.inputs["Roughness"].default_value = 0.35
     vo = nt.nodes.new("ShaderNodeTexVoronoi")
     vo.feature = "DISTANCE_TO_EDGE"
-    vo.inputs["Scale"].default_value = 6.0
+    vo.inputs["Scale"].default_value = 2.2
     tc = nt.nodes.new("ShaderNodeTexCoord")
     nt.links.new(tc.outputs["Object"], vo.inputs["Vector"])
     lt = nt.nodes.new("ShaderNodeMath")
     lt.operation = "LESS_THAN"
     nt.links.new(vo.outputs["Distance"], lt.inputs[0])
-    lt.inputs[1].default_value = 0.035
+    lt.inputs[1].default_value = 0.08
     mu = nt.nodes.new("ShaderNodeMix")
     mu.data_type = "RGBA"
     nt.links.new(lt.outputs[0], mu.inputs[0])
     mu.inputs[6].default_value = (0, 0, 0, 1)
     mu.inputs[7].default_value = (1.0, 0.1, 0.75, 1)
     nt.links.new(mu.outputs[2], bs.inputs["Emission Color"])
-    bs.inputs["Emission Strength"].default_value = 3.0
+    bs.inputs["Emission Strength"].default_value = 8.0
     E_ = bs.inputs["Emission Strength"]
     return m, E_
 
@@ -418,7 +436,7 @@ def _core(E):
     for i in range(N_CORE):
         ob = bpy.data.objects.new(f"mg_core{i}", me)
         E.sc.collection.objects.link(ob)
-        rad = 3.6 * r.random() ** 0.6
+        rad = 5.0 * r.random() ** 0.6
         E.core_blocks.append((ob, rad, r.uniform(0, 2 * math.pi), r.uniform(-1, 1), r.uniform(0.25, 0.9),
                               r.uniform(0.3, 1.0), r.uniform(0, 6.3)))
         ob.location = FAR
@@ -641,7 +659,7 @@ def _lights(E):
     up = bpy.data.lights.new("mg_under", "AREA")
     up.size = 14.0
     up.color = (0.3, 0.85, 1.0)
-    up.energy = 900.0
+    up.energy = 350.0
     E.under = bpy.data.objects.new("mg_under", up)
     E.sc.collection.objects.link(E.under)
     E.under.location = (1.0, 2.0, -3.0)
@@ -862,7 +880,7 @@ def ghost(E, t):
                 spin = Quaternion((1, 0, 0) if i % 2 else (0, 1, 0), u * 2.5 * (1 if i % 3 else -1))
                 s = 1.0 - 0.7 * u
                 w.matrix_world = Matrix.LocRotScale(loc + out.normalized() * 0.9 * u, rot @ spin, scl * s)
-            E.wire_em.default_value = 6.0 * (1 - u)
+            E.wire_em.inputs["Strength"].default_value = 6.0 * (1 - u)
         return
     # the pop (squash and stretch), the walk, the hop onto the brick
     pop = ss(t0, t0 + 0.25, t)
@@ -916,7 +934,7 @@ def residue(E, t):
 def core(E, t):
     vis = b("drop") - 0.2 <= t < b("noob_us")
     E.core_light.data.energy = 4000.0 * (0.7 + 0.3 * math.sin(t * 5)) if vis else 0.0
-    E.core_em.default_value = 3.0 * (0.6 + 0.4 * math.sin(t * 7.0) * math.sin(t * 2.3))
+    E.core_em.default_value = 8.0 * (0.6 + 0.4 * math.sin(t * 7.0) * math.sin(t * 2.3))
     for ob, rad, a0, h, s, w, ph in E.core_blocks:
         if not vis:
             ob.location = FAR
@@ -925,7 +943,7 @@ def core(E, t):
         rr = rad * (1 + 0.06 * math.sin(t * 2 + ph))
         ob.location = CORE + Vector((rr * math.cos(a), rr * math.sin(a), h * rad * 0.8))
         ob.rotation_euler = (t * w + ph, t * 0.7 * w, a)
-        ob.scale = (s, s, s)
+        ob.scale = (s * 1.4, s * 1.4, s * 1.4)
 
 
 def snow(E, t):
@@ -957,7 +975,7 @@ def fx(E, t):
         g = ss(br, br + 1.4, t)
         E.cracks.scale = (0.15 + 0.85 * g, 0.15 + 0.85 * g, 1)
         E.cracks_em.default_value = 6.0 + 4.0 * math.sin(t * 30) ** 2
-        E.breach_light.data.energy = 900.0 * g
+        E.breach_light.data.energy = 250.0 * g
         for e in E.cells:
             d = Vector(e.location).length
             k_ = ss(br + 0.2 + d * 0.03, br + 0.8 + d * 0.03, t)
@@ -969,11 +987,11 @@ def fx(E, t):
             sl.hide_render = t > br + 0.4
             if w:
                 w.hide_render = t > br + 0.4
-        E.floor_em.inputs[1].default_value = 3.2 * (1 - 0.5 * ss(br, br + 1.0, t)) * (0.85 + 0.15 * math.sin(t * 40))
+        E.floor_em.inputs[1].default_value = 4.0 * (1 - 0.5 * ss(br, br + 1.0, t)) * (0.85 + 0.15 * math.sin(t * 40))
     else:
         E.cracks.location = FAR
         E.breach_light.data.energy = 0.0
-        E.floor_em.inputs[1].default_value = 3.2
+        E.floor_em.inputs[1].default_value = 4.0
         for e in E.cells:
             e.scale = (1, 1, 1)
         for (sl, w) in E.pad_deco:
@@ -1030,11 +1048,11 @@ def patch_pos(E, t):
         return PAD_R + Vector((-1.6, 0.6, 1.6))
     if t < b("weight"):
         u = ss(b("past"), b("past") + 1.5, t)
-        return (PAD_R + Vector((-1.6, 0.6, 1.6))).lerp(Vector((0.1, 1.4, 2.0)), u)
+        return (PAD_R + Vector((-1.6, 0.6, 1.6))).lerp(P_WEIGHT, u)
     if t < b("breach"):
-        return Vector((0.1, 1.4, 2.0))
+        return P_WEIGHT
     u = ss(b("breach") + 0.2, b("patch_archive"), t)
-    return Vector((0.1, 1.4, 2.0)).lerp(Vector((0.0, 0.6, 1.9)), u)
+    return P_WEIGHT.lerp(Vector((0.0, 0.6, 1.9)), u)
 
 
 def patch(E, t):
@@ -1067,19 +1085,19 @@ def patch(E, t):
     vals["open"] = max(0.05, 1 - blink)
     bright = 1.0
     if b("residue") <= t < b("weight"):
-        vals.update({"wide": 0.3, "sad": 0.25, "squint": 0.15})
+        vals.update({"wide": 0.3})
     if b("weight") <= t < b("look"):                             # "...I stopped counting.": dims, one flicker, down
         k = ss(b("weight") + 0.3, b("patch_count") + 0.4, t)
         bright = 1.0 - 0.4 * k
         fl = b("patch_count") + 0.75
         if fl <= t < fl + 0.08:
             bright *= 0.15
-        vals.update({"wide": 0.1, "sad": 0.45 * k, "squint": 0.2, "look_y": -0.6 * k})
+        vals.update({"wide": 0.0, "sad": 0.0, "squint": 0.0, "look_y": -0.45 * k})
         pitch += 5.0 * k
-        vals["open"] = max(0.05, 1 - blink) * (1 - 0.25 * k)
+        vals["open"] = max(0.05, 1 - blink) * (1 - 0.2 * k)
     if b("look") <= t < b("breach"):
         bright = 0.7
-        vals.update({"sad": 0.4, "look_y": -0.3})
+        vals.update({"look_y": -0.3})
     amber = 0.0
     if b("breach") <= t:                                          # panic: amber, wide
         vals.update({"wide": 1.0, "sad": 0.0, "squint": 0.0, "open": 1.0, "look_y": 0.0})
@@ -1163,8 +1181,8 @@ def noob(E, t):
             bl = math.exp(-((t - (b("noob_us") + 0.6)) / 0.12) ** 2)
             face["both_h"] = lerp(face["both_h"], 0.15, bl)
         if b("look") <= t:                                        # looks out over the ghosts, hands lowering
-            yaw = _face_to(p, Vector((8.0, 30.0, 0)))
-            look_at = Vector((8.0, 30.0, 0.5))
+            yaw = _face_to(p, LOOK_OUT)
+            look_at = LOOK_OUT
             k = ss(b("look"), b("noob_deleted") + 0.5, t)
             pz["arm_sl"] = {"fwd": 30 * (1 - k) + 5, "out": 12, "elbow": 40 * (1 - k)}
             pz["arm_sr"] = {"fwd": 30 * (1 - k) + 5, "out": 12, "elbow": 40 * (1 - k)}
@@ -1242,7 +1260,7 @@ def steve(E, t):
             look_at = Vector(E.PA.root.location)
         if b("look") <= t:                                        # a guilty glance at the Noob, then away, down
             g = ss(b("look") + 0.3, b("look") + 0.8, t) * (1 - ss(b("noob_deleted") + 1.2, b("noob_deleted") + 1.8, t))
-            look_at = (Vector((4.0, 20.0, 0.0))).lerp(Vector(E.N.root.location) + Vector((0, 0, 1.3)), g)
+            look_at = LOOK_OUT.lerp(Vector(E.N.root.location) + Vector((0, 0, 1.3)), g)
             if t >= b("noob_deleted") + 1.5:
                 look_at = Vector((-1.0, 3.0, 0.0))
             face = {"both_to": -0.3, "both_ti": 0.1, "bb_tilt": -0.5, "bb_raise": 0.0, "m_arch": 0.15}
@@ -1320,7 +1338,7 @@ def camera(E, t, shot, t0, t1):
         tgt = Vector(E.PA.root.location)
     E.key.location = loc + (tgt - loc) * 0.35 + Vector((0.6, 0, 1.4))
     E.key.rotation_euler = (tgt - E.key.location).to_track_quat("-Z", "Y").to_euler()
-    E.key.data.energy = 140.0
+    E.key.data.energy = 220.0
 
 
 def _c(x, y, z):
@@ -1333,10 +1351,10 @@ def _cam(E, t, shot, t0, t1):
     if shot == "s1":                                              # 28 mm wide, low: the arrival; a slow push-in
         return _c(-1.2, -8.0, 1.1).lerp(_c(-0.6, -6.6, 1.2), u), _c(1.0, 2.0, 1.1), 28, 30, None, 0.15
     if shot == "s2":                                              # 35 mm medium-wide: the pair left, the replay right
-        return _c(-2.6, -5.2, 1.7), _c(2.2, 2.4, 1.0), 35, 30, None, 0.1
+        return _c(6.2, -3.2, 1.7), _c(1.6, 1.8, 1.05), 35, 30, None, 0.1
     if shot == "s3":                                              # 50 mm MCU Steve, front-left; he looks down
         s = S_STAND
-        return s + _c(-0.9, 2.9, 1.5), s + _c(0, 0, 1.45), 50, 2.8, None, 0.06
+        return s + _c(0.7, 3.3, 1.55), s + _c(0.1, 0, 1.4), 45, 2.8, None, 0.06
     if shot == "s4":                                              # 40 mm: a slow tilt down onto the cubes; Patch in
         c = CUBES[1]
         lk = (c + _c(0, 0, 1.4)).lerp(c + _c(-0.2, 0, 0.25), ss(t0, t0 + 2.2, t))
@@ -1344,30 +1362,30 @@ def _cam(E, t, shot, t0, t1):
     if shot == "s5":                                              # 24 mm crane drop through the layers to the core
         k = ss(t0, t0 + 4.0, t)
         loc = _c(3.0, -1.5, 2.6).lerp(_c(6.5, 1.5, -24.0), k ** 1.3)
-        lk = (N_EDGE + _c(1.0, 2.0, -0.5)).lerp(CORE, ss(t0 + 0.6, t0 + 3.4, t))
+        lk = (N_EDGE + _c(1.0, 2.0, -0.5)).lerp(CORE, ss(t0, t0 + 1.6, t))
         if t >= b("noob_where") - 0.1:                            # up at the Noob leaning over the edge, through the glass
-            loc = CORE + _c(1.5, -9.0, 6.0)
-            lk = (CORE + _c(0, 0, 2.0)).lerp(N_EDGE + _c(0, 0, 1.0), ss(b("noob_where") - 0.1, b("noob_where") + 0.9, t))
+            loc = N_EDGE + _c(1.7, 3.3, -2.4)                    # under the glass, up at his face; then down to the core
+            lk = (N_EDGE + _c(0, 0, 1.3)).lerp(CORE + _c(0, 0, 2.0), ss(b("core"), b("core", 1), t))
         return loc, lk, 24, 30, None, 0.05
     if shot == "s6":                                              # 45 mm past the recorded trio toward its fissure
-        return CELL_P + _c(-2.2, -3.6, 1.5).lerp(_c(-1.8, -3.0, 1.5), u), FISSURE_P + _c(0, 0, 1.8), 45, 4.0, None, 0.05
+        return CELL_P + _c(-4.2, -6.4, 1.7).lerp(_c(-3.6, -5.6, 1.7), u), CELL_P + _c(0.3, 1.6, 1.4), 45, 5.0, None, 0.05
     if shot == "s7":                                              # 65 mm close-up on the Noob (the cell behind camera)
         n = Vector(E.N.root.location)
         n0 = Vector((0.9, 0.9, 0))
         d = (CELL_P - n0).normalized()
-        return n0 + d * 3.2 + _c(0, 0, 1.55), n0 + _c(0, 0, 1.35), 65, 2.4, None, 0.04
+        return n0 + d * 3.4 + _c(0, 0, 1.85), n0 + _c(0, 0, 1.72), 65, 2.4, None, 0.04
     if shot == "s8":                                              # 24 mm: one continuous crane pullback, high and wide
         k = ss(t0, b("crowd", 1), t)
-        loc = _c(-1.5, -4.5, 1.8).lerp(_c(-14.0, -38.0, 38.0), k ** 1.5)
-        lk = _c(0.0, 1.0, 1.2).lerp(_c(4.0, 40.0, 0.0), k)
+        loc = _c(-3.0, 3.8, 1.8).lerp(_c(-30.0, 34.0, 36.0), k ** 1.5)
+        lk = _c(-0.4, 0.8, 1.3).lerp(_c(8.0, -12.0, 0.0), k)
         return loc, lk, 24, 30, None, 0.03
     if shot == "s9a":                                             # 85 mm, shallow focus: Patch alone, centred
-        pp = Vector((0.1, 1.4, 2.0))
-        return pp + _c(1.2, -3.6, 0.15), pp, 85, 2.0, None, 0.02
+        pp = P_WEIGHT
+        return pp + _c(-0.8, -3.7, 0.1), pp, 85, 2.0, None, 0.02
     if shot == "s9b":                                             # 50 mm two-shot: the Noob looks out; Steve's glance
-        return _c(-0.6, -4.6, 1.6), _c(0.0, 0.8, 1.3), 50, 3.5, None, 0.04
+        return _c(3.6, 5.2, 1.6), _c(0.1, 0.7, 1.35), 50, 3.5, None, 0.04
     if shot == "s10":                                             # 28 mm wide, low: the breach, the warp
-        return _c(-1.2, -6.2, 0.55).lerp(_c(-1.6, -7.4, 0.7), ss(t0, b("flash"), t)), _c(0.3, 0.8, 1.0), 28, 30, None, 0.12
+        return _c(-1.4, -6.0, 2.6).lerp(_c(-1.8, -7.2, 2.9), ss(t0, b("flash"), t)), _c(0.3, 0.9, 0.6), 28, 30, None, 0.12
     return _c(-1, -8, 2), _c(0, 1, 1), 28, 30, None, 0.1
 
 
@@ -1417,8 +1435,8 @@ def finish_grid(path, mist_path):
     a = np.asarray(im).astype(np.float32)
     if mist_path and os.path.exists(mist_path):
         m = np.asarray(Image.open(mist_path).convert("L").resize(im.size)).astype(np.float32) / 255.0
-        fog = np.array([int(h, 16) for h in ("1A", "4A", "66")], np.float32)          # the mist, as seen (sRGB)
-        k = np.clip(m, 0, 1)[..., None] ** 1.1 * 0.92
+        fog = np.array([int(h, 16) for h in ("0E", "2C", "44")], np.float32)          # the mist (#0A2438, a touch lifted)
+        k = np.clip(m, 0, 1)[..., None] ** 1.3 * 0.85
         a = a * (1 - k) + fog * k
     im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
     import assemble
